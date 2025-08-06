@@ -1,0 +1,124 @@
+import { body } from "express-validator";
+import { prisma } from "../config";
+import { Translation } from "../types/global";
+import { isUuid } from "./isUuid";
+
+export const validateTranslations = (
+  translations: Translation,
+  fieldNames: {
+    name: string;
+    required?: boolean;
+  }[]
+) => {
+  const errors: { ka: string; en: string; field: string }[] = [];
+  const languageKeys = Object.keys(translations);
+
+  if (languageKeys.length === 0) {
+    errors.push({
+      ka: "აუციელებელია ერთი თარგმანი მაინც",
+      en: "At least one translation is required",
+      field: "translations",
+    });
+    return errors;
+  }
+
+  languageKeys.forEach((language) => {
+    fieldNames.forEach((field) => {
+      const value = translations[language]?.[field.name];
+
+      if (field.required && !value) {
+        errors.push({
+          ka: `${language} ველი '${field.name}' აუცილელებელია`,
+          en: `The ${language} field '${field.name}' is required`,
+          field: field.name,
+        });
+      } else if (value && typeof value !== "string") {
+        errors.push({
+          ka: `${language} ველი '${field.name}' უნდა იყოს ტექსტი`,
+          en: `The ${language} field '${field.name}' must be a string`,
+          field: field.name,
+        });
+      }
+    });
+  });
+
+  return errors;
+};
+
+export const generateMetaValidations = () => {
+  return [
+    body("metaTitle").isString().optional({ nullable: true }),
+    body("metaDescription").isString().optional({ nullable: true }),
+    body("metaKeywords").isString().optional({ nullable: true }),
+    body("metaImage").isString().optional({ nullable: true }),
+  ];
+};
+
+export const uniqueFieldValidation = (field: string, modelName: string) => {
+  return body(field)
+    .isString()
+    .custom((value) => {
+      return (
+        prisma[modelName as keyof typeof prisma]
+          // @ts-expect-error modelName is a string
+          .findUnique({ where: { [field]: value } })
+          // @ts-expect-error modelName is a string
+          .then((model) => {
+            if (model) {
+              throw new Error(
+                JSON.stringify({
+                  ka: `${modelName} ასეთი ${field}-ით უკვე არსებობს`,
+                  en: `${modelName} with this ${field} already exists`,
+                })
+              );
+            }
+          })
+      );
+    });
+};
+
+export const uuidsArrayValidation = (
+  field: string,
+  min?: number,
+  max?: number
+) => {
+  return body(field).custom((value) => {
+    if (!Array.isArray(value)) {
+      throw new Error(
+        JSON.stringify({
+          ka: `${field} უნდა იყოს მასივი`,
+          en: `${field} must be an array`,
+        })
+      );
+    }
+
+    if (min && value.length < min) {
+      throw new Error(
+        JSON.stringify({
+          ka: `${field} უნდა შეიცავდეს მინიმუმ ${min} ელემენტს`,
+          en: `${field} must contain at least ${min} elements`,
+        })
+      );
+    }
+
+    if (max && value.length > max) {
+      throw new Error(
+        JSON.stringify({
+          ka: `${field} უნდა შეიცავდეს მაქსიმუმ ${max} ელემენტს`,
+          en: `${field} must contain at most ${max} elements`,
+        })
+      );
+    }
+
+    if (!value.every((id: string) => typeof id === "string" && isUuid(id))) {
+      throw new Error(
+        JSON.stringify({
+          ka: "მასივის ყველა ელემენტი უნდა იყოს სწორი UUID",
+          en: "All elements in the array must be valid UUIDs",
+        })
+      );
+    }
+
+    return true;
+  });
+};

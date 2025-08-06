@@ -1,0 +1,41 @@
+model Language {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  code  String @unique
+  name  String
+  order Int    @default(autoincrement())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("languages")
+}
+
+model File {
+  id String @id @default(uuid())
+
+  name String
+  path String
+  size Int
+
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("files")
+}
+
+model RefreshToken {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @db.Uuid
+
+  token     String   @unique
+  expiresAt DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("refresh_tokens")
+}
