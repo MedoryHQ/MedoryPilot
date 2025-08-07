@@ -5,6 +5,8 @@ model Language {
   name  String
   order Int    @default(autoincrement())
 
+  headerTranslations HeaderTranslation[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -17,6 +19,9 @@ model File {
   name String
   path String
   size Int
+
+  header   Header? @relation(fields: [headerId], references: [id], onDelete: Cascade)
+  headerId String? @unique @db.Uuid
 
   deletedAt DateTime?
   createdAt DateTime  @default(now())
@@ -38,4 +43,18 @@ model RefreshToken {
   updatedAt DateTime @updatedAt
 
   @@map("refresh_tokens")
+}
+
+model Header {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  logo File?
+
+  translations HeaderTranslation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  fileId    String?
+
+  @@map("header")
 }
