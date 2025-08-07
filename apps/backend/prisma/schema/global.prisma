@@ -5,7 +5,8 @@ model Language {
   name  String
   order Int    @default(autoincrement())
 
-  headerTranslations HeaderTranslation[]
+  headerTranslations    HeaderTranslation[]
+  introduceTranslations IntroduceTranslation[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -57,4 +58,16 @@ model Header {
   fileId    String?
 
   @@map("header")
+}
+
+model Introduce {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  translations IntroduceTranslation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  fileId    String?
+
+  @@map("introduce")
 }

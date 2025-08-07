@@ -15,3 +15,21 @@ model HeaderTranslation {
 
   @@map("header_translations")
 }
+
+model IntroduceTranslation {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  headline    String
+  description String
+
+  introduce   Introduce @relation(fields: [introduceId], references: [id], onDelete: Cascade)
+  introduceId String    @unique @db.Uuid
+
+  language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  languageId String   @unique @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("introduce_translations")
+}
