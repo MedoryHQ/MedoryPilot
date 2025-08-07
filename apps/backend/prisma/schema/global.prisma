@@ -12,6 +12,7 @@ model Language {
   FAQTranslations       FAQTranslation[]
   blogTranslations      BlogTranslation[]
   categoryTranslations  CategoryTranslation[]
+  contactTranslations   ContactTranslation[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -20,18 +21,20 @@ model Language {
 }
 
 model File {
-  id String @id @default(uuid())
+  id String @id @default(uuid()) @db.Uuid
 
   name String
   path String
   size Int
 
-  header   Header? @relation(fields: [headerId], references: [id], onDelete: Cascade)
-  headerId String? @unique @db.Uuid
-  news     News?   @relation(fields: [newsId], references: [id], onDelete: Cascade)
-  newsId   String? @unique @db.Uuid
-  blog     Blog?   @relation(fields: [blogId], references: [id], onDelete: Cascade)
-  blogId   String? @unique @db.Uuid
+  header    Header?  @relation(fields: [headerId], references: [id], onDelete: Cascade)
+  headerId  String?  @unique @db.Uuid
+  news      News?    @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  newsId    String?  @unique @db.Uuid
+  blog      Blog?    @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  blogId    String?  @unique @db.Uuid
+  contact   Contact? @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId String?  @unique @db.Uuid
 
   serviceIcon       Service? @relation("ServiceIcon")
   serviceBackground Service? @relation("ServiceBackground")
@@ -105,7 +108,7 @@ model News {
 }
 
 model Service {
-  id String @id @default(uuid())
+  id String @id @default(uuid()) @db.Uuid
 
   translations ServiceTranslation[]
 
@@ -122,7 +125,7 @@ model Service {
 }
 
 model FAQ {
-  id String @id @default(uuid())
+  id String @id @default(uuid(7)) @db.Uuid
 
   order        Int              @default(autoincrement())
   translations FAQTranslation[]
@@ -158,7 +161,7 @@ model Blog {
 }
 
 model Category {
-  id String @id @default(uuid())
+  id String @id @default(uuid()) @db.Uuid
 
   blogs        Blog[]
   translations CategoryTranslation[]
@@ -167,4 +170,17 @@ model Category {
   updatedAt DateTime @updatedAt
 
   @@map("categories")
+}
+
+model Contact {
+  id String @id @default(uuid()) @db.Uuid
+
+  location     String?
+  background   File?
+  translations ContactTranslation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("contacts")
 }

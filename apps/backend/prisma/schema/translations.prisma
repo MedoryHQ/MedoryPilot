@@ -5,14 +5,15 @@ model HeaderTranslation {
   description String
 
   header   Header @relation(fields: [headerId], references: [id], onDelete: Cascade)
-  headerId String @unique @db.Uuid
+  headerId String @db.Uuid
 
   language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
-  languageId String   @unique @db.Uuid
+  languageId String   @db.Uuid
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([headerId, languageId])
   @@map("header_translations")
 }
 
@@ -23,14 +24,15 @@ model IntroduceTranslation {
   description String
 
   introduce   Introduce @relation(fields: [introduceId], references: [id], onDelete: Cascade)
-  introduceId String    @unique @db.Uuid
+  introduceId String    @db.Uuid
 
   language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
-  languageId String   @unique @db.Uuid
+  languageId String   @db.Uuid
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([introduceId, languageId])
   @@map("introduce_translations")
 }
 
@@ -40,27 +42,28 @@ model NewsTranslation {
   content String
 
   news   News   @relation(fields: [newsId], references: [id], onDelete: Cascade)
-  newsId String @unique @db.Uuid
+  newsId String @db.Uuid
 
   language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
-  languageId String   @unique @db.Uuid
+  languageId String   @db.Uuid
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([newsId, languageId])
   @@map("news_translations")
 }
 
 model ServiceTranslation {
-  id String @id @default(uuid())
+  id String @id @default(uuid(7)) @db.Uuid
 
   title       String
   description String
 
   service    Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  serviceId  String
+  serviceId  String   @db.Uuid
   language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
-  languageId String
+  languageId String   @db.Uuid
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -70,15 +73,15 @@ model ServiceTranslation {
 }
 
 model FAQTranslation {
-  id String @id @default(uuid())
+  id String @id @default(uuid(7)) @db.Uuid
 
   question String
   answer   String
 
   faq        FAQ      @relation(fields: [faqId], references: [id], onDelete: Cascade)
-  faqId      String
+  faqId      String   @db.Uuid
   language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
-  languageId String
+  languageId String   @db.Uuid
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -88,15 +91,15 @@ model FAQTranslation {
 }
 
 model BlogTranslation {
-  id String @id @default(uuid())
+  id String @id @default(uuid(7)) @db.Uuid
 
   title   String
   content String
 
   blog       Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
-  blogId     String
+  blogId     String   @db.Uuid
   language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
-  languageId String
+  languageId String   @db.Uuid
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -106,18 +109,36 @@ model BlogTranslation {
 }
 
 model CategoryTranslation {
-  id String @id @default(uuid())
+  id String @id @default(uuid(7)) @db.Uuid
 
   name String
 
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  categoryId String
+  categoryId String   @db.Uuid
   language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
-  languageId String
+  languageId String   @db.Uuid
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([categoryId, languageId])
   @@map("category_translations")
+}
+
+model ContactTranslation {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  title       String
+  description String
+
+  contact    Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId  String   @db.Uuid
+  language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  languageId String   @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([contactId, languageId])
+  @@map("contact_translations")
 }
