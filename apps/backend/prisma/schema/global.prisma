@@ -9,10 +9,12 @@ model Language {
   introduceTranslations IntroduceTranslation[]
   newsTranslations      NewsTranslation[]
   serviceTranslations   ServiceTranslation[]
+  FAQTranslations       FAQTranslation[]
+  blogTranslations      BlogTranslation[]
+  categoryTranslations  CategoryTranslation[]
 
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  FAQTranslation FAQTranslation[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("languages")
 }
@@ -24,10 +26,13 @@ model File {
   path String
   size Int
 
-  header            Header?  @relation(fields: [headerId], references: [id], onDelete: Cascade)
-  headerId          String?  @unique @db.Uuid
-  news              News?    @relation(fields: [newsId], references: [id], onDelete: Cascade)
-  newsId            String?  @unique @db.Uuid
+  header   Header? @relation(fields: [headerId], references: [id], onDelete: Cascade)
+  headerId String? @unique @db.Uuid
+  news     News?   @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  newsId   String? @unique @db.Uuid
+  blog     Blog?   @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  blogId   String? @unique @db.Uuid
+
   serviceIcon       Service? @relation("ServiceIcon")
   serviceBackground Service? @relation("ServiceBackground")
 
@@ -126,4 +131,40 @@ model FAQ {
   updatedAt DateTime @updatedAt
 
   @@map("faqs")
+}
+
+model Blog {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  background   File?
+  categories   Category[]
+  starredUsers User[]            @relation("BlogStars")
+  stars        Int               @default(0)
+  translations BlogTranslation[]
+
+  slug          String  @unique
+  showInLanding Boolean @default(false)
+  landingOrder  Int     @default(0)
+
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  metaImage       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("blogs")
+}
+
+model Category {
+  id String @id @default(uuid())
+
+  blogs        Blog[]
+  translations CategoryTranslation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("categories")
 }

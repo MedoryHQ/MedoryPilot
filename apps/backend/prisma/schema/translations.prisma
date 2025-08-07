@@ -86,3 +86,38 @@ model FAQTranslation {
   @@unique([faqId, languageId])
   @@map("faq_translations")
 }
+
+model BlogTranslation {
+  id String @id @default(uuid())
+
+  title   String
+  content String
+
+  blog       Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  blogId     String
+  language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  languageId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([blogId, languageId])
+  @@map("blog_translations")
+}
+
+model CategoryTranslation {
+  id String @id @default(uuid())
+
+  name String
+
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId String
+  language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  languageId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([categoryId, languageId])
+  @@map("category_translations")
+}
