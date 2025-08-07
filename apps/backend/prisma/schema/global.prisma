@@ -8,6 +8,7 @@ model Language {
   headerTranslations    HeaderTranslation[]
   introduceTranslations IntroduceTranslation[]
   newsTranslations      NewsTranslation[]
+  serviceTranslations   ServiceTranslation[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -22,10 +23,12 @@ model File {
   path String
   size Int
 
-  header   Header? @relation(fields: [headerId], references: [id], onDelete: Cascade)
-  headerId String? @unique @db.Uuid
-  news     News?   @relation(fields: [newsId], references: [id], onDelete: Cascade)
-  newsId   String? @unique @db.Uuid
+  header            Header?  @relation(fields: [headerId], references: [id], onDelete: Cascade)
+  headerId          String?  @unique @db.Uuid
+  news              News?    @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  newsId            String?  @unique @db.Uuid
+  serviceIcon       Service? @relation("ServiceIcon")
+  serviceBackground Service? @relation("ServiceBackground")
 
   deletedAt DateTime?
   createdAt DateTime  @default(now())
@@ -93,4 +96,21 @@ model News {
   updatedAt DateTime @updatedAt
 
   @@map("news")
+}
+
+model Service {
+  id String @id @default(uuid())
+
+  translations ServiceTranslation[]
+
+  icon   File?   @relation("ServiceIcon", fields: [iconId], references: [id], onDelete: Cascade)
+  iconId String? @unique @db.Uuid
+
+  background   File?   @relation("ServiceBackground", fields: [backgroundId], references: [id], onDelete: Cascade)
+  backgroundId String? @unique @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("services")
 }
