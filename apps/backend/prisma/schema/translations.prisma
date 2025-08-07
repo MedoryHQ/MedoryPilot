@@ -33,3 +33,20 @@ model IntroduceTranslation {
 
   @@map("introduce_translations")
 }
+
+model NewsTranslation {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  content String
+
+  news   News   @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  newsId String @unique @db.Uuid
+
+  language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  languageId String   @unique @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("news_translations")
+}
