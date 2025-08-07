@@ -4,9 +4,9 @@ import * as bcrypt from "bcrypt";
 
 const users: Prisma.AdminCreateInput[] = [
   {
-    email: "beka.chaduneli.1@btu.edu.ge",
-    firstName: "Beka",
-    lastName: "Chaduneli",
+    email: getEnvVariable("email"),
+    firstName: getEnvVariable("adminFirstName"),
+    lastName: getEnvVariable("adminLastName"),
     passwordHash: bcrypt.hashSync(
       getEnvVariable("adminPassword"),
       +getEnvVariable("saltRounds")

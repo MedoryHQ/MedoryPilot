@@ -6,6 +6,8 @@ model User {
   personalId String? @unique
   fullName   String? @db.VarChar(255)
 
+  starredBlogs Blog[] @relation("BlogStars")
+
   phoneNumber  String  @unique
   passwordHash String?
 

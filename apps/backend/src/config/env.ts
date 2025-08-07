@@ -17,6 +17,9 @@ const envVariables = {
   nodeEnv: process.env.NODE_ENV,
   COOKIE_DOMAIN: process.env.COOKIE_DOMAIN,
   RESPONSE_URL: process.env.RESPONSE_URL,
+  email: process.env.EMAIL,
+  adminFirstName: process.env.ADMIN_FIRST_NAME,
+  adminLastName: process.env.ADMIN_LAST_NAME,
 };
 
 type EnvVariableKey = keyof typeof envVariables;
