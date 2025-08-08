@@ -7,7 +7,7 @@ model Visit {
   price                   Int?
   type                    VisitType   @default(ONLINE)
   status                  VisitStatus @default(PENDING)
-  followUpNeeded          Boolean     @default(false)
+  followUpNeeded          Boolean?
   followUpStartDatePeriod DateTime?
   followUpEndDatePeriod   DateTime?
 
@@ -60,7 +60,7 @@ model Disease {
 
   comment         String?
   level           LevelOfDisease?
-  type            DiseaseType
+  type            DiseaseType      @default(MAIN)
   typeOfDiagnosis TypeOfDiagnosis?
 
   icd   ICD?    @relation(fields: [icdId], references: [id], onDelete: Cascade)
