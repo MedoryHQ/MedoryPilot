@@ -1,0 +1,71 @@
+model Visit {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  date                    DateTime
+  startDate               DateTime?
+  endDate                 DateTime?
+  type                    VisitType   @default(ONLINE)
+  status                  VisitStatus @default(PENDING)
+  followUpNeeded          Boolean     @default(false)
+  followUpStartDatePeriod DateTime?
+  followUpEndDatePeriod   DateTime?
+
+  documents        File[]
+  examinationSheet ExaminationSheet?
+
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String  @db.Uuid
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  serviceId String  @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, serviceId])
+  @@map("visits")
+}
+
+model ExaminationSheet {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  notes         String // for Admin use 
+  caseType      CaseType?
+  height        Int?
+  weight        Int?
+  bloodPressure String?
+  heartRate     Int?
+  breathingRate Int?
+  temperature   Float?
+  spO2Level     Float?
+  BMI           Float? // Body Mass Index
+
+  diseases Disease[]
+
+  prescriptionSummary     String
+  destinationSheet        String
+  analysesBeforeNextVisit String?
+  recommendation          String
+
+  visit   Visit  @relation(fields: [visitId], references: [id], onDelete: Cascade)
+  visitId String @unique @db.Uuid
+
+  @@map("user_info_at_visits")
+}
+
+model Disease {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  comment String?
+  code    String          @unique
+  name    String
+  level   LevelOfDisease?
+  type    DiseaseType
+
+  examinationSheet   ExaminationSheet @relation(fields: [examinationSheetId], references: [id], onDelete: Cascade)
+  examinationSheetId String           @unique @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("diseases")
+}

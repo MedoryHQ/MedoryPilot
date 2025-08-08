@@ -1,14 +1,14 @@
 model User {
-  id                 String    @id @default(uuid(7)) @db.Uuid
-  email              String?   @unique
-  firstName          String?
-  lastName           String?
+  id                 String   @id @default(uuid(7)) @db.Uuid
+  email              String?  @unique
+  firstName          String
+  lastName           String
+  fullName           String   @db.VarChar(255)
   age                Int?
-  dateOfBirth        DateTime?
+  dateOfBirth        DateTime
   info               String? // for Admin use 
-  personalId         String?   @unique
-  fullName           String?   @db.VarChar(255)
-  needPasswordChange Boolean   @default(false)
+  personalId         String   @unique
+  needPasswordChange Boolean  @default(false)
 
   starredBlogs Blog[] @relation("BlogStars")
 
@@ -46,56 +46,4 @@ model PendingUser {
   updatedAt DateTime @updatedAt
 
   @@map("pending_users")
-}
-
-model Visit {
-  id String @id @default(uuid(7)) @db.Uuid
-
-  startDate                    DateTime
-  endDate                      DateTime
-  type                    VisitType   @default(ONLINE)
-  status                  VisitStatus @default(PENDING)
-  followUpNeeded          Boolean     @default(false)
-  followUpStartDatePeriod DateTime?
-  followUpEndDatePeriod   DateTime?
-
-  notes                   String? // for Admin use 
-  prescriptionSummary     String?
-  destinationSheet        String?
-  analysesBeforeNextVisit String?
-  recommendation         String?
-  control String?
-  
-
-  documents File[]
-  userInfoAtVisit UserInfoAtVisit?
-
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String  @db.Uuid
-  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  serviceId String  @db.Uuid
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([userId, serviceId])
-  @@map("visits")
-}
-
-model UserInfoAtVisit {
-  id String @id @default(uuid(7)) @db.Uuid
-
-  height Int?
-  weight Int?
-  bloodPressure String?
-  heartRate Int?
-  breathingRate Int?
-  temperature Float?
-  spO2Level Float?
-  BMI Float? // Body Mass Index
-
-  visit   Visit @relation(fields: [visitId], references: [id], onDelete: Cascade)
-  visitId String @unique @db.Uuid
-
-  @@map("user_info_at_visits")
 }

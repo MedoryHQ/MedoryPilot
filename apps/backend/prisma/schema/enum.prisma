@@ -45,3 +45,9 @@ enum ResultOfEpisode {
   FINISHED
   UNFINISHED
 }
+
+enum DiseaseType {
+  MAIN
+  COMPLICATION
+  ASSOCIATED
+}
