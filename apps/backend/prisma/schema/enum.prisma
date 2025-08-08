@@ -1,0 +1,109 @@
+enum VisitStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum VisitType {
+  ONLINE
+  IN_PERSON
+}
+
+enum CaseType {
+  URGENT
+  URGENT_DELAYED
+  PLANNED
+}
+
+enum LevelOfDisease {
+  ACUTE
+  SUBACUTE
+  CHRONIC
+  RECURRENT
+  OTHER
+}
+
+enum TypeOfDiagnosis {
+  FIRST_TIME
+  WAS_ESTABLISHED
+  PROBABLE_DIAGNOSIS
+}
+
+enum BloodGroup {
+  IV_NEGATIVE
+  III_NEGATIVE
+  II_NEGATIVE
+  I_NEGATIVE
+  I_POSITIVE
+  II_POSITIVE
+  III_POSITIVE
+  IV_POSITIVE
+}
+
+enum ResultOfEpisode {
+  FINISHED
+  UNFINISHED
+}
+
+enum DiseaseType {
+  MAIN
+  COMPLICATION
+  ASSOCIATED
+}
+
+enum ExaminationSheetStatus {
+  DRAFT
+  FINALIZED
+}
+
+enum InformedConsent {
+  VISIBLE
+  NOT_VISIBLE
+}
+
+enum RecipeUnitType {
+  UNIT
+  TABLET
+  CAPSULE
+  DRAGEE
+  SPRAY
+  AEROSOL
+  VIAL
+  TUBE
+  OINTMENT
+  CREAM
+  GEL
+  CANDLE
+  SASHE
+  AMPOULE
+  SYRUP
+  SUSPENSION
+  SOLUTION
+  INHALATION
+  SYRINGE_PEN
+}
+
+enum RecipeUnitUsageInterval {
+  HOURLY
+  DAILY
+  WEEKLY
+  MONTHLY
+  SYMPTOMATICALLY
+}
+
+enum RecipeUnitUsagePeriod {
+  HOURS
+  DAYS
+  WEEKS
+  MONTHS
+}
+
+enum EatingRule {
+  BEFORE_MEAL
+  AFTER_MEAL
+  DURING_MEAL
+  ON_EMPTY_STOMACH
+  BEFORE_SLEEP
+  SYMPTOMATICALLY
+}

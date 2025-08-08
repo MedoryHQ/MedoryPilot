@@ -142,3 +142,61 @@ model ContactTranslation {
   @@unique([contactId, languageId])
   @@map("contact_translations")
 }
+
+model ExaminationSheetTranslation {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  destinationSheet        String?
+  analysesBeforeNextVisit String?
+  recommendation          String?
+  prescriptionSummary     String?
+
+  examinationSheet   ExaminationSheet @relation(fields: [examinationSheetId], references: [id], onDelete: Cascade)
+  examinationSheetId String           @db.Uuid
+  language           Language         @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  languageId         String           @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([examinationSheetId, languageId])
+  @@map("examination_sheet_translations")
+}
+
+model ICDTranslation {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  name        String
+  description String?
+
+  icd        ICD      @relation(fields: [icdId], references: [id], onDelete: Cascade)
+  icdId      String   @db.Uuid
+  language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  languageId String   @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([icdId, languageId])
+  @@map("icd_translations")
+}
+
+model RecipeUnitTranslation {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  name        String
+  description String
+  comment     String?
+
+  recipeUnit   RecipeUnit @relation(fields: [recipeUnitId], references: [id], onDelete: Cascade)
+  recipeUnitId String     @db.Uuid
+
+  language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  languageId String   @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([recipeUnitId, languageId])
+  @@map("recipe_unit_translations")
+}

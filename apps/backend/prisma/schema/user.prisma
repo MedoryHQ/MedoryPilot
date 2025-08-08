@@ -1,15 +1,19 @@
 model User {
-  id         String  @id @default(uuid(7)) @db.Uuid
-  email      String? @unique
-  firstName  String?
-  lastName   String?
-  personalId String? @unique
-  fullName   String? @db.VarChar(255)
+  id                 String   @id @default(uuid(7)) @db.Uuid
+  email              String?  @unique
+  firstName          String
+  lastName           String
+  fullName           String   @db.VarChar(255)
+  age                Int?
+  dateOfBirth        DateTime
+  info               String? // for Admin use 
+  personalId         String   @unique
+  needPasswordChange Boolean  @default(false)
 
   starredBlogs Blog[] @relation("BlogStars")
 
-  phoneNumber  String  @unique
-  passwordHash String?
+  phoneNumber  String @unique
+  passwordHash String
 
   smsCode          String?
   smsCodeExpiresAt DateTime?
@@ -17,6 +21,7 @@ model User {
   isVerified Boolean @default(false)
 
   refreshTokens RefreshToken[]
+  visits        Visit[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -1,0 +1,116 @@
+model Visit {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  date                    DateTime
+  startTime               DateTime?
+  endTime                 DateTime?
+  price                   Int?
+  type                    VisitType   @default(ONLINE)
+  status                  VisitStatus @default(PENDING)
+  followUpNeeded          Boolean?
+  followUpStartDatePeriod DateTime?
+  followUpEndDatePeriod   DateTime?
+
+  documents        File[]
+  examinationSheet ExaminationSheet?
+
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String  @db.Uuid
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  serviceId String  @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, serviceId])
+  @@map("visits")
+}
+
+model ExaminationSheet {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  status        ExaminationSheetStatus @default(DRAFT)
+  notes         String?
+  caseType      CaseType?
+  height        Int?
+  weight        Int?
+  bloodPressure String?
+  heartRate     Int?
+  breathingRate Int?
+  temperature   Float?
+  spO2Level     Float?
+  BMI           Float?
+
+  groupOfBlood    BloodGroup?
+  resultOfEpisode ResultOfEpisode?
+  InformedConsent InformedConsent  @default(NOT_VISIBLE)
+
+  translations ExaminationSheetTranslation[]
+  diseases     Disease[]
+  recipes      RecipeUnit[]
+
+  visit   Visit  @relation(fields: [visitId], references: [id], onDelete: Cascade)
+  visitId String @unique @db.Uuid
+
+  @@map("user_info_at_visits")
+}
+
+model Disease {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  comment         String?
+  level           LevelOfDisease?
+  type            DiseaseType      @default(MAIN)
+  typeOfDiagnosis TypeOfDiagnosis?
+
+  icd   ICD?    @relation(fields: [icdId], references: [id], onDelete: Cascade)
+  icdId String? @db.Uuid
+
+  examinationSheet   ExaminationSheet @relation(fields: [examinationSheetId], references: [id], onDelete: Cascade)
+  examinationSheetId String           @unique @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("diseases")
+}
+
+model ICD {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  code String
+  link String?
+
+  translations ICDTranslation[]
+  diseases     Disease[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("icd")
+}
+
+model RecipeUnit {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  genericName    String
+  code           String
+  validityPeriod Int?
+  type           RecipeUnitType          @default(TABLET)
+  quantity       Int
+  usageInterval  RecipeUnitUsageInterval @default(DAILY)
+  interval       Int
+  period         Int
+  periodUnit     RecipeUnitUsagePeriod   @default(DAYS)
+
+  translations RecipeUnitTranslation[]
+  eatingRule   EatingRule?
+
+  examinationSheet   ExaminationSheet @relation(fields: [examinationSheetId], references: [id], onDelete: Cascade)
+  examinationSheetId String           @unique @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("recipe_units")
+}
