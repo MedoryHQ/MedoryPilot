@@ -35,6 +35,8 @@ model File {
   blogId    String?  @unique @db.Uuid
   contact   Contact? @relation(fields: [contactId], references: [id], onDelete: Cascade)
   contactId String?  @unique @db.Uuid
+  visit     Visit?   @relation(fields: [visitId], references: [id])
+  visitId   String?  @unique @db.Uuid
 
   serviceIcon       Service? @relation("ServiceIcon")
   serviceBackground Service? @relation("ServiceBackground")
@@ -117,6 +119,8 @@ model Service {
 
   background   File?   @relation("ServiceBackground", fields: [backgroundId], references: [id], onDelete: Cascade)
   backgroundId String? @unique @db.Uuid
+
+  visits Visit[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -1,15 +1,16 @@
 model User {
-  id         String  @id @default(uuid(7)) @db.Uuid
-  email      String? @unique
-  firstName  String?
-  lastName   String?
-  personalId String? @unique
-  fullName   String? @db.VarChar(255)
+  id                 String  @id @default(uuid(7)) @db.Uuid
+  email              String? @unique
+  firstName          String?
+  lastName           String?
+  personalId         String? @unique
+  fullName           String? @db.VarChar(255)
+  needPasswordChange Boolean @default(false)
 
   starredBlogs Blog[] @relation("BlogStars")
 
-  phoneNumber  String  @unique
-  passwordHash String?
+  phoneNumber  String @unique
+  passwordHash String
 
   smsCode          String?
   smsCodeExpiresAt DateTime?
@@ -17,6 +18,7 @@ model User {
   isVerified Boolean @default(false)
 
   refreshTokens RefreshToken[]
+  visits        Visit[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -41,4 +43,34 @@ model PendingUser {
   updatedAt DateTime @updatedAt
 
   @@map("pending_users")
+}
+
+model Visit {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  date                    DateTime
+  type                    VisitType   @default(ONLINE)
+  status                  VisitStatus @default(PENDING)
+  followUpNeeded          Boolean     @default(false)
+  followUpStartDatePeriod DateTime?
+  followUpEndDatePeriod   DateTime?
+
+  reason                  String
+  headline                String?
+  notes                   String?
+  prescriptionSummary     String?
+  destinationSheet        String?
+  analysesBeforeNextVisit String?
+
+  documents File[]
+
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String  @db.Uuid
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  serviceId String  @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("visits")
 }

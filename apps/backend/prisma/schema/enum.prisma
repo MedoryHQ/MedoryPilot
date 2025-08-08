@@ -1,0 +1,11 @@
+enum VisitStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum VisitType {
+  ONLINE
+  IN_PERSON
+}
