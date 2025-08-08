@@ -9,3 +9,39 @@ enum VisitType {
   ONLINE
   IN_PERSON
 }
+
+enum CaseType {
+  URGENT
+  URGENT_DELAYED
+  PLANNED
+}
+
+enum LevelOfDisease {
+  ACUTE
+  SUBACUTE
+  CHRONIC
+  RECURRENT
+  OTHER
+}
+
+enum TypeOfDiagnosis {
+  FIRST_TIME
+  WAS_ESTABLISHED
+  PROBABLE_DIAGNOSIS
+}
+
+enum BloodGroup {
+  IV_NEGATIVE
+  III_NEGATIVE
+  II_NEGATIVE
+  I_NEGATIVE
+  I_POSITIVE
+  II_POSITIVE
+  III_POSITIVE
+  IV_POSITIVE
+}
+
+enum ResultOfEpisode {
+  FINISHED
+  UNFINISHED
+}
