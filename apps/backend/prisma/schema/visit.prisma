@@ -2,8 +2,9 @@ model Visit {
   id String @id @default(uuid(7)) @db.Uuid
 
   date                    DateTime
-  startDate               DateTime?
-  endDate                 DateTime?
+  startTime               DateTime?
+  endTime                 DateTime?
+  price                   Int?
   type                    VisitType   @default(ONLINE)
   status                  VisitStatus @default(PENDING)
   followUpNeeded          Boolean     @default(false)
@@ -28,7 +29,8 @@ model Visit {
 model ExaminationSheet {
   id String @id @default(uuid(7)) @db.Uuid
 
-  notes         String // for Admin use 
+  status        ExaminationSheetStatus @default(DRAFT)
+  notes         String?
   caseType      CaseType?
   height        Int?
   weight        Int?
@@ -37,14 +39,15 @@ model ExaminationSheet {
   breathingRate Int?
   temperature   Float?
   spO2Level     Float?
-  BMI           Float? // Body Mass Index
+  BMI           Float?
 
-  diseases Disease[]
+  groupOfBlood    BloodGroup?
+  resultOfEpisode ResultOfEpisode?
+  InformedConsent InformedConsent  @default(NOT_VISIBLE)
 
-  prescriptionSummary     String
-  destinationSheet        String
-  analysesBeforeNextVisit String?
-  recommendation          String
+  translations ExaminationSheetTranslation[]
+  diseases     Disease[]
+  recipes      RecipeUnit[]
 
   visit   Visit  @relation(fields: [visitId], references: [id], onDelete: Cascade)
   visitId String @unique @db.Uuid
@@ -55,11 +58,13 @@ model ExaminationSheet {
 model Disease {
   id String @id @default(uuid(7)) @db.Uuid
 
-  comment String?
-  code    String          @unique
-  name    String
-  level   LevelOfDisease?
-  type    DiseaseType
+  comment         String?
+  level           LevelOfDisease?
+  type            DiseaseType
+  typeOfDiagnosis TypeOfDiagnosis?
+
+  icd   ICD?    @relation(fields: [icdId], references: [id], onDelete: Cascade)
+  icdId String? @db.Uuid
 
   examinationSheet   ExaminationSheet @relation(fields: [examinationSheetId], references: [id], onDelete: Cascade)
   examinationSheetId String           @unique @db.Uuid
@@ -68,4 +73,44 @@ model Disease {
   updatedAt DateTime @updatedAt
 
   @@map("diseases")
+}
+
+model ICD {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  code String
+  link String?
+
+  translations ICDTranslation[]
+  diseases     Disease[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("icd")
+}
+
+model RecipeUnit {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  genericName    String
+  code           String
+  validityPeriod Int?
+  type           RecipeUnitType          @default(TABLET)
+  quantity       Int
+  usageInterval  RecipeUnitUsageInterval @default(DAILY)
+  interval       Int
+  period         Int
+  periodUnit     RecipeUnitUsagePeriod   @default(DAYS)
+
+  translations RecipeUnitTranslation[]
+  eatingRule   EatingRule?
+
+  examinationSheet   ExaminationSheet @relation(fields: [examinationSheetId], references: [id], onDelete: Cascade)
+  examinationSheetId String           @unique @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("recipe_units")
 }
