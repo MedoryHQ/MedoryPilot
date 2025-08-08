@@ -51,3 +51,59 @@ enum DiseaseType {
   COMPLICATION
   ASSOCIATED
 }
+
+enum ExaminationSheetStatus {
+  DRAFT
+  FINALIZED
+}
+
+enum InformedConsent {
+  VISIBLE
+  NOT_VISIBLE
+}
+
+enum RecipeUnitType {
+  UNIT
+  TABLET
+  CAPSULE
+  DRAGEE
+  SPRAY
+  AEROSOL
+  VIAL
+  TUBE
+  OINTMENT
+  CREAM
+  GEL
+  CANDLE
+  SASHE
+  AMPOULE
+  SYRUP
+  SUSPENSION
+  SOLUTION
+  INHALATION
+  SYRINGE_PEN
+}
+
+enum RecipeUnitUsageInterval {
+  HOURLY
+  DAILY
+  WEEKLY
+  MONTHLY
+  SYMPTOMATICALLY
+}
+
+enum RecipeUnitUsagePeriod {
+  HOURS
+  DAYS
+  WEEKS
+  MONTHS
+}
+
+enum EatingRule {
+  BEFORE_MEAL
+  AFTER_MEAL
+  DURING_MEAL
+  ON_EMPTY_STOMACH
+  BEFORE_SLEEP
+  SYMPTOMATICALLY
+}
