@@ -1,11 +1,14 @@
 model User {
-  id                 String  @id @default(uuid(7)) @db.Uuid
-  email              String? @unique
+  id                 String    @id @default(uuid(7)) @db.Uuid
+  email              String?   @unique
   firstName          String?
   lastName           String?
-  personalId         String? @unique
-  fullName           String? @db.VarChar(255)
-  needPasswordChange Boolean @default(false)
+  age                Int?
+  dateOfBirth        DateTime?
+  info               String? // for Admin use 
+  personalId         String?   @unique
+  fullName           String?   @db.VarChar(255)
+  needPasswordChange Boolean   @default(false)
 
   starredBlogs Blog[] @relation("BlogStars")
 
@@ -48,21 +51,24 @@ model PendingUser {
 model Visit {
   id String @id @default(uuid(7)) @db.Uuid
 
-  date                    DateTime
+  startDate                    DateTime
+  endDate                      DateTime
   type                    VisitType   @default(ONLINE)
   status                  VisitStatus @default(PENDING)
   followUpNeeded          Boolean     @default(false)
   followUpStartDatePeriod DateTime?
   followUpEndDatePeriod   DateTime?
 
-  reason                  String
-  headline                String?
-  notes                   String?
+  notes                   String? // for Admin use 
   prescriptionSummary     String?
   destinationSheet        String?
   analysesBeforeNextVisit String?
+  recommendation         String?
+  control String?
+  
 
   documents File[]
+  userInfoAtVisit UserInfoAtVisit?
 
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String  @db.Uuid
@@ -72,5 +78,24 @@ model Visit {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([userId, serviceId])
   @@map("visits")
+}
+
+model UserInfoAtVisit {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  height Int?
+  weight Int?
+  bloodPressure String?
+  heartRate Int?
+  breathingRate Int?
+  temperature Float?
+  spO2Level Float?
+  BMI Float? // Body Mass Index
+
+  visit   Visit @relation(fields: [visitId], references: [id], onDelete: Cascade)
+  visitId String @unique @db.Uuid
+
+  @@map("user_info_at_visits")
 }
