@@ -52,6 +52,11 @@ enum DiseaseType {
   ASSOCIATED
 }
 
+enum TransmittedDiseaseType {
+  SURGICAL_INTERVENTIONS
+  DISEASE
+}
+
 enum ExaminationSheetStatus {
   DRAFT
   FINALIZED
