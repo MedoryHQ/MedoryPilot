@@ -52,6 +52,11 @@ enum DiseaseType {
   ASSOCIATED
 }
 
+enum TransmittedDiseaseType {
+  SURGICAL_INTERVENTIONS
+  DISEASE
+}
+
 enum ExaminationSheetStatus {
   DRAFT
   FINALIZED
@@ -106,4 +111,28 @@ enum EatingRule {
   ON_EMPTY_STOMACH
   BEFORE_SLEEP
   SYMPTOMATICALLY
+}
+
+enum Currency {
+  GEL
+  USD
+  EUR
+}
+
+enum PaymentProvider {
+  FLITT
+  PAYPAL
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum Portal {
+  GOOGLE_MEET
+  VIBER
+  WHATSAPP
 }

@@ -7,10 +7,13 @@ model Visit {
   price                   Int?
   type                    VisitType   @default(ONLINE)
   status                  VisitStatus @default(PENDING)
+  portal                  Portal      @default(GOOGLE_MEET)
+  linkOfMeet              String?
   followUpNeeded          Boolean?
   followUpStartDatePeriod DateTime?
   followUpEndDatePeriod   DateTime?
 
+  transaction      Transaction?
   documents        File[]
   examinationSheet ExaminationSheet?
 
@@ -24,6 +27,30 @@ model Visit {
 
   @@unique([userId, serviceId])
   @@map("visits")
+}
+
+model Transaction {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  visit   Visit  @relation(fields: [visitId], references: [id], onDelete: Cascade)
+  visitId String @unique @db.Uuid
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @db.Uuid
+
+  paymentProvider PaymentProvider   @default(FLITT)
+  paymentId       String?           @unique
+  amount          Int
+  currency        Currency          @default(GEL)
+  status          TransactionStatus @default(PENDING)
+
+  paidAt     DateTime?
+  refundedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("transactions")
 }
 
 model ExaminationSheet {
@@ -41,6 +68,7 @@ model ExaminationSheet {
   spO2Level     Float?
   BMI           Float?
 
+  form100         Form100?
   groupOfBlood    BloodGroup?
   resultOfEpisode ResultOfEpisode?
   InformedConsent InformedConsent  @default(NOT_VISIBLE)
@@ -66,13 +94,34 @@ model Disease {
   icd   ICD?    @relation(fields: [icdId], references: [id], onDelete: Cascade)
   icdId String? @db.Uuid
 
-  examinationSheet   ExaminationSheet @relation(fields: [examinationSheetId], references: [id], onDelete: Cascade)
-  examinationSheetId String           @unique @db.Uuid
+  Form100   Form100? @relation(fields: [form100Id], references: [id])
+  form100Id String?  @db.Uuid
+
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  ExaminationSheet   ExaminationSheet? @relation(fields: [examinationSheetId], references: [id])
+  examinationSheetId String?           @db.Uuid
+
+  @@map("diseases")
+}
+
+model TransmittedDisease {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  year    Int?
+  comment String?
+  type    TransmittedDiseaseType @default(DISEASE)
+
+  icd   ICD?    @relation(fields: [icdId], references: [id], onDelete: Cascade)
+  icdId String? @db.Uuid
+
+  Form100   Form100? @relation(fields: [form100Id], references: [id])
+  form100Id String?  @db.Uuid
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("diseases")
+  @@map("transmitted_diseases")
 }
 
 model ICD {
@@ -81,8 +130,9 @@ model ICD {
   code String
   link String?
 
-  translations ICDTranslation[]
-  diseases     Disease[]
+  translations        ICDTranslation[]
+  diseases            Disease[]
+  transmittedDiseases TransmittedDisease[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -113,4 +163,63 @@ model RecipeUnit {
   updatedAt DateTime @updatedAt
 
   @@map("recipe_units")
+}
+
+model Form100 {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  date DateTime
+  code String
+
+  notifyingInstitution          String?
+  recipientsAddress             String?
+  address                       String?
+  workplaceAndPosition          String?
+  healthReport                  String?
+  briefHistory                  String?
+  briefHistoryComment           String?
+  transmittedDiseasesComment    String?
+  diagnosticExaminations        String?
+  diagnosticExaminationsComment String?
+  courseOfIllness               String?
+  treatmentPerformed            String?
+  ConditionAtHospitalization    String?
+  conditionAtDischarge          String?
+  treatmentRecommendations      String?
+  medicines                     String?
+  recommendation                String?
+  analysesBeforeNextVisit       String?
+  researches                    String?
+
+  dates               Form100Dates?
+  diagnoses           Disease[]
+  transmittedDiseases TransmittedDisease[]
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique @db.Uuid
+
+  examinationSheet   ExaminationSheet @relation(fields: [examinationSheetId], references: [id], onDelete: Cascade)
+  examinationSheetId String           @unique @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("form_100")
+}
+
+model Form100Dates {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  dateOfConsultation          DateTime?
+  dateOfSendToHospitalization DateTime?
+  dateOfHospitalization       DateTime?
+  dateOfDischarge             DateTime?
+
+  form100   Form100 @relation(fields: [form100Id], references: [id], onDelete: Cascade)
+  form100Id String  @unique @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("form_100_dates")
 }

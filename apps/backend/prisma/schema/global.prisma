@@ -40,6 +40,8 @@ model File {
   contactId String?  @unique @db.Uuid
   visit     Visit?   @relation(fields: [visitId], references: [id])
   visitId   String?  @unique @db.Uuid
+  theme     Theme?   @relation(fields: [themeId], references: [id])
+  themeId   String?  @unique @db.Uuid
 
   serviceIcon       Service? @relation("ServiceIcon")
   serviceBackground Service? @relation("ServiceBackground")
@@ -190,4 +192,61 @@ model Contact {
   updatedAt DateTime @updatedAt
 
   @@map("contacts")
+}
+
+model Tariff {
+  id String @id @default(uuid()) @db.Uuid
+
+  price   Float
+  history TariffHistory[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("tariffs")
+}
+
+model TariffHistory {
+  id String @id @default(uuid()) @db.Uuid
+
+  price    Float
+  fromDate DateTime
+  endDate  DateTime
+
+  current  Tariff @relation(fields: [tariffId], references: [id])
+  tariffId String @unique @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("tariffs_history")
+}
+
+model Theme {
+  id      String  @id @default(uuid()) @db.Uuid
+  name    String
+  active  Boolean @default(true)
+  colors  Color[]
+  preview File?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  fileId    String?  @db.Uuid
+
+  @@map("themes")
+}
+
+model Color {
+  id    String @id @default(uuid()) @db.Uuid
+  name  String
+  value String
+
+  theme   Theme  @relation(fields: [themeId], references: [id], onDelete: Cascade)
+  themeId String @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([themeId, name])
+  @@map("colors")
 }

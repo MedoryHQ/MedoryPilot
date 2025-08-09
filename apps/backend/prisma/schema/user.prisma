@@ -10,7 +10,9 @@ model User {
   personalId         String   @unique
   needPasswordChange Boolean  @default(false)
 
-  starredBlogs Blog[] @relation("BlogStars")
+  starredBlogs Blog[]        @relation("BlogStars")
+  transactions Transaction[]
+  form100s     Form100[]
 
   phoneNumber  String @unique
   passwordHash String
