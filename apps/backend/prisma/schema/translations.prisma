@@ -200,3 +200,21 @@ model RecipeUnitTranslation {
   @@unique([recipeUnitId, languageId])
   @@map("recipe_unit_translations")
 }
+
+model PageComponentTranslation {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  name    String
+  content String
+
+  pageComponent   PageComponent @relation(fields: [pageComponentId], references: [id], onDelete: Cascade)
+  pageComponentId String        @db.Uuid
+  language        Language      @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  languageId      String        @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([pageComponentId, languageId])
+  @@map("page_component_translations")
+}

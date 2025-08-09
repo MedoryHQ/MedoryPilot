@@ -16,6 +16,7 @@ model Language {
   examinationSheetTranslations ExaminationSheetTranslation[]
   icdTranslations              ICDTranslation[]
   recipeUnitTranslations       RecipeUnitTranslation[]
+  pageComponentTranslations    PageComponentTranslation[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -30,19 +31,20 @@ model File {
   path String
   size Int
 
-  header    Header?  @relation(fields: [headerId], references: [id], onDelete: Cascade)
-  headerId  String?  @unique @db.Uuid
-  news      News?    @relation(fields: [newsId], references: [id], onDelete: Cascade)
-  newsId    String?  @unique @db.Uuid
-  blog      Blog?    @relation(fields: [blogId], references: [id], onDelete: Cascade)
-  blogId    String?  @unique @db.Uuid
-  contact   Contact? @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  contactId String?  @unique @db.Uuid
-  visit     Visit?   @relation(fields: [visitId], references: [id])
-  visitId   String?  @unique @db.Uuid
-  theme     Theme?   @relation(fields: [themeId], references: [id])
-  themeId   String?  @unique @db.Uuid
-
+  header            Header?  @relation(fields: [headerId], references: [id], onDelete: Cascade)
+  headerId          String?  @unique @db.Uuid
+  news              News?    @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  newsId            String?  @unique @db.Uuid
+  blog              Blog?    @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  blogId            String?  @unique @db.Uuid
+  contact           Contact? @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId         String?  @unique @db.Uuid
+  visit             Visit?   @relation(fields: [visitId], references: [id])
+  visitId           String?  @unique @db.Uuid
+  theme             Theme?   @relation(fields: [themeId], references: [id])
+  themeId           String?  @unique @db.Uuid
+  social            Social?  @relation(fields: [socialId], references: [id])
+  socialId          String?  @unique @db.Uuid
   serviceIcon       Service? @relation("ServiceIcon")
   serviceBackground Service? @relation("ServiceBackground")
 
@@ -156,7 +158,7 @@ model Blog {
 
   slug          String  @unique
   showInLanding Boolean @default(false)
-  landingOrder  Int     @default(0)
+  landingOrder  Int     @default(autoincrement())
 
   metaTitle       String?
   metaDescription String?
@@ -249,4 +251,52 @@ model Color {
 
   @@unique([themeId, name])
   @@map("colors")
+}
+
+model Footer {
+  id String @id @default(uuid())
+
+  socials Social[]
+  pages   PageComponent[]
+
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Social {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  url  String
+  name String
+  icon File?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Footer    Footer?  @relation(fields: [footerId], references: [id])
+  footerId  String?
+
+  @@map("socials")
+}
+
+model PageComponent {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  slug        String @unique
+  footerOrder Int    @default(autoincrement())
+
+  translations PageComponentTranslation[]
+
+  footer   Footer @relation(fields: [footerId], references: [id], onDelete: Cascade)
+  footerId String @unique @db.Uuid
+
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  metaImage       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("page_components")
 }

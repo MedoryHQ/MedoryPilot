@@ -119,11 +119,6 @@ enum Currency {
   EUR
 }
 
-enum PaymentProvider {
-  FLITT
-  PAYPAL
-}
-
 enum TransactionStatus {
   PENDING
   COMPLETED
