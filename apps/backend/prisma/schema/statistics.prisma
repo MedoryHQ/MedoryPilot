@@ -1,0 +1,19 @@
+model DailyStats {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  date            DateTime @unique
+  newUsers        Int      @default(0)
+  activeUsers     Int      @default(0)
+  newVisits       Int      @default(0)
+  completedVisits Int      @default(0)
+  revenue         Float    @default(0)
+  revenueInPerson Float    @default(0)
+  revenueOnline   Float    @default(0)
+  pendingRevenue  Float    @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([date])
+  @@map("daily_stats")
+}
