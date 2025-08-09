@@ -1,19 +1,64 @@
 model DailyStats {
   id String @id @default(uuid(7)) @db.Uuid
 
-  date            DateTime @unique
-  newUsers        Int      @default(0)
-  activeUsers     Int      @default(0)
-  newVisits       Int      @default(0)
-  completedVisits Int      @default(0)
-  revenue         Float    @default(0)
-  revenueInPerson Float    @default(0)
-  revenueOnline   Float    @default(0)
-  pendingRevenue  Float    @default(0)
+  date DateTime @unique
+
+  newUsers    Int @default(0)
+  activeUsers Int @default(0)
+
+  newVisits       Int @default(0)
+  completedVisits Int @default(0)
+  noShowVisits    Int @default(0)
+
+  traffic Int @default(0)
+
+  revenueTetri         Int @default(0)
+  revenueInPersonTetri Int @default(0)
+  revenueOnlineTetri   Int @default(0)
+  pendingTetri         Int @default(0)
+
+  transactionsCount Int @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([date])
   @@map("daily_stats")
+}
+
+model MonthlyStats {
+  id    String @id @default(uuid(7)) @db.Uuid
+  year  Int
+  month Int
+
+  newUsers    Int @default(0)
+  activeUsers Int @default(0)
+
+  newVisits       Int @default(0)
+  completedVisits Int @default(0)
+  noShowVisits    Int @default(0)
+
+  traffic Int @default(0)
+
+  revenueTetri         Int @default(0)
+  revenueInPersonTetri Int @default(0)
+  revenueOnlineTetri   Int @default(0)
+  pendingTetri         Int @default(0)
+
+  transactionsCount Int @default(0)
+
+  averageVisitTime      Float  @default(0)
+  newVisitors           Int    @default(0)
+  returningVisitors     Int    @default(0)
+  conversionRatePercent Float?
+  averageAge            Int?
+
+  bookingsByPortal Json?
+  topICDCodes      Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([year, month])
+  @@map("monthly_stats")
 }
