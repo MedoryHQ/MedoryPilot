@@ -130,3 +130,9 @@ enum TransactionStatus {
   FAILED
   REFUNDED
 }
+
+enum Portal {
+  GOOGLE_MEET
+  VIBER
+  WHATSAPP
+}
