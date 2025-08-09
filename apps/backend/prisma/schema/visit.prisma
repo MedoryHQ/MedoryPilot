@@ -11,6 +11,7 @@ model Visit {
   followUpStartDatePeriod DateTime?
   followUpEndDatePeriod   DateTime?
 
+  transaction      Transaction?
   documents        File[]
   examinationSheet ExaminationSheet?
 

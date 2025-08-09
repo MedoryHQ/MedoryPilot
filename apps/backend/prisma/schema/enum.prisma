@@ -107,3 +107,21 @@ enum EatingRule {
   BEFORE_SLEEP
   SYMPTOMATICALLY
 }
+
+enum Currency {
+  GEL
+  USD
+  EUR
+}
+
+enum PaymentProvider {
+  FLITT
+  PAYPAL
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
