@@ -38,11 +38,10 @@ model Transaction {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @db.Uuid
 
-  paymentProvider PaymentProvider   @default(FLITT)
-  paymentId       String?           @unique
-  amount          Int
-  currency        Currency          @default(GEL)
-  status          TransactionStatus @default(PENDING)
+  paymentId String?           @unique
+  amount    Int
+  currency  Currency          @default(GEL)
+  status    TransactionStatus @default(PENDING)
 
   paidAt     DateTime?
   refundedAt DateTime?

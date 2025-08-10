@@ -119,11 +119,6 @@ enum Currency {
   EUR
 }
 
-enum PaymentProvider {
-  FLITT
-  PAYPAL
-}
-
 enum TransactionStatus {
   PENDING
   COMPLETED
@@ -135,4 +130,16 @@ enum Portal {
   GOOGLE_MEET
   VIBER
   WHATSAPP
+}
+
+enum MessageSender {
+  PATIENT
+  DOCTOR
+}
+
+enum MessageStatus {
+  SENT
+  DELIVERED
+  READ
+  FAILED
 }
