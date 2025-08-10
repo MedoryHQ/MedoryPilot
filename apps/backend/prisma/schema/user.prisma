@@ -14,6 +14,9 @@ model User {
   transactions Transaction[]
   form100s     Form100[]
 
+  photo File?
+  chat  Chat?
+
   phoneNumber  String @unique
   passwordHash String
 
@@ -32,17 +35,22 @@ model User {
 }
 
 model PendingUser {
-  id               String    @id @default(uuid(7)) @db.Uuid
-  email            String?   @unique
-  firstName        String?
-  lastName         String?
-  fullName         String?   @db.VarChar(255)
-  phoneNumber      String
-  passwordHash     String
-  smsCode          String
+  id String @id @default(uuid(7)) @db.Uuid
+
+  email        String?  @unique
+  firstName    String
+  lastName     String
+  fullName     String   @db.VarChar(255)
+  age          Int?
+  dateOfBirth  DateTime
+  personalId   String   @unique
+  phoneNumber  String   @unique
+  passwordHash String
+
+  smsCode          String?
   smsCodeExpiresAt DateTime?
-  isVerified       Boolean   @default(false)
-  personalId       String?   @unique
+
+  isVerified Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

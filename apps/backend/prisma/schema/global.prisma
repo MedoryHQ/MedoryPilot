@@ -57,6 +57,10 @@ model File {
   experienceId      String?     @unique @db.Uuid
   video             Video?      @relation(fields: [videoId], references: [id])
   videoId           String?     @unique @db.Uuid
+  user              User?       @relation(fields: [userId], references: [id])
+  userId            String?     @unique @db.Uuid
+  message           Message?    @relation(fields: [messageId], references: [id])
+  messageId         String?     @unique @db.Uuid
   serviceIcon       Service?    @relation("ServiceIcon")
   serviceBackground Service?    @relation("ServiceBackground")
 

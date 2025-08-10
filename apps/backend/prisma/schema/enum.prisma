@@ -131,3 +131,15 @@ enum Portal {
   VIBER
   WHATSAPP
 }
+
+enum MessageSender {
+  PATIENT
+  DOCTOR
+}
+
+enum MessageStatus {
+  SENT
+  DELIVERED
+  READ
+  FAILED
+}
