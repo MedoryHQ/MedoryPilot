@@ -1,0 +1,173 @@
+model Header {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  logo File?
+
+  translations HeaderTranslation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  fileId    String?
+
+  @@map("header")
+}
+
+model Introduce {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  translations IntroduceTranslation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  fileId    String?
+
+  @@map("introduce")
+}
+
+model News {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  slug          String            @unique
+  background    File?
+  translations  NewsTranslation[]
+  showInLanding Boolean           @default(false)
+  order         Int?
+
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  metaImage       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("news")
+}
+
+model Service {
+  id String @id @default(uuid()) @db.Uuid
+
+  translations ServiceTranslation[]
+
+  icon   File?   @relation("ServiceIcon", fields: [iconId], references: [id], onDelete: Cascade)
+  iconId String? @unique @db.Uuid
+
+  background   File?   @relation("ServiceBackground", fields: [backgroundId], references: [id], onDelete: Cascade)
+  backgroundId String? @unique @db.Uuid
+
+  visits Visit[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("services")
+}
+
+model FAQ {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  order        Int              @default(autoincrement())
+  translations FAQTranslation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("faqs")
+}
+
+model Blog {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  background   File?
+  categories   Category[]
+  starredUsers User[]            @relation("BlogStars")
+  stars        Int               @default(0)
+  translations BlogTranslation[]
+
+  slug          String  @unique
+  showInLanding Boolean @default(false)
+  landingOrder  Int     @default(autoincrement())
+
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  metaImage       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("blogs")
+}
+
+model Category {
+  id String @id @default(uuid()) @db.Uuid
+
+  blogs        Blog[]
+  translations CategoryTranslation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("categories")
+}
+
+model Contact {
+  id String @id @default(uuid()) @db.Uuid
+
+  location     String?
+  background   File?
+  translations ContactTranslation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("contacts")
+}
+
+model Footer {
+  id String @id @default(uuid()) @db.Uuid
+
+  socials Social[]
+  pages   PageComponent[]
+
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Social {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  url  String
+  name String
+  icon File?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Footer    Footer?  @relation(fields: [footerId], references: [id])
+  footerId  String?  @db.Uuid
+
+  @@map("socials")
+}
+
+model PageComponent {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  slug        String @unique
+  footerOrder Int    @default(autoincrement())
+
+  translations PageComponentTranslation[]
+
+  footer   Footer? @relation(fields: [footerId], references: [id], onDelete: Cascade)
+  footerId String? @db.Uuid
+
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  metaImage       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("page_components")
+}

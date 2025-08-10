@@ -6,7 +6,7 @@ model User {
   fullName           String   @db.VarChar(255)
   age                Int?
   dateOfBirth        DateTime
-  info               String? // for Admin use 
+  info               String?
   personalId         String   @unique
   needPasswordChange Boolean  @default(false)
 
