@@ -1,0 +1,64 @@
+model About {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  image File?
+
+  translations AboutTranslation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  fileId    String?
+
+  @@map("about")
+}
+
+model Education {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  fromDate DateTime
+  endDate  DateTime?
+  link     String?
+
+  icon File?
+
+  translations EducationTranslation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("educations")
+}
+
+model Experience {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  fromDate DateTime
+  endDate  DateTime?
+  link     String?
+  location String?
+
+  icon File?
+
+  translations ExperienceTranslation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("experiences")
+}
+
+model Video {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  date DateTime?
+  link String
+
+  thumbnail File?
+
+  translations VideoTranslation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("videos")
+}

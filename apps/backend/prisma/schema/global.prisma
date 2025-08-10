@@ -17,6 +17,10 @@ model Language {
   icdTranslations              ICDTranslation[]
   recipeUnitTranslations       RecipeUnitTranslation[]
   pageComponentTranslations    PageComponentTranslation[]
+  aboutTranslations            AboutTranslation[]
+  educationTranslations        EducationTranslation[]
+  experienceTranslations       ExperienceTranslation[]
+  videoTranslations            VideoTranslation[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -31,22 +35,30 @@ model File {
   path String
   size Int
 
-  header            Header?  @relation(fields: [headerId], references: [id], onDelete: Cascade)
-  headerId          String?  @unique @db.Uuid
-  news              News?    @relation(fields: [newsId], references: [id], onDelete: Cascade)
-  newsId            String?  @unique @db.Uuid
-  blog              Blog?    @relation(fields: [blogId], references: [id], onDelete: Cascade)
-  blogId            String?  @unique @db.Uuid
-  contact           Contact? @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  contactId         String?  @unique @db.Uuid
-  visit             Visit?   @relation(fields: [visitId], references: [id])
-  visitId           String?  @unique @db.Uuid
-  theme             Theme?   @relation(fields: [themeId], references: [id])
-  themeId           String?  @unique @db.Uuid
-  social            Social?  @relation(fields: [socialId], references: [id])
-  socialId          String?  @unique @db.Uuid
-  serviceIcon       Service? @relation("ServiceIcon")
-  serviceBackground Service? @relation("ServiceBackground")
+  header            Header?     @relation(fields: [headerId], references: [id], onDelete: Cascade)
+  headerId          String?     @unique @db.Uuid
+  news              News?       @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  newsId            String?     @unique @db.Uuid
+  blog              Blog?       @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  blogId            String?     @unique @db.Uuid
+  contact           Contact?    @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId         String?     @unique @db.Uuid
+  visit             Visit?      @relation(fields: [visitId], references: [id])
+  visitId           String?     @unique @db.Uuid
+  theme             Theme?      @relation(fields: [themeId], references: [id])
+  themeId           String?     @unique @db.Uuid
+  social            Social?     @relation(fields: [socialId], references: [id])
+  socialId          String?     @unique @db.Uuid
+  about             About?      @relation(fields: [aboutId], references: [id])
+  aboutId           String?     @unique @db.Uuid
+  education         Education?  @relation(fields: [educationId], references: [id])
+  educationId       String?     @unique @db.Uuid
+  experience        Experience? @relation(fields: [experienceId], references: [id])
+  experienceId      String?     @unique @db.Uuid
+  video             Video?      @relation(fields: [videoId], references: [id])
+  videoId           String?     @unique @db.Uuid
+  serviceIcon       Service?    @relation("ServiceIcon")
+  serviceBackground Service?    @relation("ServiceBackground")
 
   deletedAt DateTime?
   createdAt DateTime  @default(now())
