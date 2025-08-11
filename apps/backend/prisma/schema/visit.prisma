@@ -79,6 +79,9 @@ model ExaminationSheet {
   visit   Visit  @relation(fields: [visitId], references: [id], onDelete: Cascade)
   visitId String @unique @db.Uuid
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@map("user_info_at_visits")
 }
 
@@ -96,10 +99,11 @@ model Disease {
   Form100   Form100? @relation(fields: [form100Id], references: [id])
   form100Id String?  @db.Uuid
 
-  createdAt          DateTime          @default(now())
-  updatedAt          DateTime          @updatedAt
-  ExaminationSheet   ExaminationSheet? @relation(fields: [examinationSheetId], references: [id])
+  examinationSheet   ExaminationSheet? @relation(fields: [examinationSheetId], references: [id])
   examinationSheetId String?           @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("diseases")
 }

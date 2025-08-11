@@ -64,9 +64,8 @@ model File {
   serviceIcon       Service?    @relation("ServiceIcon")
   serviceBackground Service?    @relation("ServiceBackground")
 
-  deletedAt DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("files")
 }
@@ -123,7 +122,6 @@ model Theme {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  fileId    String?  @db.Uuid
 
   @@map("themes")
 }

@@ -7,7 +7,6 @@ model About {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  fileId    String?
 
   @@map("about")
 }
