@@ -1,4 +1,6 @@
-export const adminErrorMessages = {
+import { Response, Request } from "express";
+
+export const errorMessages = {
   userNotFound: {
     en: "User not found",
     ka: "მომხმარებელი ვერ მოიძებნა",
@@ -11,7 +13,7 @@ export const adminErrorMessages = {
     en: "Access denied. Invalid refresh token.",
     ka: "წვდომა უარყოფილია. არასწორი refresh ტოკენი.",
   },
-  JwtSecretNotProvided: {
+  jwtSecretNotProvided: {
     en: "JWT secrets not provided.",
     ka: "JWT secret-ების მოწოდება აუცილებელია.",
   },
@@ -20,3 +22,20 @@ export const adminErrorMessages = {
     ka: "წვდომა უარყოფილია. ტოკენის მოწოდება აუცილებელია",
   },
 };
+
+type ErrorKey = keyof typeof errorMessages;
+
+export function sendError(
+  req: Request,
+  res: Response,
+  statusCode: number,
+  messageKey: ErrorKey
+) {
+  const lang = (req.headers["accept-language"] || "en").split(",")[0].trim();
+
+  const message =
+    errorMessages[messageKey][lang as keyof (typeof errorMessages)[ErrorKey]] ||
+    errorMessages[messageKey].en;
+
+  return res.status(statusCode).json({ error: message });
+}
