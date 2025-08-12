@@ -1,8 +1,8 @@
 import { prisma } from "../../config";
 import {
-  adminErrorMessages,
   generateAccessToken,
   generateRefreshToken,
+  sendError,
 } from "../../utils";
 import bcrypt from "bcrypt";
 import { NextFunction, Response, Request } from "express";
@@ -18,16 +18,12 @@ export const login = async (
 
     const user = await prisma.admin.findUnique({ where: { email } });
     if (!user) {
-      return res.status(404).json({
-        error: adminErrorMessages.userNotFound,
-      });
+      return sendError(req, res, 404, "userNotFound");
     }
 
     const validPassword = await bcrypt.compare(password, user.passwordHash);
     if (!validPassword) {
-      return res.status(401).json({
-        error: adminErrorMessages.invalidCredentials,
-      });
+      return sendError(req, res, 401, "invalidCredentials");
     }
 
     const payload = { id: user.id, email: user.email };
@@ -51,6 +47,30 @@ export const login = async (
         user: userData,
         accessToken: access.token,
         refreshToken: refresh.token,
+        userType: "ADMIN",
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const renew = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = await prisma.admin.findUnique({
+      where: { id: req.user.id },
+      omit: { passwordHash: true },
+    });
+
+    if (!user) return sendError(req, res, 404, "userNotFound");
+
+    return res.json({
+      data: {
+        user,
         userType: "ADMIN",
       },
     });

@@ -3,6 +3,7 @@ import { GLOBAL_ERROR_MESSAGE } from "../../utils";
 import * as authController from "../../controllers/admin/auth";
 import { loginValidation } from "../../validations/admin/";
 import { validationResult } from "express-validator";
+import { adminAuthenticate } from "../../middlewares/admin";
 
 export const authRouter = Router();
 
@@ -20,6 +21,21 @@ authRouter.post(
       return authController.login(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+authRouter.get(
+  "/renew",
+  adminAuthenticate,
+
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return authController.renew(req, res, next);
+    } catch {
+      return res
+        .status(500)
+        .json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }
   }
 );
