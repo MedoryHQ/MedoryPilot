@@ -37,3 +37,8 @@ export type cookieOptionsTypes = {
   domain: string | undefined;
   path: string;
 };
+
+export interface User {
+  id: string;
+  email: string;
+}
