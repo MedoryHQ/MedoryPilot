@@ -8,3 +8,5 @@ export * from "./isUuid";
 export * from "./jwt";
 export * from "./utils";
 export * from "./filterHelper";
+export * from "./errors";
+export * from "./token";
