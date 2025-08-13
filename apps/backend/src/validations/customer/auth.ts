@@ -1,37 +1,17 @@
 import { body } from "express-validator";
-import { prisma } from "../../config";
-import { getResponseMessage } from "../../utils";
+import { getResponseMessage, uniqueFieldValidation } from "../../utils";
 
 export const userRegisterValidation = [
   body("phoneNumber")
     .isString()
     .matches(/^\+9955\d{8}$/)
-    .withMessage(getResponseMessage("invalidPhoneNumber"))
-    .custom(async (_, { req }) => {
-      const { phoneNumber } = req.body;
-      const userExists = await prisma.user.count({
-        where: { phoneNumber },
-      });
-      if (userExists) {
-        return Promise.reject(getResponseMessage("phoneAlreadyExists"));
-      }
-    }),
-
+    .withMessage(getResponseMessage("invalidPhoneNumber")),
+  uniqueFieldValidation("phoneNumber", "user"),
   body("email")
     .optional()
     .isEmail()
-    .withMessage(getResponseMessage("invalidEmail"))
-    .custom(async (_, { req }) => {
-      const { email } = req.body;
-      if (!email) return true;
-      const userExists = await prisma.user.count({
-        where: { email },
-      });
-      if (userExists) {
-        return Promise.reject(getResponseMessage("emailAlreadyExists"));
-      }
-    }),
-
+    .withMessage(getResponseMessage("invalidEmail")),
+  uniqueFieldValidation("email", "user", true),
   body("firstName")
     .trim()
     .isString()

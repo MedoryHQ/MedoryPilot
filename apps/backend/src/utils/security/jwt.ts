@@ -96,23 +96,31 @@ export const checkRefreshToken = (refreshToken: string) => {
 };
 
 export const generateTokens = async (user: User, userType: string) => {
-  let accessSecret = getEnvVariable("JWT_ACCESS_SECRET") || "";
-  let refreshSecret = getEnvVariable("JWT_REFRESH_SECRET") || "";
+  let accessSecret =
+    (userType === "USER"
+      ? getEnvVariable("JWT_ACCESS_SECRET")
+      : getEnvVariable("ADMIN_JWT_ACCESS_SECRET")) || "";
+  let refreshSecret =
+    (userType === "USER"
+      ? getEnvVariable("JWT_REFRESH_SECRET")
+      : getEnvVariable("ADMIN_JWT_REFRESH_SECRET")) || "";
 
   if (!accessSecret || !refreshSecret) {
     throw new Error("JWT secrets are not provided");
   }
 
   const accessToken = jwt.sign(user, accessSecret, {
-    expiresIn: "1d",
+    expiresIn: ACCESS_TOKEN_EXPIRES_IN,
   });
 
   const refreshToken = jwt.sign(user, refreshSecret, {
-    expiresIn: "7d",
+    expiresIn: REFRESH_TOKEN_EXPIRES_IN,
   });
 
-  const accessTokenExpires = 24 * 60 * 60 * 1000;
-  const refreshTokenExpires = 7 * 24 * 60 * 60 * 1000;
-
-  return { accessToken, refreshToken, accessTokenExpires, refreshTokenExpires };
+  return {
+    accessToken,
+    refreshToken,
+    ACCESS_TOKEN_EXPIRES_MS,
+    REFRESH_TOKEN_EXPIRES_MS,
+  };
 };
