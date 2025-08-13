@@ -18,12 +18,12 @@ export const login = async (
 
     const user = await prisma.admin.findUnique({ where: { email } });
     if (!user) {
-      return sendError(req, res, 404, "userNotFound");
+      return sendError(res, 404, "userNotFound");
     }
 
     const validPassword = await bcrypt.compare(password, user.passwordHash);
     if (!validPassword) {
-      return sendError(req, res, 401, "invalidCredentials");
+      return sendError(res, 401, "invalidCredentials");
     }
 
     const payload = { id: user.id, email: user.email };
@@ -66,7 +66,7 @@ export const renew = async (
       omit: { passwordHash: true },
     });
 
-    if (!user) return sendError(req, res, 404, "userNotFound");
+    if (!user) return sendError(res, 404, "userNotFound");
 
     return res.json({
       data: {

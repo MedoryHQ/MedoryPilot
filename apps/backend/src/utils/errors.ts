@@ -1,6 +1,7 @@
-import { Response, Request } from "express";
+import { Response } from "express";
 
 export const errorMessages = {
+  // Controller errors
   userNotFound: {
     en: "User not found",
     ka: "მომხმარებელი ვერ მოიძებნა",
@@ -21,21 +22,77 @@ export const errorMessages = {
     en: "Access denied. No token provided.",
     ka: "წვდომა უარყოფილია. ტოკენის მოწოდება აუცილებელია",
   },
+
+  // Validation errors
+  invalidPhoneNumber: {
+    en: "Invalid phone number. It should start with +995 followed by the valid number.",
+    ka: "ტელეფონის ნომერი არასწორია. ის უნდა იწყებოდეს +995 ნიშნით და სწორი ნომრით.",
+  },
+  phoneAlreadyExists: {
+    en: "User with this phone number already exists",
+    ka: "მომხმარებელი ამ ტელეფონის ნომრით უკვე არსებობს",
+  },
+  invalidEmail: {
+    en: "Invalid email",
+    ka: "ელ-ფოსტა არასწორია",
+  },
+  emailAlreadyExists: {
+    en: "User with this email already exists",
+    ka: "მომხმარებელი ამ ელ-ფოსტით უკვე არსებობს",
+  },
+  invalidFirstName: {
+    en: "Invalid first name",
+    ka: "სახელი არასწორია",
+  },
+  invalidLastName: {
+    en: "Invalid last name",
+    ka: "გვარი არასწორია",
+  },
+  invalidDateOfBirth: {
+    en: "Invalid date of birth",
+    ka: "დაბადების თარიღი არასწორია",
+  },
+  invalidPersonalId: {
+    en: "Invalid personal ID",
+    ka: "პირადი ნომერი არასწორია",
+  },
+  personalIdLength: {
+    en: "Personal ID must be between 9 and 20 characters long",
+    ka: "პირადი ნომერი უნდა იყოს 9-დან 20 სიმბოლომდე სიგრძის",
+  },
+  invalidPassword: {
+    en: "Invalid password",
+    ka: "პაროლი არასწორია",
+  },
+  passwordLength: {
+    en: "Password must be between 8 and 100 characters long",
+    ka: "პაროლი უნდა იყოს 8-დან 100 სიმბოლომდე სიგრძის",
+  },
+  invalidConfirmPassword: {
+    en: "Invalid confirm password",
+    ka: "პაროლის გადამოწმება არასწორია",
+  },
+  passwordsNotMatch: {
+    en: "Passwords must match",
+    ka: "პაროლები არ ემთხვევა",
+  },
 };
 
 type ErrorKey = keyof typeof errorMessages;
+type TranslatedMessage = (typeof errorMessages)[ErrorKey];
+
+export function getErrorMessage(messageKey: ErrorKey): TranslatedMessage {
+  return errorMessages[messageKey];
+}
 
 export function sendError(
-  req: Request,
   res: Response,
   statusCode: number,
   messageKey: ErrorKey
 ) {
-  const lang = (req.headers["accept-language"] || "en").split(",")[0].trim();
+  const message = getErrorMessage(messageKey);
 
-  const message =
-    errorMessages[messageKey][lang as keyof (typeof errorMessages)[ErrorKey]] ||
-    errorMessages[messageKey].en;
-
-  return res.status(statusCode).json({ error: message });
+  return res.status(statusCode).json({
+    error: message,
+  });
 }
