@@ -1,9 +1,12 @@
 import { Express } from "express";
 import * as AdminRoutes from "../../routes/admin";
+import * as CustomerRoutes from "../../routes/customer";
 
 const adminRouteList = [{ path: "/auth", router: AdminRoutes.adminAuthRouter }];
 
-// const customerRouteList = [];
+const customerRouteList = [
+  { path: "/auth", router: CustomerRoutes.userAuthRouter },
+];
 
 export const generateRoutes = (app: Express) => {
   const basePath = "/api/v1";
@@ -13,7 +16,7 @@ export const generateRoutes = (app: Express) => {
     app.use(`${adminBasePath}${route.path}`, route.router);
   });
 
-  // customerRouteList?.forEach((route) => {
-  //   app.use(`${basePath}${route.path}`, route.router);
-  // });
+  customerRouteList?.forEach((route) => {
+    app.use(`${basePath}${route.path}`, route.router);
+  });
 };

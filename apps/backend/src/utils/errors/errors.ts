@@ -22,6 +22,14 @@ export const errorMessages = {
     en: "Access denied. No token provided.",
     ka: "წვდომა უარყოფილია. ტოკენის მოწოდება აუცილებელია",
   },
+  smsSendFaild: {
+    en: "Failed to send SMS.",
+    ka: "SMS-ის გაგზავნა ვერ მოხერხდა.",
+  },
+  smsVerificationSent: {
+    en: "Verification code sent to your phone number.",
+    ka: "ვერიფიკაციის კოდი გამოიგზავნა თქვენს ტელეფონის ნომერზე.",
+  },
 
   // Validation errors
   invalidPhoneNumber: {
@@ -81,7 +89,7 @@ export const errorMessages = {
 type ErrorKey = keyof typeof errorMessages;
 type TranslatedMessage = (typeof errorMessages)[ErrorKey];
 
-export function getErrorMessage(messageKey: ErrorKey): TranslatedMessage {
+export function getResponseMessage(messageKey: ErrorKey): TranslatedMessage {
   return errorMessages[messageKey];
 }
 
@@ -90,7 +98,7 @@ export function sendError(
   statusCode: number,
   messageKey: ErrorKey
 ) {
-  const message = getErrorMessage(messageKey);
+  const message = getResponseMessage(messageKey);
 
   return res.status(statusCode).json({
     error: message,

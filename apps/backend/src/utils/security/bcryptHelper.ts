@@ -10,7 +10,8 @@ export const createPassword = async (password: string) => {
 };
 
 export const generateSmsCode = async () => {
-  const code = crypto.randomInt(1000, 10000).toString();
+  // const code = crypto.randomInt(1000, 10000).toString();
+  const code = "1234"; // TODO: Change it to generated code.
   const saltRounds = Number(getEnvVariable("SALT_ROUNDS") || 10);
   const salt = await bcrypt.genSalt(saltRounds);
   const hashedSmsCode = await bcrypt.hash(code, salt);

@@ -1,26 +1,26 @@
 import { body } from "express-validator";
 import { prisma } from "../../config";
-import { getErrorMessage } from "../../utils";
+import { getResponseMessage } from "../../utils";
 
 export const userRegisterValidation = [
   body("phoneNumber")
     .isString()
     .matches(/^\+9955\d{8}$/)
-    .withMessage(getErrorMessage("invalidPhoneNumber"))
+    .withMessage(getResponseMessage("invalidPhoneNumber"))
     .custom(async (_, { req }) => {
       const { phoneNumber } = req.body;
       const userExists = await prisma.user.count({
         where: { phoneNumber },
       });
       if (userExists) {
-        return Promise.reject(getErrorMessage("phoneAlreadyExists"));
+        return Promise.reject(getResponseMessage("phoneAlreadyExists"));
       }
     }),
 
   body("email")
     .optional()
     .isEmail()
-    .withMessage(getErrorMessage("invalidEmail"))
+    .withMessage(getResponseMessage("invalidEmail"))
     .custom(async (_, { req }) => {
       const { email } = req.body;
       if (!email) return true;
@@ -28,44 +28,44 @@ export const userRegisterValidation = [
         where: { email },
       });
       if (userExists) {
-        return Promise.reject(getErrorMessage("emailAlreadyExists"));
+        return Promise.reject(getResponseMessage("emailAlreadyExists"));
       }
     }),
 
   body("firstName")
     .trim()
     .isString()
-    .withMessage(getErrorMessage("invalidFirstName")),
+    .withMessage(getResponseMessage("invalidFirstName")),
 
   body("lastName")
     .trim()
     .isString()
-    .withMessage(getErrorMessage("invalidLastName")),
+    .withMessage(getResponseMessage("invalidLastName")),
 
   body("dateOfBirth")
     .isString()
-    .withMessage(getErrorMessage("invalidDateOfBirth")),
+    .withMessage(getResponseMessage("invalidDateOfBirth")),
 
   body("personalId")
     .isString()
     .trim()
     .notEmpty()
-    .withMessage(getErrorMessage("invalidPersonalId"))
+    .withMessage(getResponseMessage("invalidPersonalId"))
     .isLength({ min: 9, max: 20 })
-    .withMessage(getErrorMessage("personalIdLength")),
+    .withMessage(getResponseMessage("personalIdLength")),
 
   body("password")
     .isString()
-    .withMessage(getErrorMessage("invalidPassword"))
+    .withMessage(getResponseMessage("invalidPassword"))
     .isLength({ min: 8, max: 100 })
-    .withMessage(getErrorMessage("passwordLength")),
+    .withMessage(getResponseMessage("passwordLength")),
 
   body("confirmPassword")
     .isString()
-    .withMessage(getErrorMessage("invalidConfirmPassword"))
+    .withMessage(getResponseMessage("invalidConfirmPassword"))
     .custom((value, { req }) => {
       if (value !== req.body.password) {
-        throw getErrorMessage("passwordsNotMatch");
+        throw getResponseMessage("passwordsNotMatch");
       }
       return true;
     }),
