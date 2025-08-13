@@ -44,6 +44,10 @@ export const errorMessages = {
     en: "Verification successful",
     ka: "ვერიფიკაცია წარმატებით დასრულდა",
   },
+  loginSuccessful: {
+    en: "Login successful",
+    ka: "შესახებ წარმატებით დასრულდა",
+  },
 
   // Validation errors
   invalidPhoneNumber: {

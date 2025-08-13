@@ -45,7 +45,7 @@ export const userRegisterValidation = [
     .withMessage(getResponseMessage("invalidConfirmPassword"))
     .custom((value, { req }) => {
       if (value !== req.body.password) {
-        throw getResponseMessage("passwordsNotMatch");
+        return Promise.reject(getResponseMessage("passwordsNotMatch"));
       }
       return true;
     }),
@@ -59,4 +59,16 @@ export const userVerifyValidation = [
     .withMessage(getResponseMessage("invalidPhoneNumber")),
 
   body("code").isString().withMessage(getResponseMessage("invalidCode")),
+];
+
+export const userLoginValidation = [
+  body("phoneNumber")
+    .isString()
+    .matches(/^\+9955\d{8}$/)
+    .withMessage(getResponseMessage("invalidPhoneNumber")),
+  body("password")
+    .isString()
+    .withMessage(getResponseMessage("invalidPassword"))
+    .isLength({ min: 8, max: 100 })
+    .withMessage(getResponseMessage("passwordLength")),
 ];

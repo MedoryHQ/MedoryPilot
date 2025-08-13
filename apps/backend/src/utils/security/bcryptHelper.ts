@@ -19,6 +19,6 @@ export const generateSmsCode = async () => {
   return { smsCode: code, hashedSmsCode };
 };
 
-export const verifySmsCode = async (plainCode: string, hashedCode: string) => {
-  return bcrypt.compare(plainCode, hashedCode);
+export const verifyField = async (plainField: string, hashedField: string) => {
+  return bcrypt.compare(plainField, hashedField);
 };

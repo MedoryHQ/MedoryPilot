@@ -3,6 +3,7 @@ import {
   generateAccessToken,
   generateRefreshToken,
   sendError,
+  verifyField,
 } from "../../utils";
 import bcrypt from "bcrypt";
 import { NextFunction, Response, Request } from "express";
@@ -21,7 +22,7 @@ export const login = async (
       return sendError(res, 404, "userNotFound");
     }
 
-    const validPassword = await bcrypt.compare(password, user.passwordHash);
+    const validPassword = await verifyField(password, user.passwordHash);
     if (!validPassword) {
       return sendError(res, 401, "invalidCredentials");
     }

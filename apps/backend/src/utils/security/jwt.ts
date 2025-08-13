@@ -120,7 +120,7 @@ export const generateTokens = async (user: User, userType: string) => {
   return {
     accessToken,
     refreshToken,
-    ACCESS_TOKEN_EXPIRES_MS,
-    REFRESH_TOKEN_EXPIRES_MS,
+    accessTokenExpires: ACCESS_TOKEN_EXPIRES_MS,
+    refreshTokenExpires: REFRESH_TOKEN_EXPIRES_MS,
   };
 };
