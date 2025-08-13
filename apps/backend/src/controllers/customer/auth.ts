@@ -9,9 +9,10 @@ import {
   cookieOptions,
   generateAccessToken,
   generateRefreshToken,
+  verifyField,
+  generateTokens,
 } from "../../utils";
 import { ICreatePendingUser } from "types/customer";
-import bcrypt from "bcrypt";
 
 export const UserRegister = async (
   req: Request,
@@ -112,8 +113,7 @@ export const UserVerify = async (
       return sendError(res, 400, "verificationCodeExpired");
     }
 
-    const isSmsValid =
-      pending.smsCode && (await bcrypt.compare(code, pending.smsCode));
+    const isSmsValid = pending.smsCode && verifyField(code, pending.smsCode);
 
     if (!isSmsValid) {
       return sendError(res, 401, "smsCodeisInvalid");
@@ -134,6 +134,9 @@ export const UserVerify = async (
         ...(pending.email && { email: pending.email }),
         ...(age && { age }),
         isVerified: true,
+      },
+      include: {
+        photo: true,
       },
     });
 
@@ -168,7 +171,7 @@ export const UserVerify = async (
       maxAge: access.expiresIn,
     });
 
-    const { passwordHash, smsCode, ...userData } = user;
+    const { passwordHash, smsCode, info, ...userData } = user;
 
     return res.status(200).json({
       message: getResponseMessage("verificationSuccessful"),
@@ -179,6 +182,79 @@ export const UserVerify = async (
     });
   } catch (error) {
     console.error("Verification error:", error);
+    return next(error);
+  }
+};
+
+export const UserLogin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { phoneNumber, password } = req.body as {
+      phoneNumber: string;
+      password: string;
+    };
+
+    const user = await prisma.user.findUnique({
+      where: {
+        phoneNumber: phoneNumber,
+      },
+    });
+
+    if (!user) return sendError(res, 404, "userNotFound");
+
+    const isPasswordValid = verifyField(password, user.passwordHash);
+
+    if (!isPasswordValid) {
+      return sendError(res, 400, "invalidPassword");
+    }
+
+    const {
+      accessToken,
+      refreshToken,
+      accessTokenExpires,
+      refreshTokenExpires,
+    } = await generateTokens(
+      {
+        id: user.id,
+        phoneNumber: user.phoneNumber,
+      },
+      "USER"
+    );
+
+    await prisma.refreshToken.create({
+      data: {
+        token: refreshToken,
+        user: {
+          connect: { id: user.id },
+        },
+        expiresAt: new Date(Date.now() + refreshTokenExpires),
+      },
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      ...cookieOptions,
+      maxAge: refreshTokenExpires,
+    });
+
+    res.cookie("accessToken", accessToken, {
+      ...cookieOptions,
+      maxAge: accessTokenExpires,
+    });
+
+    const { passwordHash, smsCode, info, ...userData } = user;
+
+    return res.status(200).json({
+      message: getResponseMessage("loginSuccessful"),
+      data: {
+        user: {
+          ...userData,
+        },
+      },
+    });
+  } catch (error) {
     return next(error);
   }
 };
