@@ -1,4 +1,5 @@
 import slugify from "slugify";
+import { differenceInYears } from "date-fns";
 
 export function generateSlug(title: string): string {
   return slugify(title, {
@@ -9,4 +10,11 @@ export function generateSlug(title: string): string {
     replacement: "-",
     remove: /[*+~.()'"!:@]/g,
   });
+}
+
+export function calculateAge(dob: Date): number {
+  if (!(dob instanceof Date) || isNaN(dob.getTime())) {
+    throw new TypeError("dateOfBirth must be a valid Date");
+  }
+  return differenceInYears(new Date(), dob);
 }
