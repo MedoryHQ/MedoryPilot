@@ -1,12 +1,13 @@
 import jwt from "jsonwebtoken";
 import { getEnvVariable } from "../../config";
 import { prisma } from "../../config/prisma";
+import { User } from "../../types/global";
 
 const ACCESS_TOKEN_EXPIRES_IN = "1h";
-const REFRESH_TOKEN_EXPIRES_IN = "30d";
+const REFRESH_TOKEN_EXPIRES_IN = "7d";
 
 const ACCESS_TOKEN_EXPIRES_MS = 60 * 60 * 1000;
-const REFRESH_TOKEN_EXPIRES_MS = 30 * 24 * 60 * 60 * 1000;
+const REFRESH_TOKEN_EXPIRES_MS = 7 * 24 * 60 * 60 * 1000;
 
 type TokenType = "USER" | "ADMIN";
 
@@ -92,4 +93,26 @@ export const checkRefreshToken = (refreshToken: string) => {
   } catch (error) {
     throw new Error("Invalid or expired refresh token.");
   }
+};
+
+export const generateTokens = async (user: User, userType: string) => {
+  let accessSecret = getEnvVariable("JWT_ACCESS_SECRET") || "";
+  let refreshSecret = getEnvVariable("JWT_REFRESH_SECRET") || "";
+
+  if (!accessSecret || !refreshSecret) {
+    throw new Error("JWT secrets are not provided");
+  }
+
+  const accessToken = jwt.sign(user, accessSecret, {
+    expiresIn: "1d",
+  });
+
+  const refreshToken = jwt.sign(user, refreshSecret, {
+    expiresIn: "7d",
+  });
+
+  const accessTokenExpires = 24 * 60 * 60 * 1000;
+  const refreshTokenExpires = 7 * 24 * 60 * 60 * 1000;
+
+  return { accessToken, refreshToken, accessTokenExpires, refreshTokenExpires };
 };

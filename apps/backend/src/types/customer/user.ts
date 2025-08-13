@@ -1,3 +1,8 @@
+export interface User {
+  id: string;
+  phoneNumber: string;
+}
+
 export interface ICreatePendingUser {
   phoneNumber: string;
   firstName: string;
