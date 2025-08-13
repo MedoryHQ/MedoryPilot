@@ -8,8 +8,8 @@ import cookies from "cookie-parser";
 import http from "http";
 
 const allowedOrigins = [
-  getEnvVariable("clientUrl"),
-  getEnvVariable("adminUrl"),
+  getEnvVariable("CLIENT_URL"),
+  getEnvVariable("ADMIN_URL"),
 ];
 
 const app = express();
@@ -41,7 +41,7 @@ app.use(
 
 app.use(express.static(__dirname + "/public"));
 
-const nodeEnv = getEnvVariable("nodeEnv");
+const nodeEnv = getEnvVariable("NODE_ENV");
 
 const uploadsPath = path.join(
   __dirname,
@@ -62,13 +62,13 @@ app.use(
   })
 );
 
-const PORT = getEnvVariable("port") || 3000;
+const PORT = getEnvVariable("PORT") || 3000;
 
 async function main() {
   generateRoutes(app);
 
   server.listen(PORT, () => {
-    console.log(`Server is running on ${getEnvVariable("serverUrl")}`);
+    console.log(`Server is running on ${getEnvVariable("SERVER_URL")}`);
   });
 }
 

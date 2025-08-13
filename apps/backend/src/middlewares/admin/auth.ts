@@ -18,8 +18,8 @@ export const adminAuthenticate = (
     return sendError(res, 401, "noTokenProvided");
   }
 
-  const accessSecret = getEnvVariable("adminJwtAccessSecret");
-  const refreshSecret = getEnvVariable("adminJwtRefreshSecret");
+  const accessSecret = getEnvVariable("ADMIN_JWT_ACCESS_SECRET");
+  const refreshSecret = getEnvVariable("ADMIN_JWT_REFRESH_SECRET");
 
   if (!accessSecret || !refreshSecret) {
     return sendError(res, 500, "jwtSecretNotProvided");

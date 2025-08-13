@@ -1,36 +1,54 @@
 import { config } from "dotenv";
+import { z } from "zod";
 
 config();
+const envSchema = z.object({
+  // Server
+  PORT: z.string().default("8080"),
+  NODE_ENV: z
+    .enum(["development", "production", "test"])
+    .default("development"),
 
-const envVariables = {
-  adminJwtAccessSecret: process.env.ADMIN_JWT_ACCESS_SECRET,
-  adminJwtRefreshSecret: process.env.ADMIN_JWT_REFRESH_SECRET,
-  jwtAccessSecret: process.env.JWT_ACCESS_SECRET,
-  jwtRefreshSecret: process.env.JWT_REFRESH_SECRET,
-  port: process.env.PORT,
-  saltRounds: process.env.SALT_ROUNDS,
-  dbUrl: process.env.DATABASE_URL,
-  adminPassword: process.env.ADMIN_PASSWORD,
-  clientUrl: process.env.CLIENT_URL,
-  adminUrl: process.env.ADMIN_URL,
-  serverUrl: process.env.SERVER_URL,
-  nodeEnv: process.env.NODE_ENV,
-  COOKIE_DOMAIN: process.env.COOKIE_DOMAIN,
-  RESPONSE_URL: process.env.RESPONSE_URL,
-  email: process.env.EMAIL,
-  adminFirstName: process.env.ADMIN_FIRST_NAME,
-  adminLastName: process.env.ADMIN_LAST_NAME,
-};
+  // Database
+  DATABASE_URL: z.string().url(),
 
-type EnvVariableKey = keyof typeof envVariables;
+  // JWT Secrets
+  ADMIN_JWT_ACCESS_SECRET: z.string().min(32),
+  ADMIN_JWT_REFRESH_SECRET: z.string().min(32),
+  JWT_ACCESS_SECRET: z.string().min(32),
+  JWT_REFRESH_SECRET: z.string().min(32),
 
-export const getEnvVariable = (key: EnvVariableKey): string => {
-  const value = envVariables[key];
+  // URLs
+  CLIENT_URL: z.string().url(),
+  ADMIN_URL: z.string().url(),
+  SERVER_URL: z.string().url(),
+  RESPONSE_URL: z.string().url(),
+  COOKIE_DOMAIN: z.string(),
 
-  if (!value) {
-    const formattedKey = key.replace(/([A-Z])/g, "_$1").toUpperCase();
-    throw new Error(`Env variable ${formattedKey} is not provided`);
-  }
+  // SMS
+  SMS_MOCK: z.string().default("false"),
+  SMS_FAIL_GRACEFULLY: z.string().default("false"),
+  SENDER_API_KEY: z.string().min(1),
 
-  return value;
-};
+  // Seeds
+  SALT_ROUNDS: z.string(),
+  ADMIN_PASSWORD: z.string(),
+  EMAIL: z.string().email(),
+  ADMIN_FIRST_NAME: z.string(),
+  ADMIN_LAST_NAME: z.string(),
+});
+
+const parsed = envSchema.safeParse(process.env);
+
+if (!parsed.success) {
+  console.error("Invalid environment variables:", parsed.error.format());
+  process.exit(1);
+}
+
+export const env = parsed.data;
+
+export function getEnvVariable<Key extends keyof typeof env>(
+  key: Key
+): (typeof env)[Key] {
+  return env[key];
+}
