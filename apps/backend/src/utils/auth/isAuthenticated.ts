@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
-import { getEnvVariable } from "../config/env";
+import { getEnvVariable } from "../../config/env";
 
 const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -17,7 +17,7 @@ const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
 
     const decoded = jwt.verify(
       tokenData,
-      getEnvVariable("jwtAccessSecret")
+      getEnvVariable("JWT_ACCESS_SECRET")
     ) as {
       id: string;
       email: string;
@@ -55,10 +55,7 @@ const isAuthenticatedAdmin = (
       });
     }
 
-    const decoded = jwt.verify(
-      token,
-      getEnvVariable("adminJwtAccessSecret")
-    ) as {
+    const decoded = jwt.verify(token, getEnvVariable("JWT_REFRESH_SECRET")) as {
       userId: string;
       role: string;
     };

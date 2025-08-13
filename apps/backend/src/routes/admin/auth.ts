@@ -5,9 +5,9 @@ import { loginValidation } from "../../validations/admin/";
 import { validationResult } from "express-validator";
 import { adminAuthenticate } from "../../middlewares/admin";
 
-export const authRouter = Router();
+export const adminAuthRouter = Router();
 
-authRouter.post(
+adminAuthRouter.post(
   "/login",
   loginValidation,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -25,7 +25,7 @@ authRouter.post(
   }
 );
 
-authRouter.get(
+adminAuthRouter.get(
   "/renew",
   adminAuthenticate,
 

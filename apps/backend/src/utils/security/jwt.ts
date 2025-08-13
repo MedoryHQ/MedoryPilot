@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import { getEnvVariable } from "../config";
-import { prisma } from "../config/prisma";
+import { getEnvVariable } from "../../config";
+import { prisma } from "../../config/prisma";
 
 const ACCESS_TOKEN_EXPIRES_IN = "1h";
 const REFRESH_TOKEN_EXPIRES_IN = "30d";
@@ -21,8 +21,8 @@ export const generateAccessToken = (
 ): TokenResponse => {
   const secret =
     type === "USER"
-      ? getEnvVariable("jwtAccessSecret")
-      : getEnvVariable("adminJwtAccessSecret");
+      ? getEnvVariable("JWT_ACCESS_SECRET")
+      : getEnvVariable("ADMIN_JWT_ACCESS_SECRET");
 
   const token = jwt.sign(payload, secret, {
     expiresIn: ACCESS_TOKEN_EXPIRES_IN,
@@ -40,8 +40,8 @@ export const generateRefreshToken = (
 ): TokenResponse => {
   const secret =
     type === "USER"
-      ? getEnvVariable("jwtRefreshSecret")
-      : getEnvVariable("adminJwtRefreshSecret");
+      ? getEnvVariable("JWT_REFRESH_SECRET")
+      : getEnvVariable("ADMIN_JWT_REFRESH_SECRET");
 
   const token = jwt.sign(payload, secret, {
     expiresIn: REFRESH_TOKEN_EXPIRES_IN,
@@ -54,7 +54,7 @@ export const generateRefreshToken = (
 };
 
 export const verifyRefreshToken = async (refreshToken: string) => {
-  const secret = getEnvVariable("jwtRefreshSecret");
+  const secret = getEnvVariable("JWT_REFRESH_SECRET");
 
   const storedToken = await prisma.refreshToken.findUnique({
     where: { token: refreshToken },
@@ -81,7 +81,7 @@ export const verifyRefreshToken = async (refreshToken: string) => {
 };
 
 export const checkRefreshToken = (refreshToken: string) => {
-  const secret = getEnvVariable("jwtRefreshSecret");
+  const secret = getEnvVariable("JWT_REFRESH_SECRET");
 
   try {
     const decoded = jwt.verify(refreshToken, secret) as {
