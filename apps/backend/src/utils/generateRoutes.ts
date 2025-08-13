@@ -1,7 +1,7 @@
 import { Express } from "express";
 import * as AdminRoutes from "../routes/admin";
 
-const adminRouteList = [{ path: "/auth", router: AdminRoutes.authRouter }];
+const adminRouteList = [{ path: "/auth", router: AdminRoutes.adminAuthRouter }];
 
 // const customerRouteList = [];
 
