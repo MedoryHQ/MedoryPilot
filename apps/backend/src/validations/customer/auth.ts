@@ -70,3 +70,13 @@ export const userRegisterValidation = [
       return true;
     }),
 ];
+
+export const userVerifyValidation = [
+  body("id").isString().withMessage(getResponseMessage("invalidId")),
+  body("phone")
+    .isString()
+    .matches(/^\+9955\d{8}$/)
+    .withMessage(getResponseMessage("invalidPhoneNumber")),
+
+  body("code").isString().withMessage(getResponseMessage("invalidCode")),
+];
