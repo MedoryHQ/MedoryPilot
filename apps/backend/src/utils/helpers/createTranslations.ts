@@ -1,4 +1,4 @@
-import { Translations } from "../types/global";
+import { Translations } from "../../types/global";
 
 export const createTranslations = (translations: Translations) => {
   const translationsWithLanguageId = Object.keys(translations).map(

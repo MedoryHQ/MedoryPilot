@@ -1,6 +1,6 @@
 import { body } from "express-validator";
-import { prisma } from "../config";
-import { Translation } from "../types/global";
+import { prisma } from "../../config";
+import { Translation } from "../../types/global";
 import { isUuid } from "./isUuid";
 
 export const validateTranslations = (
