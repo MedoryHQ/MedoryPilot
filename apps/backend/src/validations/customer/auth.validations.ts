@@ -91,3 +91,18 @@ export const forgotPasswordVerificationValidation = [
 
   body("smsCode").isString().withMessage(getResponseMessage("invalidCode")),
 ];
+
+export const resetPasswordValidation = [
+  body("smsCode").isString().withMessage(getResponseMessage("invalidCode")),
+
+  body("phoneNumber")
+    .isString()
+    .matches(/^\+9955\d{8}$/)
+    .withMessage(getResponseMessage("invalidPhoneNumber")),
+
+  body("password")
+    .isString()
+    .withMessage(getResponseMessage("invalidPassword"))
+    .isLength({ min: 8, max: 100 })
+    .withMessage(getResponseMessage("passwordLength")),
+];
