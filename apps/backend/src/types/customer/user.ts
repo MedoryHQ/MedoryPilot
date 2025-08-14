@@ -12,3 +12,20 @@ export interface ICreatePendingUser {
   email?: string;
   password: string;
 }
+
+export interface IUserVerify {
+  code: string;
+  id: string;
+  phoneNumber: string;
+}
+
+export interface IUserLogin {
+  phoneNumber: string;
+  password: string;
+}
+
+export interface IResendUserVerificationCode {
+  phoneNumber: string;
+}
+
+export interface IForgotPassword extends IResendUserVerificationCode {}

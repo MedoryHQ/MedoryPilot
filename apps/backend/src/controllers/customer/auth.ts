@@ -12,7 +12,13 @@ import {
   verifyField,
   generateTokens,
 } from "../../utils";
-import { ICreatePendingUser } from "types/customer";
+import {
+  ICreatePendingUser,
+  IForgotPassword,
+  IResendUserVerificationCode,
+  IUserLogin,
+  IUserVerify,
+} from "../../types/customer";
 
 export const UserRegister = async (
   req: Request,
@@ -94,11 +100,7 @@ export const UserVerify = async (
   next: NextFunction
 ) => {
   try {
-    const { code, id, phoneNumber } = req.body as {
-      code: string;
-      id: string;
-      phoneNumber: string;
-    };
+    const { code, id, phoneNumber } = req.body as IUserVerify;
 
     const pending = await prisma.pendingUser.findUnique({
       where: {
@@ -192,10 +194,7 @@ export const UserLogin = async (
   next: NextFunction
 ) => {
   try {
-    const { phoneNumber, password } = req.body as {
-      phoneNumber: string;
-      password: string;
-    };
+    const { phoneNumber, password } = req.body as IUserLogin;
 
     const user = await prisma.user.findUnique({
       where: {
@@ -265,7 +264,7 @@ export const resendUserVerificationCode = async (
   next: NextFunction
 ) => {
   try {
-    const { phoneNumber } = req.body;
+    const { phoneNumber } = req.body as IResendUserVerificationCode;
 
     const user = await prisma.pendingUser.findUnique({
       where: {
@@ -302,5 +301,51 @@ export const resendUserVerificationCode = async (
     });
   } catch (error) {
     return next(error);
+  }
+};
+
+export const forgotPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { phoneNumber } = req.body as IForgotPassword;
+
+    const user = await prisma.user.findUnique({
+      where: {
+        phoneNumber,
+      },
+    });
+
+    if (!user) return sendError(res, 404, "userNotFound");
+
+    const {
+      hashedSmsCode,
+      //  smsCode
+    } = await generateSmsCode();
+
+    // const smsResponse = await sendSMS(
+    //   phoneNumber,
+    //   `Verification Code: ${smsCode}, please enter code for reset.`
+    // );
+
+    // if (!smsResponse.success) return sendError(res, 500, "smsSendFaild")
+
+    await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        smsCode: hashedSmsCode,
+        smsCodeExpiresAt: new Date(Date.now() + 5 * 60 * 1000),
+      },
+    });
+
+    return res.status(200).json({
+      message: getResponseMessage("codeSent"),
+    });
+  } catch (error) {
+    next(error);
   }
 };

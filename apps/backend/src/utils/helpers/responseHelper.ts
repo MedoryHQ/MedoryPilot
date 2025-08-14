@@ -49,8 +49,12 @@ export const errorMessages = {
     ka: "შესახებ წარმატებით დასრულდა",
   },
   verificationCodeResent: {
-    en: "Verification code resent succesfully",
+    en: "Verification code resent successfully",
     ka: "ვერიფიკაცის კოდი წარმატებით გამოიგზავნა ხელახლა",
+  },
+  codeSent: {
+    en: "Code sent successfully",
+    ka: "კოდი წარმატებით გამოიგზავნა",
   },
 
   // Validation errors
