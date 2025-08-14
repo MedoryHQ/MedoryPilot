@@ -82,3 +82,12 @@ export const resendUserVerificationCodeValidation = [
 
 export const forgotUserPasswordValidation =
   resendUserVerificationCodeValidation;
+
+export const forgotPasswordVerificationValidation = [
+  body("phoneNumber")
+    .isString()
+    .matches(/^\+9955\d{8}$/)
+    .withMessage(getResponseMessage("invalidPhoneNumber")),
+
+  body("smsCode").isString().withMessage(getResponseMessage("invalidCode")),
+];
