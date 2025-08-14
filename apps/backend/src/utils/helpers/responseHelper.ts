@@ -48,6 +48,10 @@ export const errorMessages = {
     en: "Login successful",
     ka: "შესახებ წარმატებით დასრულდა",
   },
+  verificationCodeResent: {
+    en: "Verification code resent succesfully",
+    ka: "ვერიფიკაცის კოდი წარმატებით გამოიგზავნა ხელახლა",
+  },
 
   // Validation errors
   invalidPhoneNumber: {

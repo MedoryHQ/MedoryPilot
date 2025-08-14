@@ -258,3 +258,49 @@ export const UserLogin = async (
     return next(error);
   }
 };
+
+export const resendUserVerificationCode = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { phoneNumber } = req.body;
+
+    const user = await prisma.pendingUser.findUnique({
+      where: {
+        phoneNumber,
+      },
+    });
+
+    if (!user) return sendError(res, 404, "userNotFound");
+
+    const {
+      hashedSmsCode,
+      //  smsCode
+    } = await generateSmsCode();
+
+    await prisma.pendingUser.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        smsCode: hashedSmsCode,
+        smsCodeExpiresAt: new Date(Date.now() + 5 * 60 * 1000),
+      },
+    });
+
+    // const smsResponse = await sendSMS(
+    //   phoneNumber,
+    //   `Verification Code: ${smsCode}`
+    // );
+
+    // if (!smsResponse.success) return sendError(res, 500, "smsSendFaild")
+
+    return res.status(200).json({
+      message: getResponseMessage("verificationCodeResent"),
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
