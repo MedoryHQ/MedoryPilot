@@ -17,6 +17,7 @@ import {
   IForgotPassword,
   IForgotPasswordVerification,
   IResendUserVerificationCode,
+  IResetPassword,
   IUserLogin,
   IUserVerify,
 } from "../../types/customer";
@@ -375,6 +376,49 @@ export const forgotPasswordVerification = async (
 
     return res.status(200).json({
       message: getResponseMessage("codeVerified"),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const resetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { phoneNumber, password, smsCode } = req.body as IResetPassword;
+
+    const user = await prisma.user.findUnique({
+      where: {
+        phoneNumber,
+        isVerified: true,
+      },
+    });
+
+    if (!user || !user.smsCode) return sendError(res, 404, "userNotFound");
+
+    const isSmsValid = verifyField(smsCode, user.smsCode);
+
+    if (!isSmsValid) {
+      return sendError(res, 401, "smsCodeisInvalid");
+    }
+    const passwordHash = await createPassword(password);
+
+    const newUser = await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        passwordHash,
+        smsCode: null,
+      },
+    });
+
+    return res.status(200).json({
+      message: getResponseMessage("passwordChanged"),
+      user: newUser,
     });
   } catch (error) {
     next(error);

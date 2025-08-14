@@ -34,3 +34,9 @@ export interface IForgotPasswordVerification {
   phoneNumber: string;
   smsCode: string;
 }
+
+export interface IResetPassword {
+  phoneNumber: string;
+  smsCode: string;
+  password: string;
+}
