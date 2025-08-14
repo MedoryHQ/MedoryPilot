@@ -72,3 +72,10 @@ export const userLoginValidation = [
     .isLength({ min: 8, max: 100 })
     .withMessage(getResponseMessage("passwordLength")),
 ];
+
+export const resendUserVerificationCodeValidation = [
+  body("phoneNumber")
+    .isString()
+    .matches(/^\+9955\d{8}$/)
+    .withMessage(getResponseMessage("invalidPhoneNumber")),
+];
