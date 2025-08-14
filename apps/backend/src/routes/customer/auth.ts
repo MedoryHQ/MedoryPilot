@@ -5,6 +5,7 @@ import {
   userLoginValidation,
   userRegisterValidation,
   userVerifyValidation,
+  resendUserVerificationCodeValidation,
 } from "../../validations/customer";
 import { validationResult } from "express-validator";
 
@@ -59,6 +60,25 @@ userAuthRouter.post(
         return res.status(400).json({ errors: errors.array() });
       }
       return userAuthController.UserLogin(req, res, next);
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+userAuthRouter.post(
+  "/verification-resend",
+  resendUserVerificationCodeValidation,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+      return userAuthController.resendUserVerificationCode(req, res, next);
     } catch (error) {
       return res
         .status(500)
