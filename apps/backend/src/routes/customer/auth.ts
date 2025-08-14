@@ -8,6 +8,7 @@ import {
   resendUserVerificationCodeValidation,
   forgotUserPasswordValidation,
   forgotPasswordVerificationValidation,
+  resetPasswordValidation,
 } from "../../validations/customer";
 import { validationResult } from "express-validator";
 
@@ -118,6 +119,24 @@ userAuthRouter.post(
       }
 
       return userAuthController.forgotPasswordVerification(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+userAuthRouter.post(
+  "/password-reset",
+  resetPasswordValidation,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+
+      return userAuthController.resetPassword(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }
