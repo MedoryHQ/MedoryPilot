@@ -56,6 +56,10 @@ export const errorMessages = {
     en: "Code sent successfully",
     ka: "კოდი წარმატებით გამოიგზავნა",
   },
+  codeVerified: {
+    en: "Code verified successfully",
+    ka: "კოდი ვერიფიცირებულია",
+  },
 
   // Validation errors
   invalidPhoneNumber: {

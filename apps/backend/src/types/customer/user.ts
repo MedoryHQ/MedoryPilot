@@ -29,3 +29,8 @@ export interface IResendUserVerificationCode {
 }
 
 export interface IForgotPassword extends IResendUserVerificationCode {}
+
+export interface IForgotPasswordVerification {
+  phoneNumber: string;
+  smsCode: string;
+}

@@ -15,6 +15,7 @@ import {
 import {
   ICreatePendingUser,
   IForgotPassword,
+  IForgotPasswordVerification,
   IResendUserVerificationCode,
   IUserLogin,
   IUserVerify,
@@ -344,6 +345,36 @@ export const forgotPassword = async (
 
     return res.status(200).json({
       message: getResponseMessage("codeSent"),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const forgotPasswordVerification = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { smsCode, phoneNumber } = req.body as IForgotPasswordVerification;
+
+    const user = await prisma.user.findUnique({
+      where: {
+        phoneNumber,
+      },
+    });
+
+    if (!user || !user.smsCode) return sendError(res, 404, "userNotFound");
+
+    const isSmsValid = verifyField(smsCode, user.smsCode);
+
+    if (!isSmsValid) {
+      return sendError(res, 401, "smsCodeisInvalid");
+    }
+
+    return res.status(200).json({
+      message: getResponseMessage("codeVerified"),
     });
   } catch (error) {
     next(error);
