@@ -54,27 +54,36 @@ export const generateMetaValidations = () => {
   ];
 };
 
-export const uniqueFieldValidation = (field: string, modelName: string) => {
-  return body(field)
-    .isString()
-    .custom((value) => {
-      return (
-        prisma[modelName as keyof typeof prisma]
-          // @ts-expect-error modelName is a string
-          .findUnique({ where: { [field]: value } })
-          // @ts-expect-error modelName is a string
-          .then((model) => {
-            if (model) {
-              throw new Error(
-                JSON.stringify({
-                  ka: `${modelName} ასეთი ${field}-ით უკვე არსებობს`,
-                  en: `${modelName} with this ${field} already exists`,
-                })
-              );
-            }
-          })
+export const uniqueFieldValidation = (
+  field: string,
+  modelName: string,
+  optional?: boolean
+) => {
+  let validator = body(field);
+
+  if (optional) {
+    validator = validator.optional();
+  }
+
+  return validator.custom(async (value) => {
+    if (value === undefined || value === null) return true;
+
+    const model = await prisma[modelName as keyof typeof prisma] // @ts-expect-error modelName is dynamic
+      .findUnique({
+        where: { [field]: value },
+      });
+
+    if (model) {
+      throw new Error(
+        JSON.stringify({
+          ka: `${modelName} ასეთი ${field}-ით უკვე არსებობს`,
+          en: `${modelName} with this ${field} already exists`,
+        })
       );
-    });
+    }
+
+    return true;
+  });
 };
 
 export const uuidsArrayValidation = (

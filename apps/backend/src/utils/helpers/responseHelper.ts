@@ -26,9 +26,39 @@ export const errorMessages = {
     en: "Failed to send SMS.",
     ka: "SMS-ის გაგზავნა ვერ მოხერხდა.",
   },
+  verificationCodeExpired: {
+    en: "Verification code expired",
+    ka: "ვერიფიკაციის კოდი ვადა ამოეწურა",
+  },
+  smsCodeisInvalid: {
+    en: "SMS code is invalid",
+    ka: "SMS კოდი არ არის ვალიდური",
+  },
+
+  // Messages
   smsVerificationSent: {
     en: "Verification code sent to your phone number.",
     ka: "ვერიფიკაციის კოდი გამოიგზავნა თქვენს ტელეფონის ნომერზე.",
+  },
+  verificationSuccessful: {
+    en: "Verification successful",
+    ka: "ვერიფიკაცია წარმატებით დასრულდა",
+  },
+  loginSuccessful: {
+    en: "Login successful",
+    ka: "შესახებ წარმატებით დასრულდა",
+  },
+  verificationCodeResent: {
+    en: "Verification code resent successfully",
+    ka: "ვერიფიკაცის კოდი წარმატებით გამოიგზავნა ხელახლა",
+  },
+  codeSent: {
+    en: "Code sent successfully",
+    ka: "კოდი წარმატებით გამოიგზავნა",
+  },
+  codeVerified: {
+    en: "Code verified successfully",
+    ka: "კოდი ვერიფიცირებულია",
   },
 
   // Validation errors
@@ -83,6 +113,14 @@ export const errorMessages = {
   passwordsNotMatch: {
     en: "Passwords must match",
     ka: "პაროლები არ ემთხვევა",
+  },
+  invalidId: {
+    en: "Invalid id",
+    ka: "id არასწორია",
+  },
+  invalidCode: {
+    en: "Invalid OTP code",
+    ka: "OTP კოდი არასწორია",
   },
 };
 

@@ -48,7 +48,7 @@ model PendingUser {
   passwordHash String
 
   smsCode          String?
-  smsCodeExpiresAt DateTime?
+  smsCodeExpiresAt DateTime
 
   isVerified Boolean @default(false)
 
