@@ -79,3 +79,6 @@ export const resendUserVerificationCodeValidation = [
     .matches(/^\+9955\d{8}$/)
     .withMessage(getResponseMessage("invalidPhoneNumber")),
 ];
+
+export const forgotUserPasswordValidation =
+  resendUserVerificationCodeValidation;
