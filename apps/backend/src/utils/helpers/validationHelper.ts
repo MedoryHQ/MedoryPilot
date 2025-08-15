@@ -86,6 +86,30 @@ export const uniqueFieldValidation = (
   });
 };
 
+export const existanceValidation = (field: string, modelName: string) => {
+  let validator = body(field);
+
+  return validator.custom(async (value) => {
+    if (value === undefined || value === null) return true;
+
+    const model = await prisma[modelName as keyof typeof prisma] // @ts-expect-error modelName is dynamic
+      .findUnique({
+        where: { [field]: value },
+      });
+
+    if (!model) {
+      throw new Error(
+        JSON.stringify({
+          ka: `${modelName} ასეთი ${field}-ით უკვე არსებობს`,
+          en: `${modelName} with this ${field} already exists`,
+        })
+      );
+    }
+
+    return true;
+  });
+};
+
 export const uuidsArrayValidation = (
   field: string,
   min?: number,
