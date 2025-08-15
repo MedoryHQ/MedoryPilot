@@ -278,6 +278,10 @@ export const resendUserVerificationCode = async (
 
     if (!user) return sendError(res, 404, "userNotFound");
 
+    if (user.smsCodeExpiresAt && new Date(user.smsCodeExpiresAt) > new Date()) {
+      return sendError(res, 400, "verificationCodeStillValid");
+    }
+
     const {
       hashedSmsCode,
       //  smsCode
@@ -323,6 +327,10 @@ export const forgotPassword = async (
     });
 
     if (!user) return sendError(res, 404, "userNotFound");
+
+    if (user.smsCodeExpiresAt && new Date(user.smsCodeExpiresAt) > new Date()) {
+      return sendError(res, 400, "verificationCodeStillValid");
+    }
 
     const {
       hashedSmsCode,
@@ -370,6 +378,10 @@ export const forgotPasswordWithEmail = async (
 
     if (!user) return sendError(res, 404, "userNotFound");
 
+    if (user.smsCodeExpiresAt && new Date(user.smsCodeExpiresAt) > new Date()) {
+      return sendError(res, 400, "verificationCodeStillValid");
+    }
+
     const { hashedSmsCode, smsCode } = await generateSmsCode();
 
     await mailer.sendOtpCode(email, smsCode);
@@ -408,6 +420,13 @@ export const forgotPasswordVerification = async (
 
     if (!user || !user.smsCode) return sendError(res, 404, "userNotFound");
 
+    if (
+      !user.smsCodeExpiresAt ||
+      new Date(user.smsCodeExpiresAt) < new Date()
+    ) {
+      return sendError(res, 400, "verificationCodeExpired");
+    }
+
     const isSmsValid = verifyField(smsCode, user.smsCode);
 
     if (!isSmsValid) {
@@ -438,6 +457,13 @@ export const resetPassword = async (
     });
 
     if (!user || !user.smsCode) return sendError(res, 404, "userNotFound");
+
+    if (
+      !user.smsCodeExpiresAt ||
+      new Date(user.smsCodeExpiresAt) < new Date()
+    ) {
+      return sendError(res, 400, "verificationCodeExpired");
+    }
 
     const isSmsValid = verifyField(smsCode, user.smsCode);
 

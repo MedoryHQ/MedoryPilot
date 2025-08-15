@@ -34,6 +34,10 @@ export const errorMessages = {
     en: "SMS code is invalid",
     ka: "SMS კოდი არ არის ვალიდური",
   },
+  verificationCodeStillValid: {
+    en: "verification code is still valid",
+    ka: "ვერიფიკაციის კოდის ვადა ჯერ არ არის გასული",
+  },
 
   // Messages
   smsVerificationSent: {
