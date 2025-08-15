@@ -40,3 +40,7 @@ export interface IResetPassword {
   smsCode: string;
   password: string;
 }
+
+export interface IForgetPasswordWithEmail {
+  email: string;
+}

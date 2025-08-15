@@ -11,9 +11,11 @@ import {
   generateRefreshToken,
   verifyField,
   generateTokens,
+  mailer,
 } from "../../utils";
 import {
   ICreatePendingUser,
+  IForgetPasswordWithEmail,
   IForgotPassword,
   IForgotPasswordVerification,
   IResendUserVerificationCode,
@@ -333,6 +335,44 @@ export const forgotPassword = async (
     // );
 
     // if (!smsResponse.success) return sendError(res, 500, "smsSendFaild")
+
+    await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        smsCode: hashedSmsCode,
+        smsCodeExpiresAt: new Date(Date.now() + 5 * 60 * 1000),
+      },
+    });
+
+    return res.status(200).json({
+      message: getResponseMessage("codeSent"),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const forgotPasswordWithEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email } = req.body as IForgetPasswordWithEmail;
+
+    const user = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (!user) return sendError(res, 404, "userNotFound");
+
+    const { hashedSmsCode, smsCode } = await generateSmsCode();
+
+    await mailer.sendOtpCode(email, smsCode);
 
     await prisma.user.update({
       where: {
