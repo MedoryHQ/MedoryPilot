@@ -1,5 +1,9 @@
 import { body } from "express-validator";
-import { getResponseMessage, uniqueFieldValidation } from "../../utils";
+import {
+  existanceValidation,
+  getResponseMessage,
+  uniqueFieldValidation,
+} from "../../utils";
 
 export const userRegisterValidation = [
   body("phoneNumber")
@@ -105,4 +109,9 @@ export const resetPasswordValidation = [
     .withMessage(getResponseMessage("invalidPassword"))
     .isLength({ min: 8, max: 100 })
     .withMessage(getResponseMessage("passwordLength")),
+];
+
+export const forgotUserPasswordWithEmailValidation = [
+  body("email").isEmail().withMessage(getResponseMessage("invalidEmail")),
+  existanceValidation("email", "user"),
 ];
