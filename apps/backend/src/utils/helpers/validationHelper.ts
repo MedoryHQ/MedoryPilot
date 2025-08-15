@@ -86,6 +86,28 @@ export const uniqueFieldValidation = (
   });
 };
 
+export const existanceValidation = (field: string, modelName: string) => {
+  return body(field).custom(async (value) => {
+    if (value === undefined || value === null) return true;
+
+    const model = await prisma[modelName as keyof typeof prisma] // @ts-expect-error modelName is dynamic
+      .findUnique({
+        where: { [field]: value },
+      });
+
+    if (!model) {
+      throw new Error(
+        JSON.stringify({
+          ka: `${modelName} ასეთი ${field}-ით ვერ მოიძებნა`,
+          en: `${modelName} with this ${field} was not found`,
+        })
+      );
+    }
+
+    return true;
+  });
+};
+
 export const uuidsArrayValidation = (
   field: string,
   min?: number,

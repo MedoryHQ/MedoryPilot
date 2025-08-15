@@ -11,9 +11,11 @@ import {
   generateRefreshToken,
   verifyField,
   generateTokens,
+  mailer,
 } from "../../utils";
 import {
   ICreatePendingUser,
+  IForgetPasswordWithEmail,
   IForgotPassword,
   IForgotPasswordVerification,
   IResendUserVerificationCode,
@@ -276,6 +278,10 @@ export const resendUserVerificationCode = async (
 
     if (!user) return sendError(res, 404, "userNotFound");
 
+    if (user.smsCodeExpiresAt && new Date(user.smsCodeExpiresAt) > new Date()) {
+      return sendError(res, 400, "verificationCodeStillValid");
+    }
+
     const {
       hashedSmsCode,
       //  smsCode
@@ -322,6 +328,10 @@ export const forgotPassword = async (
 
     if (!user) return sendError(res, 404, "userNotFound");
 
+    if (user.smsCodeExpiresAt && new Date(user.smsCodeExpiresAt) > new Date()) {
+      return sendError(res, 400, "verificationCodeStillValid");
+    }
+
     const {
       hashedSmsCode,
       //  smsCode
@@ -333,6 +343,48 @@ export const forgotPassword = async (
     // );
 
     // if (!smsResponse.success) return sendError(res, 500, "smsSendFaild")
+
+    await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        smsCode: hashedSmsCode,
+        smsCodeExpiresAt: new Date(Date.now() + 5 * 60 * 1000),
+      },
+    });
+
+    return res.status(200).json({
+      message: getResponseMessage("codeSent"),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const forgotPasswordWithEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email } = req.body as IForgetPasswordWithEmail;
+
+    const user = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (!user) return sendError(res, 404, "userNotFound");
+
+    if (user.smsCodeExpiresAt && new Date(user.smsCodeExpiresAt) > new Date()) {
+      return sendError(res, 400, "verificationCodeStillValid");
+    }
+
+    const { hashedSmsCode, smsCode } = await generateSmsCode();
+
+    await mailer.sendOtpCode(email, smsCode);
 
     await prisma.user.update({
       where: {
@@ -368,6 +420,13 @@ export const forgotPasswordVerification = async (
 
     if (!user || !user.smsCode) return sendError(res, 404, "userNotFound");
 
+    if (
+      !user.smsCodeExpiresAt ||
+      new Date(user.smsCodeExpiresAt) < new Date()
+    ) {
+      return sendError(res, 400, "verificationCodeExpired");
+    }
+
     const isSmsValid = verifyField(smsCode, user.smsCode);
 
     if (!isSmsValid) {
@@ -388,16 +447,24 @@ export const resetPassword = async (
   next: NextFunction
 ) => {
   try {
-    const { phoneNumber, password, smsCode } = req.body as IResetPassword;
+    const { type, phoneNumber, email, password, smsCode } =
+      req.body as IResetPassword;
 
-    const user = await prisma.user.findUnique({
-      where: {
-        phoneNumber,
-        isVerified: true,
-      },
-    });
+    const whereClause =
+      type === "phoneNumber"
+        ? { phoneNumber, isVerified: true }
+        : { email, isVerified: true };
+
+    const user = await prisma.user.findUnique({ where: whereClause });
 
     if (!user || !user.smsCode) return sendError(res, 404, "userNotFound");
+
+    if (
+      !user.smsCodeExpiresAt ||
+      new Date(user.smsCodeExpiresAt) < new Date()
+    ) {
+      return sendError(res, 400, "verificationCodeExpired");
+    }
 
     const isSmsValid = verifyField(smsCode, user.smsCode);
 

@@ -1,5 +1,9 @@
 import { body } from "express-validator";
-import { getResponseMessage, uniqueFieldValidation } from "../../utils";
+import {
+  existanceValidation,
+  getResponseMessage,
+  uniqueFieldValidation,
+} from "../../utils";
 
 export const userRegisterValidation = [
   body("phoneNumber")
@@ -93,16 +97,45 @@ export const forgotPasswordVerificationValidation = [
 ];
 
 export const resetPasswordValidation = [
+  body("type")
+    .isIn(["phoneNumber", "email"])
+    .withMessage(getResponseMessage("invalidResetPasswordType")),
+
   body("smsCode").isString().withMessage(getResponseMessage("invalidCode")),
 
   body("phoneNumber")
+    .if(body("type").equals("phoneNumber"))
     .isString()
     .matches(/^\+9955\d{8}$/)
     .withMessage(getResponseMessage("invalidPhoneNumber")),
+  existanceValidation("phoneNumber", "user")
+    .bail()
+    .custom(
+      async (value) =>
+        await existanceValidation("phoneNumber", "user").run({
+          body: { phoneNumber: value },
+        })
+    ),
+
+  body("email")
+    .if(body("type").equals("email"))
+    .isEmail()
+    .withMessage(getResponseMessage("invalidEmail"))
+    .custom(
+      async (value) =>
+        await existanceValidation("email", "user").run({
+          body: { email: value },
+        })
+    ),
 
   body("password")
     .isString()
     .withMessage(getResponseMessage("invalidPassword"))
     .isLength({ min: 8, max: 100 })
     .withMessage(getResponseMessage("passwordLength")),
+];
+
+export const forgotUserPasswordWithEmailValidation = [
+  body("email").isEmail().withMessage(getResponseMessage("invalidEmail")),
+  existanceValidation("email", "user"),
 ];

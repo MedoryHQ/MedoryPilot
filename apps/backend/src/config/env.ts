@@ -36,6 +36,9 @@ const envSchema = z.object({
   EMAIL: z.string().email(),
   ADMIN_FIRST_NAME: z.string(),
   ADMIN_LAST_NAME: z.string(),
+
+  // Email
+  SENDGRID_API_KEY: z.string().min(1),
 });
 
 const parsed = envSchema.safeParse(process.env);

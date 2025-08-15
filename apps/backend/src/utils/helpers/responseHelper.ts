@@ -34,6 +34,10 @@ export const errorMessages = {
     en: "SMS code is invalid",
     ka: "SMS კოდი არ არის ვალიდური",
   },
+  verificationCodeStillValid: {
+    en: "verification code is still valid",
+    ka: "ვერიფიკაციის კოდის ვადა ჯერ არ არის გასული",
+  },
 
   // Messages
   smsVerificationSent: {
@@ -121,6 +125,14 @@ export const errorMessages = {
   invalidCode: {
     en: "Invalid OTP code",
     ka: "OTP კოდი არასწორია",
+  },
+  passwordChanged: {
+    en: "Password changed",
+    ka: "პაროლი შეიცვალა",
+  },
+  invalidResetPasswordType: {
+    en: "Reset password type is invalid",
+    ka: "პაროლის აღდგენის ტიპი არასწორია",
   },
 };
 

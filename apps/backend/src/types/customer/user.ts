@@ -36,7 +36,13 @@ export interface IForgotPasswordVerification {
 }
 
 export interface IResetPassword {
-  phoneNumber: string;
+  type: "phoneNumber" | "email";
+  phoneNumber?: string;
+  email?: string;
   smsCode: string;
   password: string;
+}
+
+export interface IForgetPasswordWithEmail {
+  email: string;
 }
