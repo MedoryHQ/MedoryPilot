@@ -122,6 +122,10 @@ export const errorMessages = {
     en: "Invalid OTP code",
     ka: "OTP კოდი არასწორია",
   },
+  passwordChanged: {
+    en: "Password changed",
+    ka: "პაროლი შეიცვალა",
+  },
 };
 
 type ErrorKey = keyof typeof errorMessages;
