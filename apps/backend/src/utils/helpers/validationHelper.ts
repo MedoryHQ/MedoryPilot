@@ -87,9 +87,7 @@ export const uniqueFieldValidation = (
 };
 
 export const existanceValidation = (field: string, modelName: string) => {
-  let validator = body(field);
-
-  return validator.custom(async (value) => {
+  return body(field).custom(async (value) => {
     if (value === undefined || value === null) return true;
 
     const model = await prisma[modelName as keyof typeof prisma] // @ts-expect-error modelName is dynamic
@@ -100,8 +98,8 @@ export const existanceValidation = (field: string, modelName: string) => {
     if (!model) {
       throw new Error(
         JSON.stringify({
-          ka: `${modelName} ასეთი ${field}-ით უკვე არსებობს`,
-          en: `${modelName} with this ${field} already exists`,
+          ka: `${modelName} ასეთი ${field}-ით ვერ მოიძებნა`,
+          en: `${modelName} with this ${field} was not found`,
         })
       );
     }

@@ -130,6 +130,10 @@ export const errorMessages = {
     en: "Password changed",
     ka: "პაროლი შეიცვალა",
   },
+  invalidResetPasswordType: {
+    en: "Reset password type is invalid",
+    ka: "პაროლის აღდგენის ტიპი არასწორია",
+  },
 };
 
 type ErrorKey = keyof typeof errorMessages;

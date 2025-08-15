@@ -447,14 +447,15 @@ export const resetPassword = async (
   next: NextFunction
 ) => {
   try {
-    const { phoneNumber, password, smsCode } = req.body as IResetPassword;
+    const { type, phoneNumber, email, password, smsCode } =
+      req.body as IResetPassword;
 
-    const user = await prisma.user.findUnique({
-      where: {
-        phoneNumber,
-        isVerified: true,
-      },
-    });
+    const whereClause =
+      type === "phoneNumber"
+        ? { phoneNumber, isVerified: true }
+        : { email, isVerified: true };
+
+    const user = await prisma.user.findUnique({ where: whereClause });
 
     if (!user || !user.smsCode) return sendError(res, 404, "userNotFound");
 
