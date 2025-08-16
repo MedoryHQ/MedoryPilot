@@ -1,9 +1,7 @@
 import { body } from "express-validator";
-import { getResponseMessage } from "utils";
+import { getResponseMessage, passwordValidation } from "utils";
 
 export const loginValidation = [
   body("email").isEmail().withMessage(getResponseMessage("invalidEmail")),
-  body("password")
-    .isString()
-    .withMessage(getResponseMessage("invalidPassword")),
+  passwordValidation(),
 ];
