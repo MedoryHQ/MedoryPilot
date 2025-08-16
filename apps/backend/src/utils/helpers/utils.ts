@@ -18,3 +18,7 @@ export function calculateAge(dob: Date): number {
   }
   return differenceInYears(new Date(), dob);
 }
+
+export const inMinutes = (minutes: number): Date => {
+  return new Date(Date.now() + minutes * 60 * 1000);
+};
