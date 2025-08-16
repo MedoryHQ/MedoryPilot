@@ -11,7 +11,9 @@ import {
   generateRefreshToken,
   verifyField,
   generateTokens,
-  mailer,
+  // mailer,
+  verifyRefreshToken,
+  inMinutes,
 } from "../../utils";
 import {
   ICreatePendingUser,
@@ -68,7 +70,7 @@ export const UserRegister = async (
         phoneNumber,
         passwordHash,
         smsCode: hashedSmsCode,
-        smsCodeExpiresAt: new Date(Date.now() + 5 * 60 * 1000),
+        smsCodeExpiresAt: inMinutes(5),
         personalId,
         dateOfBirth,
         email,
@@ -293,7 +295,7 @@ export const resendUserVerificationCode = async (
       },
       data: {
         smsCode: hashedSmsCode,
-        smsCodeExpiresAt: new Date(Date.now() + 5 * 60 * 1000),
+        smsCodeExpiresAt: inMinutes(5),
       },
     });
 
@@ -350,7 +352,7 @@ export const forgotPassword = async (
       },
       data: {
         smsCode: hashedSmsCode,
-        smsCodeExpiresAt: new Date(Date.now() + 5 * 60 * 1000),
+        smsCodeExpiresAt: inMinutes(5),
       },
     });
 
@@ -382,9 +384,12 @@ export const forgotPasswordWithEmail = async (
       return sendError(res, 400, "verificationCodeStillValid");
     }
 
-    const { hashedSmsCode, smsCode } = await generateSmsCode();
+    const {
+      hashedSmsCode,
+      //  smsCode
+    } = await generateSmsCode();
 
-    await mailer.sendOtpCode(email, smsCode);
+    // await mailer.sendOtpCode(email, smsCode);
 
     await prisma.user.update({
       where: {
@@ -392,7 +397,7 @@ export const forgotPasswordWithEmail = async (
       },
       data: {
         smsCode: hashedSmsCode,
-        smsCodeExpiresAt: new Date(Date.now() + 5 * 60 * 1000),
+        smsCodeExpiresAt: inMinutes(5),
       },
     });
 
@@ -489,5 +494,65 @@ export const resetPassword = async (
     });
   } catch (error) {
     next(error);
+  }
+};
+
+export const refreshToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const oldRefreshToken = req.cookies.refreshToken;
+
+    if (!oldRefreshToken) {
+      return sendError(res, 401, "unauthorized");
+    }
+
+    const decoded = await verifyRefreshToken(oldRefreshToken);
+
+    if (!decoded) {
+      return sendError(res, 401, "unauthorized");
+    }
+
+    const { token: newAccessToken, expiresIn: accessExpires } =
+      generateAccessToken(
+        { id: decoded.id, phoneNumber: decoded.phoneNumber },
+        "USER"
+      );
+
+    const { token: newRefreshToken, expiresIn: refreshExpires } =
+      generateRefreshToken(
+        { id: decoded.id, phoneNumber: decoded.phoneNumber },
+        "USER"
+      );
+
+    await prisma.refreshToken.delete({
+      where: { token: oldRefreshToken },
+    });
+
+    await prisma.refreshToken.create({
+      data: {
+        token: newRefreshToken,
+        userId: decoded.id,
+        expiresAt: new Date(Date.now() + refreshExpires),
+      },
+    });
+
+    res.cookie("accessToken", newAccessToken, {
+      ...cookieOptions,
+      maxAge: accessExpires,
+    });
+
+    res.cookie("refreshToken", newRefreshToken, {
+      ...cookieOptions,
+      maxAge: refreshExpires,
+    });
+
+    return res.status(200).json({
+      message: getResponseMessage("tokenRefreshed"),
+    });
+  } catch (error) {
+    return next(error);
   }
 };

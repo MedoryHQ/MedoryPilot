@@ -39,6 +39,10 @@ const envSchema = z.object({
 
   // Email
   SENDGRID_API_KEY: z.string().min(1),
+
+  // Swagger
+  SWAGGER_USERNAME: z.string().min(1),
+  SWAGGER_PASSWORD: z.string().min(1),
 });
 
 const parsed = envSchema.safeParse(process.env);

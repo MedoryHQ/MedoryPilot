@@ -6,6 +6,7 @@ import fs from "fs";
 import { getEnvVariable, prisma } from "./config";
 import cookies from "cookie-parser";
 import http from "http";
+import { startCronJobs } from "cron-jobs/run-cron-jobs";
 
 const allowedOrigins = [
   getEnvVariable("CLIENT_URL"),
@@ -66,6 +67,7 @@ const PORT = getEnvVariable("PORT") || 3000;
 
 async function main() {
   generateRoutes(app);
+  startCronJobs();
 
   server.listen(PORT, () => {
     console.log(`Server is running on ${getEnvVariable("SERVER_URL")}`);

@@ -1,31 +1,29 @@
 import { body } from "express-validator";
 import {
+  codeValidation,
+  confirmPasswordValidation,
+  emailValidation,
   existanceValidation,
   getResponseMessage,
+  passwordValidation,
+  phoneValidation,
   uniqueFieldValidation,
 } from "../../utils";
 
 export const userRegisterValidation = [
-  body("phoneNumber")
-    .isString()
-    .matches(/^\+9955\d{8}$/)
-    .withMessage(getResponseMessage("invalidPhoneNumber")),
+  phoneValidation(),
   uniqueFieldValidation("phoneNumber", "user"),
-  body("email")
-    .optional()
-    .isEmail()
-    .withMessage(getResponseMessage("invalidEmail")),
+  emailValidation("email", true),
   uniqueFieldValidation("email", "user", true),
+
   body("firstName")
     .trim()
     .isString()
     .withMessage(getResponseMessage("invalidFirstName")),
-
   body("lastName")
     .trim()
     .isString()
     .withMessage(getResponseMessage("invalidLastName")),
-
   body("dateOfBirth")
     .isString()
     .withMessage(getResponseMessage("invalidDateOfBirth")),
@@ -38,62 +36,26 @@ export const userRegisterValidation = [
     .isLength({ min: 9, max: 20 })
     .withMessage(getResponseMessage("personalIdLength")),
 
-  body("password")
-    .isString()
-    .withMessage(getResponseMessage("invalidPassword"))
-    .isLength({ min: 8, max: 100 })
-    .withMessage(getResponseMessage("passwordLength")),
-
-  body("confirmPassword")
-    .isString()
-    .withMessage(getResponseMessage("invalidConfirmPassword"))
-    .custom((value, { req }) => {
-      if (value !== req.body.password) {
-        return Promise.reject(getResponseMessage("passwordsNotMatch"));
-      }
-      return true;
-    }),
+  passwordValidation(),
+  confirmPasswordValidation(),
 ];
 
 export const userVerifyValidation = [
   body("id").isString().withMessage(getResponseMessage("invalidId")),
-  body("phone")
-    .isString()
-    .matches(/^\+9955\d{8}$/)
-    .withMessage(getResponseMessage("invalidPhoneNumber")),
-
-  body("code").isString().withMessage(getResponseMessage("invalidCode")),
+  phoneValidation(),
+  codeValidation("code"),
 ];
 
-export const userLoginValidation = [
-  body("phoneNumber")
-    .isString()
-    .matches(/^\+9955\d{8}$/)
-    .withMessage(getResponseMessage("invalidPhoneNumber")),
-  body("password")
-    .isString()
-    .withMessage(getResponseMessage("invalidPassword"))
-    .isLength({ min: 8, max: 100 })
-    .withMessage(getResponseMessage("passwordLength")),
-];
+export const userLoginValidation = [phoneValidation(), passwordValidation()];
 
-export const resendUserVerificationCodeValidation = [
-  body("phoneNumber")
-    .isString()
-    .matches(/^\+9955\d{8}$/)
-    .withMessage(getResponseMessage("invalidPhoneNumber")),
-];
+export const resendUserVerificationCodeValidation = [phoneValidation()];
 
 export const forgotUserPasswordValidation =
   resendUserVerificationCodeValidation;
 
 export const forgotPasswordVerificationValidation = [
-  body("phoneNumber")
-    .isString()
-    .matches(/^\+9955\d{8}$/)
-    .withMessage(getResponseMessage("invalidPhoneNumber")),
-
-  body("smsCode").isString().withMessage(getResponseMessage("invalidCode")),
+  phoneValidation(),
+  codeValidation("smsCode"),
 ];
 
 export const resetPasswordValidation = [
@@ -101,41 +63,18 @@ export const resetPasswordValidation = [
     .isIn(["phoneNumber", "email"])
     .withMessage(getResponseMessage("invalidResetPasswordType")),
 
-  body("smsCode").isString().withMessage(getResponseMessage("invalidCode")),
+  codeValidation("smsCode"),
 
-  body("phoneNumber")
-    .if(body("type").equals("phoneNumber"))
-    .isString()
-    .matches(/^\+9955\d{8}$/)
-    .withMessage(getResponseMessage("invalidPhoneNumber")),
-  existanceValidation("phoneNumber", "user")
-    .bail()
-    .custom(
-      async (value) =>
-        await existanceValidation("phoneNumber", "user").run({
-          body: { phoneNumber: value },
-        })
-    ),
+  phoneValidation().if(body("type").equals("phoneNumber")),
+  existanceValidation("phoneNumber", "user"),
 
-  body("email")
-    .if(body("type").equals("email"))
-    .isEmail()
-    .withMessage(getResponseMessage("invalidEmail"))
-    .custom(
-      async (value) =>
-        await existanceValidation("email", "user").run({
-          body: { email: value },
-        })
-    ),
+  emailValidation("email", false).if(body("type").equals("email")),
+  existanceValidation("email", "user"),
 
-  body("password")
-    .isString()
-    .withMessage(getResponseMessage("invalidPassword"))
-    .isLength({ min: 8, max: 100 })
-    .withMessage(getResponseMessage("passwordLength")),
+  passwordValidation(),
 ];
 
 export const forgotUserPasswordWithEmailValidation = [
-  body("email").isEmail().withMessage(getResponseMessage("invalidEmail")),
+  emailValidation(),
   existanceValidation("email", "user"),
 ];

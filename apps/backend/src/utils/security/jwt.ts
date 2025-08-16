@@ -73,7 +73,7 @@ export const verifyRefreshToken = async (refreshToken: string) => {
   try {
     const decoded = jwt.verify(refreshToken, secret) as {
       id: string;
-      email: string;
+      phoneNumber: string;
     };
     return decoded;
   } catch (error) {
@@ -87,7 +87,7 @@ export const checkRefreshToken = (refreshToken: string) => {
   try {
     const decoded = jwt.verify(refreshToken, secret) as {
       id: string;
-      email: string;
+      phoneNumber: string;
     };
     return decoded;
   } catch (error) {

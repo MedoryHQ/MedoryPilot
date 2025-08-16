@@ -38,6 +38,10 @@ export const errorMessages = {
     en: "verification code is still valid",
     ka: "ვერიფიკაციის კოდის ვადა ჯერ არ არის გასული",
   },
+  unauthorized: {
+    en: "Authorization failed.",
+    ka: "ავტორიზაცია წარუმატებლად დასრულდა.",
+  },
 
   // Messages
   smsVerificationSent: {
@@ -63,6 +67,10 @@ export const errorMessages = {
   codeVerified: {
     en: "Code verified successfully",
     ka: "კოდი ვერიფიცირებულია",
+  },
+  tokenRefreshed: {
+    en: "Token refreshed",
+    ka: "ტოკენი განახლდა",
   },
 
   // Validation errors
