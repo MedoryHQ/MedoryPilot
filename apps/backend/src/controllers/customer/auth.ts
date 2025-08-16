@@ -12,6 +12,7 @@ import {
   verifyField,
   generateTokens,
   mailer,
+  verifyRefreshToken,
 } from "../../utils";
 import {
   ICreatePendingUser,
@@ -489,5 +490,66 @@ export const resetPassword = async (
     });
   } catch (error) {
     next(error);
+  }
+};
+
+export const refreshToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const oldRefreshToken = req.cookies.refreshToken;
+
+    if (!oldRefreshToken) {
+      return sendError(res, 401, "unauthorized");
+    }
+
+    const decoded = await verifyRefreshToken(oldRefreshToken);
+
+    if (!decoded) {
+      return sendError(res, 401, "unauthorized");
+    }
+
+    const { token: newAccessToken, expiresIn: accessExpires } =
+      generateAccessToken(
+        { id: decoded.id, phoneNumber: decoded.phoneNumber },
+        "USER"
+      );
+
+    const { token: newRefreshToken, expiresIn: refreshExpires } =
+      generateRefreshToken(
+        { id: decoded.id, phoneNumber: decoded.phoneNumber },
+        "USER"
+      );
+
+    await prisma.refreshToken.delete({
+      where: { token: oldRefreshToken },
+    });
+
+    await prisma.refreshToken.create({
+      data: {
+        token: newRefreshToken,
+        userId: decoded.id,
+        expiresAt: new Date(Date.now() + refreshExpires),
+      },
+    });
+
+    res.cookie("accessToken", newAccessToken, {
+      ...cookieOptions,
+      maxAge: accessExpires,
+    });
+
+    res.cookie("refreshToken", newRefreshToken, {
+      ...cookieOptions,
+      maxAge: refreshExpires,
+    });
+
+    // 6. Return response
+    return res.status(200).json({
+      message: getResponseMessage("tokenRefreshed"),
+    });
+  } catch (error) {
+    return next(error);
   }
 };
