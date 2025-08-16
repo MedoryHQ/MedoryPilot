@@ -160,3 +160,14 @@ userAuthRouter.post(
     }
   }
 );
+
+userAuthRouter.post(
+  "/refresh-token",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return userAuthController.refreshToken(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
