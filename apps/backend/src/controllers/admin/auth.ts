@@ -5,7 +5,6 @@ import {
   sendError,
   verifyField,
 } from "../../utils";
-import bcrypt from "bcrypt";
 import { NextFunction, Response, Request } from "express";
 import { cookieOptions } from "../../utils/constants";
 
