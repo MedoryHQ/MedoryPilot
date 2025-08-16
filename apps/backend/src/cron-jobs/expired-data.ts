@@ -14,6 +14,18 @@ export const cleanupExpiredData = async () => {
     if (deletedPending.count > 0) {
       console.log(`✅ Deleted ${deletedPending.count} expired pending users`);
     }
+
+    const deletedTokens = await prisma.refreshToken.deleteMany({
+      where: {
+        expiresAt: {
+          lt: new Date(),
+        },
+      },
+    });
+
+    if (deletedTokens.count > 0) {
+      console.log(`✅ Deleted ${deletedTokens.count} expired refresh tokens`);
+    }
   } catch (error) {
     console.error("❌ Error cleaning up expired data:", error);
   }
