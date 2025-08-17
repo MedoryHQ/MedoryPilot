@@ -9,6 +9,7 @@ import cookies from "cookie-parser";
 import http from "http";
 import { startCronJobs } from "@/cron-jobs/run-cron-jobs";
 import logger from "./logger";
+import { logTraffic } from "./middlewares/global/trafficMiddleware";
 
 const allowedOrigins = [
   getEnvVariable("CLIENT_URL"),
@@ -26,6 +27,7 @@ app.use(
 
 app.use(express.urlencoded({ extended: true }));
 app.use(cookies());
+app.use(logTraffic);
 
 app.use(
   "/api",
