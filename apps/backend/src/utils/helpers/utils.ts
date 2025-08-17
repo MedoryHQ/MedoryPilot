@@ -12,9 +12,9 @@ export function generateSlug(title: string): string {
   });
 }
 
-export function calculateAge(dob: Date): number {
-  if (!(dob instanceof Date) || isNaN(dob.getTime())) {
-    throw new TypeError("dateOfBirth must be a valid Date");
+export function calculateAge(dob: Date | null): number | null {
+  if (!dob || !(dob instanceof Date) || isNaN(dob.getTime())) {
+    return null;
   }
   return differenceInYears(new Date(), dob);
 }

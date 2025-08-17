@@ -42,11 +42,6 @@ export const UserRegister = async (
       password,
     } = req.body as ICreatePendingUser;
 
-    const {
-      hashedSmsCode,
-      // smsCode
-    } = await generateSmsCode();
-
     const existingUser = await prisma.pendingUser.findUnique({
       where: {
         phoneNumber,
@@ -59,9 +54,15 @@ export const UserRegister = async (
 
     const passwordHash = await createPassword(password);
     const fullName = `${firstName} ${lastName}`;
-    const age = calculateAge(dateOfBirth);
+    const {
+      hashedSmsCode,
+      // smsCode
+    } = await generateSmsCode();
 
-    if (age === null || age === undefined) {
+    let age: number | null;
+    try {
+      age = calculateAge(dateOfBirth);
+    } catch {
       return sendError(res, 400, "invalidDateOfBirth");
     }
 
@@ -126,8 +127,14 @@ export const UserVerify = async (
     if (!isSmsValid) {
       return sendError(res, 401, "smsCodeisInvalid");
     }
+    let age: number | null;
+    try {
+      age = calculateAge(pending.dateOfBirth);
+    } catch {
+      return sendError(res, 400, "invalidDateOfBirth");
+    }
+
     const fullName = `${pending.firstName} ${pending.lastName}`;
-    const age = calculateAge(pending.dateOfBirth);
 
     const user = await prisma.user.create({
       data: {
@@ -509,10 +516,11 @@ export const refreshToken = async (
       return sendError(res, 401, "unauthorized");
     }
 
-    const decoded = await verifyRefreshToken(oldRefreshToken);
-
-    if (!decoded) {
-      return sendError(res, 401, "unauthorized");
+    let decoded;
+    try {
+      decoded = await verifyRefreshToken(oldRefreshToken);
+    } catch {
+      return sendError(res, 401, "invalidRefreshToken");
     }
 
     const { token: newAccessToken, expiresIn: accessExpires } =

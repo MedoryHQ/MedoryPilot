@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
-import { getEnvVariable } from "@/config/env";
+import { getEnvVariable } from "@/config";
+import { sendError } from "../helpers";
+import { User } from "@/types/global";
 
 const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -8,35 +10,20 @@ const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
     const accessToken = req.cookies.accessToken;
 
     if (!token && !accessToken) {
-      return res.status(401).json({
-        success: false,
-        msg: "დასაშვებად გთხოვთ გაიაროთ ავტორიზაცია",
-      });
+      return sendError(res, 401, "noTokenProvided");
     }
+
     const tokenData = token ? token : accessToken;
 
     const decoded = jwt.verify(
       tokenData,
       getEnvVariable("JWT_ACCESS_SECRET")
-    ) as {
-      id: string;
-      email: string;
-    };
+    ) as User;
 
-    (
-      req as unknown as {
-        user: {
-          id: string;
-          email: string;
-        };
-      }
-    ).user = decoded;
+    (req as any).user = decoded;
     next();
   } catch (error) {
-    return res.status(401).json({
-      success: false,
-      msg: "ავტორიზაციის ტოკენი არასწორია ან ვადაგასულია",
-    });
+    return sendError(res, 401, "unauthorized");
   }
 };
 
@@ -47,39 +34,20 @@ const isAuthenticatedAdmin = (
 ) => {
   try {
     const token = req.get("authorization")?.split(" ")[1];
+    if (!token) return sendError(res, 401, "noTokenProvided");
 
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        msg: "არ გაქვთ წვდომა",
-      });
-    }
-
-    const decoded = jwt.verify(token, getEnvVariable("JWT_REFRESH_SECRET")) as {
+    const decoded = jwt.verify(
+      token,
+      getEnvVariable("ADMIN_JWT_REFRESH_SECRET")
+    ) as {
       userId: string;
-      role: string;
     };
 
-    if (decoded.role !== "ADMIN" && decoded.role !== "SUPER_ADMIN") {
-      return res.status(401).json({
-        success: false,
-        msg: "არ გაქვთ წვდომა",
-      });
-    }
-
-    (
-      req as unknown as {
-        user: {
-          userId: string;
-          role: string;
-        };
-      }
-    ).user = decoded;
+    (req as any).user = decoded;
     next();
   } catch (error) {
-    return res
-      .status(401)
-      .json({ success: false, msg: (error as { message: string }).message });
+    return sendError(res, 401, "invalidRefreshToken");
   }
 };
+
 export { isAuthenticated, isAuthenticatedAdmin };

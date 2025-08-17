@@ -19,7 +19,6 @@ userAuthRouter.post(
   "/register",
   userRegisterValidation,
   validationHandler,
-
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return userAuthController.UserRegister(req, res, next);
@@ -35,7 +34,6 @@ userAuthRouter.post(
   "/verify",
   userVerifyValidation,
   validationHandler,
-
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return userAuthController.UserVerify(req, res, next);
@@ -51,7 +49,6 @@ userAuthRouter.post(
   "/login",
   userLoginValidation,
   validationHandler,
-
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return userAuthController.UserLogin(req, res, next);
@@ -67,7 +64,6 @@ userAuthRouter.post(
   "/verification-resend",
   resendUserVerificationCodeValidation,
   validationHandler,
-
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return userAuthController.resendUserVerificationCode(req, res, next);
@@ -83,7 +79,6 @@ userAuthRouter.post(
   "/forgot-password",
   forgotUserPasswordValidation,
   validationHandler,
-
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return userAuthController.forgotPassword(req, res, next);
@@ -97,7 +92,6 @@ userAuthRouter.post(
   "/forgot-password/with-email",
   forgotUserPasswordWithEmailValidation,
   validationHandler,
-
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return userAuthController.forgotPasswordWithEmail(req, res, next);
@@ -111,7 +105,6 @@ userAuthRouter.post(
   "/forgot-password-verification",
   forgotPasswordVerificationValidation,
   validationHandler,
-
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return userAuthController.forgotPasswordVerification(req, res, next);
@@ -125,7 +118,6 @@ userAuthRouter.post(
   "/password-reset",
   resetPasswordValidation,
   validationHandler,
-
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return userAuthController.resetPassword(req, res, next);
