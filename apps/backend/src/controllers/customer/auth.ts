@@ -14,6 +14,7 @@ import {
   // mailer,
   verifyRefreshToken,
   inMinutes,
+  logError,
 } from "@/utils";
 import {
   ICreatePendingUser,
@@ -25,6 +26,7 @@ import {
   IUserLogin,
   IUserVerify,
 } from "@/types/customer";
+import logger from "@/logger";
 
 export const UserRegister = async (
   req: Request,
@@ -41,6 +43,14 @@ export const UserRegister = async (
       dateOfBirth,
       password,
     } = req.body as ICreatePendingUser;
+
+    logger.info("User registration attempt", {
+      ip: req.ip,
+      path: req.path,
+      method: req.method,
+      phoneNumber,
+      email,
+    });
 
     const existingUser = await prisma.pendingUser.findUnique({
       where: {
@@ -89,6 +99,13 @@ export const UserRegister = async (
 
     // if (!smsResponse.success) return sendError(req, res, 500, "smsSendFaild")
 
+    logger.info("User registered successfully", {
+      ip: req.ip,
+      path: req.path,
+      userId: newPendingUser.id,
+      phoneNumber: newPendingUser.phoneNumber,
+    });
+
     return res.status(200).json({
       message: getResponseMessage("smsVerificationSent"),
       data: {
@@ -97,6 +114,11 @@ export const UserRegister = async (
       },
     });
   } catch (error) {
+    logError("User registration exception", error, {
+      phoneNumber: req.body.phoneNumber,
+      ip: req.ip,
+    });
+
     return next(error);
   }
 };
@@ -108,6 +130,7 @@ export const UserVerify = async (
 ) => {
   try {
     const { code, id, phoneNumber } = req.body as IUserVerify;
+    logger.info("User verification attempt", { ip: req.ip, id, phoneNumber });
 
     const pending = await prisma.pendingUser.findUnique({
       where: {
@@ -188,6 +211,12 @@ export const UserVerify = async (
 
     const { passwordHash, smsCode, info, ...userData } = user;
 
+    logger.info("User verified successfully", {
+      ip: req.ip,
+      userId: user.id,
+      phoneNumber,
+    });
+
     return res.status(200).json({
       message: getResponseMessage("verificationSuccessful"),
       data: {
@@ -196,7 +225,10 @@ export const UserVerify = async (
       },
     });
   } catch (error) {
-    console.error("Verification error:", error);
+    logError("User verification exception", error, {
+      phoneNumber: req.body.phoneNumber,
+      ip: req.ip,
+    });
     return next(error);
   }
 };
@@ -208,6 +240,8 @@ export const UserLogin = async (
 ) => {
   try {
     const { phoneNumber, password } = req.body as IUserLogin;
+
+    logger.info("User login attempt", { ip: req.ip, phoneNumber });
 
     const user = await prisma.user.findUnique({
       where: {
@@ -258,6 +292,8 @@ export const UserLogin = async (
 
     const { passwordHash, smsCode, info, ...userData } = user;
 
+    logger.info("User login success", { ip: req.ip, userId: user.id });
+
     return res.status(200).json({
       message: getResponseMessage("loginSuccessful"),
       data: {
@@ -267,6 +303,10 @@ export const UserLogin = async (
       },
     });
   } catch (error) {
+    logError("User login exception", error, {
+      phoneNumber: req.body.phoneNumber,
+      ip: req.ip,
+    });
     return next(error);
   }
 };
@@ -278,6 +318,8 @@ export const resendUserVerificationCode = async (
 ) => {
   try {
     const { phoneNumber } = req.body as IResendUserVerificationCode;
+
+    logger.info("Resend verification attempt", { ip: req.ip, phoneNumber });
 
     const user = await prisma.pendingUser.findUnique({
       where: {
@@ -313,10 +355,21 @@ export const resendUserVerificationCode = async (
 
     // if (!smsResponse.success) return sendError(req, res, 500, "smsSendFaild")
 
+    logger.info("Verification code resent successfully", {
+      ip: req.ip,
+      userId: user.id,
+      phoneNumber,
+    });
+
     return res.status(200).json({
       message: getResponseMessage("verificationCodeResent"),
     });
   } catch (error) {
+    logError("Resend verification exception", error, {
+      ip: req.ip,
+      phoneNumber: req.body.phoneNumber,
+    });
+
     return next(error);
   }
 };
@@ -363,10 +416,21 @@ export const forgotPassword = async (
       },
     });
 
+    logger.info("Forgot password code sent", {
+      ip: req.ip,
+      userId: user.id,
+      phoneNumber,
+    });
+
     return res.status(200).json({
       message: getResponseMessage("codeSent"),
     });
   } catch (error) {
+    logError("Forgot password exception", error, {
+      ip: req.ip,
+      phoneNumber: req.body.phoneNumber,
+    });
+
     next(error);
   }
 };
@@ -407,11 +471,21 @@ export const forgotPasswordWithEmail = async (
         smsCodeExpiresAt: inMinutes(5),
       },
     });
+    logger.info("Forgot password code sent via email", {
+      ip: req.ip,
+      userId: user.id,
+      email,
+    });
 
     return res.status(200).json({
       message: getResponseMessage("codeSent"),
     });
   } catch (error) {
+    logError("Forgot password by email exception", error, {
+      ip: req.ip,
+      email: req.body.email,
+    });
+
     next(error);
   }
 };
@@ -444,11 +518,21 @@ export const forgotPasswordVerification = async (
     if (!isSmsValid) {
       return sendError(req, res, 401, "smsCodeisInvalid");
     }
+    logger.info("Forgot password code verified successfully", {
+      ip: req.ip,
+      userId: user.id,
+      phoneNumber,
+    });
 
     return res.status(200).json({
       message: getResponseMessage("codeVerified"),
     });
   } catch (error) {
+    logError("Forgot password verification exception", error, {
+      ip: req.ip,
+      phoneNumber: req.body.phoneNumber,
+    });
+
     next(error);
   }
 };
@@ -495,11 +579,24 @@ export const resetPassword = async (
       },
     });
 
+    logger.info("Password reset successfully", {
+      ip: req.ip,
+      userId: user.id,
+      phoneNumber,
+      email,
+    });
+
     return res.status(200).json({
       message: getResponseMessage("passwordChanged"),
       user: newUser,
     });
   } catch (error) {
+    logError("Reset password exception", error, {
+      ip: req.ip,
+      phoneNumber: req.body.phoneNumber,
+      email: req.body.email,
+    });
+
     next(error);
   }
 };
@@ -556,11 +653,18 @@ export const refreshToken = async (
       ...cookieOptions,
       maxAge: refreshExpires,
     });
+    logger.info("Refresh token successfully renewed", {
+      ip: req.ip,
+      userId: decoded.id,
+      phoneNumber: decoded.phoneNumber,
+    });
 
     return res.status(200).json({
       message: getResponseMessage("tokenRefreshed"),
     });
   } catch (error) {
+    logError("Refresh token exception", error, { ip: req.ip });
+
     return next(error);
   }
 };
