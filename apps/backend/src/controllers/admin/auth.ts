@@ -5,8 +5,10 @@ import {
   sendError,
   verifyField,
   cookieOptions,
+  logError,
 } from "@/utils";
 import { NextFunction, Response, Request } from "express";
+import logger from "@/logger";
 
 export const login = async (
   req: Request,
@@ -15,6 +17,8 @@ export const login = async (
 ) => {
   try {
     const { email, password } = req.body;
+
+    logger.info("Login attempt", { email, ip: req.ip });
 
     const user = await prisma.admin.findUnique({ where: { email } });
     if (!user) {
@@ -42,6 +46,8 @@ export const login = async (
       maxAge: refresh.expiresIn,
     });
 
+    logger.info("Login success", { userId: user.id, email: user.email });
+
     return res.json({
       data: {
         user: userData,
@@ -50,7 +56,8 @@ export const login = async (
         userType: "ADMIN",
       },
     });
-  } catch (error) {
+  } catch (error: unknown) {
+    logError("Login exception", error, { email: req.body.email, ip: req.ip });
     next(error);
   }
 };
@@ -61,12 +68,16 @@ export const renew = async (
   next: NextFunction
 ) => {
   try {
+    logger.info("Token renew attempt", { userId: req.user?.id, ip: req.ip });
+
     const user = await prisma.admin.findUnique({
       where: { id: req.user.id },
       omit: { passwordHash: true },
     });
 
     if (!user) return sendError(res, 404, "userNotFound");
+
+    logger.info("Token renew success", { userId: user.id, email: user.email });
 
     return res.json({
       data: {
@@ -75,6 +86,7 @@ export const renew = async (
       },
     });
   } catch (error) {
+    logError("Renew exception", error, { userId: req.user?.id });
     next(error);
   }
 };
