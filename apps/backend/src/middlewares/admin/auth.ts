@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { getEnvVariable } from "../../config";
-import { User } from "../../types/global";
-import { getTokenFromRequest, sendError } from "../../utils";
+import { getEnvVariable } from "@/config";
+import { User } from "@/types/global";
+import { getTokenFromRequest, sendError } from "@/utils";
 
 type TokenPayload = JwtPayload & User;
 

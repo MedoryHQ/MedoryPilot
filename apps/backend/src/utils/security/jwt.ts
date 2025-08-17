@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
-import { getEnvVariable } from "../../config";
-import { prisma } from "../../config/prisma";
-import { User } from "../../types/global";
+import { getEnvVariable, prisma } from "@/config";
+import { User } from "@/types/global";
 
 const ACCESS_TOKEN_EXPIRES_IN = "1h";
 const REFRESH_TOKEN_EXPIRES_IN = "7d";

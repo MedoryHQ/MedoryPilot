@@ -1,12 +1,12 @@
-import { prisma } from "../../config";
+import { prisma } from "@/config";
 import {
   generateAccessToken,
   generateRefreshToken,
   sendError,
   verifyField,
-} from "../../utils";
+  cookieOptions,
+} from "@/utils";
 import { NextFunction, Response, Request } from "express";
-import { cookieOptions } from "../../utils/constants";
 
 export const login = async (
   req: Request,

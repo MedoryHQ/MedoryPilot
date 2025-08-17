@@ -1,6 +1,6 @@
 import { NextFunction, Router, Request, Response } from "express";
-import { GLOBAL_ERROR_MESSAGE } from "../../utils";
-import * as userAuthController from "../../controllers/customer/auth";
+import { GLOBAL_ERROR_MESSAGE } from "@/utils";
+import * as userAuthController from "@/controllers/customer/auth";
 import {
   userLoginValidation,
   userRegisterValidation,
@@ -10,7 +10,7 @@ import {
   forgotPasswordVerificationValidation,
   resetPasswordValidation,
   forgotUserPasswordWithEmailValidation,
-} from "../../validations/customer";
+} from "@/validations/customer";
 import { validationHandler } from "@/middlewares/global/validationHandler";
 
 export const userAuthRouter = Router();

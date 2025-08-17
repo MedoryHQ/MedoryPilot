@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
-import { getEnvVariable } from "../../config/env";
+import { getEnvVariable } from "@/config/env";
 
 const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
   try {

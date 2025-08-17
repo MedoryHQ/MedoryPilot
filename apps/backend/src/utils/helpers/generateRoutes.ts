@@ -1,6 +1,6 @@
 import { Express } from "express";
-import * as AdminRoutes from "../../routes/admin";
-import * as CustomerRoutes from "../../routes/customer";
+import * as AdminRoutes from "@/routes/admin";
+import * as CustomerRoutes from "@/routes/customer";
 
 const adminRouteList = [
   { path: "/auth", router: AdminRoutes.adminAuthRouter },

@@ -1,4 +1,4 @@
-import { getEnvVariable } from "../../src/config";
+import { getEnvVariable } from "@/config";
 import { Prisma, PrismaClient } from "@prisma/client";
 import * as bcrypt from "bcrypt";
 

@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { Pagination } from "../../types/global";
+import { Pagination } from "@/types/global";
 
 export const getPaginationAndFilters = (req: Request): Pagination => {
   const page = parseInt(req.query.page as string) || 1;

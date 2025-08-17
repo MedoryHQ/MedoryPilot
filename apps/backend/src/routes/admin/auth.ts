@@ -1,8 +1,8 @@
 import { NextFunction, Router, Request, Response } from "express";
-import { GLOBAL_ERROR_MESSAGE } from "../../utils";
-import * as authController from "../../controllers/admin/auth";
-import { loginValidation } from "../../validations/admin/";
-import { adminAuthenticate } from "../../middlewares/admin";
+import { GLOBAL_ERROR_MESSAGE } from "@/utils";
+import * as authController from "@/controllers/admin/auth";
+import { loginValidation } from "@/validations/admin/";
+import { adminAuthenticate } from "@/middlewares/admin";
 import { validationHandler } from "@/middlewares/global/validationHandler";
 
 export const adminAuthRouter = Router();

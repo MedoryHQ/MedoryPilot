@@ -1,3 +1,4 @@
+import "module-alias/register";
 import express from "express";
 import path from "path";
 import { generateRoutes } from "./utils";
@@ -6,7 +7,7 @@ import fs from "fs";
 import { getEnvVariable, prisma } from "./config";
 import cookies from "cookie-parser";
 import http from "http";
-import { startCronJobs } from "cron-jobs/run-cron-jobs";
+import { startCronJobs } from "@/cron-jobs/run-cron-jobs";
 
 const allowedOrigins = [
   getEnvVariable("CLIENT_URL"),

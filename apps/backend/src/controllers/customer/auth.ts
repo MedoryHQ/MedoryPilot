@@ -1,4 +1,4 @@
-import { prisma } from "../../config";
+import { prisma } from "@/config";
 import { NextFunction, Request, Response } from "express";
 import {
   calculateAge,
@@ -14,7 +14,7 @@ import {
   // mailer,
   verifyRefreshToken,
   inMinutes,
-} from "../../utils";
+} from "@/utils";
 import {
   ICreatePendingUser,
   IForgetPasswordWithEmail,
@@ -24,7 +24,7 @@ import {
   IResetPassword,
   IUserLogin,
   IUserVerify,
-} from "../../types/customer";
+} from "@/types/customer";
 
 export const UserRegister = async (
   req: Request,
