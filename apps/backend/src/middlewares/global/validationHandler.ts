@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { validationResult } from "express-validator";
 import { errorMessages, TranslatedMessage } from "@/utils";
+import logger from "@/logger";
 
 type ValidationErrorShape = {
   msg: any;
@@ -83,6 +84,17 @@ export const validationHandler = (
       location: err.location,
       message: { en: String(rawMsg), ka: String(rawMsg) } as TranslatedMessage,
     };
+  });
+
+  const errorKeys = rawErrors.map((err) =>
+    typeof err.msg === "string" ? err.msg : "unknown"
+  );
+
+  logger.warn("Validation failed", {
+    path: req.path,
+    method: req.method,
+    user: req.user ? { id: req.user.id } : { ip: req.ip },
+    errors: errorKeys,
   });
 
   return res.status(400).json({ errors: mapped });

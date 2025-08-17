@@ -49,7 +49,7 @@ export const UserRegister = async (
     });
 
     if (existingUser) {
-      return sendError(res, 409, "phoneAlreadyExists");
+      return sendError(req, res, 409, "phoneAlreadyExists");
     }
 
     const passwordHash = await createPassword(password);
@@ -63,7 +63,7 @@ export const UserRegister = async (
     try {
       age = calculateAge(dateOfBirth);
     } catch {
-      return sendError(res, 400, "invalidDateOfBirth");
+      return sendError(req, res, 400, "invalidDateOfBirth");
     }
 
     const newPendingUser = await prisma.pendingUser.create({
@@ -87,7 +87,7 @@ export const UserRegister = async (
     //   `Verification Code: ${smsCode}`
     // );
 
-    // if (!smsResponse.success) return sendError(res, 500, "smsSendFaild")
+    // if (!smsResponse.success) return sendError(req, res, 500, "smsSendFaild")
 
     return res.status(200).json({
       message: getResponseMessage("smsVerificationSent"),
@@ -116,22 +116,22 @@ export const UserVerify = async (
       },
     });
 
-    if (!pending) return sendError(res, 404, "userNotFound");
+    if (!pending) return sendError(req, res, 404, "userNotFound");
 
     if (new Date(pending?.smsCodeExpiresAt) < new Date()) {
-      return sendError(res, 400, "verificationCodeExpired");
+      return sendError(req, res, 400, "verificationCodeExpired");
     }
 
     const isSmsValid = pending.smsCode && verifyField(code, pending.smsCode);
 
     if (!isSmsValid) {
-      return sendError(res, 401, "smsCodeisInvalid");
+      return sendError(req, res, 401, "smsCodeisInvalid");
     }
     let age: number | null;
     try {
       age = calculateAge(pending.dateOfBirth);
     } catch {
-      return sendError(res, 400, "invalidDateOfBirth");
+      return sendError(req, res, 400, "invalidDateOfBirth");
     }
 
     const fullName = `${pending.firstName} ${pending.lastName}`;
@@ -215,12 +215,12 @@ export const UserLogin = async (
       },
     });
 
-    if (!user) return sendError(res, 404, "userNotFound");
+    if (!user) return sendError(req, res, 404, "userNotFound");
 
     const isPasswordValid = verifyField(password, user.passwordHash);
 
     if (!isPasswordValid) {
-      return sendError(res, 400, "invalidPassword");
+      return sendError(req, res, 400, "invalidPassword");
     }
 
     const {
@@ -285,10 +285,10 @@ export const resendUserVerificationCode = async (
       },
     });
 
-    if (!user) return sendError(res, 404, "userNotFound");
+    if (!user) return sendError(req, res, 404, "userNotFound");
 
     if (user.smsCodeExpiresAt && new Date(user.smsCodeExpiresAt) > new Date()) {
-      return sendError(res, 400, "verificationCodeStillValid");
+      return sendError(req, res, 400, "verificationCodeStillValid");
     }
 
     const {
@@ -311,7 +311,7 @@ export const resendUserVerificationCode = async (
     //   `Verification Code: ${smsCode}`
     // );
 
-    // if (!smsResponse.success) return sendError(res, 500, "smsSendFaild")
+    // if (!smsResponse.success) return sendError(req, res, 500, "smsSendFaild")
 
     return res.status(200).json({
       message: getResponseMessage("verificationCodeResent"),
@@ -335,10 +335,10 @@ export const forgotPassword = async (
       },
     });
 
-    if (!user) return sendError(res, 404, "userNotFound");
+    if (!user) return sendError(req, res, 404, "userNotFound");
 
     if (user.smsCodeExpiresAt && new Date(user.smsCodeExpiresAt) > new Date()) {
-      return sendError(res, 400, "verificationCodeStillValid");
+      return sendError(req, res, 400, "verificationCodeStillValid");
     }
 
     const {
@@ -351,7 +351,7 @@ export const forgotPassword = async (
     //   `Verification Code: ${smsCode}, please enter code for reset.`
     // );
 
-    // if (!smsResponse.success) return sendError(res, 500, "smsSendFaild")
+    // if (!smsResponse.success) return sendError(req, res, 500, "smsSendFaild")
 
     await prisma.user.update({
       where: {
@@ -385,10 +385,10 @@ export const forgotPasswordWithEmail = async (
       },
     });
 
-    if (!user) return sendError(res, 404, "userNotFound");
+    if (!user) return sendError(req, res, 404, "userNotFound");
 
     if (user.smsCodeExpiresAt && new Date(user.smsCodeExpiresAt) > new Date()) {
-      return sendError(res, 400, "verificationCodeStillValid");
+      return sendError(req, res, 400, "verificationCodeStillValid");
     }
 
     const {
@@ -430,19 +430,19 @@ export const forgotPasswordVerification = async (
       },
     });
 
-    if (!user || !user.smsCode) return sendError(res, 404, "userNotFound");
+    if (!user || !user.smsCode) return sendError(req, res, 404, "userNotFound");
 
     if (
       !user.smsCodeExpiresAt ||
       new Date(user.smsCodeExpiresAt) < new Date()
     ) {
-      return sendError(res, 400, "verificationCodeExpired");
+      return sendError(req, res, 400, "verificationCodeExpired");
     }
 
     const isSmsValid = verifyField(smsCode, user.smsCode);
 
     if (!isSmsValid) {
-      return sendError(res, 401, "smsCodeisInvalid");
+      return sendError(req, res, 401, "smsCodeisInvalid");
     }
 
     return res.status(200).json({
@@ -469,19 +469,19 @@ export const resetPassword = async (
 
     const user = await prisma.user.findUnique({ where: whereClause });
 
-    if (!user || !user.smsCode) return sendError(res, 404, "userNotFound");
+    if (!user || !user.smsCode) return sendError(req, res, 404, "userNotFound");
 
     if (
       !user.smsCodeExpiresAt ||
       new Date(user.smsCodeExpiresAt) < new Date()
     ) {
-      return sendError(res, 400, "verificationCodeExpired");
+      return sendError(req, res, 400, "verificationCodeExpired");
     }
 
     const isSmsValid = verifyField(smsCode, user.smsCode);
 
     if (!isSmsValid) {
-      return sendError(res, 401, "smsCodeisInvalid");
+      return sendError(req, res, 401, "smsCodeisInvalid");
     }
     const passwordHash = await createPassword(password);
 
@@ -513,14 +513,14 @@ export const refreshToken = async (
     const oldRefreshToken = req.cookies.refreshToken;
 
     if (!oldRefreshToken) {
-      return sendError(res, 401, "unauthorized");
+      return sendError(req, res, 401, "unauthorized");
     }
 
     let decoded;
     try {
       decoded = await verifyRefreshToken(oldRefreshToken);
     } catch {
-      return sendError(res, 401, "invalidRefreshToken");
+      return sendError(req, res, 401, "invalidRefreshToken");
     }
 
     const { token: newAccessToken, expiresIn: accessExpires } =

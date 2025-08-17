@@ -12,6 +12,7 @@ const morganMiddleware = morgan(
       responseTime: tokens["response-time"](req, res) + " ms",
       ip: req.ip,
       userAgent: req.headers["user-agent"],
+      user: req.user?.id || null,
     });
   },
   {

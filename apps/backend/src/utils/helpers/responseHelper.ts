@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Response, Request } from "express";
 import { ErrorKey, errorMessages, TranslatedMessage } from "./messages";
 import logger from "@/logger";
 
@@ -12,6 +12,7 @@ export function getResponseMessage(messageKey: ErrorKey): TranslatedMessage {
 }
 
 export function sendError(
+  req: Request,
   res: Response,
   statusCode: number,
   messageKey: ErrorKey,
@@ -23,6 +24,9 @@ export function sendError(
     statusCode,
     errorKey: messageKey,
     errorMessage: message.en,
+    path: req.path,
+    method: req.method,
+    user: req.user ? { id: req.user.id } : { ip: req.ip },
     ...meta,
   });
 

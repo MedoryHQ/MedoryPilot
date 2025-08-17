@@ -10,7 +10,7 @@ const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
     const accessToken = req.cookies.accessToken;
 
     if (!token && !accessToken) {
-      return sendError(res, 401, "noTokenProvided");
+      return sendError(req, res, 401, "noTokenProvided");
     }
 
     const tokenData = token ? token : accessToken;
@@ -23,7 +23,7 @@ const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
     (req as any).user = decoded;
     next();
   } catch (error) {
-    return sendError(res, 401, "unauthorized");
+    return sendError(req, res, 401, "unauthorized");
   }
 };
 
@@ -34,7 +34,7 @@ const isAuthenticatedAdmin = (
 ) => {
   try {
     const token = req.get("authorization")?.split(" ")[1];
-    if (!token) return sendError(res, 401, "noTokenProvided");
+    if (!token) return sendError(req, res, 401, "noTokenProvided");
 
     const decoded = jwt.verify(
       token,
@@ -46,7 +46,7 @@ const isAuthenticatedAdmin = (
     (req as any).user = decoded;
     next();
   } catch (error) {
-    return sendError(res, 401, "invalidRefreshToken");
+    return sendError(req, res, 401, "invalidRefreshToken");
   }
 };
 

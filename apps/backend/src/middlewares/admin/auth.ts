@@ -15,14 +15,14 @@ export const adminAuthenticate = (
   const refreshToken = req.cookies?.["refreshToken"];
 
   if (!accessToken || !refreshToken) {
-    return sendError(res, 401, "noTokenProvided");
+    return sendError(req, res, 401, "noTokenProvided");
   }
 
   const accessSecret = getEnvVariable("ADMIN_JWT_ACCESS_SECRET");
   const refreshSecret = getEnvVariable("ADMIN_JWT_REFRESH_SECRET");
 
   if (!accessSecret || !refreshSecret) {
-    return sendError(res, 500, "jwtSecretNotProvided");
+    return sendError(req, res, 500, "jwtSecretNotProvided");
   }
 
   try {
@@ -51,7 +51,7 @@ export const adminAuthenticate = (
       req.user = decodedRefresh;
       return next();
     } catch {
-      return sendError(res, 401, "invalidRefreshToken");
+      return sendError(req, res, 401, "invalidRefreshToken");
     }
   }
 };
