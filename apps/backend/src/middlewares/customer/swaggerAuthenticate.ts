@@ -1,4 +1,4 @@
-import { getEnvVariable } from "../../config";
+import { getEnvVariable } from "@/config";
 import auth from "basic-auth";
 import { Request, Response, NextFunction } from "express";
 

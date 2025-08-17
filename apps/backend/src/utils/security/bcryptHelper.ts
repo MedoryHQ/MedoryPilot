@@ -1,6 +1,6 @@
 import * as bcrypt from "bcrypt";
-import crypto from "crypto";
-import { getEnvVariable } from "../../config";
+// import crypto from "crypto";
+import { getEnvVariable } from "@/config";
 
 export const createPassword = async (password: string) => {
   const saltRounds = Number(getEnvVariable("SALT_ROUNDS") || 10);

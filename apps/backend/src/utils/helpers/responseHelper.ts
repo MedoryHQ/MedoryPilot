@@ -1,162 +1,34 @@
-import { Response } from "express";
-
-export const errorMessages = {
-  // Controller errors
-  userNotFound: {
-    en: "User not found",
-    ka: "მომხმარებელი ვერ მოიძებნა",
-  },
-  invalidCredentials: {
-    en: "Invalid email or password",
-    ka: "არასწორი ელ-ფოსტა ან პაროლი",
-  },
-  invalidRefreshToken: {
-    en: "Access denied. Invalid refresh token.",
-    ka: "წვდომა უარყოფილია. არასწორი refresh ტოკენი.",
-  },
-  jwtSecretNotProvided: {
-    en: "JWT secrets not provided.",
-    ka: "JWT secret-ების მოწოდება აუცილებელია.",
-  },
-  noTokenProvided: {
-    en: "Access denied. No token provided.",
-    ka: "წვდომა უარყოფილია. ტოკენის მოწოდება აუცილებელია",
-  },
-  smsSendFaild: {
-    en: "Failed to send SMS.",
-    ka: "SMS-ის გაგზავნა ვერ მოხერხდა.",
-  },
-  verificationCodeExpired: {
-    en: "Verification code expired",
-    ka: "ვერიფიკაციის კოდი ვადა ამოეწურა",
-  },
-  smsCodeisInvalid: {
-    en: "SMS code is invalid",
-    ka: "SMS კოდი არ არის ვალიდური",
-  },
-  verificationCodeStillValid: {
-    en: "verification code is still valid",
-    ka: "ვერიფიკაციის კოდის ვადა ჯერ არ არის გასული",
-  },
-  unauthorized: {
-    en: "Authorization failed.",
-    ka: "ავტორიზაცია წარუმატებლად დასრულდა.",
-  },
-
-  // Messages
-  smsVerificationSent: {
-    en: "Verification code sent to your phone number.",
-    ka: "ვერიფიკაციის კოდი გამოიგზავნა თქვენს ტელეფონის ნომერზე.",
-  },
-  verificationSuccessful: {
-    en: "Verification successful",
-    ka: "ვერიფიკაცია წარმატებით დასრულდა",
-  },
-  loginSuccessful: {
-    en: "Login successful",
-    ka: "შესახებ წარმატებით დასრულდა",
-  },
-  verificationCodeResent: {
-    en: "Verification code resent successfully",
-    ka: "ვერიფიკაცის კოდი წარმატებით გამოიგზავნა ხელახლა",
-  },
-  codeSent: {
-    en: "Code sent successfully",
-    ka: "კოდი წარმატებით გამოიგზავნა",
-  },
-  codeVerified: {
-    en: "Code verified successfully",
-    ka: "კოდი ვერიფიცირებულია",
-  },
-  tokenRefreshed: {
-    en: "Token refreshed",
-    ka: "ტოკენი განახლდა",
-  },
-
-  // Validation errors
-  invalidPhoneNumber: {
-    en: "Invalid phone number. It should start with +995 followed by the valid number.",
-    ka: "ტელეფონის ნომერი არასწორია. ის უნდა იწყებოდეს +995 ნიშნით და სწორი ნომრით.",
-  },
-  phoneAlreadyExists: {
-    en: "User with this phone number already exists",
-    ka: "მომხმარებელი ამ ტელეფონის ნომრით უკვე არსებობს",
-  },
-  invalidEmail: {
-    en: "Invalid email",
-    ka: "ელ-ფოსტა არასწორია",
-  },
-  emailAlreadyExists: {
-    en: "User with this email already exists",
-    ka: "მომხმარებელი ამ ელ-ფოსტით უკვე არსებობს",
-  },
-  invalidFirstName: {
-    en: "Invalid first name",
-    ka: "სახელი არასწორია",
-  },
-  invalidLastName: {
-    en: "Invalid last name",
-    ka: "გვარი არასწორია",
-  },
-  invalidDateOfBirth: {
-    en: "Invalid date of birth",
-    ka: "დაბადების თარიღი არასწორია",
-  },
-  invalidPersonalId: {
-    en: "Invalid personal ID",
-    ka: "პირადი ნომერი არასწორია",
-  },
-  personalIdLength: {
-    en: "Personal ID must be between 9 and 20 characters long",
-    ka: "პირადი ნომერი უნდა იყოს 9-დან 20 სიმბოლომდე სიგრძის",
-  },
-  invalidPassword: {
-    en: "Invalid password",
-    ka: "პაროლი არასწორია",
-  },
-  passwordLength: {
-    en: "Password must be between 8 and 100 characters long",
-    ka: "პაროლი უნდა იყოს 8-დან 100 სიმბოლომდე სიგრძის",
-  },
-  invalidConfirmPassword: {
-    en: "Invalid confirm password",
-    ka: "პაროლის გადამოწმება არასწორია",
-  },
-  passwordsNotMatch: {
-    en: "Passwords must match",
-    ka: "პაროლები არ ემთხვევა",
-  },
-  invalidId: {
-    en: "Invalid id",
-    ka: "id არასწორია",
-  },
-  invalidCode: {
-    en: "Invalid OTP code",
-    ka: "OTP კოდი არასწორია",
-  },
-  passwordChanged: {
-    en: "Password changed",
-    ka: "პაროლი შეიცვალა",
-  },
-  invalidResetPasswordType: {
-    en: "Reset password type is invalid",
-    ka: "პაროლის აღდგენის ტიპი არასწორია",
-  },
-};
-
-type ErrorKey = keyof typeof errorMessages;
-type TranslatedMessage = (typeof errorMessages)[ErrorKey];
+import { Response, Request } from "express";
+import { ErrorKey, errorMessages, TranslatedMessage } from "./messages";
+import logger from "@/logger";
 
 export function getResponseMessage(messageKey: ErrorKey): TranslatedMessage {
-  return errorMessages[messageKey];
+  return (
+    errorMessages[messageKey] || {
+      en: "Unknown error",
+      ka: "ამოუცნობი შეცდომა",
+    }
+  );
 }
 
 export function sendError(
+  req: Request,
   res: Response,
   statusCode: number,
-  messageKey: ErrorKey
+  messageKey: ErrorKey,
+  meta: Record<string, any> = {}
 ) {
   const message = getResponseMessage(messageKey);
+
+  logger.error("Request failed", {
+    statusCode,
+    errorKey: messageKey,
+    errorMessage: message.en,
+    path: req.path,
+    method: req.method,
+    user: req.user ? { id: req.user.id } : { ip: req.ip },
+    ...meta,
+  });
 
   return res.status(statusCode).json({
     error: message,

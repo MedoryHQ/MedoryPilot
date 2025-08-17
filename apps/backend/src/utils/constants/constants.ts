@@ -1,5 +1,5 @@
-import { getEnvVariable } from "../../config/env";
-import { cookieOptionsTypes } from "../../types/global";
+import { getEnvVariable } from "@/config";
+import { cookieOptionsTypes } from "@/types/global";
 
 export const GLOBAL_ERROR_MESSAGE = "Something went wrong";
 

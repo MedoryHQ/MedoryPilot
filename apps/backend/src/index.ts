@@ -1,3 +1,4 @@
+import "module-alias/register";
 import express from "express";
 import path from "path";
 import { generateRoutes } from "./utils";
@@ -6,7 +7,8 @@ import fs from "fs";
 import { getEnvVariable, prisma } from "./config";
 import cookies from "cookie-parser";
 import http from "http";
-import { startCronJobs } from "cron-jobs/run-cron-jobs";
+import { startCronJobs } from "@/cron-jobs/run-cron-jobs";
+import logger from "./logger";
 
 const allowedOrigins = [
   getEnvVariable("CLIENT_URL"),
@@ -70,7 +72,10 @@ async function main() {
   startCronJobs();
 
   server.listen(PORT, () => {
-    console.log(`Server is running on ${getEnvVariable("SERVER_URL")}`);
+    logger.info("Server started", {
+      url: getEnvVariable("SERVER_URL"),
+      port: PORT,
+    });
   });
 }
 
@@ -79,7 +84,7 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e);
+    logger.error(`Fatal error: ${e.message}`);
     await prisma.$disconnect();
     process.exit(1);
   });

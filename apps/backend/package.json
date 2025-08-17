@@ -4,26 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node src/index.ts",
-    "dev": "nodemon",
-    "build": "tsc && cpy \"uploads/**/*\" ./dist/uploads && cpy ./home-sheets-api-key.json ./dist && cpy \"src/fonts/*.ttf\" ./dist/src/fonts && cpy \"public/**/*\" ./dist/public",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "start": "dotenv -- node dist/src/index.js",
+    "dev": "dotenv -- tsc-watch --onsuccess \"node dist/src/index.js\"",
+    "build": "tsc && cpy \"uploads/**/*\" ./dist/uploads && cpy \"public/**/*\" ./dist/public",
     "serve": "node dist/src/index.js",
     "migrate": "npx prisma migrate deploy",
     "seed": "npx ts-node --files prisma/seed.ts"
-  },
-  "nodemonConfig": {
-    "ignore": [
-      "**/*.test.ts",
-      "**/*.spec.ts",
-      ".git",
-      "node_modules"
-    ],
-    "watch": [
-      "src"
-    ],
-    "exec": "ts-node src/index.ts",
-    "ext": "ts, js"
   },
   "keywords": [],
   "author": "Beka Chaduneli",
@@ -40,11 +28,16 @@
     "@types/express-session": "^1.18.1",
     "@types/google-libphonenumber": "^7.4.30",
     "@types/jest": "^30.0.0",
+    "@types/module-alias": "^2.0.4",
+    "@types/morgan": "^1.9.10",
     "@types/multer": "^1.4.12",
     "@types/node": "^22.8.4",
     "@types/supertest": "^6.0.3",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.7",
+    "cpy": "^12.0.0",
+    "cpy-cli": "^6.0.0",
+    "dotenv-cli": "^10.0.0",
     "eslint": "^9.13.0",
     "globals": "^15.11.0",
     "jest": "^30.0.5",
@@ -52,6 +45,7 @@
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
+    "tsc-watch": "^7.1.1",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.12.2"
@@ -73,11 +67,13 @@
     "exceljs": "^4.4.0",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
-    "express-validator": "^7.2.0",
+    "express-validator": "^7.2.1",
     "google-libphonenumber": "^3.2.40",
     "googleapis": "^146.0.0",
     "jsonwebtoken": "^9.0.2",
     "mailer": "^0.6.7",
+    "module-alias": "^2.2.3",
+    "morgan": "^1.10.1",
     "multer": "^1.4.5-lts.1",
     "node-cron": "^4.1.0",
     "pdfkit": "^0.16.0",
@@ -87,6 +83,12 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^11.0.3",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0",
     "zod": "^4.0.17"
+  },
+  "_moduleAliases": {
+    "@": "dist/src",
+    "@errors": "./dist/src/errors"
   }
 }

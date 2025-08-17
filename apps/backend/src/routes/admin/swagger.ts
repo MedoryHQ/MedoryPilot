@@ -2,8 +2,8 @@ import { Router } from "express";
 import path from "path";
 import swaggerJsDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
-import { getEnvVariable } from "../../config";
-import { swaggerAuthenticate } from "../../middlewares/customer";
+import { getEnvVariable } from "@/config";
+import { swaggerAuthenticate } from "@/middlewares/customer";
 
 const swaggerOptions: swaggerJsDoc.Options = {
   swaggerDefinition: {

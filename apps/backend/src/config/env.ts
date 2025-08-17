@@ -1,3 +1,4 @@
+import logger from "@/logger";
 import { config } from "dotenv";
 import { z } from "zod";
 
@@ -43,12 +44,17 @@ const envSchema = z.object({
   // Swagger
   SWAGGER_USERNAME: z.string().min(1),
   SWAGGER_PASSWORD: z.string().min(1),
+
+  // logging
+  LOG_LEVEL: z.string().default("info"),
 });
 
 const parsed = envSchema.safeParse(process.env);
 
 if (!parsed.success) {
-  console.error("Invalid environment variables:", parsed.error.format());
+  logger.error("Invalid environment variables", {
+    errors: parsed.error.format(),
+  });
   process.exit(1);
 }
 

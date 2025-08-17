@@ -1,8 +1,7 @@
+import { prisma } from "@/config";
+import { Translation } from "@/types/global";
+import { getResponseMessage, isUuid } from "@/utils";
 import { body } from "express-validator";
-import { prisma } from "../../config";
-import { Translation } from "../../types/global";
-import { isUuid } from "./isUuid";
-import { getResponseMessage } from "./responseHelper";
 
 export const validateTranslations = (
   translations: Translation,
@@ -159,10 +158,10 @@ export const phoneValidation = (field = "phoneNumber") =>
   body(field)
     .isString()
     .matches(/^\+9955\d{8}$/)
-    .withMessage(getResponseMessage("invalidPhoneNumber"));
+    .withMessage("invalidPhoneNumber");
 
 export const emailValidation = (field = "email", optional = false) => {
-  let v = body(field).isEmail().withMessage(getResponseMessage("invalidEmail"));
+  let v = body(field).isEmail().withMessage("invalidEmail");
   if (optional) v = v.optional();
   return v;
 };
@@ -170,14 +169,14 @@ export const emailValidation = (field = "email", optional = false) => {
 export const passwordValidation = (field = "password") =>
   body(field)
     .isString()
-    .withMessage(getResponseMessage("invalidPassword"))
+    .withMessage("invalidPassword")
     .isLength({ min: 8, max: 100 })
-    .withMessage(getResponseMessage("passwordLength"));
+    .withMessage("passwordLength");
 
 export const confirmPasswordValidation = () =>
   body("confirmPassword")
     .isString()
-    .withMessage(getResponseMessage("invalidConfirmPassword"))
+    .withMessage("invalidConfirmPassword")
     .custom((value, { req }) => {
       if (value !== req.body.password) {
         throw new Error(getResponseMessage("passwordsNotMatch").en);
@@ -186,4 +185,4 @@ export const confirmPasswordValidation = () =>
     });
 
 export const codeValidation = (field = "code") =>
-  body(field).isString().withMessage(getResponseMessage("invalidCode"));
+  body(field).isString().withMessage("invalidCode");

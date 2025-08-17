@@ -4,11 +4,10 @@ import {
   confirmPasswordValidation,
   emailValidation,
   existanceValidation,
-  getResponseMessage,
   passwordValidation,
   phoneValidation,
   uniqueFieldValidation,
-} from "../../utils";
+} from "../shared";
 
 export const userRegisterValidation = [
   phoneValidation(),
@@ -16,32 +15,24 @@ export const userRegisterValidation = [
   emailValidation("email", true),
   uniqueFieldValidation("email", "user", true),
 
-  body("firstName")
-    .trim()
-    .isString()
-    .withMessage(getResponseMessage("invalidFirstName")),
-  body("lastName")
-    .trim()
-    .isString()
-    .withMessage(getResponseMessage("invalidLastName")),
-  body("dateOfBirth")
-    .isString()
-    .withMessage(getResponseMessage("invalidDateOfBirth")),
+  body("firstName").trim().isString().withMessage("invalidFirstName"),
+  body("lastName").trim().isString().withMessage("invalidLastName"),
+  body("dateOfBirth").isString().withMessage("invalidDateOfBirth"),
 
   body("personalId")
     .isString()
     .trim()
     .notEmpty()
-    .withMessage(getResponseMessage("invalidPersonalId"))
+    .withMessage("invalidPersonalId")
     .isLength({ min: 9, max: 20 })
-    .withMessage(getResponseMessage("personalIdLength")),
+    .withMessage("personalIdLength"),
 
   passwordValidation(),
   confirmPasswordValidation(),
 ];
 
 export const userVerifyValidation = [
-  body("id").isString().withMessage(getResponseMessage("invalidId")),
+  body("id").isString().withMessage("invalidId"),
   phoneValidation(),
   codeValidation("code"),
 ];
@@ -61,7 +52,7 @@ export const forgotPasswordVerificationValidation = [
 export const resetPasswordValidation = [
   body("type")
     .isIn(["phoneNumber", "email"])
-    .withMessage(getResponseMessage("invalidResetPasswordType")),
+    .withMessage("invalidResetPasswordType"),
 
   codeValidation("smsCode"),
 

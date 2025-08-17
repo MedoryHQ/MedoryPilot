@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
-import { getEnvVariable } from "../../config";
-import { prisma } from "../../config/prisma";
-import { User } from "../../types/global";
+import { getEnvVariable, prisma } from "@/config";
+import { User } from "@/types/global";
 
 const ACCESS_TOKEN_EXPIRES_IN = "1h";
 const REFRESH_TOKEN_EXPIRES_IN = "7d";
@@ -25,6 +24,8 @@ export const generateAccessToken = (
       ? getEnvVariable("JWT_ACCESS_SECRET")
       : getEnvVariable("ADMIN_JWT_ACCESS_SECRET");
 
+  if (!secret) throw new Error("JWT secret not provided");
+
   const token = jwt.sign(payload, secret, {
     expiresIn: ACCESS_TOKEN_EXPIRES_IN,
   });
@@ -44,6 +45,8 @@ export const generateRefreshToken = (
       ? getEnvVariable("JWT_REFRESH_SECRET")
       : getEnvVariable("ADMIN_JWT_REFRESH_SECRET");
 
+  if (!secret) throw new Error("JWT secret not provided");
+
   const token = jwt.sign(payload, secret, {
     expiresIn: REFRESH_TOKEN_EXPIRES_IN,
   });
@@ -55,29 +58,29 @@ export const generateRefreshToken = (
 };
 
 export const verifyRefreshToken = async (refreshToken: string) => {
-  const secret = getEnvVariable("JWT_REFRESH_SECRET");
-
   const storedToken = await prisma.refreshToken.findUnique({
     where: { token: refreshToken },
   });
 
   if (!storedToken) {
-    throw new Error("Refresh token not found or already revoked.");
+    throw new Error("Refresh token not found or revoked");
   }
 
   if (new Date(storedToken.expiresAt) < new Date()) {
     await prisma.refreshToken.delete({ where: { token: refreshToken } });
-    throw new Error("Refresh token has expired.");
+    throw new Error("Refresh token expired");
   }
 
+  const secret = getEnvVariable("JWT_REFRESH_SECRET");
+  if (!secret) throw new Error("JWT secret not provided");
+
   try {
-    const decoded = jwt.verify(refreshToken, secret) as {
+    return jwt.verify(refreshToken, secret) as {
       id: string;
       phoneNumber: string;
     };
-    return decoded;
-  } catch (error) {
-    throw new Error("Invalid refresh token.");
+  } catch {
+    throw new Error("Invalid refresh token");
   }
 };
 

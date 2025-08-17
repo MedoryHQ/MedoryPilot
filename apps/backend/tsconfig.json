@@ -3,8 +3,12 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "outDir": "./dist",
-    "baseUrl": "src",
+    "baseUrl": ".",
     "rootDir": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@errors/*": ["src/errors/*"]
+    },
     "target": "es2020",
     "module": "commonjs",
     "forceConsistentCasingInFileNames": true,
@@ -13,6 +17,6 @@
     "skipLibCheck": true
   },
   "include": ["src/**/*.ts", "prisma/**/*.ts"],
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules", "dist"],
   "files": ["src/types/index.d.ts"]
 }

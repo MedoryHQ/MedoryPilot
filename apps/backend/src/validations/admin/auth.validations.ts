@@ -1,7 +1,7 @@
 import { body } from "express-validator";
-import { getResponseMessage, passwordValidation } from "utils";
+import { passwordValidation } from "../shared";
 
 export const loginValidation = [
-  body("email").isEmail().withMessage(getResponseMessage("invalidEmail")),
   passwordValidation(),
+  body("email").isEmail().withMessage("invalidEmail"),
 ];
