@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "start": "dotenv -- node dist/src/index.js",
     "dev": "dotenv -- tsc-watch --onsuccess \"node dist/src/index.js\"",
     "build": "tsc && cpy \"uploads/**/*\" ./dist/uploads && cpy \"public/**/*\" ./dist/public",
@@ -83,6 +84,7 @@
     "zod": "^4.0.17"
   },
   "_moduleAliases": {
-    "@": "dist/src"
+    "@": "dist/src",
+    "@errors": "./dist/src/errors"
   }
 }
