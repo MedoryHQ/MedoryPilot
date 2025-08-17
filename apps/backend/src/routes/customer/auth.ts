@@ -11,20 +11,17 @@ import {
   resetPasswordValidation,
   forgotUserPasswordWithEmailValidation,
 } from "../../validations/customer";
-import { validationResult } from "express-validator";
+import { validationHandler } from "@/middlewares/global/validationHandler";
 
 export const userAuthRouter = Router();
 
 userAuthRouter.post(
   "/register",
   userRegisterValidation,
+  validationHandler,
+
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const errors = validationResult(req);
-
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
       return userAuthController.UserRegister(req, res, next);
     } catch (error) {
       return res
@@ -37,13 +34,10 @@ userAuthRouter.post(
 userAuthRouter.post(
   "/verify",
   userVerifyValidation,
+  validationHandler,
+
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const errors = validationResult(req);
-
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
       return userAuthController.UserVerify(req, res, next);
     } catch (error) {
       return res
@@ -56,13 +50,10 @@ userAuthRouter.post(
 userAuthRouter.post(
   "/login",
   userLoginValidation,
+  validationHandler,
+
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const errors = validationResult(req);
-
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
       return userAuthController.UserLogin(req, res, next);
     } catch (error) {
       return res
@@ -75,13 +66,10 @@ userAuthRouter.post(
 userAuthRouter.post(
   "/verification-resend",
   resendUserVerificationCodeValidation,
+  validationHandler,
+
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const errors = validationResult(req);
-
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
       return userAuthController.resendUserVerificationCode(req, res, next);
     } catch (error) {
       return res
@@ -94,13 +82,10 @@ userAuthRouter.post(
 userAuthRouter.post(
   "/forgot-password",
   forgotUserPasswordValidation,
+  validationHandler,
+
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const errors = validationResult(req);
-
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
       return userAuthController.forgotPassword(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
@@ -111,13 +96,10 @@ userAuthRouter.post(
 userAuthRouter.post(
   "/forgot-password/with-email",
   forgotUserPasswordWithEmailValidation,
+  validationHandler,
+
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const errors = validationResult(req);
-
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
       return userAuthController.forgotPasswordWithEmail(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
@@ -128,14 +110,10 @@ userAuthRouter.post(
 userAuthRouter.post(
   "/forgot-password-verification",
   forgotPasswordVerificationValidation,
+  validationHandler,
+
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const errors = validationResult(req);
-
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
-
       return userAuthController.forgotPasswordVerification(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
@@ -146,14 +124,10 @@ userAuthRouter.post(
 userAuthRouter.post(
   "/password-reset",
   resetPasswordValidation,
+  validationHandler,
+
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const errors = validationResult(req);
-
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
-
       return userAuthController.resetPassword(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });

@@ -4,6 +4,6 @@ export * from "./generateRoutes";
 export * from "./isUuid";
 export * from "./prismaFilter";
 export * from "./utils";
-export * from "./validationHelper";
 export * from "./responseHelper";
 export * from "./email";
+export * from "./messages";
