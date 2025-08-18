@@ -28,6 +28,7 @@ app.use(
 app.use(express.urlencoded({ extended: true }));
 app.use(cookies());
 app.use(logTraffic);
+app.set("trust proxy", true);
 
 app.use(
   "/api",

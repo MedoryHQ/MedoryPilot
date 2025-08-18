@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { validationResult } from "express-validator";
-import { errorMessages, TranslatedMessage } from "@/utils";
+import { errorMessages, getClientIp, hashIp, TranslatedMessage } from "@/utils";
 import logger from "@/logger";
 
 type ValidationErrorShape = {
@@ -17,7 +17,7 @@ type ValidationErrorOutput = {
   message: TranslatedMessage;
 };
 
-export const validationHandler = (
+export const validationHandler = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -90,12 +90,19 @@ export const validationHandler = (
     typeof err.msg === "string" ? err.msg : "unknown"
   );
 
+  const clientIp = getClientIp(req);
+  const hashedIp = await hashIp(clientIp);
+
   logger.warn("Validation failed", {
+    timestamp: new Date().toISOString(),
     statusCode: 400,
     path: req.path,
     method: req.method,
-    user: req.user ? { id: req.user.id } : { ip: req.ip },
+    user: req.user
+      ? { ip: hashedIp, id: req.user.id || "UNKNOWN" }
+      : { ip: hashedIp },
     errors: errorKeys,
+    event: "validation_failed",
   });
 
   return res.status(400).json({ errors: mapped });
