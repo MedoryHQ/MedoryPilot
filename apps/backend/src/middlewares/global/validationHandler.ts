@@ -91,6 +91,7 @@ export const validationHandler = (
   );
 
   logger.warn("Validation failed", {
+    statusCode: 400,
     path: req.path,
     method: req.method,
     user: req.user ? { id: req.user.id } : { ip: req.ip },

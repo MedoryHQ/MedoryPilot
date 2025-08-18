@@ -22,11 +22,13 @@ export const login = async (
 
     const user = await prisma.admin.findUnique({ where: { email } });
     if (!user) {
+      logger.warn("Login failed: user not found", { email, ip: req.ip });
       return sendError(req, res, 404, "userNotFound");
     }
 
     const validPassword = await verifyField(password, user.passwordHash);
     if (!validPassword) {
+      logger.warn("Login failed: invalid password", { email, userId: user.id });
       return sendError(req, res, 401, "invalidCredentials");
     }
 
@@ -75,7 +77,13 @@ export const renew = async (
       omit: { passwordHash: true },
     });
 
-    if (!user) return sendError(req, res, 404, "userNotFound");
+    if (!user) {
+      logger.warn("Token renew failed: user not found", {
+        userId: req.user.id,
+      });
+
+      return sendError(req, res, 404, "userNotFound");
+    }
 
     logger.info("Token renew success", { userId: user.id, email: user.email });
 
