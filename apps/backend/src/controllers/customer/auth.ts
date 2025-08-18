@@ -15,6 +15,10 @@ import {
   verifyRefreshToken,
   inMinutes,
   logCatchyError,
+  getClientIp,
+  hashIp,
+  logInfo,
+  logWarn,
 } from "@/utils";
 import {
   ICreatePendingUser,
@@ -26,7 +30,6 @@ import {
   IUserLogin,
   IUserVerify,
 } from "@/types/customer";
-import logger from "@/logger";
 
 export const UserRegister = async (
   req: Request,
@@ -34,6 +37,9 @@ export const UserRegister = async (
   next: NextFunction
 ) => {
   try {
+    const clientIp = getClientIp(req);
+    const hashedIp = await hashIp(clientIp);
+
     const {
       phoneNumber,
       email,
@@ -44,12 +50,11 @@ export const UserRegister = async (
       password,
     } = req.body as ICreatePendingUser;
 
-    logger.info("User registration attempt", {
-      ip: req.ip,
+    logInfo("User registration attempt", {
+      ip: hashedIp,
       path: req.path,
       method: req.method,
-      phoneNumber,
-      email,
+      event: "user_registration_attempt",
     });
 
     const existingUser = await prisma.pendingUser.findUnique({
@@ -59,9 +64,9 @@ export const UserRegister = async (
     });
 
     if (existingUser) {
-      logger.warn("User registration failed: phone already exists", {
-        ip: req.ip,
-        phoneNumber,
+      logWarn("User registration failed: phone already exists", {
+        ip: hashedIp,
+        event: "user_registration_failed",
       });
       return sendError(req, res, 409, "phoneAlreadyExists");
     }
@@ -103,11 +108,11 @@ export const UserRegister = async (
 
     // if (!smsResponse.success) return sendError(req, res, 500, "smsSendFaild")
 
-    logger.info("User registered successfully", {
-      ip: req.ip,
+    logInfo("User registered successfully", {
+      ip: hashedIp,
       path: req.path,
       userId: newPendingUser.id,
-      phoneNumber: newPendingUser.phoneNumber,
+      event: "user_registered",
     });
 
     return res.status(200).json({
@@ -118,9 +123,12 @@ export const UserRegister = async (
       },
     });
   } catch (error) {
+    const clientIp = getClientIp(req);
+    const hashedIp = await hashIp(clientIp);
+
     logCatchyError("User registration exception", error, {
-      phoneNumber: req.body.phoneNumber,
-      ip: req.ip,
+      ip: hashedIp,
+      event: "user_registration_exception",
     });
 
     return next(error);
@@ -133,8 +141,16 @@ export const UserVerify = async (
   next: NextFunction
 ) => {
   try {
+    const clientIp = getClientIp(req);
+    const hashedIp = await hashIp(clientIp);
+
     const { code, id, phoneNumber } = req.body as IUserVerify;
-    logger.info("User verification attempt", { ip: req.ip, id, phoneNumber });
+
+    logInfo("User verification attempt", {
+      ip: hashedIp,
+      id,
+      event: "user_verification_attempt",
+    });
 
     const pending = await prisma.pendingUser.findUnique({
       where: {
@@ -144,19 +160,19 @@ export const UserVerify = async (
     });
 
     if (!pending) {
-      logger.warn("User verification failed: user not found", {
-        ip: req.ip,
+      logWarn("User verification failed: user not found", {
+        ip: hashedIp,
         id,
-        phoneNumber,
+        event: "user_verification_failed",
       });
       return sendError(req, res, 404, "userNotFound");
     }
 
     if (new Date(pending?.smsCodeExpiresAt) < new Date()) {
-      logger.warn("User verification failed: code expired", {
-        ip: req.ip,
+      logWarn("User verification failed: code expired", {
+        ip: hashedIp,
         id,
-        phoneNumber,
+        event: "user_verification_failed",
       });
       return sendError(req, res, 400, "verificationCodeExpired");
     }
@@ -164,10 +180,10 @@ export const UserVerify = async (
     const isSmsValid = pending.smsCode && verifyField(code, pending.smsCode);
 
     if (!isSmsValid) {
-      logger.warn("User verification failed: invalid code", {
-        ip: req.ip,
+      logWarn("User verification failed: invalid code", {
+        ip: hashedIp,
         id,
-        phoneNumber,
+        event: "user_verification_failed",
       });
       return sendError(req, res, 401, "smsCodeisInvalid");
     }
@@ -232,12 +248,11 @@ export const UserVerify = async (
 
     const { passwordHash, smsCode, info, ...userData } = user;
 
-    logger.info("User verified successfully", {
-      ip: req.ip,
+    logInfo("User verified successfully", {
+      ip: hashedIp,
       userId: user.id,
-      phoneNumber,
+      event: "user_verified",
     });
-
     return res.status(200).json({
       message: getResponseMessage("verificationSuccessful"),
       data: {
@@ -246,10 +261,14 @@ export const UserVerify = async (
       },
     });
   } catch (error) {
+    const clientIp = getClientIp(req);
+    const hashedIp = await hashIp(clientIp);
+
     logCatchyError("User verification exception", error, {
-      phoneNumber: req.body.phoneNumber,
-      ip: req.ip,
+      ip: hashedIp,
+      event: "user_verification_exception",
     });
+
     return next(error);
   }
 };
@@ -260,10 +279,14 @@ export const UserLogin = async (
   next: NextFunction
 ) => {
   try {
+    const clientIp = getClientIp(req);
+    const hashedIp = await hashIp(clientIp);
     const { phoneNumber, password } = req.body as IUserLogin;
 
-    logger.info("User login attempt", { ip: req.ip, phoneNumber });
-
+    logInfo("User login attempt", {
+      ip: hashedIp,
+      event: "user_login_attempt",
+    });
     const user = await prisma.user.findUnique({
       where: {
         phoneNumber: phoneNumber,
@@ -271,16 +294,20 @@ export const UserLogin = async (
     });
 
     if (!user) {
-      logger.warn("User login failed: not found", { ip: req.ip, phoneNumber });
+      logWarn("User login failed: not found", {
+        ip: hashedIp,
+        event: "user_login_failed",
+      });
       return sendError(req, res, 404, "userNotFound");
     }
     const isPasswordValid = verifyField(password, user.passwordHash);
 
     if (!isPasswordValid) {
-      logger.warn("User login failed: invalid password", {
-        id: user.id,
+      logWarn("User login failed: invalid password", {
+        ip: hashedIp,
+        userId: user.id,
+        event: "user_login_failed",
       });
-
       return sendError(req, res, 400, "invalidPassword");
     }
 
@@ -319,8 +346,11 @@ export const UserLogin = async (
 
     const { passwordHash, smsCode, info, ...userData } = user;
 
-    logger.info("User login success", { ip: req.ip, userId: user.id });
-
+    logInfo("User login success", {
+      ip: hashedIp,
+      userId: user.id,
+      event: "user_login_success",
+    });
     return res.status(200).json({
       message: getResponseMessage("loginSuccessful"),
       data: {
@@ -330,9 +360,11 @@ export const UserLogin = async (
       },
     });
   } catch (error) {
+    const clientIp = getClientIp(req);
+    const hashedIp = await hashIp(clientIp);
     logCatchyError("User login exception", error, {
-      phoneNumber: req.body.phoneNumber,
-      ip: req.ip,
+      ip: hashedIp,
+      event: "user_login_exception",
     });
     return next(error);
   }
@@ -344,10 +376,14 @@ export const resendUserVerificationCode = async (
   next: NextFunction
 ) => {
   try {
+    const clientIp = getClientIp(req);
+    const hashedIp = await hashIp(clientIp);
     const { phoneNumber } = req.body as IResendUserVerificationCode;
 
-    logger.info("Resend verification attempt", { ip: req.ip, phoneNumber });
-
+    logInfo("Resend verification attempt", {
+      ip: hashedIp,
+      event: "user_resend_verification_attempt",
+    });
     const user = await prisma.pendingUser.findUnique({
       where: {
         phoneNumber,
@@ -355,16 +391,16 @@ export const resendUserVerificationCode = async (
     });
 
     if (!user) {
-      logger.warn("Resend verification failed: user not found", {
-        ip: req.ip,
-        phoneNumber,
+      logWarn("Resend verification failed: user not found", {
+        ip: hashedIp,
+        event: "user_resend_verification_failed",
       });
       return sendError(req, res, 404, "userNotFound");
     }
     if (user.smsCodeExpiresAt && new Date(user.smsCodeExpiresAt) > new Date()) {
-      logger.warn("Resend verification failed: code still valid", {
-        ip: req.ip,
-        phoneNumber,
+      logWarn("Resend verification failed: code still valid", {
+        ip: hashedIp,
+        event: "user_resend_verification_failed",
       });
 
       return sendError(req, res, 400, "verificationCodeStillValid");
@@ -392,19 +428,21 @@ export const resendUserVerificationCode = async (
 
     // if (!smsResponse.success) return sendError(req, res, 500, "smsSendFaild")
 
-    logger.info("Verification code resent successfully", {
-      ip: req.ip,
+    logInfo("Verification code resent successfully", {
+      ip: hashedIp,
       userId: user.id,
-      phoneNumber,
+      event: "user_verification_code_resent",
     });
 
     return res.status(200).json({
       message: getResponseMessage("verificationCodeResent"),
     });
   } catch (error) {
+    const clientIp = getClientIp(req);
+    const hashedIp = await hashIp(clientIp);
     logCatchyError("Resend verification exception", error, {
-      ip: req.ip,
-      phoneNumber: req.body.phoneNumber,
+      ip: hashedIp,
+      event: "user_resend_verification_exception",
     });
 
     return next(error);
@@ -417,10 +455,14 @@ export const forgotPassword = async (
   next: NextFunction
 ) => {
   try {
+    const clientIp = getClientIp(req);
+    const hashedIp = await hashIp(clientIp);
     const { phoneNumber } = req.body as IForgotPassword;
 
-    logger.info("forget password attempt", { ip: req.ip, phoneNumber });
-
+    logInfo("Forget password attempt", {
+      ip: hashedIp,
+      event: "user_forgot_password_attempt",
+    });
     const user = await prisma.user.findUnique({
       where: {
         phoneNumber,
@@ -428,16 +470,16 @@ export const forgotPassword = async (
     });
 
     if (!user) {
-      logger.warn("Forgot password failed: user not found", {
-        ip: req.ip,
-        phoneNumber,
+      logWarn("Forgot password failed: user not found", {
+        ip: hashedIp,
+        event: "user_forgot_password_failed",
       });
       return sendError(req, res, 404, "userNotFound");
     }
     if (user.smsCodeExpiresAt && new Date(user.smsCodeExpiresAt) > new Date()) {
-      logger.warn("Forgot password failed: code still valid", {
-        ip: req.ip,
-        phoneNumber,
+      logWarn("Forgot password failed: code still valid", {
+        ip: hashedIp,
+        event: "user_forgot_password_failed",
       });
       return sendError(req, res, 400, "verificationCodeStillValid");
     }
@@ -464,19 +506,21 @@ export const forgotPassword = async (
       },
     });
 
-    logger.info("Forgot password code sent", {
-      ip: req.ip,
+    logInfo("Forgot password code sent", {
+      ip: hashedIp,
       userId: user.id,
-      phoneNumber,
+      event: "user_forgot_password_code_sent",
     });
 
     return res.status(200).json({
       message: getResponseMessage("codeSent"),
     });
   } catch (error) {
+    const clientIp = getClientIp(req);
+    const hashedIp = await hashIp(clientIp);
     logCatchyError("Forgot password exception", error, {
-      ip: req.ip,
-      phoneNumber: req.body.phoneNumber,
+      ip: hashedIp,
+      event: "user_forgot_password_exception",
     });
 
     next(error);
@@ -489,10 +533,14 @@ export const forgotPasswordWithEmail = async (
   next: NextFunction
 ) => {
   try {
+    const clientIp = getClientIp(req);
+    const hashedIp = await hashIp(clientIp);
     const { email } = req.body as IForgetPasswordWithEmail;
 
-    logger.info("forget password with email attempt", { ip: req.ip, email });
-
+    logInfo("Forget password with email attempt", {
+      ip: hashedIp,
+      event: "user_forgot_password_email_attempt",
+    });
     const user = await prisma.user.findUnique({
       where: {
         email,
@@ -500,17 +548,17 @@ export const forgotPasswordWithEmail = async (
     });
 
     if (!user) {
-      logger.warn("Forgot password by email failed: user not found", {
-        ip: req.ip,
-        email,
+      logWarn("Forgot password by email failed: user not found", {
+        ip: hashedIp,
+        event: "user_forgot_password_email_failed",
       });
       return sendError(req, res, 404, "userNotFound");
     }
 
     if (user.smsCodeExpiresAt && new Date(user.smsCodeExpiresAt) > new Date()) {
-      logger.warn("Forgot password by email failed: code still valid", {
-        ip: req.ip,
-        email,
+      logWarn("Forgot password by email failed: code still valid", {
+        ip: hashedIp,
+        event: "user_forgot_password_email_failed",
       });
       return sendError(req, res, 400, "verificationCodeStillValid");
     }
@@ -530,19 +578,21 @@ export const forgotPasswordWithEmail = async (
         smsCodeExpiresAt: inMinutes(5),
       },
     });
-    logger.info("Forgot password code sent via email", {
-      ip: req.ip,
+    logInfo("Forgot password code sent via email", {
+      ip: hashedIp,
       userId: user.id,
-      email,
+      event: "user_forgot_password_email_code_sent",
     });
 
     return res.status(200).json({
       message: getResponseMessage("codeSent"),
     });
   } catch (error) {
+    const clientIp = getClientIp(req);
+    const hashedIp = await hashIp(clientIp);
     logCatchyError("Forgot password by email exception", error, {
-      ip: req.ip,
-      email: req.body.email,
+      ip: hashedIp,
+      event: "user_forgot_password_email_exception",
     });
 
     next(error);
@@ -555,12 +605,13 @@ export const forgotPasswordVerification = async (
   next: NextFunction
 ) => {
   try {
+    const clientIp = getClientIp(req);
+    const hashedIp = await hashIp(clientIp);
     const { smsCode, phoneNumber } = req.body as IForgotPasswordVerification;
 
-    logger.info("forget password verification attempt", {
-      ip: req.ip,
-      code: smsCode,
-      phoneNumber,
+    logInfo("Forget password verification attempt", {
+      ip: hashedIp,
+      event: "user_forgot_password_verification_attempt",
     });
 
     const user = await prisma.user.findUnique({
@@ -570,9 +621,9 @@ export const forgotPasswordVerification = async (
     });
 
     if (!user || !user.smsCode) {
-      logger.warn("Forgot password verification failed: user not found", {
-        ip: req.ip,
-        phoneNumber,
+      logWarn("Forgot password verification failed: user not found", {
+        ip: hashedIp,
+        event: "user_forgot_password_verification_failed",
       });
       return sendError(req, res, 404, "userNotFound");
     }
@@ -581,37 +632,37 @@ export const forgotPasswordVerification = async (
       !user.smsCodeExpiresAt ||
       new Date(user.smsCodeExpiresAt) < new Date()
     ) {
-      logger.warn("Forgot password verification failed: code expired", {
-        ip: req.ip,
-        phoneNumber,
+      logWarn("Forgot password verification failed: code expired", {
+        ip: hashedIp,
+        event: "user_forgot_password_verification_failed",
       });
       return sendError(req, res, 400, "verificationCodeExpired");
     }
 
     const isSmsValid = verifyField(smsCode, user.smsCode);
     if (!isSmsValid) {
-      logger.warn("Forgot password verification failed: invalid code", {
-        ip: req.ip,
-        phoneNumber,
+      logWarn("Forgot password verification failed: invalid code", {
+        ip: hashedIp,
+        event: "user_forgot_password_verification_failed",
       });
       return sendError(req, res, 401, "smsCodeisInvalid");
     }
 
-    logger.info("Forgot password code verified successfully", {
-      ip: req.ip,
+    logInfo("Forgot password code verified successfully", {
+      ip: hashedIp,
       userId: user.id,
-      phoneNumber,
+      event: "user_forgot_password_code_verified",
     });
-
     return res.status(200).json({
       message: getResponseMessage("codeVerified"),
     });
   } catch (error) {
+    const clientIp = getClientIp(req);
+    const hashedIp = await hashIp(clientIp);
     logCatchyError("Forgot password verification exception", error, {
-      ip: req.ip,
-      phoneNumber: req.body.phoneNumber,
+      ip: hashedIp,
+      event: "user_forgot_password_verification_exception",
     });
-
     next(error);
   }
 };
@@ -622,17 +673,14 @@ export const resetPassword = async (
   next: NextFunction
 ) => {
   try {
+    const clientIp = getClientIp(req);
+    const hashedIp = await hashIp(clientIp);
     const { type, phoneNumber, email, password, smsCode } =
       req.body as IResetPassword;
 
-    logger.info("reset password attempt", {
-      ip: req.ip,
-      code: smsCode,
-      ...(type === "phoneNumber"
-        ? {
-            phoneNumber,
-          }
-        : { email }),
+    logInfo("Reset password attempt", {
+      ip: hashedIp,
+      event: "user_reset_password_attempt",
     });
 
     const whereClause =
@@ -643,10 +691,9 @@ export const resetPassword = async (
     const user = await prisma.user.findUnique({ where: whereClause });
 
     if (!user || !user.smsCode) {
-      logger.warn("Reset password failed: user not found or no code", {
-        ip: req.ip,
-        phoneNumber,
-        email,
+      logWarn("Reset password failed: user not found or no code", {
+        ip: hashedIp,
+        event: "user_reset_password_failed",
       });
       return sendError(req, res, 404, "userNotFound");
     }
@@ -655,20 +702,18 @@ export const resetPassword = async (
       !user.smsCodeExpiresAt ||
       new Date(user.smsCodeExpiresAt) < new Date()
     ) {
-      logger.warn("Reset password failed: code expired", {
-        ip: req.ip,
-        phoneNumber,
-        email,
+      logWarn("Reset password failed: code expired", {
+        ip: hashedIp,
+        event: "user_reset_password_failed",
       });
       return sendError(req, res, 400, "verificationCodeExpired");
     }
 
     const isSmsValid = verifyField(smsCode, user.smsCode);
     if (!isSmsValid) {
-      logger.warn("Reset password failed: invalid code", {
-        ip: req.ip,
-        phoneNumber,
-        email,
+      logWarn("Reset password failed: invalid code", {
+        ip: hashedIp,
+        event: "user_reset_password_failed",
       });
       return sendError(req, res, 401, "smsCodeisInvalid");
     }
@@ -685,22 +730,21 @@ export const resetPassword = async (
       },
     });
 
-    logger.info("Password reset successfully", {
-      ip: req.ip,
+    logInfo("Password reset successfully", {
+      ip: hashedIp,
       userId: user.id,
-      phoneNumber,
-      email,
+      event: "user_password_reset",
     });
-
     return res.status(200).json({
       message: getResponseMessage("passwordChanged"),
       user: newUser,
     });
   } catch (error) {
+    const clientIp = getClientIp(req);
+    const hashedIp = await hashIp(clientIp);
     logCatchyError("Reset password exception", error, {
-      ip: req.ip,
-      phoneNumber: req.body.phoneNumber,
-      email: req.body.email,
+      ip: hashedIp,
+      event: "user_reset_password_exception",
     });
 
     next(error);
@@ -713,14 +757,19 @@ export const refreshToken = async (
   next: NextFunction
 ) => {
   try {
+    const clientIp = getClientIp(req);
+    const hashedIp = await hashIp(clientIp);
     const oldRefreshToken = req.cookies.refreshToken;
 
-    logger.info("token refresh attempt", {
-      ip: req.ip,
+    logInfo("Token refresh attempt", {
+      ip: hashedIp,
+      event: "user_token_refresh_attempt",
     });
-
     if (!oldRefreshToken) {
-      logger.warn("Refresh token failed: unauthorized", { ip: req.ip });
+      logWarn("Refresh token failed: unauthorized", {
+        ip: hashedIp,
+        event: "user_token_refresh_failed",
+      });
       return sendError(req, res, 401, "unauthorized");
     }
 
@@ -728,7 +777,10 @@ export const refreshToken = async (
     try {
       decoded = await verifyRefreshToken(oldRefreshToken);
     } catch {
-      logger.warn("Refresh token failed: invalid token", { ip: req.ip });
+      logWarn("Refresh token failed: invalid token", {
+        ip: hashedIp,
+        event: "user_token_refresh_failed",
+      });
       return sendError(req, res, 401, "invalidRefreshToken");
     }
 
@@ -765,18 +817,23 @@ export const refreshToken = async (
       ...cookieOptions,
       maxAge: refreshExpires,
     });
-    logger.info("Refresh token successfully renewed", {
-      ip: req.ip,
+
+    logInfo("Refresh token successfully renewed", {
+      ip: hashedIp,
       userId: decoded.id,
-      phoneNumber: decoded.phoneNumber,
+      event: "user_token_refreshed",
     });
 
     return res.status(200).json({
       message: getResponseMessage("tokenRefreshed"),
     });
   } catch (error) {
-    logCatchyError("Refresh token exception", error, { ip: req.ip });
-
+    const clientIp = getClientIp(req);
+    const hashedIp = await hashIp(clientIp);
+    logCatchyError("Refresh token exception", error, {
+      ip: hashedIp,
+      event: "user_token_refresh_exception",
+    });
     return next(error);
   }
 };
