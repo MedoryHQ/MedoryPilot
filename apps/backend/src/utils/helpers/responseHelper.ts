@@ -1,6 +1,8 @@
 import { Response, Request } from "express";
 import { ErrorKey, errorMessages, TranslatedMessage } from "./messages";
 import logger from "@/logger";
+import { getClientIp } from "../logging";
+import { hashIp } from "../security";
 
 export function getResponseMessage(messageKey: ErrorKey): TranslatedMessage {
   return (
@@ -11,7 +13,7 @@ export function getResponseMessage(messageKey: ErrorKey): TranslatedMessage {
   );
 }
 
-export function sendError(
+export async function sendError(
   req: Request,
   res: Response,
   statusCode: number,
@@ -20,13 +22,17 @@ export function sendError(
 ) {
   const message = getResponseMessage(messageKey);
 
+  const hashedIp = await getClientIp(req);
+
   logger.error("Request failed", {
+    timestamp: new Date().toISOString(),
+    event: "request_failed",
     statusCode,
     errorKey: messageKey,
     errorMessage: message.en,
     path: req.path,
     method: req.method,
-    user: req.user ? { id: req.user.id } : { ip: req.ip },
+    user: req.user ? { id: req.user.id, ip: hashedIp } : { ip: hashedIp },
     ...meta,
   });
 

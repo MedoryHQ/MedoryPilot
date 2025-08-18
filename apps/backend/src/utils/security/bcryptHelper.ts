@@ -22,3 +22,10 @@ export const generateSmsCode = async () => {
 export const verifyField = async (plainField: string, hashedField: string) => {
   return bcrypt.compare(plainField, hashedField);
 };
+
+export const hashIp = async (ip: string): Promise<string> => {
+  const saltRounds = Number(getEnvVariable("SALT_ROUNDS") || 10);
+
+  const salt = await bcrypt.genSalt(saltRounds);
+  return bcrypt.hash(ip, salt);
+};

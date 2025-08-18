@@ -47,6 +47,7 @@ const envSchema = z.object({
 
   // logging
   LOG_LEVEL: z.string().default("info"),
+  IP_HASH_SALT: z.string().min(1),
 });
 
 const parsed = envSchema.safeParse(process.env);

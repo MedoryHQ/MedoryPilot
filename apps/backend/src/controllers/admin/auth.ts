@@ -5,10 +5,13 @@ import {
   sendError,
   verifyField,
   cookieOptions,
-  logError,
+  logCatchyError,
+  logInfo,
+  logWarn,
+  getClientIp,
+  hashIp,
 } from "@/utils";
 import { NextFunction, Response, Request } from "express";
-import logger from "@/logger";
 
 export const login = async (
   req: Request,
@@ -16,17 +19,27 @@ export const login = async (
   next: NextFunction
 ) => {
   try {
+    const hashedIp = await getClientIp(req);
     const { email, password } = req.body;
 
-    logger.info("Login attempt", { email, ip: req.ip });
+    logInfo("Login attempt", {
+      ip: hashedIp,
+      path: req.path,
+      method: req.method,
+    });
 
     const user = await prisma.admin.findUnique({ where: { email } });
     if (!user) {
+      logWarn("Login failed: user not found", { ip: hashedIp, path: req.path });
       return sendError(req, res, 404, "userNotFound");
     }
 
     const validPassword = await verifyField(password, user.passwordHash);
     if (!validPassword) {
+      logWarn("Login failed: invalid password", {
+        ip: hashedIp,
+        userId: user.id,
+      });
       return sendError(req, res, 401, "invalidCredentials");
     }
 
@@ -46,7 +59,7 @@ export const login = async (
       maxAge: refresh.expiresIn,
     });
 
-    logger.info("Login success", { userId: user.id, email: user.email });
+    logInfo("Login success", { ip: hashedIp, userId: user.id });
 
     return res.json({
       data: {
@@ -57,7 +70,10 @@ export const login = async (
       },
     });
   } catch (error: unknown) {
-    logError("Login exception", error, { email: req.body.email, ip: req.ip });
+    const hashedIp = await getClientIp(req);
+    logCatchyError("Login exception", error, {
+      ip: hashedIp,
+    });
     next(error);
   }
 };
@@ -68,16 +84,23 @@ export const renew = async (
   next: NextFunction
 ) => {
   try {
-    logger.info("Token renew attempt", { userId: req.user?.id, ip: req.ip });
+    const hashedIp = await getClientIp(req);
+    logInfo("Token renew attempt", { ip: hashedIp, userId: req.user?.id });
 
     const user = await prisma.admin.findUnique({
       where: { id: req.user.id },
       omit: { passwordHash: true },
     });
 
-    if (!user) return sendError(req, res, 404, "userNotFound");
+    if (!user) {
+      logWarn("Token renew failed: user not found", {
+        ip: hashedIp,
+        userId: req.user?.id,
+      });
+      return sendError(req, res, 404, "userNotFound");
+    }
 
-    logger.info("Token renew success", { userId: user.id, email: user.email });
+    logInfo("Token renew success", { ip: hashedIp, userId: user.id });
 
     return res.json({
       data: {
@@ -86,7 +109,8 @@ export const renew = async (
       },
     });
   } catch (error) {
-    logError("Renew exception", error, { userId: req.user?.id });
+    const hashedIp = await getClientIp(req);
+    logInfo("Token renew exception", { ip: hashedIp, userId: req.user?.id });
     next(error);
   }
 };
