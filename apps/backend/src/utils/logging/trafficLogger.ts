@@ -2,6 +2,7 @@ import winston from "winston";
 import DailyRotateFile from "winston-daily-rotate-file";
 import path from "path";
 import { Request } from "express";
+import { hashIp } from "../security";
 
 export const trafficLogger = winston.createLogger({
   level: "info",
@@ -17,10 +18,13 @@ export const trafficLogger = winston.createLogger({
   ],
 });
 
-export function getClientIp(req: Request): string {
+export async function getClientIp(req: Request): Promise<string> {
   const forwarded = req.headers["x-forwarded-for"];
   if (typeof forwarded === "string") {
     return forwarded.split(",")[0].trim();
   }
-  return req.socket?.remoteAddress || req.ip || "unknown";
+  const ip = req.socket?.remoteAddress || req.ip || "Unknown";
+  const hashedIp = await hashIp(ip);
+
+  return hashedIp;
 }

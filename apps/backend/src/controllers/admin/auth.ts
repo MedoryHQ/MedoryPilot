@@ -19,8 +19,7 @@ export const login = async (
   next: NextFunction
 ) => {
   try {
-    const clientIp = getClientIp(req);
-    const hashedIp = await hashIp(clientIp);
+    const hashedIp = await getClientIp(req);
     const { email, password } = req.body;
 
     logInfo("Login attempt", {
@@ -71,9 +70,7 @@ export const login = async (
       },
     });
   } catch (error: unknown) {
-    const clientIp = getClientIp(req);
-    const hashedIp = await hashIp(clientIp);
-
+    const hashedIp = await getClientIp(req);
     logCatchyError("Login exception", error, {
       ip: hashedIp,
     });
@@ -87,9 +84,7 @@ export const renew = async (
   next: NextFunction
 ) => {
   try {
-    const clientIp = getClientIp(req);
-    const hashedIp = await hashIp(clientIp);
-
+    const hashedIp = await getClientIp(req);
     logInfo("Token renew attempt", { ip: hashedIp, userId: req.user?.id });
 
     const user = await prisma.admin.findUnique({
@@ -114,8 +109,7 @@ export const renew = async (
       },
     });
   } catch (error) {
-    const clientIp = getClientIp(req);
-    const hashedIp = await hashIp(clientIp);
+    const hashedIp = await getClientIp(req);
     logInfo("Token renew exception", { ip: hashedIp, userId: req.user?.id });
     next(error);
   }

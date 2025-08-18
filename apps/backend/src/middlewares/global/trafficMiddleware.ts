@@ -8,8 +8,7 @@ export const logTraffic = async (
   res: Response,
   next: NextFunction
 ) => {
-  const ip = getClientIp(req);
-  const hashedIp = await hashIp(ip);
+  const hashedIp = await getClientIp(req);
 
   const parser = new UAParser(req.headers["user-agent"]);
   const browser = parser.getBrowser().name || "Unknown";

@@ -22,8 +22,7 @@ export async function sendError(
 ) {
   const message = getResponseMessage(messageKey);
 
-  const clientIp = getClientIp(req);
-  const hashedIp = await hashIp(clientIp);
+  const hashedIp = await getClientIp(req);
 
   logger.error("Request failed", {
     timestamp: new Date().toISOString(),

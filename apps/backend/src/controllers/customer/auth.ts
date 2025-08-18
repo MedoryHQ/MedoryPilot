@@ -37,9 +37,7 @@ export const UserRegister = async (
   next: NextFunction
 ) => {
   try {
-    const clientIp = getClientIp(req);
-    const hashedIp = await hashIp(clientIp);
-
+    const hashedIp = await getClientIp(req);
     const {
       phoneNumber,
       email,
@@ -123,9 +121,7 @@ export const UserRegister = async (
       },
     });
   } catch (error) {
-    const clientIp = getClientIp(req);
-    const hashedIp = await hashIp(clientIp);
-
+    const hashedIp = await getClientIp(req);
     logCatchyError("User registration exception", error, {
       ip: hashedIp,
       event: "user_registration_exception",
@@ -141,9 +137,7 @@ export const UserVerify = async (
   next: NextFunction
 ) => {
   try {
-    const clientIp = getClientIp(req);
-    const hashedIp = await hashIp(clientIp);
-
+    const hashedIp = await getClientIp(req);
     const { code, id, phoneNumber } = req.body as IUserVerify;
 
     logInfo("User verification attempt", {
@@ -261,9 +255,7 @@ export const UserVerify = async (
       },
     });
   } catch (error) {
-    const clientIp = getClientIp(req);
-    const hashedIp = await hashIp(clientIp);
-
+    const hashedIp = await getClientIp(req);
     logCatchyError("User verification exception", error, {
       ip: hashedIp,
       event: "user_verification_exception",
@@ -279,8 +271,7 @@ export const UserLogin = async (
   next: NextFunction
 ) => {
   try {
-    const clientIp = getClientIp(req);
-    const hashedIp = await hashIp(clientIp);
+    const hashedIp = await getClientIp(req);
     const { phoneNumber, password } = req.body as IUserLogin;
 
     logInfo("User login attempt", {
@@ -360,8 +351,7 @@ export const UserLogin = async (
       },
     });
   } catch (error) {
-    const clientIp = getClientIp(req);
-    const hashedIp = await hashIp(clientIp);
+    const hashedIp = await getClientIp(req);
     logCatchyError("User login exception", error, {
       ip: hashedIp,
       event: "user_login_exception",
@@ -376,8 +366,7 @@ export const resendUserVerificationCode = async (
   next: NextFunction
 ) => {
   try {
-    const clientIp = getClientIp(req);
-    const hashedIp = await hashIp(clientIp);
+    const hashedIp = await getClientIp(req);
     const { phoneNumber } = req.body as IResendUserVerificationCode;
 
     logInfo("Resend verification attempt", {
@@ -438,8 +427,7 @@ export const resendUserVerificationCode = async (
       message: getResponseMessage("verificationCodeResent"),
     });
   } catch (error) {
-    const clientIp = getClientIp(req);
-    const hashedIp = await hashIp(clientIp);
+    const hashedIp = await getClientIp(req);
     logCatchyError("Resend verification exception", error, {
       ip: hashedIp,
       event: "user_resend_verification_exception",
@@ -455,8 +443,7 @@ export const forgotPassword = async (
   next: NextFunction
 ) => {
   try {
-    const clientIp = getClientIp(req);
-    const hashedIp = await hashIp(clientIp);
+    const hashedIp = await getClientIp(req);
     const { phoneNumber } = req.body as IForgotPassword;
 
     logInfo("Forget password attempt", {
@@ -516,8 +503,7 @@ export const forgotPassword = async (
       message: getResponseMessage("codeSent"),
     });
   } catch (error) {
-    const clientIp = getClientIp(req);
-    const hashedIp = await hashIp(clientIp);
+    const hashedIp = await getClientIp(req);
     logCatchyError("Forgot password exception", error, {
       ip: hashedIp,
       event: "user_forgot_password_exception",
@@ -533,8 +519,7 @@ export const forgotPasswordWithEmail = async (
   next: NextFunction
 ) => {
   try {
-    const clientIp = getClientIp(req);
-    const hashedIp = await hashIp(clientIp);
+    const hashedIp = await getClientIp(req);
     const { email } = req.body as IForgetPasswordWithEmail;
 
     logInfo("Forget password with email attempt", {
@@ -588,8 +573,7 @@ export const forgotPasswordWithEmail = async (
       message: getResponseMessage("codeSent"),
     });
   } catch (error) {
-    const clientIp = getClientIp(req);
-    const hashedIp = await hashIp(clientIp);
+    const hashedIp = await getClientIp(req);
     logCatchyError("Forgot password by email exception", error, {
       ip: hashedIp,
       event: "user_forgot_password_email_exception",
@@ -605,8 +589,7 @@ export const forgotPasswordVerification = async (
   next: NextFunction
 ) => {
   try {
-    const clientIp = getClientIp(req);
-    const hashedIp = await hashIp(clientIp);
+    const hashedIp = await getClientIp(req);
     const { smsCode, phoneNumber } = req.body as IForgotPasswordVerification;
 
     logInfo("Forget password verification attempt", {
@@ -657,8 +640,7 @@ export const forgotPasswordVerification = async (
       message: getResponseMessage("codeVerified"),
     });
   } catch (error) {
-    const clientIp = getClientIp(req);
-    const hashedIp = await hashIp(clientIp);
+    const hashedIp = await getClientIp(req);
     logCatchyError("Forgot password verification exception", error, {
       ip: hashedIp,
       event: "user_forgot_password_verification_exception",
@@ -673,8 +655,7 @@ export const resetPassword = async (
   next: NextFunction
 ) => {
   try {
-    const clientIp = getClientIp(req);
-    const hashedIp = await hashIp(clientIp);
+    const hashedIp = await getClientIp(req);
     const { type, phoneNumber, email, password, smsCode } =
       req.body as IResetPassword;
 
@@ -740,8 +721,7 @@ export const resetPassword = async (
       user: newUser,
     });
   } catch (error) {
-    const clientIp = getClientIp(req);
-    const hashedIp = await hashIp(clientIp);
+    const hashedIp = await getClientIp(req);
     logCatchyError("Reset password exception", error, {
       ip: hashedIp,
       event: "user_reset_password_exception",
@@ -757,8 +737,7 @@ export const refreshToken = async (
   next: NextFunction
 ) => {
   try {
-    const clientIp = getClientIp(req);
-    const hashedIp = await hashIp(clientIp);
+    const hashedIp = await getClientIp(req);
     const oldRefreshToken = req.cookies.refreshToken;
 
     logInfo("Token refresh attempt", {
@@ -828,8 +807,7 @@ export const refreshToken = async (
       message: getResponseMessage("tokenRefreshed"),
     });
   } catch (error) {
-    const clientIp = getClientIp(req);
-    const hashedIp = await hashIp(clientIp);
+    const hashedIp = await getClientIp(req);
     logCatchyError("Refresh token exception", error, {
       ip: hashedIp,
       event: "user_token_refresh_exception",

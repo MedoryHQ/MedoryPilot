@@ -90,8 +90,7 @@ export const validationHandler = async (
     typeof err.msg === "string" ? err.msg : "unknown"
   );
 
-  const clientIp = getClientIp(req);
-  const hashedIp = await hashIp(clientIp);
+  const hashedIp = await getClientIp(req);
 
   logger.warn("Validation failed", {
     timestamp: new Date().toISOString(),
