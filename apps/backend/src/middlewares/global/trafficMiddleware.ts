@@ -1,16 +1,28 @@
 import { trafficLogger } from "@/utils";
 import { Request, Response, NextFunction } from "express";
+import { getClientIp, hashIp } from "@/utils";
+import { UAParser } from "ua-parser-js";
 
-export const logTraffic = (req: Request, res: Response, next: NextFunction) => {
-  const ip = req.ip || req.headers["x-forwarded-for"] || "unknown";
-  const userAgent = req.headers["user-agent"] || "unknown";
+export const logTraffic = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const ip = getClientIp(req);
+  const hashedIp = await hashIp(ip);
+
+  const parser = new UAParser(req.headers["user-agent"]);
+  const browser = parser.getBrowser().name || "Unknown";
+  const os = parser.getOS().name || "Unknown";
+
   const path = req.originalUrl;
 
   trafficLogger.info({
     timestamp: new Date().toISOString(),
-    ip,
+    ip: hashedIp,
     path,
-    userAgent,
+    browser,
+    os,
   });
 
   next();
