@@ -163,6 +163,48 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
       const params = res.body.errors.map((e: any) => e.param);
       expect(params).toEqual(expect.arrayContaining(["password", "email"]));
     });
+    it("matches snapshot on successful login", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(mockUser);
+      (verifyField as jest.Mock).mockResolvedValueOnce(true);
+      (generateAccessToken as jest.Mock).mockReturnValueOnce({
+        token: "access123",
+        expiresIn: 1000,
+      });
+      (generateRefreshToken as jest.Mock).mockReturnValueOnce({
+        token: "refresh123",
+        expiresIn: 2000,
+      });
+
+      const res = await request(app)
+        .post("/admin/login")
+        .send({ email: "admin@test.com", password: "correctPass" });
+
+      const setCookieHeader = res.headers["set-cookie"];
+      const normalizedCookies = Array.isArray(setCookieHeader)
+        ? setCookieHeader.map((c: string) =>
+            c
+              .replace(/Expires=[^;]+/, "Expires=<normalized>")
+              .replace(/Max-Age=\d+/, "Max-Age=<normalized>")
+              .replace(/accessToken=[^;]+/, "accessToken=<token>")
+              .replace(/refreshToken=[^;]+/, "refreshToken=<token>")
+          )
+        : [];
+
+      const stableBody = {
+        ...res.body,
+        data: {
+          ...res.body.data,
+          accessToken: res.body?.data?.accessToken ? "<token>" : undefined,
+          refreshToken: res.body?.data?.refreshToken ? "<token>" : undefined,
+        },
+      };
+
+      expect({
+        status: res.status,
+        body: stableBody,
+        cookies: normalizedCookies,
+      }).toMatchSnapshot();
+    });
   });
 
   describe("GET /admin/renew", () => {
@@ -306,6 +348,60 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
         ]);
 
       expect(res.status).toBe(500);
+    });
+
+    it("matches snapshot on renew with valid tokens", async () => {
+      const payload = { id: mockUser.id, email: mockUser.email };
+      const accessToken = jwt.sign(
+        payload,
+        (require("@/config").getEnvVariable as jest.Mock)(
+          "ADMIN_JWT_ACCESS_SECRET"
+        )
+      );
+      const refreshToken = jwt.sign(
+        payload,
+        (require("@/config").getEnvVariable as jest.Mock)(
+          "ADMIN_JWT_REFRESH_SECRET"
+        )
+      );
+
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        passwordHash: undefined,
+      });
+
+      const res = await request(app)
+        .get("/admin/renew")
+        .set("Cookie", [
+          `accessToken=${accessToken}`,
+          `refreshToken=${refreshToken}`,
+        ]);
+
+      const setCookieHeader = res.headers["set-cookie"];
+      const normalizedCookies = Array.isArray(setCookieHeader)
+        ? setCookieHeader.map((c: string) =>
+            c
+              .replace(/Expires=[^;]+/, "Expires=<normalized>")
+              .replace(/Max-Age=\d+/, "Max-Age=<normalized>")
+              .replace(/accessToken=[^;]+/, "accessToken=<token>")
+              .replace(/refreshToken=[^;]+/, "refreshToken=<token>")
+          )
+        : [];
+
+      const stableBody = {
+        ...res.body,
+        data: {
+          ...res.body.data,
+          accessToken: res.body?.data?.accessToken ? "<token>" : undefined,
+          refreshToken: res.body?.data?.refreshToken ? "<token>" : undefined,
+        },
+      };
+
+      expect({
+        status: res.status,
+        body: stableBody,
+        cookies: normalizedCookies,
+      }).toMatchSnapshot();
     });
   });
 });
