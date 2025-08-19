@@ -53,7 +53,11 @@ export const validationHandler = async (
     const rawMsg = err.msg;
 
     if (typeof rawMsg === "string") {
-      const mappedObj = (errorMessages as any)[rawMsg];
+      const mappedObj =
+        rawMsg in errorMessages
+          ? errorMessages[rawMsg as keyof typeof errorMessages]
+          : undefined;
+
       const message = (mappedObj ?? {
         en: rawMsg,
         ka: rawMsg,
