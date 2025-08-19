@@ -11,6 +11,7 @@ const config: Config.InitialOptions = {
     "^@/(.*)$": "<rootDir>/src/$1",
     "^@errors/(.*)$": "<rootDir>/src/errors/$1",
   },
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
 };
 
 export default config;

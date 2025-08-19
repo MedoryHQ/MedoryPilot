@@ -39,14 +39,10 @@ export const adminAuthenticate = (
         expiresIn: "1d",
       });
 
-      res.cookie(
-        "accessToken",
-        { token: newAccessToken },
-        {
-          httpOnly: true,
-          sameSite: "strict",
-        }
-      );
+      res.cookie("accessToken", newAccessToken, {
+        httpOnly: true,
+        sameSite: "strict",
+      });
 
       req.user = decodedRefresh;
       return next();
