@@ -8,6 +8,8 @@ import {
   verifyField,
   errorMessages,
 } from "@/utils";
+import { authMatchers } from "../helpers/authMatchers";
+expect.extend(authMatchers);
 
 const app = express();
 app.use(express.json());
@@ -81,13 +83,8 @@ describe("POST /admin/login", () => {
       .post("/admin/login")
       .send({ email: "admin@test.com", password: "correctPass" });
 
-    expect(res.status).toBe(200);
-    expect(res.body.data).toMatchObject({
-      user: { id: "1", email: "admin@test.com", name: "Test Admin" },
-      accessToken: "access123",
-      refreshToken: "refresh123",
-      userType: "ADMIN",
-    });
+    expect(res).toHaveStatus(200);
+    expect(res.body).toBeValidAdminLoginResponse();
     expect(res.headers["set-cookie"]).toBeDefined();
   });
 
@@ -98,7 +95,7 @@ describe("POST /admin/login", () => {
       .post("/admin/login")
       .send({ email: "unknown@test.com", password: "Password123" });
 
-    expect(res.status).toBe(404);
+    expect(res).toHaveStatus(404);
     expect(res.body.error).toEqual(errorMessages.userNotFound);
   });
 
@@ -110,14 +107,14 @@ describe("POST /admin/login", () => {
       .post("/admin/login")
       .send({ email: "admin@test.com", password: "wrongPass" });
 
-    expect(res.status).toBe(401);
+    expect(res).toHaveStatus(401);
     expect(res.body.error).toEqual(errorMessages.invalidCredentials);
   });
 
   it("Should return 400 if missing fields", async () => {
     const res = await request(app).post("/admin/login").send({ email: "" });
 
-    expect(res.status).toBe(400);
+    expect(res).toHaveStatus(400);
     expect(res.body.errors.map((e: any) => e.param)).toEqual(
       expect.arrayContaining(["password", "email"])
     );
@@ -132,7 +129,7 @@ describe("POST /admin/login", () => {
       .post("/admin/login")
       .send({ email: "admin@test.com", password: "ValidPass123" });
 
-    expect(res.status).toBe(500);
+    expect(res).toHaveStatus(500);
   });
 
   it("Should return 400 if email is invalid format", async () => {
@@ -140,11 +137,9 @@ describe("POST /admin/login", () => {
       .post("/admin/login")
       .send({ email: "not-an-email", password: "ValidPass123" });
 
-    expect(res.status).toBe(400);
+    expect(res).toHaveStatus(400);
     console.log(res.body);
-    expect(res.body.errors.map((e: any) => e.message.en)).toContain(
-      errorMessages.invalidEmail.en
-    );
+    expect(res.body).toHaveErrorMessage("invalidEmail", errorMessages);
   });
 
   it("Should return 400 if password too short", async () => {
@@ -152,10 +147,8 @@ describe("POST /admin/login", () => {
       .post("/admin/login")
       .send({ email: "admin@test.com", password: "short" });
 
-    expect(res.status).toBe(400);
-    expect(res.body.errors.map((e: any) => e.message.en)).toContain(
-      errorMessages.passwordLength.en
-    );
+    expect(res).toHaveStatus(400);
+    expect(res.body).toHaveErrorMessage("passwordLength", errorMessages);
   });
 
   it("Should return 400 if password is not a string", async () => {
@@ -163,10 +156,8 @@ describe("POST /admin/login", () => {
       .post("/admin/login")
       .send({ email: "admin@test.com", password: 12345678 });
 
-    expect(res.status).toBe(400);
-    expect(res.body.errors.map((e: any) => e.message.en)).toContain(
-      errorMessages.invalidPassword.en
-    );
+    expect(res).toHaveStatus(400);
+    expect(res.body).toHaveErrorMessage("invalidPassword", errorMessages);
   });
 
   it("Should handle error during token generation", async () => {
@@ -180,6 +171,6 @@ describe("POST /admin/login", () => {
       .post("/admin/login")
       .send({ email: "admin@test.com", password: "ValidPass123" });
 
-    expect(res.status).toBe(500);
+    expect(res).toHaveStatus(500);
   });
 });
