@@ -1,27 +1,5 @@
-type ErrorMessages = Record<string, { en: string; ka: string }>;
-
-function validateAdminLogin(received: any) {
-  const { user, accessToken, refreshToken, userType } = received.data || {};
-  return (
-    user &&
-    typeof user.id === "string" &&
-    typeof user.email === "string" &&
-    typeof user.name === "string" &&
-    typeof accessToken === "string" &&
-    typeof refreshToken === "string" &&
-    userType === "ADMIN"
-  );
-}
-
-function validateCustomerLogin(received: any) {
-  const { user } = received.data || {};
-  return (
-    user &&
-    typeof user.id === "string" &&
-    typeof user.phoneNumber === "string" &&
-    typeof user.passwordHash === "undefined"
-  );
-}
+import { ErrorMessages } from "@/types/global";
+import { validateAdminLogin, validateCustomerLogin } from "@/utils";
 
 export const authMatchers = {
   toBeValidAdminLoginResponse(received: any) {
