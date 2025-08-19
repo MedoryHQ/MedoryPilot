@@ -10,7 +10,7 @@ import {
   generateRefreshToken,
   verifyField,
 } from "@/utils";
-import { authMatchers } from "../../tests/helpers/authMatchers";
+import { authMatchers } from "@/tests/helpers/authMatchers";
 expect.extend(authMatchers);
 
 const app = express();
@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/admin", adminAuthRouter);
 
-jest.mock("../../config", () => ({
+jest.mock("@/config", () => ({
   prisma: {
     admin: {
       findUnique: jest.fn(),
@@ -98,8 +98,7 @@ const mockUser = {
 
 afterAll(async () => {
   try {
-    await (require("../../config").prisma?.$disconnect?.() ??
-      Promise.resolve());
+    await (require("@/config").prisma?.$disconnect?.() ?? Promise.resolve());
   } catch {}
 });
 
@@ -180,13 +179,13 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
       const payload = { id: mockUser.id, email: mockUser.email };
       const accessToken = jwt.sign(
         payload,
-        (require("../../config").getEnvVariable as jest.Mock)(
+        (require("@/config").getEnvVariable as jest.Mock)(
           "ADMIN_JWT_ACCESS_SECRET"
         )
       );
       const refreshToken = jwt.sign(
         payload,
-        (require("../../config").getEnvVariable as jest.Mock)(
+        (require("@/config").getEnvVariable as jest.Mock)(
           "ADMIN_JWT_REFRESH_SECRET"
         )
       );
@@ -234,7 +233,7 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
       const payload = { id: mockUser.id, email: mockUser.email };
       const expiredAccess = jwt.sign(
         payload,
-        (require("../../config").getEnvVariable as jest.Mock)(
+        (require("@/config").getEnvVariable as jest.Mock)(
           "ADMIN_JWT_ACCESS_SECRET"
         ),
         {
@@ -257,7 +256,7 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
     });
 
     it("returns 500 when jwt secrets missing (simulated)", async () => {
-      const cfg = require("../../config");
+      const cfg = require("@/config");
       const original = (cfg.getEnvVariable as jest.Mock).mockImplementationOnce(
         () => null
       );
@@ -288,13 +287,13 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
       const payload = { id: mockUser.id, email: mockUser.email };
       const accessToken = jwt.sign(
         payload,
-        (require("../../config").getEnvVariable as jest.Mock)(
+        (require("@/config").getEnvVariable as jest.Mock)(
           "ADMIN_JWT_ACCESS_SECRET"
         )
       );
       const refreshToken = jwt.sign(
         payload,
-        (require("../../config").getEnvVariable as jest.Mock)(
+        (require("@/config").getEnvVariable as jest.Mock)(
           "ADMIN_JWT_REFRESH_SECRET"
         )
       );

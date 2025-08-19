@@ -1,3 +1,6 @@
+/// <reference types="jest" />
+import "tsconfig-paths/register";
+
 jest.mock("@/utils/logging", () => ({
   selectLogger: jest.fn(() => ({
     warn: jest.fn(),
