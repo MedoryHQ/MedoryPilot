@@ -1,7 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { validationResult } from "express-validator";
-import { errorMessages, getClientIp, hashIp, TranslatedMessage } from "@/utils";
-import logger from "@/logger";
+import {
+  errorMessages,
+  getClientIp,
+  selectLogger,
+  TranslatedMessage,
+} from "@/utils";
 
 type ValidationErrorShape = {
   msg: any;
@@ -49,7 +53,11 @@ export const validationHandler = async (
     const rawMsg = err.msg;
 
     if (typeof rawMsg === "string") {
-      const mappedObj = (errorMessages as any)[rawMsg];
+      const mappedObj =
+        rawMsg in errorMessages
+          ? errorMessages[rawMsg as keyof typeof errorMessages]
+          : undefined;
+
       const message = (mappedObj ?? {
         en: rawMsg,
         ka: rawMsg,
@@ -86,16 +94,20 @@ export const validationHandler = async (
     };
   });
 
+  const fullPath = req.originalUrl || req.url;
+
   const errorKeys = rawErrors.map((err) =>
     typeof err.msg === "string" ? err.msg : "unknown"
   );
 
   const hashedIp = await getClientIp(req);
 
-  logger.warn("Validation failed", {
+  let loggerToUse = selectLogger(fullPath, "warn");
+
+  loggerToUse.warn({
     timestamp: new Date().toISOString(),
     statusCode: 400,
-    path: req.path,
+    path: fullPath || req.path,
     method: req.method,
     user: req.user
       ? { ip: hashedIp, id: req.user.id || "UNKNOWN" }

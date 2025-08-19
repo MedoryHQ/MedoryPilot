@@ -8,7 +8,7 @@ import { getEnvVariable, prisma } from "./config";
 import cookies from "cookie-parser";
 import http from "http";
 import { startCronJobs } from "@/cron-jobs/run-cron-jobs";
-import logger from "./logger";
+import { systemInfoLogger, systemErrorLogger } from "./logger";
 import { logTraffic } from "./middlewares/global/trafficMiddleware";
 
 const allowedOrigins = [
@@ -75,9 +75,11 @@ async function main() {
   startCronJobs();
 
   server.listen(PORT, () => {
-    logger.info("Server started", {
+    systemInfoLogger.info({
+      message: "Server started",
       url: getEnvVariable("SERVER_URL"),
       port: PORT,
+      timestamp: new Date().toISOString(),
     });
   });
 }
@@ -87,7 +89,11 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (e) => {
-    logger.error(`Fatal error: ${e.message}`);
+    systemErrorLogger.error({
+      message: "Fatal error",
+      error: e.message,
+      timestamp: new Date().toISOString(),
+    });
     await prisma.$disconnect();
     process.exit(1);
   });

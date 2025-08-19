@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "itest": "jest --config itest.config.ts",
     "test:watch": "jest --watch",
     "start": "dotenv -- node dist/src/index.js",
     "dev": "dotenv -- tsc-watch --onsuccess \"node dist/src/index.js\"",

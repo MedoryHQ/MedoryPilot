@@ -1,6 +1,6 @@
 import { trafficLogger } from "@/utils";
 import { Request, Response, NextFunction } from "express";
-import { getClientIp, hashIp } from "@/utils";
+import { getClientIp } from "@/utils";
 import { UAParser } from "ua-parser-js";
 
 export const logTraffic = async (

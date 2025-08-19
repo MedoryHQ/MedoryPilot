@@ -1,4 +1,5 @@
 import { prisma } from "@/config/prisma";
+import { systemInfoLogger, systemErrorLogger } from "@/logger";
 
 export const cleanupExpiredData = async () => {
   try {
@@ -12,7 +13,11 @@ export const cleanupExpiredData = async () => {
     });
 
     if (deletedPending.count > 0) {
-      console.log(`✅ Deleted ${deletedPending.count} expired pending users`);
+      systemInfoLogger.info({
+        message: `Deleted ${deletedPending.count} expired pending users`,
+        event: "cron_cleanup_pending_users",
+        timestamp: new Date().toISOString(),
+      });
     }
 
     const deletedTokens = await prisma.refreshToken.deleteMany({
@@ -24,9 +29,18 @@ export const cleanupExpiredData = async () => {
     });
 
     if (deletedTokens.count > 0) {
-      console.log(`✅ Deleted ${deletedTokens.count} expired refresh tokens`);
+      systemInfoLogger.info({
+        message: `Deleted ${deletedTokens.count} expired refresh tokens`,
+        event: "cron_cleanup_refresh_tokens",
+        timestamp: new Date().toISOString(),
+      });
     }
   } catch (error) {
-    console.error("❌ Error cleaning up expired data:", error);
+    systemErrorLogger.error({
+      message: "Error cleaning up expired data",
+      error: error instanceof Error ? error.message : String(error),
+      event: "cron_cleanup_error",
+      timestamp: new Date().toISOString(),
+    });
   }
 };

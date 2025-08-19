@@ -5,11 +5,10 @@ import {
   sendError,
   verifyField,
   cookieOptions,
-  logCatchyError,
-  logInfo,
-  logWarn,
+  logAdminError as logCatchyError,
+  logAdminInfo as logInfo,
+  logAdminWarn as logWarn,
   getClientIp,
-  hashIp,
 } from "@/utils";
 import { NextFunction, Response, Request } from "express";
 

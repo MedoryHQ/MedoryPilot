@@ -42,3 +42,5 @@ export interface User {
   id: string;
   phoneNumber: string;
 }
+
+export type ErrorMessages = Record<string, { en: string; ka: string }>;

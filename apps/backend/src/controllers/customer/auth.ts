@@ -14,11 +14,10 @@ import {
   // mailer,
   verifyRefreshToken,
   inMinutes,
-  logCatchyError,
+  logCustomerCatchyError as logCatchyError,
   getClientIp,
-  hashIp,
-  logInfo,
-  logWarn,
+  logCustomerInfo as logInfo,
+  logCustomerWarn as logWarn,
 } from "@/utils";
 import {
   ICreatePendingUser,
