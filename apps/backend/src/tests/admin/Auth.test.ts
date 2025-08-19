@@ -1,6 +1,7 @@
 import request from "supertest";
 import express from "express";
 import { adminAuthRouter } from "@/routes/admin";
+import cookieParser from "cookie-parser";
 import { prisma } from "@/config";
 import {
   generateAccessToken,
@@ -13,6 +14,7 @@ expect.extend(authMatchers);
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 app.use("/admin", adminAuthRouter);
 
 jest.mock("../../config", () => ({
@@ -21,7 +23,11 @@ jest.mock("../../config", () => ({
       findUnique: jest.fn(),
     },
   },
-  getEnvVariable: jest.fn(() => ""),
+  getEnvVariable: jest.fn((key: string) => {
+    if (key === "ADMIN_JWT_ACCESS_SECRET") return "accessSecret";
+    if (key === "ADMIN_JWT_REFRESH_SECRET") return "refreshSecret";
+    return "test";
+  }),
 }));
 
 jest.mock("@sendgrid/mail", () => ({
@@ -31,18 +37,39 @@ jest.mock("@sendgrid/mail", () => ({
 
 jest.mock("@/utils", () => {
   const actual = jest.requireActual("@/utils");
+  const errorMessages = {
+    ...((actual as any).errorMessages ?? {}),
+    invalidPassword: { en: "Invalid password", ka: "არასწორი პაროლი" },
+    passwordLength: { en: "Password length", ka: "პაროლის სიგრძე" },
+    invalidEmail: { en: "Invalid email", ka: "ელ-ფოსტა არასწორია" },
+    userNotFound: { en: "User not found", ka: "მომხმარებელი ვერ მოიძებნა" },
+    noTokenProvided: {
+      en: "Access denied. No token provided.",
+      ka: "წვდომა უარყოფილია. ტოკენის მოწოდება აუცილებელია",
+    },
+    invalidCredentials: {
+      en: "Invalid email or password",
+      ka: "არასწორი ელ-ფოსტა ან პაროლი",
+    },
+    invalidRefreshToken: {
+      en: "Access denied. Invalid refresh token.",
+      ka: "წვდომა უარყოფილია. არასწორი refresh ტოკენი.",
+    },
+    jwtSecretNotProvided: {
+      en: "JWT secrets not provided.",
+      ka: "JWT secret-ების მოწოდება აუცილებელია.",
+    },
+  };
+
   return {
     ...actual,
-    errorMessages: {
-      invalidPassword: { en: "Invalid password", ka: "არასწორი პაროლი" },
-      passwordLength: { en: "Password length", ka: "პაროლის სიგრძე" },
-      invalidEmail: { en: "Invalid email", ka: "ელ-ფოსტა არასწორია" },
-      userNotFound: { en: "User not found", ka: "მომხმარებელი ვერ მოიძებნა" },
-      invalidCredentials: {
-        en: "Invalid email or password",
-        ka: "არასწორი ელ-ფოსტა ან პაროლი",
-      },
-    },
+    getTokenFromRequest: jest.fn((req: any) => {
+      const auth = req?.headers?.authorization;
+      if (typeof auth === "string" && auth.startsWith("Bearer ")) {
+        return auth.split(" ")[1];
+      }
+      return req?.cookies?.accessToken;
+    }),
     selectLogger: jest.fn(() => ({
       warn: jest.fn(),
       info: jest.fn(),
@@ -52,6 +79,7 @@ jest.mock("@/utils", () => {
     verifyField: jest.fn(),
     generateAccessToken: jest.fn(),
     generateRefreshToken: jest.fn(),
+    errorMessages,
   };
 });
 
@@ -61,6 +89,13 @@ const mockUser = {
   passwordHash: "hashedPass",
   name: "Test Admin",
 };
+
+afterAll(async () => {
+  try {
+    await (require("../../config").prisma?.$disconnect?.() ??
+      Promise.resolve());
+  } catch {}
+});
 
 describe("POST /admin/login", () => {
   beforeEach(() => {
@@ -172,5 +207,141 @@ describe("POST /admin/login", () => {
       .send({ email: "admin@test.com", password: "ValidPass123" });
 
     expect(res).toHaveStatus(500);
+  });
+});
+
+describe("GET /admin/renew", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("Should return 401 if no tokens provided", async () => {
+    const res = await request(app).get("/admin/renew");
+
+    expect(res).toHaveStatus(401);
+
+    expect(res.body.error).toEqual(errorMessages.noTokenProvided);
+  });
+
+  it("Should succeed with valid access token", async () => {
+    const jwt = require("jsonwebtoken");
+    const payload = { id: "1", email: "admin@test.com" };
+
+    const accessToken = jwt.sign(payload, "accessSecret");
+    const refreshToken = jwt.sign(payload, "refreshSecret");
+
+    (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(mockUser);
+
+    const res = await request(app)
+      .get("/admin/renew")
+      .set("Cookie", [
+        `accessToken=${accessToken}`,
+        `refreshToken=${refreshToken}`,
+      ]);
+
+    expect(res).toHaveStatus(200);
+    expect(res.body).toHaveProperty("data");
+  });
+
+  it("succeeds when Authorization header provided and refresh cookie present", async () => {
+    const jwt = require("jsonwebtoken");
+    const payload = { id: "1", email: "admin@test.com" };
+    const accessToken = jwt.sign(payload, "accessSecret");
+    const refreshToken = jwt.sign(payload, "refreshSecret");
+
+    (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(mockUser);
+
+    const res = await request(app)
+      .get("/admin/renew")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .set("Cookie", [`refreshToken=${refreshToken}`]);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("data");
+  });
+
+  it("refreshes access token when expired but refresh valid", async () => {
+    const jwt = require("jsonwebtoken");
+    const payload = { id: "1", email: "admin@test.com" };
+    const expiredAccess = jwt.sign(payload, "accessSecret", {
+      expiresIn: "-1s",
+    });
+    const refreshToken = jwt.sign(payload, "refreshSecret");
+
+    (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(mockUser);
+
+    const res = await request(app)
+      .get("/admin/renew")
+      .set("Cookie", [
+        `accessToken=${expiredAccess}`,
+        `refreshToken=${refreshToken}`,
+      ]);
+
+    expect(res.status).toBe(200);
+    expect(res.headers["set-cookie"] || []).toEqual(
+      expect.arrayContaining([expect.stringContaining("accessToken=")])
+    );
+  });
+
+  it("returns 401 when refresh token invalid", async () => {
+    const jwt = require("jsonwebtoken");
+    const payload = { id: "1", email: "admin@test.com" };
+    const expiredAccess = jwt.sign(payload, "accessSecret", {
+      expiresIn: "-1s",
+    });
+    const badRefresh = "invalid.refresh.token";
+
+    const res = await request(app)
+      .get("/admin/renew")
+      .set("Cookie", [
+        `accessToken=${expiredAccess}`,
+        `refreshToken=${badRefresh}`,
+      ]);
+
+    expect(res.status).toBe(401);
+    expect(res.body.error).toEqual(errorMessages.invalidRefreshToken);
+  });
+
+  it("returns 500 when secrets missing (simulated)", async () => {
+    const cfg = require("../../config");
+    (cfg.getEnvVariable as jest.Mock).mockImplementationOnce(() => null);
+
+    const jwt = require("jsonwebtoken");
+    const payload = { id: "1", email: "admin@test.com" };
+    const accessToken = jwt.sign(payload, "accessSecret");
+    const refreshToken = jwt.sign(payload, "refreshSecret");
+
+    const res = await request(app)
+      .get("/admin/renew")
+      .set("Cookie", [
+        `accessToken=${accessToken}`,
+        `refreshToken=${refreshToken}`,
+      ]);
+
+    expect(res.status).toBe(500);
+    expect(res.body.error).toEqual(errorMessages.jwtSecretNotProvided);
+  });
+
+  it("handles unexpected controller error (mock renew to throw)", async () => {
+    const authController = require("../../controllers/admin/auth");
+    jest
+      .spyOn(authController, "renew")
+      .mockImplementationOnce((req: any, res: any) => {
+        throw new Error("Unexpected");
+      });
+
+    const jwt = require("jsonwebtoken");
+    const payload = { id: "1", email: "admin@test.com" };
+    const accessToken = jwt.sign(payload, "accessSecret");
+    const refreshToken = jwt.sign(payload, "refreshSecret");
+
+    const res = await request(app)
+      .get("/admin/renew")
+      .set("Cookie", [
+        `accessToken=${accessToken}`,
+        `refreshToken=${refreshToken}`,
+      ]);
+
+    expect(res.status).toBe(500);
   });
 });
