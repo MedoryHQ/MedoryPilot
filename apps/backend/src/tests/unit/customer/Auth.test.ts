@@ -138,4 +138,14 @@ describe("Customer auth routes — /auth", () => {
 
     it.todo("returns 500 when token generation fails");
   });
+
+  describe("POST /auth/refresh-token", () => {
+    it.todo("returns 401 if no refresh cookie provided");
+
+    it.todo("returns 401 if refresh token invalid");
+
+    it.todo("successfully refreshes tokens and sets cookies");
+
+    it.todo("returns 500 if an unexpected error occurs during refresh");
+  });
 });
