@@ -4,14 +4,7 @@ import cookieParser from "cookie-parser";
 
 import { userAuthRouter } from "@/routes/customer";
 import { prisma } from "@/config";
-import {
-  verifyField,
-  generateTokens,
-  generateAccessToken,
-  generateRefreshToken,
-  verifyRefreshToken,
-  errorMessages,
-} from "@/utils";
+
 import { authMatchers } from "@/tests/helpers/authMatchers";
 expect.extend(authMatchers);
 
@@ -22,9 +15,7 @@ app.use("/auth", userAuthRouter);
 
 jest.mock("@/config", () => ({
   prisma: {
-    user: {
-      findUnique: jest.fn(),
-    },
+    user: { findUnique: jest.fn() },
     pendingUser: {
       findUnique: jest.fn(),
       create: jest.fn(),
@@ -51,25 +42,6 @@ jest.mock("@sendgrid/mail", () => ({
 
 jest.mock("@/utils", () => {
   const actual = jest.requireActual("@/utils");
-
-  const errorMessages = {
-    ...((actual as any).errorMessages ?? {}),
-    userNotFound: { en: "User not found", ka: "მომხმარებელი ვერ მოიძებნა" },
-    invalidPassword: { en: "Invalid password", ka: "არასწორი პაროლი" },
-    unauthorized: { en: "Unauthorized", ka: "უსურვებელი" },
-    invalidRefreshToken: {
-      en: "Access denied. Invalid refresh token.",
-      ka: "არასწორი refresh ტოკენი",
-    },
-    phoneAlreadyExists: {
-      en: "Phone already exists",
-      ka: "ტელეფონი უკვე არსებობს",
-    },
-    smsVerificationSent: { en: "smsVerificationSent", ka: "sent" },
-    verificationSuccessful: { en: "verificationSuccessful", ka: "ok" },
-    loginSuccessful: { en: "loginSuccessful", ka: "ok" },
-  };
-
   return {
     ...actual,
     getClientIp: jest.fn().mockResolvedValue("hashedIp"),
@@ -81,11 +53,25 @@ jest.mock("@/utils", () => {
     createPassword: jest.fn(),
     generateSmsCode: jest.fn(),
     inMinutes: (mins: number) => new Date(Date.now() + mins * 60 * 1000),
-    errorMessages,
-    cookieOptions: { path: "/", httpOnly: true, sameSite: "lax" },
     getResponseMessage: jest.fn((k: string) => k),
-
-    // 👇 add mocks for missing loggers
+    errorMessages: {
+      ...((actual as any).errorMessages ?? {}),
+      userNotFound: { en: "User not found", ka: "მომხმარებელი ვერ მოიძებნა" },
+      invalidPassword: { en: "Invalid password", ka: "არასწორი პაროლი" },
+      unauthorized: { en: "Unauthorized", ka: "უსურვებელი" },
+      invalidRefreshToken: {
+        en: "Access denied. Invalid refresh token.",
+        ka: "არასწორი refresh ტოკენი",
+      },
+      phoneAlreadyExists: {
+        en: "Phone already exists",
+        ka: "ტელეფონი უკვე არსებობს",
+      },
+      smsVerificationSent: { en: "smsVerificationSent", ka: "sent" },
+      verificationSuccessful: { en: "verificationSuccessful", ka: "ok" },
+      loginSuccessful: { en: "loginSuccessful", ka: "ok" },
+    },
+    cookieOptions: { path: "/", httpOnly: true, sameSite: "lax" },
     selectLogger: jest.fn(() => ({
       warn: jest.fn(),
       info: jest.fn(),
@@ -99,13 +85,24 @@ jest.mock("@/utils", () => {
 
 const mockUser = {
   id: "user-1",
-  phoneNumber: "+1234567890",
+  phoneNumber: "+995555555555",
   passwordHash: "hashedPass",
   firstName: "John",
   lastName: "Doe",
   fullName: "John Doe",
   isVerified: true,
 };
+
+const getRegisterPayload = (overrides = {}) => ({
+  phoneNumber: "+995555555555",
+  firstName: "Alice",
+  lastName: "Smith",
+  dateOfBirth: "1990-01-01",
+  personalId: "123456789",
+  password: "Password123!",
+  confirmPassword: "Password123!",
+  ...overrides,
+});
 
 afterAll(async () => {
   try {
@@ -119,12 +116,51 @@ describe("Customer auth routes — /auth", () => {
   });
 
   describe("POST /auth/register", () => {
-    it.todo(
-      "registers a pending user successfully and returns id + phoneNumber"
-    );
+    it("registers a pending user successfully and returns id + phoneNumber", async () => {
+      (prisma.pendingUser.findUnique as jest.Mock).mockResolvedValueOnce(null);
+      (require("@/utils").createPassword as jest.Mock).mockResolvedValueOnce(
+        "hashedPassword"
+      );
+      (require("@/utils").generateSmsCode as jest.Mock).mockResolvedValueOnce({
+        hashedSmsCode: "smsHash",
+      });
+      (prisma.pendingUser.create as jest.Mock).mockResolvedValueOnce({
+        id: "pending-1",
+        phoneNumber: "+995555555555",
+      });
 
-    it.todo("returns 409 when pending user with phone already exists");
-    it.todo("returns 400 when validation fails (missing/invalid fields)");
+      const res = await request(app)
+        .post("/auth/register")
+        .send(getRegisterPayload());
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toMatchObject({
+        id: "pending-1",
+        phoneNumber: "+995555555555",
+      });
+      expect(prisma.pendingUser.create).toHaveBeenCalled();
+    });
+
+    it("returns 409 when pending user with phone already exists", async () => {
+      (prisma.pendingUser.findUnique as jest.Mock).mockResolvedValueOnce({
+        id: "pending-1",
+        phoneNumber: "+995555555555",
+      });
+      const res = await request(app)
+        .post("/auth/register")
+        .send(getRegisterPayload());
+      expect(res.status).toBe(409);
+    });
+
+    it("returns 400 when validation fails (missing/invalid fields)", async () => {
+      const res = await request(app)
+        .post("/auth/register")
+        .send({ phoneNumber: "", firstName: "" });
+      expect(res.status).toBe(400);
+      expect((res.body.errors || []).map((e: any) => e.param)).toEqual(
+        expect.arrayContaining(["phoneNumber"])
+      );
+    });
   });
 
   describe("POST /auth/login", () => {
