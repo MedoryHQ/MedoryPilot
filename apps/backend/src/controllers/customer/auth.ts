@@ -283,6 +283,8 @@ export const UserLogin = async (
       },
     });
 
+    console.log("User found:", user);
+
     if (!user) {
       logWarn("User login failed: not found", {
         ip: hashedIp,

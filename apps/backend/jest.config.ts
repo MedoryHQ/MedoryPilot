@@ -5,8 +5,8 @@ const config: Config.InitialOptions = {
   testEnvironment: "node",
   verbose: true,
   collectCoverage: true,
-  collectCoverageFrom: ["<rootDir>/src/routes/admin/**/*.ts"],
-  testMatch: ["<rootDir>/src/tests/unit/admin/**/*.test.ts"],
+  collectCoverageFrom: ["<rootDir>/src/routes/customer/**/*.ts"],
+  testMatch: ["<rootDir>/src/tests/unit/customer/**/*.test.ts"],
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
     "^@errors/(.*)$": "<rootDir>/src/errors/$1",
