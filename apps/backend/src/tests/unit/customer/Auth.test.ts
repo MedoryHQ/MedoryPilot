@@ -61,18 +61,30 @@ jest.mock("@/utils", () => {
         en: "Invalid password",
         ka: "პაროლი არასწორია",
       },
-      unauthorized: { en: "Unauthorized", ka: "უსურვებელი" },
+      unauthorized: {
+        en: "Authorization failed.",
+        ka: "ავტორიზაცია წარუმატებლად დასრულდა.",
+      },
       invalidRefreshToken: {
         en: "Access denied. Invalid refresh token.",
-        ka: "არასწორი refresh ტოკენი",
+        ka: "წვდომა უარყოფილია. არასწორი refresh ტოკენი.",
       },
       phoneAlreadyExists: {
-        en: "Phone already exists",
-        ka: "ტელეფონი უკვე არსებობს",
+        en: "User with this phone number already exists",
+        ka: "მომხმარებელი ამ ტელეფონის ნომრით უკვე არსებობს",
       },
-      smsVerificationSent: { en: "smsVerificationSent", ka: "sent" },
-      verificationSuccessful: { en: "verificationSuccessful", ka: "ok" },
-      loginSuccessful: { en: "loginSuccessful", ka: "ok" },
+      smsVerificationSent: {
+        en: "Verification code sent to your phone number.",
+        ka: "ვერიფიკაციის კოდი გამოიგზავნა თქვენს ტელეფონის ნომერზე.",
+      },
+      verificationSuccessful: {
+        en: "Verification successful",
+        ka: "ვერიფიკაცია წარმატებით დასრულდა",
+      },
+      loginSuccessful: {
+        en: "Login successful",
+        ka: "შესახებ წარმატებით დასრულდა",
+      },
     },
     cookieOptions: { path: "/", httpOnly: true, sameSite: "lax" },
     selectLogger: jest.fn(() => ({
@@ -248,12 +260,93 @@ describe("Customer auth routes — /auth", () => {
   });
 
   describe("POST /auth/refresh-token", () => {
-    it.todo("returns 401 if no refresh cookie provided");
+    it("returns 401 if no refresh cookie provided", async () => {
+      const res = await request(app).post("/auth/refresh-token");
+      expect(res.status).toBe(401);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.unauthorized
+      );
+    });
 
-    it.todo("returns 401 if refresh token invalid");
+    it("returns 401 if refresh token invalid", async () => {
+      const badToken = "invalid.token.here";
+      (
+        require("@/utils").verifyRefreshToken as jest.Mock
+      ).mockImplementationOnce(() => {
+        throw new Error("invalid");
+      });
 
-    it.todo("successfully refreshes tokens and sets cookies");
+      const res = await request(app)
+        .post("/auth/refresh-token")
+        .set("Cookie", [`refreshToken=${badToken}`]);
 
-    it.todo("returns 500 if an unexpected error occurs during refresh");
+      expect(res.status).toBe(401);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.invalidRefreshToken
+      );
+    });
+
+    it("successfully refreshes tokens and sets cookies", async () => {
+      const oldRefresh = "old.refresh.token";
+      const decoded = { id: mockUser.id, phoneNumber: mockUser.phoneNumber };
+
+      (
+        require("@/utils").verifyRefreshToken as jest.Mock
+      ).mockResolvedValueOnce(decoded);
+
+      (require("@/utils").generateAccessToken as jest.Mock).mockReturnValueOnce(
+        {
+          token: "new.access",
+          expiresIn: 1000,
+        }
+      );
+      (
+        require("@/utils").generateRefreshToken as jest.Mock
+      ).mockReturnValueOnce({
+        token: "new.refresh",
+        expiresIn: 2000,
+      });
+
+      (prisma.refreshToken.delete as jest.Mock).mockResolvedValueOnce({});
+      (prisma.refreshToken.create as jest.Mock).mockResolvedValueOnce({
+        token: "new.refresh",
+      });
+
+      const res = await request(app)
+        .post("/auth/refresh-token")
+        .set("Cookie", [`refreshToken=${oldRefresh}`]);
+
+      expect(res.status).toBe(200);
+      const setCookie = res.headers["set-cookie"];
+      expect(setCookie).toBeDefined();
+      const asArray = Array.isArray(setCookie) ? setCookie : [setCookie];
+      const cookieStr = asArray.join(";");
+      expect(cookieStr).toContain("accessToken=");
+      expect(cookieStr).toContain("refreshToken=");
+      expect(prisma.refreshToken.delete).toHaveBeenCalledWith({
+        where: { token: oldRefresh },
+      });
+      expect(prisma.refreshToken.create).toHaveBeenCalled();
+    });
+
+    it("returns 500 if an unexpected error occurs during refresh", async () => {
+      const oldRefresh = "old.refresh.token";
+      (
+        require("@/utils").verifyRefreshToken as jest.Mock
+      ).mockResolvedValueOnce({
+        id: mockUser.id,
+        phoneNumber: mockUser.phoneNumber,
+      });
+
+      (prisma.refreshToken.delete as jest.Mock).mockRejectedValueOnce(
+        new Error("DB fail")
+      );
+
+      const res = await request(app)
+        .post("/auth/refresh-token")
+        .set("Cookie", [`refreshToken=${oldRefresh}`]);
+
+      expect(res.status).toBe(500);
+    });
   });
 });
