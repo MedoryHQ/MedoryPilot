@@ -112,3 +112,30 @@ afterAll(async () => {
     await (require("@/config").prisma?.$disconnect?.() ?? Promise.resolve());
   } catch {}
 });
+
+describe("Customer auth routes — /auth", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe("POST /auth/register", () => {
+    it.todo(
+      "registers a pending user successfully and returns id + phoneNumber"
+    );
+
+    it.todo("returns 409 when pending user with phone already exists");
+    it.todo("returns 400 when validation fails (missing/invalid fields)");
+  });
+
+  describe("POST /auth/login", () => {
+    it.todo("logs in successfully with valid credentials and sets cookies");
+
+    it.todo("returns 404 when user not found");
+
+    it.todo("returns 400 when password invalid");
+
+    it.todo("returns 400 when validation fails (missing/invalid fields)");
+
+    it.todo("returns 500 when token generation fails");
+  });
+});
