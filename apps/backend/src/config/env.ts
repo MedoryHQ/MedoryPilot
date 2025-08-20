@@ -1,61 +1,52 @@
-import logger from "@/logger";
 import { config } from "dotenv";
 import { z } from "zod";
 
 config();
+
 const envSchema = z.object({
-  // Server
   PORT: z.string().default("8080"),
-  NODE_ENV: z
-    .enum(["development", "production", "test"])
-    .default("development"),
+  NODE_ENV: z.enum(["development", "production", "test"]).default("test"),
 
-  // Database
-  DATABASE_URL: z.string().url(),
+  DATABASE_URL: z.string().url().default("postgres://localhost/testdb"),
 
-  // JWT Secrets
-  ADMIN_JWT_ACCESS_SECRET: z.string().min(32),
-  ADMIN_JWT_REFRESH_SECRET: z.string().min(32),
-  JWT_ACCESS_SECRET: z.string().min(32),
-  JWT_REFRESH_SECRET: z.string().min(32),
+  ADMIN_JWT_ACCESS_SECRET: z.string().default("a".repeat(32)),
+  ADMIN_JWT_REFRESH_SECRET: z.string().default("b".repeat(32)),
+  JWT_ACCESS_SECRET: z.string().default("c".repeat(32)),
+  JWT_REFRESH_SECRET: z.string().default("d".repeat(32)),
 
-  // URLs
-  CLIENT_URL: z.string().url(),
-  ADMIN_URL: z.string().url(),
-  SERVER_URL: z.string().url(),
-  RESPONSE_URL: z.string().url(),
-  COOKIE_DOMAIN: z.string(),
+  CLIENT_URL: z.string().url().default("http://localhost:3000"),
+  ADMIN_URL: z.string().url().default("http://localhost:3001"),
+  SERVER_URL: z.string().url().default("http://localhost:8080"),
+  RESPONSE_URL: z.string().url().default("http://localhost:8080"),
+  COOKIE_DOMAIN: z.string().default("localhost"),
 
-  // SMS
-  SMS_MOCK: z.string().default("false"),
-  SMS_FAIL_GRACEFULLY: z.string().default("false"),
-  SENDER_API_KEY: z.string().min(1),
+  SMS_MOCK: z.string().default("true"),
+  SMS_FAIL_GRACEFULLY: z.string().default("true"),
+  SENDER_API_KEY: z.string().default("test_api_key"),
 
-  // Seeds
-  SALT_ROUNDS: z.string(),
-  ADMIN_PASSWORD: z.string(),
-  EMAIL: z.string().email(),
-  ADMIN_FIRST_NAME: z.string(),
-  ADMIN_LAST_NAME: z.string(),
+  SALT_ROUNDS: z.string().default("10"),
+  ADMIN_PASSWORD: z.string().default("admin1234"),
+  EMAIL: z.string().email().default("admin@example.com"),
+  ADMIN_FIRST_NAME: z.string().default("Admin"),
+  ADMIN_LAST_NAME: z.string().default("User"),
 
-  // Email
-  SENDGRID_API_KEY: z.string().min(1),
+  SENDGRID_API_KEY: z.string().default("sendgrid_test_key"),
 
-  // Swagger
-  SWAGGER_USERNAME: z.string().min(1),
-  SWAGGER_PASSWORD: z.string().min(1),
+  SWAGGER_USERNAME: z.string().default("swagger"),
+  SWAGGER_PASSWORD: z.string().default("swagger"),
 
-  // logging
   LOG_LEVEL: z.string().default("info"),
-  IP_HASH_SALT: z.string().min(1),
+
+  IP_HASH_SECRET: z.string().min(32).default("e".repeat(32)),
 });
 
 const parsed = envSchema.safeParse(process.env);
 
 if (!parsed.success) {
-  logger.error("Invalid environment variables", {
-    errors: parsed.error.format(),
-  });
+  console.error(
+    "Invalid environment variables:",
+    parsed.success ? null : parsed.error.format()
+  );
   process.exit(1);
 }
 

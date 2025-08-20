@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["jest", "node"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "outDir": "./dist",
@@ -16,7 +17,7 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "prisma/**/*.ts"],
+  "include": ["src/**/*.ts", "prisma/**/*.ts", "jest.setup.ts"],
   "exclude": ["node_modules", "dist"],
   "files": ["src/types/index.d.ts"]
 }

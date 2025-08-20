@@ -2,6 +2,7 @@ import request from "supertest";
 import express from "express";
 import { adminAuthRouter } from "@/routes/admin";
 import cookieParser from "cookie-parser";
+import { authMatchers } from "@/tests/helpers/authMatchers";
 import { prisma } from "@/config";
 import {
   generateAccessToken,
@@ -9,7 +10,6 @@ import {
   verifyField,
   errorMessages,
 } from "@/utils";
-import { authMatchers } from "../helpers/authMatchers";
 expect.extend(authMatchers);
 
 const app = express();
@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/admin", adminAuthRouter);
 
-jest.mock("../../config", () => ({
+jest.mock("@/config", () => ({
   prisma: {
     admin: {
       findUnique: jest.fn(),
@@ -92,8 +92,7 @@ const mockUser = {
 
 afterAll(async () => {
   try {
-    await (require("../../config").prisma?.$disconnect?.() ??
-      Promise.resolve());
+    await (require("@/config").prisma?.$disconnect?.() ?? Promise.resolve());
   } catch {}
 });
 
@@ -173,7 +172,6 @@ describe("POST /admin/login", () => {
       .send({ email: "not-an-email", password: "ValidPass123" });
 
     expect(res).toHaveStatus(400);
-    console.log(res.body);
     expect(res.body).toHaveErrorMessage("invalidEmail", errorMessages);
   });
 
@@ -303,7 +301,7 @@ describe("GET /admin/renew", () => {
   });
 
   it("returns 500 when secrets missing (simulated)", async () => {
-    const cfg = require("../../config");
+    const cfg = require("@/config");
     (cfg.getEnvVariable as jest.Mock).mockImplementationOnce(() => null);
 
     const jwt = require("jsonwebtoken");
@@ -323,7 +321,7 @@ describe("GET /admin/renew", () => {
   });
 
   it("handles unexpected controller error (mock renew to throw)", async () => {
-    const authController = require("../../controllers/admin/auth");
+    const authController = require("@/controllers/admin/auth");
     jest
       .spyOn(authController, "renew")
       .mockImplementationOnce((req: any, res: any) => {
