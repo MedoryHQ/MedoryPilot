@@ -57,7 +57,10 @@ jest.mock("@/utils", () => {
     errorMessages: {
       ...((actual as any).errorMessages ?? {}),
       userNotFound: { en: "User not found", ka: "მომხმარებელი ვერ მოიძებნა" },
-      invalidPassword: { en: "Invalid password", ka: "არასწორი პაროლი" },
+      invalidPassword: {
+        en: "Invalid password",
+        ka: "პაროლი არასწორია",
+      },
       unauthorized: { en: "Unauthorized", ka: "უსურვებელი" },
       invalidRefreshToken: {
         en: "Access denied. Invalid refresh token.",
@@ -164,15 +167,84 @@ describe("Customer auth routes — /auth", () => {
   });
 
   describe("POST /auth/login", () => {
-    it.todo("logs in successfully with valid credentials and sets cookies");
+    it("logs in successfully with valid credentials and sets cookies", async () => {
+      (prisma.user.findUnique as jest.Mock).mockResolvedValueOnce(mockUser);
+      (require("@/utils").verifyField as jest.Mock).mockResolvedValueOnce(true);
 
-    it.todo("returns 404 when user not found");
+      (require("@/utils").generateTokens as jest.Mock).mockResolvedValueOnce({
+        accessToken: "access-xyz",
+        refreshToken: "refresh-xyz",
+        accessTokenExpires: 1000,
+        refreshTokenExpires: 2000,
+      });
 
-    it.todo("returns 400 when password invalid");
+      (prisma.refreshToken.create as jest.Mock).mockResolvedValueOnce({
+        token: "refresh-xyz",
+      });
 
-    it.todo("returns 400 when validation fails (missing/invalid fields)");
+      const res = await request(app)
+        .post("/auth/login")
+        .send({ phoneNumber: mockUser.phoneNumber, password: "correctPass" });
 
-    it.todo("returns 500 when token generation fails");
+      expect(res.status).toBe(200);
+      expect(res.body).toBeValidCustomerLoginResponse();
+      expect(res.headers["set-cookie"]).toBeDefined();
+      expect(prisma.refreshToken.create).toHaveBeenCalled();
+    });
+
+    it("returns 404 when user not found", async () => {
+      (prisma.user.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .post("/auth/login")
+        .send({ phoneNumber: "+995555555552", password: "whatever" });
+
+      expect(res.status).toBe(404);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.userNotFound
+      );
+    });
+
+    it("returns 400 when password invalid", async () => {
+      (prisma.user.findUnique as jest.Mock).mockResolvedValueOnce(mockUser);
+      (require("@/utils").verifyField as jest.Mock).mockReturnValueOnce(false);
+
+      const res = await request(app).post("/auth/login").send({
+        phoneNumber: mockUser.phoneNumber,
+        password: "BadPassword123",
+      });
+
+      expect(res.status).toBe(400);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.invalidPassword
+      );
+    });
+
+    it("returns 400 when validation fails (missing/invalid fields)", async () => {
+      const res = await request(app)
+        .post("/auth/login")
+        .send({ phoneNumber: "", password: "" });
+
+      expect(res.status).toBe(400);
+      const params = (res.body.errors || []).map((e: any) => e.param);
+      expect(params).toEqual(
+        expect.arrayContaining(["phoneNumber", "password"])
+      );
+    });
+
+    it("returns 500 when token generation fails", async () => {
+      (prisma.user.findUnique as jest.Mock).mockResolvedValueOnce(mockUser);
+      (require("@/utils").verifyField as jest.Mock).mockReturnValueOnce(true);
+      (require("@/utils").generateTokens as jest.Mock).mockRejectedValueOnce(
+        new Error("No tokens")
+      );
+
+      const res = await request(app)
+        .post("/auth/login")
+        .send({ phoneNumber: mockUser.phoneNumber, password: "correctPass" });
+
+      expect(res.status).toBe(500);
+    });
   });
 
   describe("POST /auth/refresh-token", () => {
