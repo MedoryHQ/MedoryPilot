@@ -556,4 +556,42 @@ describe("Customer auth routes — /auth", () => {
       );
     });
   });
+
+  describe("POST /auth/forgot-password/with-email", () => {
+    it("sends forgot password code via email when user exists", async () => {
+      (prisma.user.findUnique as jest.Mock).mockResolvedValue({
+        id: mockUser.id,
+        email: "a@b.com",
+      });
+
+      (require("@/utils").generateSmsCode as jest.Mock).mockResolvedValueOnce({
+        hashedSmsCode: "emailForgotHash",
+      });
+
+      (prisma.user.update as jest.Mock).mockResolvedValueOnce({});
+
+      const res = await request(app)
+        .post("/auth/forgot-password/with-email")
+        .send({ email: "a@b.com" });
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toEqual(
+        require("@/utils").getResponseMessage("codeSent")
+      );
+      expect(prisma.user.update).toHaveBeenCalled();
+    });
+
+    it("returns 400 (validation) when user not found", async () => {
+      (prisma.user.findUnique as jest.Mock).mockResolvedValue(null);
+
+      const res = await request(app)
+        .post("/auth/forgot-password/with-email")
+        .send({ email: "missing@b.com" });
+
+      expect(res.status).toBe(400);
+
+      const params = (res.body.errors || []).map((e: any) => e.param);
+      expect(params).toEqual(expect.arrayContaining(["email"]));
+    });
+  });
 });
