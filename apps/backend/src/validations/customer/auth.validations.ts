@@ -56,11 +56,19 @@ export const resetPasswordValidation = [
 
   codeValidation("smsCode"),
 
-  phoneValidation().if(body("type").equals("phoneNumber")),
-  existanceValidation("phoneNumber", "user"),
+  body("phoneNumber")
+    .if(body("type").equals("phoneNumber"))
+    .isString()
+    .matches(/^\+9955\d{8}$/)
+    .withMessage("invalidPhoneNumber"),
 
-  emailValidation("email", false).if(body("type").equals("email")),
-  existanceValidation("email", "user"),
+  body("email")
+    .if(body("type").equals("email"))
+    .exists({ checkFalsy: true })
+    .withMessage("invalidEmail")
+    .bail()
+    .isEmail()
+    .withMessage("invalidEmail"),
 
   passwordValidation(),
 ];
