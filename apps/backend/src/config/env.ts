@@ -2,42 +2,51 @@ import { config } from "dotenv";
 import { z } from "zod";
 
 config();
-
 const envSchema = z.object({
+  // Server
   PORT: z.string().default("8080"),
-  NODE_ENV: z.enum(["development", "production", "test"]).default("test"),
+  NODE_ENV: z
+    .enum(["development", "production", "test"])
+    .default("development"),
 
-  DATABASE_URL: z.string().url().default("postgres://localhost/testdb"),
+  // Database
+  DATABASE_URL: z.string().url(),
 
-  ADMIN_JWT_ACCESS_SECRET: z.string().default("a".repeat(32)),
-  ADMIN_JWT_REFRESH_SECRET: z.string().default("b".repeat(32)),
-  JWT_ACCESS_SECRET: z.string().default("c".repeat(32)),
-  JWT_REFRESH_SECRET: z.string().default("d".repeat(32)),
+  // JWT Secrets
+  ADMIN_JWT_ACCESS_SECRET: z.string().min(32),
+  ADMIN_JWT_REFRESH_SECRET: z.string().min(32),
+  JWT_ACCESS_SECRET: z.string().min(32),
+  JWT_REFRESH_SECRET: z.string().min(32),
 
-  CLIENT_URL: z.string().url().default("http://localhost:3000"),
-  ADMIN_URL: z.string().url().default("http://localhost:3001"),
-  SERVER_URL: z.string().url().default("http://localhost:8080"),
-  RESPONSE_URL: z.string().url().default("http://localhost:8080"),
-  COOKIE_DOMAIN: z.string().default("localhost"),
+  // URLs
+  CLIENT_URL: z.string().url(),
+  ADMIN_URL: z.string().url(),
+  SERVER_URL: z.string().url(),
+  RESPONSE_URL: z.string().url(),
+  COOKIE_DOMAIN: z.string(),
 
-  SMS_MOCK: z.string().default("true"),
-  SMS_FAIL_GRACEFULLY: z.string().default("true"),
-  SENDER_API_KEY: z.string().default("test_api_key"),
+  // SMS
+  SMS_MOCK: z.string().default("false"),
+  SMS_FAIL_GRACEFULLY: z.string().default("false"),
+  SENDER_API_KEY: z.string().min(1),
 
-  SALT_ROUNDS: z.string().default("10"),
-  ADMIN_PASSWORD: z.string().default("admin1234"),
-  EMAIL: z.string().email().default("admin@example.com"),
-  ADMIN_FIRST_NAME: z.string().default("Admin"),
-  ADMIN_LAST_NAME: z.string().default("User"),
+  // Seeds
+  SALT_ROUNDS: z.string(),
+  ADMIN_PASSWORD: z.string(),
+  EMAIL: z.string().email(),
+  ADMIN_FIRST_NAME: z.string(),
+  ADMIN_LAST_NAME: z.string(),
 
-  SENDGRID_API_KEY: z.string().default("sendgrid_test_key"),
+  // Email
+  SENDGRID_API_KEY: z.string().min(1),
 
-  SWAGGER_USERNAME: z.string().default("swagger"),
-  SWAGGER_PASSWORD: z.string().default("swagger"),
+  // Swagger
+  SWAGGER_USERNAME: z.string().min(1),
+  SWAGGER_PASSWORD: z.string().min(1),
 
+  // logging
   LOG_LEVEL: z.string().default("info"),
-
-  IP_HASH_SECRET: z.string().min(32).default("e".repeat(32)),
+  IP_HASH_SALT: z.string().min(1),
 });
 
 const parsed = envSchema.safeParse(process.env);
