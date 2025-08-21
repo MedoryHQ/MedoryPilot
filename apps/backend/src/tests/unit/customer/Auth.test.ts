@@ -381,10 +381,8 @@ describe("Customer auth routes — /auth", () => {
         email: null,
       });
 
-      // verifyField should return true
       (require("@/utils").verifyField as jest.Mock).mockReturnValueOnce(true);
 
-      // prisma.user.create returns created user
       (prisma.user.create as jest.Mock).mockResolvedValueOnce({
         ...mockUser,
         dateOfBirth: "1990-01-01",
@@ -392,7 +390,6 @@ describe("Customer auth routes — /auth", () => {
 
       (prisma.pendingUser.delete as jest.Mock).mockResolvedValueOnce({});
 
-      // generate access/refresh tokens mocks
       (require("@/utils").generateAccessToken as jest.Mock).mockReturnValueOnce(
         {
           token: "access-abc",
@@ -466,6 +463,59 @@ describe("Customer auth routes — /auth", () => {
       expect(res.body.error).toEqual(
         require("@/utils").errorMessages.smsCodeisInvalid ?? "smsCodeisInvalid"
       );
+    });
+  });
+
+  describe("POST /auth/verification-resend", () => {
+    it("resends verification code when pending user exists and code expired", async () => {
+      (prisma.pendingUser.findUnique as jest.Mock).mockResolvedValueOnce({
+        id: "pending-1",
+        phoneNumber: mockUser.phoneNumber,
+        smsCodeExpiresAt: new Date(Date.now() - 10000).toISOString(),
+      });
+
+      (require("@/utils").generateSmsCode as jest.Mock).mockResolvedValueOnce({
+        hashedSmsCode: "newSmsHash",
+      });
+
+      (prisma.pendingUser.update as jest.Mock).mockResolvedValueOnce({});
+
+      const res = await request(app)
+        .post("/auth/verification-resend")
+        .send({ phoneNumber: mockUser.phoneNumber });
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toEqual(
+        require("@/utils").getResponseMessage("verificationCodeResent")
+      );
+      expect(prisma.pendingUser.update).toHaveBeenCalled();
+    });
+
+    it("returns 404 when pending user not found", async () => {
+      (prisma.pendingUser.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .post("/auth/verification-resend")
+        .send({ phoneNumber: mockUser.phoneNumber });
+
+      expect(res.status).toBe(404);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.userNotFound
+      );
+    });
+
+    it("returns 400 when code still valid", async () => {
+      (prisma.pendingUser.findUnique as jest.Mock).mockResolvedValueOnce({
+        id: "pending-1",
+        phoneNumber: mockUser.phoneNumber,
+        smsCodeExpiresAt: new Date(Date.now() + 10000).toISOString(),
+      });
+
+      const res = await request(app)
+        .post("/auth/verification-resend")
+        .send({ phoneNumber: mockUser.phoneNumber });
+
+      expect(res.status).toBe(400);
     });
   });
 });
