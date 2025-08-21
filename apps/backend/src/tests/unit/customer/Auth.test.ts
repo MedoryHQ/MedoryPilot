@@ -86,16 +86,16 @@ jest.mock("@/utils", () => {
         ka: "შესახებ წარმატებით დასრულდა",
       },
       verificationCodeResent: {
-        en: "Verification code resent",
-        ka: "ვერიფიკაციის კოდი ხელახლა გაიგზავნა",
+        en: "Verification code resent successfully",
+        ka: "ვერიფიკაცის კოდი წარმატებით გამოიგზავნა ხელახლა",
       },
       codeSent: {
-        en: "Code sent",
-        ka: "კოდი გაიგზავნა",
+        en: "Code sent successfully",
+        ka: "კოდი წარმატებით გამოიგზავნა",
       },
       codeVerified: {
-        en: "Code verified",
-        ka: "კოდი დადასტურდა",
+        en: "Code verified successfully",
+        ka: "კოდი ვერიფიცირებულია",
       },
       passwordChanged: {
         en: "Password changed",
@@ -516,6 +516,44 @@ describe("Customer auth routes — /auth", () => {
         .send({ phoneNumber: mockUser.phoneNumber });
 
       expect(res.status).toBe(400);
+    });
+  });
+
+  describe("POST /auth/forgot-password", () => {
+    it("sends forgot password code when user exists", async () => {
+      (prisma.user.findUnique as jest.Mock).mockResolvedValueOnce({
+        id: mockUser.id,
+        phoneNumber: mockUser.phoneNumber,
+      });
+
+      (require("@/utils").generateSmsCode as jest.Mock).mockResolvedValueOnce({
+        hashedSmsCode: "forgotHash",
+      });
+
+      (prisma.user.update as jest.Mock).mockResolvedValueOnce({});
+
+      const res = await request(app)
+        .post("/auth/forgot-password")
+        .send({ phoneNumber: mockUser.phoneNumber });
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toEqual(
+        require("@/utils").getResponseMessage("codeSent")
+      );
+      expect(prisma.user.update).toHaveBeenCalled();
+    });
+
+    it("returns 404 when user not found", async () => {
+      (prisma.user.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .post("/auth/forgot-password")
+        .send({ phoneNumber: "+995555555552" });
+
+      expect(res.status).toBe(404);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.userNotFound
+      );
     });
   });
 });
