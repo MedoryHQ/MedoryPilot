@@ -15,7 +15,7 @@ app.use("/auth", userAuthRouter);
 
 jest.mock("@/config", () => ({
   prisma: {
-    user: { findUnique: jest.fn() },
+    user: { findUnique: jest.fn(), create: jest.fn(), update: jest.fn() },
     pendingUser: {
       findUnique: jest.fn(),
       create: jest.fn(),
@@ -84,6 +84,22 @@ jest.mock("@/utils", () => {
       loginSuccessful: {
         en: "Login successful",
         ka: "შესახებ წარმატებით დასრულდა",
+      },
+      verificationCodeResent: {
+        en: "Verification code resent",
+        ka: "ვერიფიკაციის კოდი ხელახლა გაიგზავნა",
+      },
+      codeSent: {
+        en: "Code sent",
+        ka: "კოდი გაიგზავნა",
+      },
+      codeVerified: {
+        en: "Code verified",
+        ka: "კოდი დადასტურდა",
+      },
+      passwordChanged: {
+        en: "Password changed",
+        ka: "პაროლი შეიცვალა",
       },
     },
     cookieOptions: { path: "/", httpOnly: true, sameSite: "lax" },
@@ -347,6 +363,109 @@ describe("Customer auth routes — /auth", () => {
         .set("Cookie", [`refreshToken=${oldRefresh}`]);
 
       expect(res.status).toBe(500);
+    });
+  });
+
+  describe("POST /auth/verify", () => {
+    it("verifies pending user, creates user, sets cookies and returns user data", async () => {
+      (prisma.pendingUser.findUnique as jest.Mock).mockResolvedValueOnce({
+        id: "pending-1",
+        phoneNumber: mockUser.phoneNumber,
+        smsCode: "smsHash",
+        smsCodeExpiresAt: new Date(Date.now() + 10000).toISOString(),
+        firstName: "Alice",
+        lastName: "Smith",
+        dateOfBirth: "1990-01-01",
+        passwordHash: "hashedPassword",
+        personalId: "123456789",
+        email: null,
+      });
+
+      // verifyField should return true
+      (require("@/utils").verifyField as jest.Mock).mockReturnValueOnce(true);
+
+      // prisma.user.create returns created user
+      (prisma.user.create as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        dateOfBirth: "1990-01-01",
+      });
+
+      (prisma.pendingUser.delete as jest.Mock).mockResolvedValueOnce({});
+
+      // generate access/refresh tokens mocks
+      (require("@/utils").generateAccessToken as jest.Mock).mockReturnValueOnce(
+        {
+          token: "access-abc",
+          expiresIn: 1000,
+        }
+      );
+      (
+        require("@/utils").generateRefreshToken as jest.Mock
+      ).mockReturnValueOnce({
+        token: "refresh-abc",
+        expiresIn: 2000,
+      });
+
+      (prisma.refreshToken.create as jest.Mock).mockResolvedValueOnce({
+        token: "refresh-abc",
+      });
+
+      const res = await request(app).post("/auth/verify").send({
+        id: "pending-1",
+        phoneNumber: mockUser.phoneNumber,
+        code: "1234",
+      });
+
+      expect(res.status).toBe(200);
+      const setCookie = res.headers["set-cookie"];
+      expect(setCookie).toBeDefined();
+      const asArray = Array.isArray(setCookie) ? setCookie : [setCookie];
+      const cookieStr = asArray.join(";");
+      expect(cookieStr).toContain("accessToken=");
+      expect(cookieStr).toContain("refreshToken=");
+      expect(res.body.data).toBeTruthy();
+    });
+
+    it("returns 404 when pending user not found", async () => {
+      (prisma.pendingUser.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app).post("/auth/verify").send({
+        id: "missing",
+        phoneNumber: mockUser.phoneNumber,
+        code: "1234",
+      });
+
+      expect(res.status).toBe(404);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.userNotFound
+      );
+    });
+
+    it("returns 401 when sms code invalid", async () => {
+      (prisma.pendingUser.findUnique as jest.Mock).mockResolvedValueOnce({
+        id: "pending-1",
+        phoneNumber: mockUser.phoneNumber,
+        smsCode: "smsHash",
+        smsCodeExpiresAt: new Date(Date.now() + 10000).toISOString(),
+        firstName: "Alice",
+        lastName: "Smith",
+        dateOfBirth: "1990-01-01",
+        passwordHash: "hashedPassword",
+        personalId: "123456789",
+      });
+
+      (require("@/utils").verifyField as jest.Mock).mockReturnValueOnce(false);
+
+      const res = await request(app).post("/auth/verify").send({
+        id: "pending-1",
+        phoneNumber: mockUser.phoneNumber,
+        code: "wrong",
+      });
+
+      expect(res.status).toBe(401);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.smsCodeisInvalid ?? "smsCodeisInvalid"
+      );
     });
   });
 });
