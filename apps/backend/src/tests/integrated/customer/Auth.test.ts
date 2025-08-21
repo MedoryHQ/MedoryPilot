@@ -375,5 +375,42 @@ describe("Customer auth (integration-style) — /auth/*", () => {
       });
       expect(res).toHaveStatus(404);
     });
+
+    it("matches snapshot on successful password reset", async () => {
+      (prisma.user.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        smsCode: "smsHash",
+        smsCodeExpiresAt: new Date(Date.now() + 10000).toISOString(),
+      });
+      (require("@/utils").verifyField as jest.Mock).mockReturnValueOnce(true);
+      (require("@/utils").createPassword as jest.Mock).mockResolvedValueOnce(
+        "newHash"
+      );
+      (prisma.user.update as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        passwordHash: "newHash",
+        smsCode: null,
+      });
+
+      const res = await request(app).post("/auth/password-reset").send({
+        type: "phoneNumber",
+        phoneNumber: mockUser.phoneNumber,
+        smsCode: "1234",
+        password: "NewPassword123!",
+      });
+
+      const stableBody = {
+        ...res.body,
+        user: {
+          ...res.body.user,
+          passwordHash: res.body?.user?.passwordHash ? "<hash>" : undefined,
+        },
+      };
+
+      expect({
+        status: res.status,
+        body: stableBody,
+      }).toMatchSnapshot();
+    });
   });
 });
