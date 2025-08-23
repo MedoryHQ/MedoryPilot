@@ -381,8 +381,60 @@ describe("Customer auth routes — /auth", () => {
         .send({ email: "missing@b.com" });
 
       expect(res).toHaveStatus(400);
+    });
+  });
+
+  describe("POST /admin/forgot-password-verification", () => {
+    it("verifies forgot password sms code successfully", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        id: mockUser.id,
+        email: mockUser.email,
+        smsCode: "smsStoredHash",
+        smsCodeExpiresAt: new Date(Date.now() + 10000).toISOString(),
+      });
+
+      (require("@/utils").verifyField as jest.Mock).mockReturnValueOnce(true);
+
+      const res = await request(app)
+        .post("/admin/forgot-password-verification")
+        .send({ email: mockUser.email, smsCode: "1234" });
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toEqual(
+        require("@/utils").getResponseMessage("codeVerified")
+      );
+    });
+
+    it("returns 404 when user not found or no smsCode", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .post("/admin/forgot-password-verification")
+        .send({ email: "man@gmail.com", smsCode: "1234" });
+
+      expect(res.status).toBe(404);
       expect(res.body.error).toEqual(
         require("@/utils").errorMessages.userNotFound
+      );
+    });
+
+    it("returns 401 when code invalid", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        id: mockUser.id,
+        email: mockUser.email,
+        smsCode: "smsStoredHash",
+        smsCodeExpiresAt: new Date(Date.now() + 10000).toISOString(),
+      });
+
+      (require("@/utils").verifyField as jest.Mock).mockReturnValueOnce(false);
+
+      const res = await request(app)
+        .post("/admin/forgot-password-verification")
+        .send({ email: mockUser.email, smsCode: "wrong" });
+
+      expect(res.status).toBe(401);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.smsCodeisInvalid ?? "smsCodeisInvalid"
       );
     });
   });
