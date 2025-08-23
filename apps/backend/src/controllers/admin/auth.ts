@@ -1,4 +1,5 @@
 import { prisma } from "@/config";
+import { IForgetPasswordWithEmail, IForgotPassword } from "@/types/customer";
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -9,6 +10,9 @@ import {
   logAdminInfo as logInfo,
   logAdminWarn as logWarn,
   getClientIp,
+  inMinutes,
+  getResponseMessage,
+  generateSmsCode,
 } from "@/utils";
 import { NextFunction, Response, Request } from "express";
 
@@ -110,6 +114,80 @@ export const renew = async (
   } catch (error) {
     const hashedIp = await getClientIp(req);
     logInfo("Token renew exception", { ip: hashedIp, userId: req.user?.id });
+    next(error);
+  }
+};
+
+export const forgotPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const hashedIp = await getClientIp(req);
+    const { email } = req.body as IForgetPasswordWithEmail;
+
+    logInfo("Forget password attempt", {
+      ip: hashedIp,
+      event: "admin_forgot_password_attempt",
+    });
+    const admin = await prisma.admin.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (!admin) {
+      logWarn("Forgot password failed: admin not found", {
+        ip: hashedIp,
+        event: "admin_forgot_password_failed",
+      });
+      return sendError(req, res, 404, "userNotFound");
+    }
+    if (
+      admin.smsCodeExpiresAt &&
+      new Date(admin.smsCodeExpiresAt) > new Date()
+    ) {
+      logWarn("Forgot password failed: code still valid", {
+        ip: hashedIp,
+        event: "admin_forgot_password_failed",
+      });
+      return sendError(req, res, 400, "verificationCodeStillValid");
+    }
+
+    const {
+      hashedSmsCode,
+      //  smsCode
+    } = await generateSmsCode();
+
+    // await mailer.sendOtpCode(email, smsCode);
+
+    await prisma.admin.update({
+      where: {
+        id: admin.id,
+      },
+      data: {
+        smsCode: hashedSmsCode,
+        smsCodeExpiresAt: inMinutes(5),
+      },
+    });
+
+    logInfo("Forgot password code sent", {
+      ip: hashedIp,
+      adminId: admin.id,
+      event: "admin_forgot_password_code_sent",
+    });
+
+    return res.status(200).json({
+      message: getResponseMessage("codeSent"),
+    });
+  } catch (error) {
+    const hashedIp = await getClientIp(req);
+    logCatchyError("Forgot password exception", error, {
+      ip: hashedIp,
+      event: "admin_forgot_password_exception",
+    });
+
     next(error);
   }
 };

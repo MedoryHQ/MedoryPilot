@@ -1,7 +1,10 @@
 import { NextFunction, Router, Request, Response } from "express";
 import { GLOBAL_ERROR_MESSAGE } from "@/utils";
 import * as authController from "@/controllers/admin/auth";
-import { loginValidation } from "@/validations/admin/";
+import {
+  forgotAdminPasswordValidation,
+  loginValidation,
+} from "@/validations/admin/";
 import { adminAuthenticate } from "@/middlewares/admin";
 import { validationHandler } from "@/middlewares/global/validationHandler";
 
@@ -30,6 +33,19 @@ adminAuthRouter.get(
       return res
         .status(500)
         .json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminAuthRouter.post(
+  "/forgot-password",
+  forgotAdminPasswordValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return authController.forgotPassword(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }
   }
 );
