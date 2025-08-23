@@ -1,5 +1,6 @@
 import { body } from "express-validator";
 import {
+  codeValidation,
   emailValidation,
   existanceValidation,
   passwordValidation,
@@ -13,4 +14,9 @@ export const loginValidation = [
 export const forgotAdminPasswordValidation = [
   emailValidation(),
   existanceValidation("email", "admin"),
+];
+
+export const forgotAdminPasswordVerificationValidation = [
+  emailValidation(),
+  codeValidation("smsCode"),
 ];

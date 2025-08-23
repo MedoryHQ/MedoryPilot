@@ -3,6 +3,7 @@ import { GLOBAL_ERROR_MESSAGE } from "@/utils";
 import * as authController from "@/controllers/admin/auth";
 import {
   forgotAdminPasswordValidation,
+  forgotAdminPasswordVerificationValidation,
   loginValidation,
 } from "@/validations/admin/";
 import { adminAuthenticate } from "@/middlewares/admin";
@@ -44,6 +45,19 @@ adminAuthRouter.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return authController.forgotPassword(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminAuthRouter.post(
+  "/forgot-password-verification",
+  forgotAdminPasswordVerificationValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return authController.forgotAdminPasswordVerification(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }

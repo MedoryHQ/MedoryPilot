@@ -1,4 +1,5 @@
 import { prisma } from "@/config";
+import { IForgotAdminPasswordVerification } from "@/types/admin/auth";
 import { IForgetPasswordWithEmail, IForgotPassword } from "@/types/customer";
 import {
   generateAccessToken,
@@ -188,6 +189,72 @@ export const forgotPassword = async (
       event: "admin_forgot_password_exception",
     });
 
+    next(error);
+  }
+};
+
+export const forgotAdminPasswordVerification = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const hashedIp = await getClientIp(req);
+    const { smsCode, email } = req.body as IForgotAdminPasswordVerification;
+
+    logInfo("Forget password verification attempt", {
+      ip: hashedIp,
+      event: "admin_forgot_password_verification_attempt",
+    });
+
+    const admin = await prisma.admin.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (!admin || !admin.smsCode) {
+      logWarn("Forgot password verification failed: admin not found", {
+        ip: hashedIp,
+        event: "admin_forgot_password_verification_failed",
+      });
+      return sendError(req, res, 404, "userNotFound");
+    }
+
+    if (
+      !admin.smsCodeExpiresAt ||
+      new Date(admin.smsCodeExpiresAt) < new Date()
+    ) {
+      logWarn("Forgot password verification failed: code expired", {
+        ip: hashedIp,
+        event: "admin_forgot_password_verification_failed",
+      });
+      return sendError(req, res, 400, "verificationCodeExpired");
+    }
+
+    const isSmsValid = verifyField(smsCode, admin.smsCode);
+    if (!isSmsValid) {
+      logWarn("Forgot password verification failed: invalid code", {
+        ip: hashedIp,
+        event: "admin_forgot_password_verification_failed",
+      });
+      return sendError(req, res, 401, "smsCodeisInvalid");
+    }
+
+    logInfo("Forgot password code verified successfully", {
+      ip: hashedIp,
+      adminId: admin.id,
+      event: "admin_forgot_password_code_verified",
+    });
+    return res.status(200).json({
+      message: getResponseMessage("codeVerified"),
+    });
+  } catch (error) {
+    const hashedIp = await getClientIp(req);
+    logCatchyError("Forgot password verification exception", error, {
+      ip: hashedIp,
+      event: "admin_forgot_password_verification_exception",
+    });
     next(error);
   }
 };
