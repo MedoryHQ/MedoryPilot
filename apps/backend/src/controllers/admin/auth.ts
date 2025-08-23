@@ -1,5 +1,8 @@
 import { prisma } from "@/config";
-import { IForgotAdminPasswordVerification } from "@/types/admin/auth";
+import {
+  IForgotAdminPasswordVerification,
+  IResetAdminPassword,
+} from "@/types/admin/auth";
 import { IForgetPasswordWithEmail, IForgotPassword } from "@/types/customer";
 import {
   generateAccessToken,
@@ -14,6 +17,7 @@ import {
   inMinutes,
   getResponseMessage,
   generateSmsCode,
+  createPassword,
 } from "@/utils";
 import { NextFunction, Response, Request } from "express";
 
@@ -175,7 +179,7 @@ export const forgotPassword = async (
 
     logInfo("Forgot password code sent", {
       ip: hashedIp,
-      adminId: admin.id,
+      userId: admin.id,
       event: "admin_forgot_password_code_sent",
     });
 
@@ -193,7 +197,7 @@ export const forgotPassword = async (
   }
 };
 
-export const forgotAdminPasswordVerification = async (
+export const forgotPasswordVerification = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -243,7 +247,7 @@ export const forgotAdminPasswordVerification = async (
 
     logInfo("Forgot password code verified successfully", {
       ip: hashedIp,
-      adminId: admin.id,
+      userId: admin.id,
       event: "admin_forgot_password_code_verified",
     });
     return res.status(200).json({
@@ -255,6 +259,82 @@ export const forgotAdminPasswordVerification = async (
       ip: hashedIp,
       event: "admin_forgot_password_verification_exception",
     });
+    next(error);
+  }
+};
+
+export const resetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const hashedIp = await getClientIp(req);
+    const { email, password, smsCode } = req.body as IResetAdminPassword;
+
+    logInfo("Reset password attempt", {
+      ip: hashedIp,
+      event: "admin_reset_password_attempt",
+    });
+
+    const admin = await prisma.admin.findUnique({ where: { email } });
+
+    if (!admin || !admin.smsCode) {
+      logWarn("Reset password failed: admin not found or no code", {
+        ip: hashedIp,
+        event: "admin_reset_password_failed",
+      });
+      return sendError(req, res, 404, "userNotFound");
+    }
+
+    if (
+      !admin.smsCodeExpiresAt ||
+      new Date(admin.smsCodeExpiresAt) < new Date()
+    ) {
+      logWarn("Reset password failed: code expired", {
+        ip: hashedIp,
+        event: "admin_reset_password_failed",
+      });
+      return sendError(req, res, 400, "verificationCodeExpired");
+    }
+
+    const isSmsValid = verifyField(smsCode, admin.smsCode);
+    if (!isSmsValid) {
+      logWarn("Reset password failed: invalid code", {
+        ip: hashedIp,
+        event: "admin_reset_password_failed",
+      });
+      return sendError(req, res, 401, "smsCodeisInvalid");
+    }
+
+    const passwordHash = await createPassword(password);
+
+    const newAdmin = await prisma.admin.update({
+      where: {
+        id: admin.id,
+      },
+      data: {
+        passwordHash,
+        smsCode: null,
+      },
+    });
+
+    logInfo("Password reset successfully", {
+      ip: hashedIp,
+      userId: admin.id,
+      event: "admin_password_reset",
+    });
+    return res.status(200).json({
+      message: getResponseMessage("passwordChanged"),
+      admin: newAdmin,
+    });
+  } catch (error) {
+    const hashedIp = await getClientIp(req);
+    logCatchyError("Reset password exception", error, {
+      ip: hashedIp,
+      event: "admin_reset_password_exception",
+    });
+
     next(error);
   }
 };

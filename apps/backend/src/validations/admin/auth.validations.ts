@@ -20,3 +20,9 @@ export const forgotAdminPasswordVerificationValidation = [
   emailValidation(),
   codeValidation("smsCode"),
 ];
+
+export const resetAdminPasswordValidation = [
+  codeValidation("smsCode"),
+  emailValidation(),
+  passwordValidation(),
+];

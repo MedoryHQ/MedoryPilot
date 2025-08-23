@@ -5,6 +5,7 @@ import {
   forgotAdminPasswordValidation,
   forgotAdminPasswordVerificationValidation,
   loginValidation,
+  resetAdminPasswordValidation,
 } from "@/validations/admin/";
 import { adminAuthenticate } from "@/middlewares/admin";
 import { validationHandler } from "@/middlewares/global/validationHandler";
@@ -57,7 +58,20 @@ adminAuthRouter.post(
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      return authController.forgotAdminPasswordVerification(req, res, next);
+      return authController.forgotPasswordVerification(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminAuthRouter.post(
+  "/password-reset",
+  resetAdminPasswordValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return authController.resetPassword(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }
