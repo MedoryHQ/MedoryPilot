@@ -31,9 +31,10 @@ model Language {
 model File {
   id String @id @default(uuid()) @db.Uuid
 
-  name String
-  path String
-  size Int
+  name  String
+  path  String
+  size  Int
+  order Int?
 
   header            Header?     @relation(fields: [headerId], references: [id], onDelete: Cascade)
   headerId          String?     @unique @db.Uuid

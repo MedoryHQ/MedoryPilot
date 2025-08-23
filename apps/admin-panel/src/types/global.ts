@@ -15,8 +15,10 @@ export interface TableOption {
 export interface File {
   id: string;
   name: string;
+  status?: string;
   path: string;
   size: number;
+  index?: number;
   createdAt: string;
   updatedAt: string;
 }

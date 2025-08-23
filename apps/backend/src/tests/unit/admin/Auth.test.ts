@@ -21,8 +21,11 @@ jest.mock("@/config", () => ({
   prisma: {
     admin: {
       findUnique: jest.fn(),
+      update: jest.fn(),
     },
+    $disconnect: jest.fn(),
   },
+
   getEnvVariable: jest.fn((key: string) => {
     if (key === "ADMIN_JWT_ACCESS_SECRET") return "accessSecret";
     if (key === "ADMIN_JWT_REFRESH_SECRET") return "refreshSecret";
@@ -63,6 +66,9 @@ jest.mock("@/utils", () => {
 
   return {
     ...actual,
+    generateSmsCode: jest.fn(),
+    createPassword: jest.fn(),
+    inMinutes: (mins: number) => new Date(Date.now() + mins * 60 * 1000),
     getTokenFromRequest: jest.fn((req: any) => {
       const auth = req?.headers?.authorization;
       if (typeof auth === "string" && auth.startsWith("Bearer ")) {
@@ -338,6 +344,188 @@ describe("Customer auth routes — /auth", () => {
         ]);
 
       expect(res.status).toBe(500);
+    });
+  });
+
+  describe("POST /admin/forgot-password", () => {
+    it("sends forgot password code via email when admin exists", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValue({
+        id: mockUser.id,
+        email: "a@b.com",
+      });
+
+      (require("@/utils").generateSmsCode as jest.Mock).mockResolvedValueOnce({
+        hashedSmsCode: "emailForgotHash",
+      });
+
+      (prisma.admin.update as jest.Mock).mockResolvedValueOnce({});
+
+      const res = await request(app)
+        .post("/admin/forgot-password")
+        .send({ email: "a@b.com" });
+
+      console.log(res.status, res.body, "sfa");
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toEqual(
+        require("@/utils").getResponseMessage("codeSent")
+      );
+      expect(prisma.admin.update).toHaveBeenCalled();
+    });
+
+    it("returns 404 when admin not found", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValue(null);
+
+      const res = await request(app)
+        .post("/admin/forgot-password")
+        .send({ email: "missing@b.com" });
+
+      expect(res).toHaveStatus(400);
+    });
+  });
+
+  describe("POST /admin/forgot-password-verification", () => {
+    it("verifies forgot password sms code successfully", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        id: mockUser.id,
+        email: mockUser.email,
+        smsCode: "smsStoredHash",
+        smsCodeExpiresAt: new Date(Date.now() + 10000).toISOString(),
+      });
+
+      (require("@/utils").verifyField as jest.Mock).mockReturnValueOnce(true);
+
+      const res = await request(app)
+        .post("/admin/forgot-password-verification")
+        .send({ email: mockUser.email, smsCode: "1234" });
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toEqual(
+        require("@/utils").getResponseMessage("codeVerified")
+      );
+    });
+
+    it("returns 404 when user not found or no smsCode", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .post("/admin/forgot-password-verification")
+        .send({ email: "man@gmail.com", smsCode: "1234" });
+
+      expect(res.status).toBe(404);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.userNotFound
+      );
+    });
+
+    it("returns 401 when code invalid", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        id: mockUser.id,
+        email: mockUser.email,
+        smsCode: "smsStoredHash",
+        smsCodeExpiresAt: new Date(Date.now() + 10000).toISOString(),
+      });
+
+      (require("@/utils").verifyField as jest.Mock).mockReturnValueOnce(false);
+
+      const res = await request(app)
+        .post("/admin/forgot-password-verification")
+        .send({ email: mockUser.email, smsCode: "wrong" });
+
+      expect(res.status).toBe(401);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.smsCodeisInvalid ?? "smsCodeisInvalid"
+      );
+    });
+  });
+
+  describe("POST /admin/password-reset", () => {
+    it("resets password successfully when sms code valid", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValue({
+        id: mockUser.id,
+        email: mockUser.email,
+        smsCode: "smsStoredHash",
+        smsCodeExpiresAt: new Date(Date.now() + 10000).toISOString(),
+      });
+
+      (require("@/utils").verifyField as jest.Mock).mockReturnValueOnce(true);
+      (require("@/utils").createPassword as jest.Mock).mockResolvedValueOnce(
+        "newHash"
+      );
+      (prisma.admin.update as jest.Mock).mockResolvedValueOnce({
+        id: mockUser.id,
+        email: mockUser.email,
+      });
+
+      const res = await request(app).post("/admin/password-reset").send({
+        type: "email",
+        email: mockUser.email,
+        smsCode: "1234",
+        password: "NewPassword123!",
+      });
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toEqual(
+        require("@/utils").getResponseMessage("passwordChanged")
+      );
+      expect(prisma.admin.update).toHaveBeenCalled();
+    });
+
+    it("returns 404 when user not found or no smsCode", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app).post("/admin/password-reset").send({
+        type: "email",
+        email: "man@gmail.com",
+        smsCode: "1234",
+        password: "NewPassword123!",
+      });
+
+      expect(res.status).toBe(404);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.userNotFound
+      );
+    });
+
+    it("returns 401 when sms code invalid", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        id: mockUser.id,
+        email: mockUser.email,
+        smsCode: "smsStoredHash",
+        smsCodeExpiresAt: new Date(Date.now() + 10000).toISOString(),
+      });
+
+      (require("@/utils").verifyField as jest.Mock).mockReturnValueOnce(false);
+
+      const res = await request(app).post("/admin/password-reset").send({
+        type: "email",
+        email: mockUser.email,
+        smsCode: "wrong",
+        password: "NewPassword123!",
+      });
+
+      expect(res.status).toBe(401);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.smsCodeisInvalid ?? "smsCodeisInvalid"
+      );
+    });
+
+    it("returns 400 when sms code expired", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        id: mockUser.id,
+        email: mockUser.email,
+        smsCode: "smsStoredHash",
+        smsCodeExpiresAt: new Date(Date.now() - 10000).toISOString(),
+      });
+
+      const res = await request(app).post("/admin/password-reset").send({
+        type: "email",
+        email: mockUser.email,
+        smsCode: "1234",
+        password: "NewPassword123!",
+      });
+
+      expect(res.status).toBe(400);
     });
   });
 });
