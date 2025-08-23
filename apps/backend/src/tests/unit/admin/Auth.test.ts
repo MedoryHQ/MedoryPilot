@@ -21,8 +21,11 @@ jest.mock("@/config", () => ({
   prisma: {
     admin: {
       findUnique: jest.fn(),
+      update: jest.fn(),
     },
+    $disconnect: jest.fn(),
   },
+
   getEnvVariable: jest.fn((key: string) => {
     if (key === "ADMIN_JWT_ACCESS_SECRET") return "accessSecret";
     if (key === "ADMIN_JWT_REFRESH_SECRET") return "refreshSecret";
@@ -63,6 +66,9 @@ jest.mock("@/utils", () => {
 
   return {
     ...actual,
+    generateSmsCode: jest.fn(),
+    createPassword: jest.fn(),
+    inMinutes: (mins: number) => new Date(Date.now() + mins * 60 * 1000),
     getTokenFromRequest: jest.fn((req: any) => {
       const auth = req?.headers?.authorization;
       if (typeof auth === "string" && auth.startsWith("Bearer ")) {
@@ -338,6 +344,46 @@ describe("Customer auth routes — /auth", () => {
         ]);
 
       expect(res.status).toBe(500);
+    });
+  });
+
+  describe("POST /admin/forgot-password", () => {
+    it("sends forgot password code via email when admin exists", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValue({
+        id: mockUser.id,
+        email: "a@b.com",
+      });
+
+      (require("@/utils").generateSmsCode as jest.Mock).mockResolvedValueOnce({
+        hashedSmsCode: "emailForgotHash",
+      });
+
+      (prisma.admin.update as jest.Mock).mockResolvedValueOnce({});
+
+      const res = await request(app)
+        .post("/admin/forgot-password")
+        .send({ email: "a@b.com" });
+
+      console.log(res.status, res.body, "sfa");
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toEqual(
+        require("@/utils").getResponseMessage("codeSent")
+      );
+      expect(prisma.admin.update).toHaveBeenCalled();
+    });
+
+    it("returns 404 when admin not found", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValue(null);
+
+      const res = await request(app)
+        .post("/admin/forgot-password")
+        .send({ email: "missing@b.com" });
+
+      expect(res).toHaveStatus(400);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.userNotFound
+      );
     });
   });
 });

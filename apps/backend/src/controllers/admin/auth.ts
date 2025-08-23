@@ -136,6 +136,7 @@ export const forgotPassword = async (
       ip: hashedIp,
       event: "admin_forgot_password_attempt",
     });
+
     const admin = await prisma.admin.findUnique({
       where: {
         email,
