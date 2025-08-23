@@ -12,3 +12,21 @@ export function cleanKeys(target: Record<string, any>, keysToCheck: string[]) {
   });
   return target;
 }
+
+type Translation = {
+  language: { code: string };
+  [key: string]: any;
+};
+
+export const transformTranslationToObject = (
+  translations?: Translation[]
+): Record<string, Translation> => {
+  if (!translations || translations.length === 0) return {};
+
+  return translations.reduce<Record<string, Translation>>((acc, curr) => {
+    if (curr.language?.code) {
+      acc[curr.language.code] = curr;
+    }
+    return acc;
+  }, {});
+};
