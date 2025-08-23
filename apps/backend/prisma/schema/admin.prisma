@@ -6,6 +6,9 @@ model Admin {
   lastName     String
   passwordHash String
 
+  smsCode          String?
+  smsCodeExpiresAt DateTime?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
