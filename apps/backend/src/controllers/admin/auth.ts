@@ -1,5 +1,6 @@
 import { prisma } from "@/config";
 import {
+  IAdminLogin,
   IForgotAdminPasswordVerification,
   IResetAdminPassword,
 } from "@/types/admin/auth";
@@ -28,7 +29,7 @@ export const login = async (
 ) => {
   try {
     const hashedIp = await getClientIp(req);
-    const { email, password } = req.body;
+    const { email, password, remember } = req.body as IAdminLogin;
 
     logInfo("Login attempt", {
       ip: hashedIp,
@@ -60,11 +61,11 @@ export const login = async (
 
     res.cookie("accessToken", access.token, {
       ...cookieOptions,
-      maxAge: access.expiresIn,
+      maxAge: remember ? refresh.expiresIn : undefined,
     });
     res.cookie("refreshToken", refresh.token, {
       ...cookieOptions,
-      maxAge: refresh.expiresIn,
+      maxAge: remember ? refresh.expiresIn : undefined,
     });
 
     logInfo("Login success", { ip: hashedIp, userId: user.id });
