@@ -7,3 +7,34 @@
   margin: 0;
   padding: 0;
 }
+
+.login_card .ant-card-body {
+  width: 100% !important;
+  display: flex;
+  padding: 0px;
+  height: 510px;
+}
+
+.login_form .ant-form-item-required {
+  height: 12px !important;
+  font-size: 12px !important;
+}
+
+.login_form .ant-form-item-label {
+  padding-bottom: 2px;
+}
+
+.login_form .ant-form-item-required::before {
+  color: #4250cb !important;
+}
+
+.ant-input::placeholder {
+  font-size: 14px;
+  padding-left: 2px;
+  color: rgba(0, 0, 0, 0.582);
+}
+
+.ant-form-item {
+  margin: 0;
+  padding: 0;
+}
