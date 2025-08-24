@@ -6,6 +6,11 @@ model Admin {
   lastName     String
   passwordHash String
 
+  photo         File?
+  twoFactorAuth Boolean @default(true)
+  visitReminder Boolean @default(true)
+  notifications Boolean @default(true)
+
   smsCode          String?
   smsCodeExpiresAt DateTime?
 
