@@ -185,4 +185,7 @@ export const confirmPasswordValidation = () =>
     });
 
 export const codeValidation = (field = "code") =>
-  body(field).isString().withMessage("invalidCode");
+  body(field)
+    .isLength({ min: 4, max: 6 })
+    .isNumeric()
+    .withMessage("invalidCode");

@@ -623,7 +623,7 @@ export const forgotPasswordVerification = async (
       return sendError(req, res, 400, "verificationCodeExpired");
     }
 
-    const isSmsValid = verifyField(smsCode, user.smsCode);
+    const isSmsValid = await verifyField(smsCode, user.smsCode);
     if (!isSmsValid) {
       logWarn("Forgot password verification failed: invalid code", {
         ip: hashedIp,
@@ -691,7 +691,7 @@ export const resetPassword = async (
       return sendError(req, res, 400, "verificationCodeExpired");
     }
 
-    const isSmsValid = verifyField(smsCode, user.smsCode);
+    const isSmsValid = await verifyField(smsCode, user.smsCode);
     if (!isSmsValid) {
       logWarn("Reset password failed: invalid code", {
         ip: hashedIp,

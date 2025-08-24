@@ -1,5 +1,5 @@
 import * as bcrypt from "bcrypt";
-// import crypto from "crypto";
+import crypto from "crypto";
 import { getEnvVariable } from "@/config";
 import { createHmac } from "crypto";
 
@@ -11,8 +11,11 @@ export const createPassword = async (password: string) => {
 };
 
 export const generateSmsCode = async () => {
-  // const code = crypto.randomInt(1000, 10000).toString();
-  const code = "1234"; // TODO: Change it to generated code.
+  const nodeEnv = getEnvVariable("NODE_ENV");
+  const code =
+    nodeEnv === "test"
+      ? "1234"
+      : crypto.randomInt(1000, 10000).toString().padStart(6, "0");
   const saltRounds = Number(getEnvVariable("SALT_ROUNDS") || 10);
   const salt = await bcrypt.genSalt(saltRounds);
   const hashedSmsCode = await bcrypt.hash(code, salt);
