@@ -48,11 +48,11 @@ const Login = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-[780px]"
+        className="w-full sm:max-w-[442px] lg:max-w-[780px]"
       >
-        <Card className="login_card min-h-[548px] w-[780px] overflow-hidden !rounded-[16px] border-0 shadow-[0_4px_20px_rgba(0,0,0,0.08)]">
+        <Card className="login_card min-h-[474px] w-full overflow-hidden !rounded-[16px] border-0 shadow-[0_4px_20px_rgba(0,0,0,0.08)] sm:min-h-[548px] sm:w-[442px] lg:w-[780px]">
           <AnimatedLeftPanelStatic />
-          <section className="w-[442px] bg-white !p-[48px]">
+          <section className="w-full bg-white p-[30px] sm:w-[442px] sm:p-[48px]">
             <Form
               form={form}
               name="login"
@@ -64,7 +64,7 @@ const Login = () => {
             >
               <div className="!mb-[20px] flex w-full flex-col items-center justify-center">
                 {/* TODO: Change branding */}
-                <div className="mb-[16px] flex h-[72px] w-[72px] items-center justify-center rounded-full bg-slate-100">
+                <div className="mb-[10px] flex h-[60px] w-[60px] items-center justify-center rounded-full bg-slate-100 sm:mb-[16px] sm:h-[72px] sm:w-[72px]">
                   <Image
                     src={Logo}
                     alt="Praxis Sync"
@@ -73,16 +73,18 @@ const Login = () => {
                     height={40}
                   />
                 </div>
-                <h2 className="text-[26px] font-bold text-gray-800">
+                <h2 className="text-[22px] font-bold text-gray-800 sm:text-[26px]">
                   Welcome Tamar!
                 </h2>
-                <p className="text-[16px] text-gray-400">Log in your account</p>
+                <p className="text-[14px] text-gray-400 sm:text-[16px]">
+                  Log in your account
+                </p>
               </div>
 
               <Form.Item
                 name="email"
                 label="Email"
-                className="!mb-5"
+                className="!mb-4 sm:!mb-5"
                 rules={[
                   { required: true, message: "Email Required" },
                   { type: "email", message: "Invalid Email" }
@@ -127,7 +129,7 @@ const Login = () => {
                   type="primary"
                   htmlType="submit"
                   loading={loading}
-                  className="!h-[46px] w-full rounded-[8px] border-0 !bg-[#4250cb] hover:opacity-90"
+                  className="w-full rounded-[8px] border-0 !bg-[#4250cb] hover:opacity-90 sm:!h-[46px]"
                   size="large"
                 >
                   Login

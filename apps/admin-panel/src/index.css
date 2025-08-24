@@ -109,3 +109,17 @@
   opacity: 0.95;
   color: rgba(255, 255, 255, 0.95);
 }
+
+.ant-form-item-explain-error {
+  font-size: 14px;
+}
+
+@media (max-width: 640px) {
+  .ant-form-item-explain-error {
+    font-size: 12px;
+  }
+
+  .login_card .ant-card-body {
+    height: 474px;
+  }
+}
