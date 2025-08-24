@@ -1,23 +1,20 @@
-import { useState } from "react";
-import { Form, Input, Button, Checkbox, Card, Alert, Image } from "antd";
+import { Form, Input, Button, Checkbox, Card, Image } from "antd";
 import { motion } from "framer-motion";
 import { useAuthStore } from "@/store";
 import Logo from "@/assets/praxisSync.png";
-import TextLogo from "@/assets/praxis_as_text.png";
 import useApp from "antd/es/app/useApp";
 // import {  useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import axios from "@/api/axios";
 import { LoginFormValues, ResponseError } from "@/types";
 import { setFormErrors } from "@/utils";
-import { Info } from "lucide-react";
+import AnimatedLeftPanelStatic from "@/components/ui/AnimatedLeftPanel";
 
 const UserIcon = () => <span style={{ color: "#9ca3af" }}>👤</span>;
 const LockIcon = () => <span style={{ color: "#9ca3af" }}>🔒</span>;
 
 const Login = () => {
   const [form] = Form.useForm();
-  const [error, setError] = useState<string>("");
 
   const {
     login
@@ -53,36 +50,9 @@ const Login = () => {
         transition={{ duration: 0.5 }}
         className="w-full max-w-[780px]"
       >
-        <Card className="login_card min-h-[510px] w-[780px] border-0 shadow-sm">
-          <section className="h-full w-[336px] rounded-[10px] bg-[#4250cb] !p-[48px] !text-white">
-            <h2 className="!mt-1 !mb-8 text-[32px] leading-[40px] font-light">
-              Welcome Tamar.
-            </h2>
-            <p className="mt-2 text-[14px] leading-[24px] font-light">
-              a dual-language SaaS platform that empowers doctors to digitize
-              bookings, payments, documents, and patient engagement while giving
-              clients seamless access to schedules, records, and services.
-            </p>
-          </section>
+        <Card className="login_card min-h-[548px] w-[780px] overflow-hidden !rounded-[16px] border-0 shadow-[0_4px_20px_rgba(0,0,0,0.08)]">
+          <AnimatedLeftPanelStatic />
           <section className="w-[442px] bg-white !p-[48px]">
-            <div className="mb-8 text-center"></div>
-
-            {error && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                className="mb-6"
-              >
-                <Alert
-                  message={error}
-                  type="error"
-                  showIcon
-                  closable
-                  onClose={() => setError("")}
-                />
-              </motion.div>
-            )}
-
             <Form
               form={form}
               name="login"
@@ -92,33 +62,23 @@ const Login = () => {
               className="login_form"
               initialValues={{ remember: true }}
             >
-              <div className="!mb-[20px] flex w-full justify-end">
+              <div className="!mb-[20px] flex w-full flex-col items-center justify-center">
                 {/* TODO: Change branding */}
-                <div className="flex items-center gap-2">
+                <div className="mb-[16px] flex h-[72px] w-[72px] items-center justify-center rounded-full bg-slate-100">
                   <Image
                     src={Logo}
                     alt="Praxis Sync"
                     preview={false}
-                    width={30}
-                    height={30}
-                  />
-                  <Image
-                    src={TextLogo}
-                    alt="Praxis Sync"
-                    preview={false}
-                    height={20}
+                    width={40}
+                    height={40}
                   />
                 </div>
+                <h2 className="text-[26px] font-bold text-gray-800">
+                  Welcome Tamar!
+                </h2>
+                <p className="text-[16px] text-gray-400">Log in your account</p>
               </div>
-              <div className="!mb-[16px] flex w-full items-center justify-start gap-[24px] rounded-[6px] bg-[#4250cb]/25 !px-[22px] !py-[12px]">
-                <span className="flex h-[24px] w-[24px] items-center justify-center rounded-full bg-[#4250cb]">
-                  <Info className="h-4 w-4 text-white" />
-                </span>
-                <div className="text-[14px] leading-[26px] text-black">
-                  <p>Email: example@gmail.com</p>
-                  <p>Password: Example123</p>
-                </div>
-              </div>
+
               <Form.Item
                 name="email"
                 label="Email"
@@ -167,10 +127,10 @@ const Login = () => {
                   type="primary"
                   htmlType="submit"
                   loading={loading}
-                  className="h-12 w-full rounded-lg border-0 !bg-[#4250cb] hover:opacity-90"
+                  className="!h-[46px] w-full rounded-[8px] border-0 !bg-[#4250cb] hover:opacity-90"
                   size="large"
                 >
-                  {loading ? "Signing In" : "Sign In"}
+                  Login
                 </Button>
               </Form.Item>
             </Form>
