@@ -433,4 +433,142 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
       );
     });
   });
+
+  describe("POST /admin/password-reset", () => {
+    it("resets password successfully", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        smsCode: "hash123",
+        smsCodeExpiresAt: new Date(Date.now() + 5000).toISOString(),
+      });
+      (require("@/utils").verifyField as jest.Mock).mockReturnValueOnce(true);
+      (require("@/utils").createPassword as jest.Mock).mockResolvedValueOnce(
+        "newHash"
+      );
+      (prisma.admin.update as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        passwordHash: "newHash",
+        smsCode: null,
+      });
+
+      const res = await request(app).post("/admin/password-reset").send({
+        email: mockUser.email,
+        password: "NewPassword123!",
+        smsCode: "1234",
+      });
+
+      expect(res).toHaveStatus(200);
+      expect(res.body.message).toEqual(
+        require("@/utils").getResponseMessage("passwordChanged")
+      );
+      expect(prisma.admin.update).toHaveBeenCalled();
+    });
+
+    it("returns 404 when admin not found", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app).post("/admin/password-reset").send({
+        email: "no@test.com",
+        password: "NewPassword123!",
+        smsCode: "1234",
+      });
+
+      expect(res).toHaveStatus(404);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.userNotFound
+      );
+    });
+
+    it("returns 400 when code expired", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        smsCode: "hash123",
+        smsCodeExpiresAt: new Date(Date.now() - 5000).toISOString(),
+      });
+
+      const res = await request(app).post("/admin/password-reset").send({
+        email: mockUser.email,
+        password: "NewPassword123!",
+        smsCode: "1234",
+      });
+
+      expect(res).toHaveStatus(400);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.verificationCodeExpired
+      );
+    });
+
+    it("returns 401 when sms invalid", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        smsCode: 2345,
+        smsCodeExpiresAt: new Date(Date.now() + 5000).toISOString(),
+      });
+      (require("@/utils").verifyField as jest.Mock).mockReturnValueOnce(false);
+
+      const res = await request(app).post("/admin/password-reset").send({
+        email: mockUser.email,
+        password: "NewPassword123!",
+        smsCode: 3456,
+      });
+
+      expect(res).toHaveStatus(401);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.smsCodeisInvalid
+      );
+    });
+    it("matches snapshot on renew with valid tokens", async () => {
+      const payload = { id: mockUser.id, email: mockUser.email };
+      const accessToken = jwt.sign(
+        payload,
+        (require("@/config").getEnvVariable as jest.Mock)(
+          "ADMIN_JWT_ACCESS_SECRET"
+        )
+      );
+      const refreshToken = jwt.sign(
+        payload,
+        (require("@/config").getEnvVariable as jest.Mock)(
+          "ADMIN_JWT_REFRESH_SECRET"
+        )
+      );
+
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        passwordHash: undefined,
+      });
+
+      const res = await request(app)
+        .get("/admin/renew")
+        .set("Cookie", [
+          `accessToken=${accessToken}`,
+          `refreshToken=${refreshToken}`,
+        ]);
+
+      const setCookieHeader = res.headers["set-cookie"];
+      const normalizedCookies = Array.isArray(setCookieHeader)
+        ? setCookieHeader.map((c: string) =>
+            c
+              .replace(/Expires=[^;]+/, "Expires=<normalized>")
+              .replace(/Max-Age=\d+/, "Max-Age=<normalized>")
+              .replace(/accessToken=[^;]+/, "accessToken=<token>")
+              .replace(/refreshToken=[^;]+/, "refreshToken=<token>")
+          )
+        : [];
+
+      const stableBody = {
+        ...res.body,
+        data: {
+          ...res.body.data,
+          accessToken: res.body?.data?.accessToken ? "<token>" : undefined,
+          refreshToken: res.body?.data?.refreshToken ? "<token>" : undefined,
+        },
+      };
+
+      expect({
+        status: res.status,
+        body: stableBody,
+        cookies: normalizedCookies,
+      }).toMatchSnapshot();
+    });
+  });
 });
