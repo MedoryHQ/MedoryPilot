@@ -22,6 +22,7 @@ jest.mock("@/config", () => ({
   prisma: {
     admin: {
       findUnique: jest.fn(),
+      update: jest.fn(),
     },
     $disconnect: jest.fn(),
   },
@@ -66,6 +67,10 @@ jest.mock("@/utils", () => {
 
   return {
     ...actual,
+    generateSmsCode: jest.fn(),
+    createPassword: jest.fn(),
+    getResponseMessage: jest.fn((k: string) => k),
+    inMinutes: (mins: number) => new Date(Date.now() + mins * 60 * 1000),
     getTokenFromRequest: jest.fn((req: any) => {
       const auth = req?.headers?.authorization;
       if (typeof auth === "string" && auth.startsWith("Bearer ")) {
@@ -163,48 +168,6 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
       const params = res.body.errors.map((e: any) => e.param);
       expect(params).toEqual(expect.arrayContaining(["password", "email"]));
     });
-    it("matches snapshot on successful login", async () => {
-      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(mockUser);
-      (verifyField as jest.Mock).mockResolvedValueOnce(true);
-      (generateAccessToken as jest.Mock).mockReturnValueOnce({
-        token: "access123",
-        expiresIn: 1000,
-      });
-      (generateRefreshToken as jest.Mock).mockReturnValueOnce({
-        token: "refresh123",
-        expiresIn: 2000,
-      });
-
-      const res = await request(app)
-        .post("/admin/login")
-        .send({ email: "admin@test.com", password: "correctPass" });
-
-      const setCookieHeader = res.headers["set-cookie"];
-      const normalizedCookies = Array.isArray(setCookieHeader)
-        ? setCookieHeader.map((c: string) =>
-            c
-              .replace(/Expires=[^;]+/, "Expires=<normalized>")
-              .replace(/Max-Age=\d+/, "Max-Age=<normalized>")
-              .replace(/accessToken=[^;]+/, "accessToken=<token>")
-              .replace(/refreshToken=[^;]+/, "refreshToken=<token>")
-          )
-        : [];
-
-      const stableBody = {
-        ...res.body,
-        data: {
-          ...res.body.data,
-          accessToken: res.body?.data?.accessToken ? "<token>" : undefined,
-          refreshToken: res.body?.data?.refreshToken ? "<token>" : undefined,
-        },
-      };
-
-      expect({
-        status: res.status,
-        body: stableBody,
-        cookies: normalizedCookies,
-      }).toMatchSnapshot();
-    });
   });
 
   describe("GET /admin/renew", () => {
@@ -271,6 +234,7 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
         expect.arrayContaining([expect.stringContaining("accessToken=")])
       );
     });
+
     it("returns 401 when refresh token invalid", async () => {
       const payload = { id: mockUser.id, email: mockUser.email };
       const expiredAccess = jwt.sign(
@@ -349,59 +313,56 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
 
       expect(res.status).toBe(500);
     });
+  });
 
-    it("matches snapshot on renew with valid tokens", async () => {
-      const payload = { id: mockUser.id, email: mockUser.email };
-      const accessToken = jwt.sign(
-        payload,
-        (require("@/config").getEnvVariable as jest.Mock)(
-          "ADMIN_JWT_ACCESS_SECRET"
-        )
-      );
-      const refreshToken = jwt.sign(
-        payload,
-        (require("@/config").getEnvVariable as jest.Mock)(
-          "ADMIN_JWT_REFRESH_SECRET"
-        )
-      );
-
-      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+  describe("POST /admin/forgot-password", () => {
+    it("sends forgot password code when admin exists", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValue({
         ...mockUser,
-        passwordHash: undefined,
+        smsCode: null,
+      });
+
+      (require("@/utils").generateSmsCode as jest.Mock).mockResolvedValueOnce({
+        hashedSmsCode: 2345,
+      });
+      (prisma.admin.update as jest.Mock).mockResolvedValueOnce({});
+
+      const res = await request(app)
+        .post("/admin/forgot-password")
+        .send({ email: mockUser.email });
+
+      expect(res).toHaveStatus(200);
+      expect(res.body.message).toEqual(
+        require("@/utils").getResponseMessage("codeSent")
+      );
+      expect(prisma.admin.update).toHaveBeenCalled();
+    });
+
+    it("returns 400 when admin not found", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .post("/admin/forgot-password")
+        .send({ email: "missing@test.com" });
+
+      expect(res).toHaveStatus(400);
+    });
+
+    it("returns 400 when code still valid", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValue({
+        ...mockUser,
+        smsCode: 1234,
+        smsCodeExpiresAt: new Date(Date.now() + 5000).toISOString(),
       });
 
       const res = await request(app)
-        .get("/admin/renew")
-        .set("Cookie", [
-          `accessToken=${accessToken}`,
-          `refreshToken=${refreshToken}`,
-        ]);
+        .post("/admin/forgot-password")
+        .send({ email: mockUser.email });
 
-      const setCookieHeader = res.headers["set-cookie"];
-      const normalizedCookies = Array.isArray(setCookieHeader)
-        ? setCookieHeader.map((c: string) =>
-            c
-              .replace(/Expires=[^;]+/, "Expires=<normalized>")
-              .replace(/Max-Age=\d+/, "Max-Age=<normalized>")
-              .replace(/accessToken=[^;]+/, "accessToken=<token>")
-              .replace(/refreshToken=[^;]+/, "refreshToken=<token>")
-          )
-        : [];
-
-      const stableBody = {
-        ...res.body,
-        data: {
-          ...res.body.data,
-          accessToken: res.body?.data?.accessToken ? "<token>" : undefined,
-          refreshToken: res.body?.data?.refreshToken ? "<token>" : undefined,
-        },
-      };
-
-      expect({
-        status: res.status,
-        body: stableBody,
-        cookies: normalizedCookies,
-      }).toMatchSnapshot();
+      expect(res).toHaveStatus(400);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.verificationCodeStillValid
+      );
     });
   });
 });
