@@ -365,4 +365,72 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
       );
     });
   });
+
+  describe("POST /admin/forgot-password-verification", () => {
+    it("verifies code successfully", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        smsCode: 2345,
+        smsCodeExpiresAt: new Date(Date.now() + 5000).toISOString(),
+      });
+      (require("@/utils").verifyField as jest.Mock).mockReturnValueOnce(true);
+
+      const res = await request(app)
+        .post("/admin/forgot-password-verification")
+        .send({ email: mockUser.email, smsCode: 2345 });
+
+      expect(res).toHaveStatus(200);
+      expect(res.body.message).toEqual(
+        require("@/utils").getResponseMessage("codeVerified")
+      );
+    });
+
+    it("returns 404 when admin not found", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .post("/admin/forgot-password-verification")
+        .send({ email: "no@test.com", smsCode: 2345 });
+
+      expect(res).toHaveStatus(404);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.userNotFound
+      );
+    });
+
+    it("returns 400 when code expired", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        smsCode: 2345,
+        smsCodeExpiresAt: new Date(Date.now() - 5000).toISOString(),
+      });
+
+      const res = await request(app)
+        .post("/admin/forgot-password-verification")
+        .send({ email: mockUser.email, smsCode: 2345 });
+
+      expect(res).toHaveStatus(400);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.verificationCodeExpired
+      );
+    });
+
+    it("returns 401 when code invalid", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        smsCode: 2345,
+        smsCodeExpiresAt: new Date(Date.now() + 5000).toISOString(),
+      });
+      (require("@/utils").verifyField as jest.Mock).mockReturnValueOnce(false);
+
+      const res = await request(app)
+        .post("/admin/forgot-password-verification")
+        .send({ email: mockUser.email, smsCode: 1234 });
+
+      expect(res).toHaveStatus(401);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.smsCodeisInvalid
+      );
+    });
+  });
 });
