@@ -1,7 +1,7 @@
 import { App, Form, GetProp, Image, Upload, UploadProps } from "antd";
 import { useEffect, useState } from "react";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import { FormInstance } from "antd/lib";
+import type { FormInstance } from "antd";
 import { UploadResponse } from "@/types";
 import { ADMIN_API_PATH, VITE_API_URL } from "@/utils";
 

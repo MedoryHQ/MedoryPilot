@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 
 interface SidebarStore {
   collapsed: boolean;
-  changeCollapsed: (value: boolean) => void;
+  toggleCollapsed: () => void;
 }
 
 export const useSidebarStore = create(
@@ -11,11 +11,7 @@ export const useSidebarStore = create(
     (set) => {
       return {
         collapsed: false,
-        changeCollapsed: (value) => {
-          set(() => ({
-            collapsed: value
-          }));
-        }
+        toggleCollapsed: () => set((s) => ({ collapsed: !s.collapsed }))
       };
     },
     {

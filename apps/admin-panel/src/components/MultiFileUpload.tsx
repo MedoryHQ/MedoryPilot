@@ -26,7 +26,7 @@ interface UploadFileType extends UploadFile {
   path?: string;
 }
 
-const MultiFileUpload: React.FC<MultiFileUploadProps> = ({
+export const MultiFileUpload: React.FC<MultiFileUploadProps> = ({
   form,
   name,
   required,
@@ -203,5 +203,3 @@ const MultiFileUpload: React.FC<MultiFileUploadProps> = ({
     </Form.Item>
   );
 };
-
-export default MultiFileUpload;

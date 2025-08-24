@@ -4,6 +4,122 @@
 *::after,
 *::before {
   box-sizing: border-box;
+}
+
+.login_card .ant-card-body {
+  width: 100% !important;
+  display: flex;
+  padding: 0px;
+  height: 548px;
+}
+
+.login_form .ant-form-item-required {
+  height: 12px !important;
+  font-size: 12px !important;
+}
+
+.login_form .ant-form-item-label {
+  padding-bottom: 2px;
+}
+
+.login_form .ant-form-item-required::before {
+  color: #4250cb !important;
+}
+
+.ant-input::placeholder {
+  font-size: 14px;
+  padding-left: 2px;
+  color: rgba(0, 0, 0, 0.582);
+}
+
+.ant-form-item {
   margin: 0;
   padding: 0;
+}
+
+.animated-left {
+  position: relative;
+  height: 100%;
+  width: 336px;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  overflow: hidden;
+  padding: 48px;
+  color: #fff;
+  background: transparent;
+}
+
+.animated-gradient {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(135deg, #3254cb 0%, #4250cb 40%, #2fb1d6 100%);
+  background-size: 200% 200%;
+  opacity: 0.98;
+}
+
+.parallax-blob {
+  position: absolute;
+  left: -48px;
+  top: -56px;
+  z-index: 10;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  filter: blur(28px);
+  pointer-events: none;
+}
+
+.floating-blob {
+  position: absolute;
+  z-index: 8;
+  background: rgba(255, 255, 255, 0.06);
+  filter: blur(22px);
+  pointer-events: none;
+  border-radius: 999px;
+}
+
+.rotating-ring {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+.panel-content {
+  position: relative;
+  z-index: 20;
+}
+
+.panel-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.panel-desc {
+  margin-top: 8px;
+  font-size: 16px;
+  line-height: 1.6;
+  line-height: 26px;
+  font-weight: 300;
+  opacity: 0.95;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.ant-form-item-explain-error {
+  font-size: 14px;
+}
+
+@media (max-width: 640px) {
+  .ant-form-item-explain-error {
+    font-size: 12px;
+  }
+
+  .login_card .ant-card-body {
+    height: 474px;
+  }
 }

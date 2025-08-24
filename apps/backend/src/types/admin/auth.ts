@@ -8,3 +8,9 @@ export interface IResetAdminPassword {
   smsCode: string;
   password: string;
 }
+
+export interface IAdminLogin {
+  email: string;
+  password: string;
+  remember: boolean;
+}
