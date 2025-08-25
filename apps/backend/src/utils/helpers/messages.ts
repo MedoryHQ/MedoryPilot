@@ -48,6 +48,14 @@ export const errorMessages = {
     en: "Verification expired. Please request a new code.",
     ka: "ვერიფიკაციის ვადა ამოიწურა. გთხოვთ, მოითხოვოთ ახალი კოდი.",
   },
+  determineIpFailed: {
+    en: "Determination of ip failed",
+    ka: "IP-ის განსაზღვრა ვერ მოხერხდა",
+  },
+  adminAuthenticateFailed: {
+    en: "Admin authentication failed.",
+    ka: "ადმინისტრატორის ავტორიზაცია წარუმატებლად დასრულდა.",
+  },
 
   // Messages
   smsVerificationSent: {
