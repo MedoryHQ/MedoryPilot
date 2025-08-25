@@ -4,10 +4,8 @@ import {
   IForgotAdminPasswordVerification,
   IResetAdminPassword,
 } from "@/types/admin/auth";
-import { IForgetPasswordWithEmail, IForgotPassword } from "@/types/customer";
+import { IForgetPasswordWithEmail } from "@/types/customer";
 import {
-  generateAccessToken,
-  generateRefreshToken,
   sendError,
   verifyField,
   cookieOptions,
@@ -19,6 +17,7 @@ import {
   getResponseMessage,
   generateSmsCode,
   createPassword,
+  generateStageToken,
 } from "@/utils";
 import { NextFunction, Response, Request } from "express";
 
@@ -52,32 +51,34 @@ export const login = async (
       return sendError(req, res, 401, "invalidCredentials");
     }
 
-    const payload = { id: user.id, email: user.email };
+    const {
+      hashedSmsCode,
+      //  smsCode
+    } = await generateSmsCode();
 
-    const access = generateAccessToken(payload, "ADMIN");
-    const refresh = generateRefreshToken(payload, "ADMIN");
-
-    const { passwordHash, ...userData } = user;
-
-    res.cookie("accessToken", access.token, {
-      ...cookieOptions,
-      maxAge: remember ? refresh.expiresIn : undefined,
-    });
-    res.cookie("refreshToken", refresh.token, {
-      ...cookieOptions,
-      maxAge: remember ? refresh.expiresIn : undefined,
-    });
-
-    logInfo("Login success", { ip: hashedIp, userId: user.id });
-
-    return res.json({
+    await prisma.admin.update({
+      where: { id: user.id },
       data: {
-        user: userData,
-        accessToken: access.token,
-        refreshToken: refresh.token,
-        userType: "ADMIN",
+        smsCode: hashedSmsCode,
+        smsCodeExpiresAt: inMinutes(5),
       },
     });
+
+    // await mailer.sendOtpCode(email, smsCode);
+
+    logInfo("Admin login code sent", {
+      ip: hashedIp,
+      userId: user.id,
+      event: "admin_login_code_sent",
+    });
+
+    const stageToken = generateStageToken(user.id, remember);
+
+    res.cookie("admin_verify_stage", stageToken.token, {
+      ...cookieOptions,
+      maxAge: 5 * 60 * 1000,
+    });
+    return res.status(200).json({ message: getResponseMessage("codeSent") });
   } catch (error: unknown) {
     const hashedIp = await getClientIp(req);
     logCatchyError("Login exception", error, {
