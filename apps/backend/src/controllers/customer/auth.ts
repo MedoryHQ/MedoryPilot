@@ -170,7 +170,8 @@ export const UserVerify = async (
       return sendError(req, res, 400, "verificationCodeExpired");
     }
 
-    const isSmsValid = pending.smsCode && verifyField(code, pending.smsCode);
+    const isSmsValid =
+      pending.smsCode && (await verifyField(code, pending.smsCode));
 
     if (!isSmsValid) {
       logWarn("User verification failed: invalid code", {
