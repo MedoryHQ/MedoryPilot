@@ -23,3 +23,7 @@ export interface IForgotPasswordVerification {
 export interface IOtpVerification {
   code: string;
 }
+
+export interface IOtpCodeResend {
+  email: string;
+}

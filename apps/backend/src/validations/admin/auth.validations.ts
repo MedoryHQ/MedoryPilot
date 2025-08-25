@@ -28,3 +28,4 @@ export const resetAdminPasswordValidation = [
 ];
 
 export const verifyValidation = [codeValidation("code")];
+export const resendValidation = [emailValidation()];
