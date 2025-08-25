@@ -2,6 +2,7 @@ import { prisma } from "@/config";
 import {
   IAdminLogin,
   IForgotAdminPasswordVerification,
+  IOtpCodeResend,
   IOtpVerification,
   IResetAdminPassword,
 } from "@/types/admin/auth";
@@ -147,6 +148,80 @@ export const verifyOtp = async (
       event: "admin_verify_otp_exception",
     });
     next(error);
+  }
+};
+
+export const resendAdminVerificationCode = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const hashedIp = await getClientIp(req);
+    const { email } = req.body as IOtpCodeResend;
+
+    logInfo("Resend verification attempt", {
+      ip: hashedIp,
+      event: "admin_resend_verification_attempt",
+    });
+    const admin = await prisma.admin.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (!admin) {
+      logWarn("OTP code resend failed: admin not found", {
+        ip: hashedIp,
+        event: "admin_otp_code_resend_failed",
+      });
+      return sendError(req, res, 404, "userNotFound");
+    }
+    if (
+      admin.smsCodeExpiresAt &&
+      new Date(admin.smsCodeExpiresAt) > new Date()
+    ) {
+      logWarn("OTP code resend failed: code still valid", {
+        ip: hashedIp,
+        event: "admin_otp_code_resend_failed",
+      });
+      return sendError(req, res, 400, "verificationCodeStillValid");
+    }
+
+    const {
+      hashedSmsCode,
+      //  smsCode
+    } = await generateSmsCode();
+
+    await prisma.admin.update({
+      where: {
+        id: admin.id,
+      },
+      data: {
+        smsCode: hashedSmsCode,
+        smsCodeExpiresAt: inMinutes(5),
+      },
+    });
+
+    // await mailer.sendOtpCode(email, smsCode);
+
+    logInfo("Verification code resent successfully", {
+      ip: hashedIp,
+      userId: admin.id,
+      event: "admin_verification_code_resent",
+    });
+
+    return res.status(200).json({
+      message: getResponseMessage("verificationCodeResent"),
+    });
+  } catch (error) {
+    const hashedIp = await getClientIp(req);
+    logCatchyError("Admin Resend verification exception", error, {
+      ip: hashedIp,
+      event: "admin_resend_verification_exception",
+    });
+
+    return next(error);
   }
 };
 
