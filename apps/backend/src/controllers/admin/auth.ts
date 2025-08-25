@@ -2,10 +2,13 @@ import { prisma } from "@/config";
 import {
   IAdminLogin,
   IForgotAdminPasswordVerification,
+  IOtpVerification,
   IResetAdminPassword,
 } from "@/types/admin/auth";
 import { IForgetPasswordWithEmail } from "@/types/customer";
 import {
+  generateAccessToken,
+  generateRefreshToken,
   sendError,
   verifyField,
   cookieOptions,
@@ -83,6 +86,65 @@ export const login = async (
     const hashedIp = await getClientIp(req);
     logCatchyError("Login exception", error, {
       ip: hashedIp,
+    });
+    next(error);
+  }
+};
+
+export const verifyOtp = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { code } = req.body as IOtpVerification;
+
+    const admin = await prisma.admin.findUnique({
+      where: { id: (req as any).userId },
+    });
+    if (!admin) return sendError(req, res, 404, "userNotFound");
+
+    if (
+      !admin.smsCodeExpiresAt ||
+      new Date(admin.smsCodeExpiresAt) < new Date()
+    ) {
+      return sendError(req, res, 400, "verificationCodeExpired");
+    }
+
+    const isValid = admin.smsCode
+      ? await verifyField(code, admin.smsCode)
+      : false;
+    if (!isValid) return sendError(req, res, 401, "smsCodeisInvalid");
+
+    res.clearCookie("admin_verify_stage");
+
+    const payload = { id: admin.id, email: admin.email };
+    const access = generateAccessToken(payload, "ADMIN");
+    const refresh = generateRefreshToken(payload, "ADMIN");
+
+    const remember = (req as any).remember;
+
+    console.log(remember, "rems");
+
+    res.cookie("accessToken", access.token, {
+      ...cookieOptions,
+      maxAge: remember ? refresh.expiresIn : undefined,
+    });
+    res.cookie("refreshToken", refresh.token, {
+      ...cookieOptions,
+      maxAge: remember ? refresh.expiresIn : undefined,
+    });
+
+    return res.json({
+      message: "Login successful",
+      data: { user: { email: admin.email } },
+    });
+  } catch (error) {
+    const hashedIp = await getClientIp(req);
+    logInfo("Admin verify otp exception", {
+      ip: hashedIp,
+      userId: req.user?.id,
+      event: "admin_verify_otp_exception",
     });
     next(error);
   }
