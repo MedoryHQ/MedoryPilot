@@ -6,8 +6,9 @@ import {
   forgotAdminPasswordVerificationValidation,
   loginValidation,
   resetAdminPasswordValidation,
+  verifyValidation,
 } from "@/validations/admin/";
-import { adminAuthenticate } from "@/middlewares/admin";
+import { adminAuthenticate, isAdminVerified } from "@/middlewares/admin";
 import { validationHandler } from "@/middlewares/global/validationHandler";
 
 export const adminAuthRouter = Router();
@@ -19,6 +20,20 @@ adminAuthRouter.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return authController.login(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminAuthRouter.post(
+  "/verify-otp",
+  verifyValidation,
+  validationHandler,
+  isAdminVerified,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return authController.verifyOtp(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }

@@ -13,7 +13,7 @@ export const createPassword = async (password: string) => {
 export const generateSmsCode = async () => {
   const nodeEnv = getEnvVariable("NODE_ENV");
   const code =
-    nodeEnv === "test"
+    nodeEnv === "test" || nodeEnv === "development"
       ? "1234"
       : crypto.randomInt(1000, 10000).toString().padStart(6, "0");
   const saltRounds = Number(getEnvVariable("SALT_ROUNDS") || 10);

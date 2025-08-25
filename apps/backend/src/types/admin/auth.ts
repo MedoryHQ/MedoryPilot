@@ -14,3 +14,12 @@ export interface IAdminLogin {
   password: string;
   remember: boolean;
 }
+
+export interface IForgotPasswordVerification {
+  phoneNumber: string;
+  smsCode: string;
+}
+
+export interface IOtpVerification {
+  code: string;
+}
