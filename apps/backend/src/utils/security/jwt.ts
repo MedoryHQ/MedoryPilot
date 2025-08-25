@@ -8,6 +8,9 @@ const REFRESH_TOKEN_EXPIRES_IN = "7d";
 const ACCESS_TOKEN_EXPIRES_MS = 60 * 60 * 1000;
 const REFRESH_TOKEN_EXPIRES_MS = 7 * 24 * 60 * 60 * 1000;
 
+const STAGE_TOKEN_EXPIRES_IN = "5m";
+const STAGE_TOKEN_EXPIRES_MS = 5 * 60 * 1000;
+
 type TokenType = "USER" | "ADMIN";
 
 interface TokenResponse {
@@ -125,5 +128,25 @@ export const generateTokens = async (user: User, userType: string) => {
     refreshToken,
     accessTokenExpires: ACCESS_TOKEN_EXPIRES_MS,
     refreshTokenExpires: REFRESH_TOKEN_EXPIRES_MS,
+  };
+};
+
+export const generateStageToken = (
+  id: string,
+  remember: boolean
+): TokenResponse => {
+  const payload = { id, remember };
+
+  const secret = getEnvVariable("STAGE_JWT_SECRET");
+
+  if (!secret) throw new Error("Stage JWT secret not provided");
+
+  const token = jwt.sign(payload, secret, {
+    expiresIn: STAGE_TOKEN_EXPIRES_IN,
+  });
+
+  return {
+    token,
+    expiresIn: STAGE_TOKEN_EXPIRES_MS,
   };
 };

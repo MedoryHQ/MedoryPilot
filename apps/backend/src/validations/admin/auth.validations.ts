@@ -26,3 +26,6 @@ export const resetAdminPasswordValidation = [
   emailValidation(),
   passwordValidation(),
 ];
+
+export const verifyValidation = [codeValidation("code")];
+export const resendValidation = [emailValidation()];

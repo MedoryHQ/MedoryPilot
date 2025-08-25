@@ -17,6 +17,7 @@ const envSchema = z.object({
   ADMIN_JWT_REFRESH_SECRET: z.string().min(32),
   JWT_ACCESS_SECRET: z.string().min(32),
   JWT_REFRESH_SECRET: z.string().min(32),
+  STAGE_JWT_SECRET: z.string().min(32),
 
   // URLs
   CLIENT_URL: z.string().url(),
@@ -46,7 +47,7 @@ const envSchema = z.object({
 
   // logging
   LOG_LEVEL: z.string().default("info"),
-  IP_HASH_SALT: z.string().min(1),
+  IP_HASH_SECRET: z.string().min(32),
 });
 
 const parsed = envSchema.safeParse(process.env);

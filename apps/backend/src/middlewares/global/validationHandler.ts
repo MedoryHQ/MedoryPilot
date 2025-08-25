@@ -1,11 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { validationResult } from "express-validator";
-import {
-  errorMessages,
-  getClientIp,
-  selectLogger,
-  TranslatedMessage,
-} from "@/utils";
+import { errorMessages, selectLogger, TranslatedMessage } from "@/utils";
 
 type ValidationErrorShape = {
   msg: any;
@@ -100,8 +95,6 @@ export const validationHandler = async (
     typeof err.msg === "string" ? err.msg : "unknown"
   );
 
-  const hashedIp = await getClientIp(req);
-
   let loggerToUse = selectLogger(fullPath, "warn");
 
   loggerToUse.warn({
@@ -110,8 +103,8 @@ export const validationHandler = async (
     path: fullPath || req.path,
     method: req.method,
     user: req.user
-      ? { ip: hashedIp, id: req.user.id || "UNKNOWN" }
-      : { ip: hashedIp },
+      ? { ip: (req as any).hashedIp, id: req.user.id || "UNKNOWN" }
+      : { ip: (req as any).hashedIp },
     errors: errorKeys,
     event: "validation_failed",
   });

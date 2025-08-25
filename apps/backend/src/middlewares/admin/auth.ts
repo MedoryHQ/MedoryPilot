@@ -2,7 +2,13 @@ import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { getEnvVariable } from "@/config";
 import { User } from "@/types/global";
-import { getTokenFromRequest, sendError } from "@/utils";
+import {
+  getTokenFromRequest,
+  sendError,
+  logAdminWarn as logWarn,
+  logAdminError as logCatchyError,
+  getClientIp,
+} from "@/utils";
 
 type TokenPayload = JwtPayload & User;
 
@@ -46,8 +52,64 @@ export const adminAuthenticate = (
 
       req.user = decodedRefresh;
       return next();
-    } catch {
-      return sendError(req, res, 401, "invalidRefreshToken");
+    } catch (error) {
+      logCatchyError("admin authenticate failed", error, {
+        ip: (req as any).hashedIp,
+        event: "admin_authenticate_failed",
+      });
+      return sendError(req, res, 401, "adminAuthenticateFailed");
     }
+  }
+};
+
+export const isAdminVerified = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const stageToken = req.cookies.admin_verify_stage;
+
+    if (!stageToken) {
+      logWarn("Admin verification failed: code expired", {
+        ip: (req as any).hashedId,
+        id: (req as any).userId,
+        event: "admin_verification_failed",
+      });
+      return sendError(req, res, 401, "verificationRequired");
+    }
+
+    const decoded = jwt.verify(
+      stageToken,
+      getEnvVariable("STAGE_JWT_SECRET")
+    ) as { id: string; remember?: boolean };
+
+    (req as any).userId = decoded.id;
+    (req as any).remember = decoded.remember ?? false;
+
+    next();
+  } catch (error) {
+    logCatchyError("refreshToken verification failed", error, {
+      ip: (req as any).hashedIp,
+      event: "refresh_token_failed",
+    });
+    return sendError(req, res, 401, "invalidRefreshToken");
+  }
+};
+
+export const determineAdminIp = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const hashedIp = await getClientIp(req);
+    (req as any).hashedIp = hashedIp;
+    next();
+  } catch (error) {
+    logCatchyError("Determine admin IP failed", error, {
+      event: "admin_determine_ip_exception",
+    });
+    return sendError(req, res, 401, "determineIpFailed");
   }
 };
