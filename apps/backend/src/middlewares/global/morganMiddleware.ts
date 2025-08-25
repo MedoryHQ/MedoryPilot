@@ -1,6 +1,6 @@
 import { Request } from "express";
 import morgan from "morgan";
-import { getClientIp, hashIp } from "@/utils";
+import { hashIp } from "@/utils";
 import { UAParser } from "ua-parser-js";
 import {
   adminHttpLogger,
@@ -30,7 +30,6 @@ const stream = {
 
 const morganMiddleware = morgan(
   (tokens, req: Request, res) => {
-    const ip = getClientIp(req);
     const parser = new UAParser(req.headers["user-agent"]);
     const browser = parser.getBrowser().name || "Unknown";
     const os = parser.getOS().name || "Unknown";
@@ -41,7 +40,7 @@ const morganMiddleware = morgan(
       status: tokens.status(req, res),
       contentLength: tokens.res(req, res, "content-length"),
       responseTime: tokens["response-time"](req, res) + " ms",
-      ip,
+      ip: (req as any).hashedIp,
       browser,
       os,
       user: (req as any).user?.id || null,

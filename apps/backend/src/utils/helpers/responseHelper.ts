@@ -1,6 +1,6 @@
 import { Response, Request } from "express";
 import { ErrorKey, errorMessages, TranslatedMessage } from "./messages";
-import { getClientIp, selectLogger } from "../logging";
+import { selectLogger } from "../logging";
 
 export function getResponseMessage(messageKey: ErrorKey): TranslatedMessage {
   return (
@@ -19,8 +19,6 @@ export async function sendError(
   meta: Record<string, any> = {}
 ) {
   const message = getResponseMessage(messageKey);
-
-  const hashedIp = await getClientIp(req);
   const fullPath = req.originalUrl || req.url;
 
   let loggerToUse = selectLogger(fullPath, "error");
@@ -33,7 +31,9 @@ export async function sendError(
     errorMessage: message.en,
     path: fullPath || req.path,
     method: req.method,
-    user: req.user ? { id: req.user.id, ip: hashedIp } : { ip: hashedIp },
+    user: req.user
+      ? { id: req.user.id, ip: (req as any).hashedIp }
+      : { ip: (req as any).hashedIp },
     ...meta,
   });
 
