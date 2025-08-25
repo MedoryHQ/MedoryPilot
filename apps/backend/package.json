@@ -12,7 +12,7 @@
     "build": "tsc && cpy \"uploads/**/*\" ./dist/uploads && cpy \"public/**/*\" ./dist/public",
     "serve": "node dist/src/index.js",
     "migrate": "npx prisma migrate deploy",
-    "seed": "npx ts-node --files prisma/seed.ts"
+    "seed": "dotenv -- ts-node -r tsconfig-paths/register --files prisma/seed.ts"
   },
   "keywords": [],
   "author": "Beka Chaduneli",
