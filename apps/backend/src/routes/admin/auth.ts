@@ -5,6 +5,7 @@ import {
   forgotAdminPasswordValidation,
   forgotAdminPasswordVerificationValidation,
   loginValidation,
+  resendValidation,
   resetAdminPasswordValidation,
   verifyValidation,
 } from "@/validations/admin/";
@@ -34,6 +35,20 @@ adminAuthRouter.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return authController.verifyOtp(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminAuthRouter.post(
+  "/resend-otp",
+  resendValidation,
+  validationHandler,
+  isAdminVerified,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return authController.resendAdminVerificationCode(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }
