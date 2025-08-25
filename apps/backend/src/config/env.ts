@@ -17,6 +17,7 @@ const envSchema = z.object({
   ADMIN_JWT_REFRESH_SECRET: z.string().min(32),
   JWT_ACCESS_SECRET: z.string().min(32),
   JWT_REFRESH_SECRET: z.string().min(32),
+  STAGE_JWT_SECRET: z.string().min(32),
 
   // URLs
   CLIENT_URL: z.string().url(),

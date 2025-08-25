@@ -40,6 +40,14 @@ export const errorMessages = {
     en: "Authorization failed.",
     ka: "ავტორიზაცია წარუმატებლად დასრულდა.",
   },
+  verificationRequired: {
+    en: "Verification required.",
+    ka: "ვერიფიკაცია აუცილებელია.",
+  },
+  verificationExpired: {
+    en: "Verification expired. Please request a new code.",
+    ka: "ვერიფიკაციის ვადა ამოიწურა. გთხოვთ, მოითხოვოთ ახალი კოდი.",
+  },
 
   // Messages
   smsVerificationSent: {

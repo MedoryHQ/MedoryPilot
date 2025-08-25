@@ -51,3 +51,28 @@ export const adminAuthenticate = (
     }
   }
 };
+
+export const isAdminVerified = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const stageToken = req.cookies.admin_verify_stage;
+
+    if (!stageToken) return sendError(req, res, 401, "verificationRequired");
+
+    const decoded = jwt.verify(
+      stageToken,
+      getEnvVariable("STAGE_JWT_SECRET")
+    ) as { id: string; remember?: boolean };
+
+    (req as any).userId = decoded.id;
+    (req as any).remember = decoded.remember ?? false;
+
+    next();
+  } catch (error) {
+    console.error("JWT verify error:", error);
+    return sendError(req, res, 401, "verificationExpired");
+  }
+};
