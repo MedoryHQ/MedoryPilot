@@ -6,6 +6,7 @@ import { userAuthRouter } from "@/routes/customer";
 import { prisma } from "@/config";
 
 import { authMatchers } from "@/tests/helpers/authMatchers";
+import { errorMessages } from "@/utils";
 expect.extend(authMatchers);
 
 const app = express();
@@ -164,7 +165,7 @@ describe("Customer auth routes — /auth", () => {
         .post("/auth/register")
         .send(getRegisterPayload());
 
-      expect(res.status).toBe(200);
+      expect(res).toHaveStatus(200);
       expect(res.body.data).toMatchObject({
         id: "pending-1",
         phoneNumber: "+995555555555",
@@ -180,14 +181,14 @@ describe("Customer auth routes — /auth", () => {
       const res = await request(app)
         .post("/auth/register")
         .send(getRegisterPayload());
-      expect(res.status).toBe(409);
+      expect(res).toHaveStatus(409);
     });
 
     it("returns 400 when validation fails (missing/invalid fields)", async () => {
       const res = await request(app)
         .post("/auth/register")
         .send({ phoneNumber: "", firstName: "" });
-      expect(res.status).toBe(400);
+      expect(res).toHaveStatus(400);
       expect((res.body.errors || []).map((e: any) => e.param)).toEqual(
         expect.arrayContaining(["phoneNumber"])
       );
@@ -214,7 +215,7 @@ describe("Customer auth routes — /auth", () => {
         .post("/auth/login")
         .send({ phoneNumber: mockUser.phoneNumber, password: "correctPass" });
 
-      expect(res.status).toBe(200);
+      expect(res).toHaveStatus(200);
       expect(res.body).toBeValidCustomerLoginResponse();
       expect(res.headers["set-cookie"]).toBeDefined();
       expect(prisma.refreshToken.create).toHaveBeenCalled();
@@ -227,10 +228,8 @@ describe("Customer auth routes — /auth", () => {
         .post("/auth/login")
         .send({ phoneNumber: "+995555555552", password: "whatever" });
 
-      expect(res.status).toBe(404);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.userNotFound
-      );
+      expect(res).toHaveStatus(404);
+      expect(res.body).toHaveErrorMessage("userNotFound", errorMessages);
     });
 
     it("returns 400 when password invalid", async () => {
@@ -242,10 +241,8 @@ describe("Customer auth routes — /auth", () => {
         password: "BadPassword123",
       });
 
-      expect(res.status).toBe(400);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.invalidPassword
-      );
+      expect(res).toHaveStatus(400);
+      expect(res.body).toHaveErrorMessage("invalidPassword", errorMessages);
     });
 
     it("returns 400 when validation fails (missing/invalid fields)", async () => {
@@ -253,7 +250,7 @@ describe("Customer auth routes — /auth", () => {
         .post("/auth/login")
         .send({ phoneNumber: "", password: "" });
 
-      expect(res.status).toBe(400);
+      expect(res).toHaveStatus(400);
       const params = (res.body.errors || []).map((e: any) => e.param);
       expect(params).toEqual(
         expect.arrayContaining(["phoneNumber", "password"])
@@ -271,17 +268,15 @@ describe("Customer auth routes — /auth", () => {
         .post("/auth/login")
         .send({ phoneNumber: mockUser.phoneNumber, password: "correctPass" });
 
-      expect(res.status).toBe(500);
+      expect(res).toHaveStatus(500);
     });
   });
 
   describe("POST /auth/refresh-token", () => {
     it("returns 401 if no refresh cookie provided", async () => {
       const res = await request(app).post("/auth/refresh-token");
-      expect(res.status).toBe(401);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.unauthorized
-      );
+      expect(res).toHaveStatus(401);
+      expect(res.body).toHaveErrorMessage("unauthorized", errorMessages);
     });
 
     it("returns 401 if refresh token invalid", async () => {
@@ -296,10 +291,8 @@ describe("Customer auth routes — /auth", () => {
         .post("/auth/refresh-token")
         .set("Cookie", [`refreshToken=${badToken}`]);
 
-      expect(res.status).toBe(401);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.invalidRefreshToken
-      );
+      expect(res).toHaveStatus(401);
+      expect(res.body).toHaveErrorMessage("invalidRefreshToken", errorMessages);
     });
 
     it("successfully refreshes tokens and sets cookies", async () => {
@@ -332,7 +325,7 @@ describe("Customer auth routes — /auth", () => {
         .post("/auth/refresh-token")
         .set("Cookie", [`refreshToken=${oldRefresh}`]);
 
-      expect(res.status).toBe(200);
+      expect(res).toHaveStatus(200);
       const setCookie = res.headers["set-cookie"];
       expect(setCookie).toBeDefined();
       const asArray = Array.isArray(setCookie) ? setCookie : [setCookie];
@@ -362,7 +355,7 @@ describe("Customer auth routes — /auth", () => {
         .post("/auth/refresh-token")
         .set("Cookie", [`refreshToken=${oldRefresh}`]);
 
-      expect(res.status).toBe(500);
+      expect(res).toHaveStatus(500);
     });
   });
 
@@ -413,7 +406,7 @@ describe("Customer auth routes — /auth", () => {
         code: "1234",
       });
 
-      expect(res.status).toBe(200);
+      expect(res).toHaveStatus(200);
       const setCookie = res.headers["set-cookie"];
       expect(setCookie).toBeDefined();
       const asArray = Array.isArray(setCookie) ? setCookie : [setCookie];
@@ -432,17 +425,15 @@ describe("Customer auth routes — /auth", () => {
         code: "1234",
       });
 
-      expect(res.status).toBe(404);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.userNotFound
-      );
+      expect(res).toHaveStatus(404);
+      expect(res.body).toHaveErrorMessage("userNotFound", errorMessages);
     });
 
     it("returns 401 when sms code invalid", async () => {
       (prisma.pendingUser.findUnique as jest.Mock).mockResolvedValueOnce({
         id: "pending-1",
         phoneNumber: mockUser.phoneNumber,
-        smsCode: "smsHash",
+        smsCode: 3456,
         smsCodeExpiresAt: new Date(Date.now() + 10000).toISOString(),
         firstName: "Alice",
         lastName: "Smith",
@@ -456,13 +447,11 @@ describe("Customer auth routes — /auth", () => {
       const res = await request(app).post("/auth/verify").send({
         id: "pending-1",
         phoneNumber: mockUser.phoneNumber,
-        code: "wrong",
+        code: 1234,
       });
 
-      expect(res.status).toBe(401);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.smsCodeisInvalid ?? "smsCodeisInvalid"
-      );
+      expect(res).toHaveStatus(401);
+      expect(res.body).toHaveErrorMessage("smsCodeisInvalid", errorMessages);
     });
   });
 
@@ -484,7 +473,7 @@ describe("Customer auth routes — /auth", () => {
         .post("/auth/verification-resend")
         .send({ phoneNumber: mockUser.phoneNumber });
 
-      expect(res.status).toBe(200);
+      expect(res).toHaveStatus(200);
       expect(res.body.message).toEqual(
         require("@/utils").getResponseMessage("verificationCodeResent")
       );
@@ -498,10 +487,8 @@ describe("Customer auth routes — /auth", () => {
         .post("/auth/verification-resend")
         .send({ phoneNumber: mockUser.phoneNumber });
 
-      expect(res.status).toBe(404);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.userNotFound
-      );
+      expect(res).toHaveStatus(404);
+      expect(res.body).toHaveErrorMessage("userNotFound", errorMessages);
     });
 
     it("returns 400 when code still valid", async () => {
@@ -515,7 +502,7 @@ describe("Customer auth routes — /auth", () => {
         .post("/auth/verification-resend")
         .send({ phoneNumber: mockUser.phoneNumber });
 
-      expect(res.status).toBe(400);
+      expect(res).toHaveStatus(400);
     });
   });
 
@@ -536,7 +523,7 @@ describe("Customer auth routes — /auth", () => {
         .post("/auth/forgot-password")
         .send({ phoneNumber: mockUser.phoneNumber });
 
-      expect(res.status).toBe(200);
+      expect(res).toHaveStatus(200);
       expect(res.body.message).toEqual(
         require("@/utils").getResponseMessage("codeSent")
       );
@@ -550,10 +537,8 @@ describe("Customer auth routes — /auth", () => {
         .post("/auth/forgot-password")
         .send({ phoneNumber: "+995555555552" });
 
-      expect(res.status).toBe(404);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.userNotFound
-      );
+      expect(res).toHaveStatus(404);
+      expect(res.body).toHaveErrorMessage("userNotFound", errorMessages);
     });
   });
 
@@ -574,7 +559,7 @@ describe("Customer auth routes — /auth", () => {
         .post("/auth/forgot-password/with-email")
         .send({ email: "a@b.com" });
 
-      expect(res.status).toBe(200);
+      expect(res).toHaveStatus(200);
       expect(res.body.message).toEqual(
         require("@/utils").getResponseMessage("codeSent")
       );
@@ -588,7 +573,7 @@ describe("Customer auth routes — /auth", () => {
         .post("/auth/forgot-password/with-email")
         .send({ email: "missing@b.com" });
 
-      expect(res.status).toBe(400);
+      expect(res).toHaveStatus(400);
 
       const params = (res.body.errors || []).map((e: any) => e.param);
       expect(params).toEqual(expect.arrayContaining(["email"]));
@@ -610,7 +595,7 @@ describe("Customer auth routes — /auth", () => {
         .post("/auth/forgot-password-verification")
         .send({ phoneNumber: mockUser.phoneNumber, smsCode: "1234" });
 
-      expect(res.status).toBe(200);
+      expect(res).toHaveStatus(200);
       expect(res.body.message).toEqual(
         require("@/utils").getResponseMessage("codeVerified")
       );
@@ -623,17 +608,15 @@ describe("Customer auth routes — /auth", () => {
         .post("/auth/forgot-password-verification")
         .send({ phoneNumber: "+995555555552", smsCode: "1234" });
 
-      expect(res.status).toBe(404);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.userNotFound
-      );
+      expect(res).toHaveStatus(404);
+      expect(res.body).toHaveErrorMessage("userNotFound", errorMessages);
     });
 
     it("returns 401 when code invalid", async () => {
       (prisma.user.findUnique as jest.Mock).mockResolvedValueOnce({
         id: mockUser.id,
         phoneNumber: mockUser.phoneNumber,
-        smsCode: "smsStoredHash",
+        smsCode: 2345,
         smsCodeExpiresAt: new Date(Date.now() + 10000).toISOString(),
       });
 
@@ -641,12 +624,10 @@ describe("Customer auth routes — /auth", () => {
 
       const res = await request(app)
         .post("/auth/forgot-password-verification")
-        .send({ phoneNumber: mockUser.phoneNumber, smsCode: "wrong" });
+        .send({ phoneNumber: mockUser.phoneNumber, smsCode: 1234 });
 
-      expect(res.status).toBe(401);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.smsCodeisInvalid ?? "smsCodeisInvalid"
-      );
+      expect(res).toHaveStatus(401);
+      expect(res.body).toHaveErrorMessage("smsCodeisInvalid", errorMessages);
     });
   });
 
@@ -655,7 +636,7 @@ describe("Customer auth routes — /auth", () => {
       (prisma.user.findUnique as jest.Mock).mockResolvedValue({
         id: mockUser.id,
         phoneNumber: mockUser.phoneNumber,
-        smsCode: "smsStoredHash",
+        smsCode: 2345,
         smsCodeExpiresAt: new Date(Date.now() + 10000).toISOString(),
         isVerified: true,
       });
@@ -672,14 +653,15 @@ describe("Customer auth routes — /auth", () => {
       const res = await request(app).post("/auth/password-reset").send({
         type: "phoneNumber",
         phoneNumber: mockUser.phoneNumber,
-        smsCode: "1234",
+        smsCode: 2345,
         password: "NewPassword123!",
       });
 
-      expect(res.status).toBe(200);
+      expect(res).toHaveStatus(200);
       expect(res.body.message).toEqual(
         require("@/utils").getResponseMessage("passwordChanged")
       );
+
       expect(prisma.user.update).toHaveBeenCalled();
     });
 
@@ -693,17 +675,15 @@ describe("Customer auth routes — /auth", () => {
         password: "NewPassword123!",
       });
 
-      expect(res.status).toBe(404);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.userNotFound
-      );
+      expect(res).toHaveStatus(404);
+      expect(res.body).toHaveErrorMessage("userNotFound", errorMessages);
     });
 
     it("returns 401 when sms code invalid", async () => {
       (prisma.user.findUnique as jest.Mock).mockResolvedValueOnce({
         id: mockUser.id,
         phoneNumber: mockUser.phoneNumber,
-        smsCode: "smsStoredHash",
+        smsCode: 3456,
         smsCodeExpiresAt: new Date(Date.now() + 10000).toISOString(),
       });
 
@@ -712,32 +692,35 @@ describe("Customer auth routes — /auth", () => {
       const res = await request(app).post("/auth/password-reset").send({
         type: "phoneNumber",
         phoneNumber: mockUser.phoneNumber,
-        smsCode: "wrong",
+        smsCode: 1234,
         password: "NewPassword123!",
       });
 
-      expect(res.status).toBe(401);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.smsCodeisInvalid ?? "smsCodeisInvalid"
-      );
+      expect(res).toHaveStatus(401);
+      expect(res.body).toHaveErrorMessage("smsCodeisInvalid", errorMessages);
     });
 
     it("returns 400 when sms code expired", async () => {
       (prisma.user.findUnique as jest.Mock).mockResolvedValueOnce({
         id: mockUser.id,
         phoneNumber: mockUser.phoneNumber,
-        smsCode: "smsStoredHash",
+        smsCode: 1234,
         smsCodeExpiresAt: new Date(Date.now() - 10000).toISOString(),
       });
 
       const res = await request(app).post("/auth/password-reset").send({
         type: "phoneNumber",
         phoneNumber: mockUser.phoneNumber,
-        smsCode: "1234",
+        smsCode: 1234,
         password: "NewPassword123!",
       });
 
-      expect(res.status).toBe(400);
+      console.log(res.body.error, res.body.errors);
+      expect(res).toHaveStatus(400);
+      expect(res.body).toHaveErrorMessage(
+        "verificationCodeExpired",
+        errorMessages
+      );
     });
   });
 });
