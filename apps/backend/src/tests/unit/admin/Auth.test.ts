@@ -272,6 +272,64 @@ describe("Customer auth routes — /auth", () => {
     });
   });
 
+  describe("POST /admin/resend-otp", () => {
+    beforeEach(() => {
+      (prisma.admin.findUnique as jest.Mock).mockReset();
+      jest.spyOn(jwt, "verify").mockReturnValue({ id: mockUser.id } as any);
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+    it("resends verification code if expired", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        smsCodeExpiresAt: new Date(Date.now() - 1000),
+      });
+      (require("@/utils").generateSmsCode as jest.Mock).mockResolvedValueOnce({
+        hashedSmsCode: "newHash",
+      });
+      (prisma.admin.update as jest.Mock).mockResolvedValueOnce({});
+
+      const res = await request(app)
+        .post("/admin/resend-otp")
+        .set("Cookie", ["admin_verify_stage=fakeStageToken"])
+        .send({ email: mockUser.email });
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toEqual(
+        require("@/utils").getResponseMessage("verificationCodeResent")
+      );
+      expect(prisma.admin.update).toHaveBeenCalled();
+    });
+
+    it("returns 404 if admin not found", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .post("/admin/resend-otp")
+        .set("Cookie", ["admin_verify_stage=fakeStageToken"])
+        .send({ email: mockUser.email });
+
+      expect(res.status).toBe(404);
+      expect(res.body.error).toEqual(errorMessages.userNotFound);
+    });
+
+    it("returns 400 if code still valid", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        smsCodeExpiresAt: new Date(Date.now() + 10000),
+      });
+
+      const res = await request(app)
+        .post("/admin/resend-otp")
+        .set("Cookie", ["admin_verify_stage=fakeStageToken"])
+        .send({ email: mockUser.email });
+
+      expect(res.status).toBe(400);
+    });
+  });
+
   describe("GET /admin/renew", () => {
     it("Should return 401 if no tokens provided", async () => {
       const res = await request(app).get("/admin/renew");
