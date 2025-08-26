@@ -140,7 +140,7 @@ describe("Customer auth routes — /auth", () => {
         .post("/admin/login")
         .send({ email: "admin@test.com", password: "hashedPass" });
 
-      expect(res.status).toBe(200);
+      expect(res).toHaveStatus(200);
       expect(res.body.message).toEqual(
         require("@/utils").getResponseMessage("codeSent")
       );
@@ -155,8 +155,8 @@ describe("Customer auth routes — /auth", () => {
         .post("/admin/login")
         .send({ email: "unknown@test.com", password: "Password123" });
 
-      expect(res.status).toBe(404);
-      expect(res.body.error).toEqual(errorMessages.userNotFound);
+      expect(res).toHaveStatus(404);
+      expect(res.body).toHaveErrorMessage("userNotFound", errorMessages);
     });
 
     it("returns 401 if password invalid", async () => {
@@ -167,13 +167,13 @@ describe("Customer auth routes — /auth", () => {
         .post("/admin/login")
         .send({ email: "admin@test.com", password: "WrongPass12" });
 
-      expect(res.status).toBe(401);
-      expect(res.body.error).toEqual(errorMessages.invalidCredentials);
+      expect(res).toHaveStatus(401);
+      expect(res.body).toHaveErrorMessage("invalidCredentials", errorMessages);
     });
 
     it("returns 400 if missing fields", async () => {
       const res = await request(app).post("/admin/login").send({ email: "" });
-      expect(res.status).toBe(400);
+      expect(res).toHaveStatus(400);
     });
 
     it("handles unexpected error", async () => {
@@ -184,7 +184,7 @@ describe("Customer auth routes — /auth", () => {
         .post("/admin/login")
         .send({ email: "admin@test.com", password: "ValidPass123" });
 
-      expect(res.status).toBe(500);
+      expect(res).toHaveStatus(500);
     });
   });
 
@@ -218,7 +218,7 @@ describe("Customer auth routes — /auth", () => {
         .set("Cookie", ["admin_verify_stage=fakeStageToken"])
         .send({ code: 1234 });
 
-      expect(res.status).toBe(200);
+      expect(res).toHaveStatus(200);
       expect(res.body.message).toEqual(
         require("@/utils").getResponseMessage("loginSuccessful")
       );
@@ -233,8 +233,8 @@ describe("Customer auth routes — /auth", () => {
         .set("Cookie", ["admin_verify_stage=fakeStageToken"])
         .send({ code: 2345 });
 
-      expect(res.status).toBe(404);
-      expect(res.body.error).toEqual(errorMessages.userNotFound);
+      expect(res).toHaveStatus(404);
+      expect(res.body).toHaveErrorMessage("userNotFound", errorMessages);
     });
 
     it("returns 400 if code expired", async () => {
@@ -249,7 +249,7 @@ describe("Customer auth routes — /auth", () => {
         .set("Cookie", ["admin_verify_stage=fakeStageToken"])
         .send({ code: 1234 });
 
-      expect(res.status).toBe(400);
+      expect(res).toHaveStatus(400);
     });
 
     it("returns 401 if code invalid", async () => {
@@ -265,10 +265,8 @@ describe("Customer auth routes — /auth", () => {
         .set("Cookie", ["admin_verify_stage=fakeStageToken"])
         .send({ code: 3456 });
 
-      expect(res.status).toBe(401);
-      expect(res.body.error).toEqual(
-        errorMessages.smsCodeisInvalid ?? "smsCodeisInvalid"
-      );
+      expect(res).toHaveStatus(401);
+      expect(res.body).toHaveErrorMessage("smsCodeisInvalid", errorMessages);
     });
   });
 
@@ -296,7 +294,7 @@ describe("Customer auth routes — /auth", () => {
         .set("Cookie", ["admin_verify_stage=fakeStageToken"])
         .send({ email: mockUser.email });
 
-      expect(res.status).toBe(200);
+      expect(res).toHaveStatus(200);
       expect(res.body.message).toEqual(
         require("@/utils").getResponseMessage("verificationCodeResent")
       );
@@ -311,8 +309,8 @@ describe("Customer auth routes — /auth", () => {
         .set("Cookie", ["admin_verify_stage=fakeStageToken"])
         .send({ email: mockUser.email });
 
-      expect(res.status).toBe(404);
-      expect(res.body.error).toEqual(errorMessages.userNotFound);
+      expect(res).toHaveStatus(404);
+      expect(res.body).toHaveErrorMessage("userNotFound", errorMessages);
     });
 
     it("returns 400 if code still valid", async () => {
@@ -326,7 +324,7 @@ describe("Customer auth routes — /auth", () => {
         .set("Cookie", ["admin_verify_stage=fakeStageToken"])
         .send({ email: mockUser.email });
 
-      expect(res.status).toBe(400);
+      expect(res).toHaveStatus(400);
     });
   });
 
@@ -335,8 +333,7 @@ describe("Customer auth routes — /auth", () => {
       const res = await request(app).get("/admin/renew");
 
       expect(res).toHaveStatus(401);
-
-      expect(res.body.error).toEqual(errorMessages.noTokenProvided);
+      expect(res.body).toHaveErrorMessage("noTokenProvided", errorMessages);
     });
 
     it("Should succeed with valid access token", async () => {
@@ -372,7 +369,7 @@ describe("Customer auth routes — /auth", () => {
         .set("Authorization", `Bearer ${accessToken}`)
         .set("Cookie", [`refreshToken=${refreshToken}`]);
 
-      expect(res.status).toBe(200);
+      expect(res).toHaveStatus(200);
       expect(res.body).toHaveProperty("data");
     });
 
@@ -393,7 +390,7 @@ describe("Customer auth routes — /auth", () => {
           `refreshToken=${refreshToken}`,
         ]);
 
-      expect(res.status).toBe(200);
+      expect(res).toHaveStatus(200);
       expect(res.headers["set-cookie"] || []).toEqual(
         expect.arrayContaining([expect.stringContaining("accessToken=")])
       );
@@ -414,8 +411,11 @@ describe("Customer auth routes — /auth", () => {
           `accessToken=${expiredAccess}`,
           `refreshToken=${badRefresh}`,
         ]);
-      expect(res.status).toBe(401);
-      expect(res.body.error).toEqual(errorMessages.adminAuthenticateFailed);
+      expect(res).toHaveStatus(401);
+      expect(res.body).toHaveErrorMessage(
+        "adminAuthenticateFailed",
+        errorMessages
+      );
     });
 
     it("returns 500 when secrets missing (simulated)", async () => {
@@ -434,8 +434,11 @@ describe("Customer auth routes — /auth", () => {
           `refreshToken=${refreshToken}`,
         ]);
 
-      expect(res.status).toBe(500);
-      expect(res.body.error).toEqual(errorMessages.jwtSecretNotProvided);
+      expect(res).toHaveStatus(500);
+      expect(res.body).toHaveErrorMessage(
+        "jwtSecretNotProvided",
+        errorMessages
+      );
     });
 
     it("handles unexpected controller error (mock renew to throw)", async () => {
@@ -458,7 +461,7 @@ describe("Customer auth routes — /auth", () => {
           `refreshToken=${refreshToken}`,
         ]);
 
-      expect(res.status).toBe(500);
+      expect(res).toHaveStatus(500);
     });
   });
 
@@ -479,7 +482,7 @@ describe("Customer auth routes — /auth", () => {
         .post("/admin/forgot-password")
         .send({ email: "a@b.com" });
 
-      expect(res.status).toBe(200);
+      expect(res).toHaveStatus(200);
       expect(res.body.message).toEqual(
         require("@/utils").getResponseMessage("codeSent")
       );
@@ -512,7 +515,7 @@ describe("Customer auth routes — /auth", () => {
         .post("/admin/forgot-password-verification")
         .send({ email: mockUser.email, smsCode: "1234" });
 
-      expect(res.status).toBe(200);
+      expect(res).toHaveStatus(200);
       expect(res.body.message).toEqual(
         require("@/utils").getResponseMessage("codeVerified")
       );
@@ -525,10 +528,8 @@ describe("Customer auth routes — /auth", () => {
         .post("/admin/forgot-password-verification")
         .send({ email: "man@gmail.com", smsCode: "1234" });
 
-      expect(res.status).toBe(404);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.userNotFound
-      );
+      expect(res).toHaveStatus(404);
+      expect(res.body).toHaveErrorMessage("userNotFound", errorMessages);
     });
 
     it("returns 401 when code invalid", async () => {
@@ -545,10 +546,8 @@ describe("Customer auth routes — /auth", () => {
         .post("/admin/forgot-password-verification")
         .send({ email: mockUser.email, smsCode: 1234 });
 
-      expect(res.status).toBe(401);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.smsCodeisInvalid ?? "smsCodeisInvalid"
-      );
+      expect(res).toHaveStatus(401);
+      expect(res.body).toHaveErrorMessage("smsCodeisInvalid", errorMessages);
     });
   });
 
@@ -577,10 +576,11 @@ describe("Customer auth routes — /auth", () => {
         password: "NewPassword123!",
       });
 
-      expect(res.status).toBe(200);
+      expect(res).toHaveStatus(200);
       expect(res.body.message).toEqual(
         require("@/utils").getResponseMessage("passwordChanged")
       );
+
       expect(prisma.admin.update).toHaveBeenCalled();
     });
 
@@ -594,10 +594,8 @@ describe("Customer auth routes — /auth", () => {
         password: "NewPassword123!",
       });
 
-      expect(res.status).toBe(404);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.userNotFound
-      );
+      expect(res).toHaveStatus(404);
+      expect(res.body).toHaveErrorMessage("userNotFound", errorMessages);
     });
 
     it("returns 401 when sms code invalid", async () => {
@@ -617,10 +615,8 @@ describe("Customer auth routes — /auth", () => {
         password: "NewPassword123!",
       });
 
-      expect(res.status).toBe(401);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.smsCodeisInvalid ?? "smsCodeisInvalid"
-      );
+      expect(res).toHaveStatus(401);
+      expect(res.body).toHaveErrorMessage("smsCodeisInvalid", errorMessages);
     });
 
     it("returns 400 when sms code expired", async () => {
@@ -638,7 +634,7 @@ describe("Customer auth routes — /auth", () => {
         password: "NewPassword123!",
       });
 
-      expect(res.status).toBe(400);
+      expect(res).toHaveStatus(400);
     });
   });
 });
