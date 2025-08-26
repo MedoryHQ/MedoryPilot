@@ -21,13 +21,21 @@ export const adminAuthenticate = (
   const refreshToken = req.cookies?.["refreshToken"];
 
   if (!accessToken || !refreshToken) {
+    logWarn("Admin authentication failed: no tokens provided", {
+      ip: (req as any).hashedIp,
+      event: "admin_authenticate_no_tokens",
+    });
     return sendError(req, res, 401, "noTokenProvided");
   }
 
   const accessSecret = getEnvVariable("ADMIN_JWT_ACCESS_SECRET");
   const refreshSecret = getEnvVariable("ADMIN_JWT_REFRESH_SECRET");
-
   if (!accessSecret || !refreshSecret) {
+    logWarn("JWT secrets missing", {
+      ip: (req as any).hashedIp,
+      event: "admin_jwt_secret_missing",
+    });
+
     return sendError(req, res, 500, "jwtSecretNotProvided");
   }
 
@@ -35,16 +43,16 @@ export const adminAuthenticate = (
     const decoded = jwt.verify(accessToken, accessSecret) as TokenPayload;
     req.user = decoded;
     return next();
-  } catch {
+  } catch (accessError) {
     try {
       const decodedRefresh = jwt.verify(
         refreshToken,
         refreshSecret
       ) as TokenPayload;
+
       const newAccessToken = jwt.sign(decodedRefresh, accessSecret, {
         expiresIn: "1d",
       });
-
       res.cookie("accessToken", newAccessToken, {
         httpOnly: true,
         sameSite: "strict",
@@ -52,8 +60,8 @@ export const adminAuthenticate = (
 
       req.user = decodedRefresh;
       return next();
-    } catch (error) {
-      logCatchyError("admin authenticate failed", error, {
+    } catch (refreshError) {
+      logCatchyError("admin authenticate failed", refreshError, {
         ip: (req as any).hashedIp,
         event: "admin_authenticate_failed",
       });
