@@ -124,6 +124,70 @@ describe("Customer auth routes — /auth", () => {
     jest.clearAllMocks();
   });
 
+  describe("POST /admin/login", () => {
+    it("sends OTP code when valid credentials", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(mockUser);
+      (verifyField as jest.Mock).mockResolvedValueOnce(true);
+      (require("@/utils").generateSmsCode as jest.Mock).mockResolvedValueOnce({
+        hashedSmsCode: "hash123",
+      });
+      (prisma.admin.update as jest.Mock).mockResolvedValueOnce({});
+      (require("@/utils").generateStageToken as jest.Mock).mockReturnValueOnce({
+        token: "stage-token",
+      });
+
+      const res = await request(app)
+        .post("/admin/login")
+        .send({ email: "admin@test.com", password: "hashedPass" });
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toEqual(
+        require("@/utils").getResponseMessage("codeSent")
+      );
+      expect(res.headers["set-cookie"]).toBeDefined();
+      expect(prisma.admin.update).toHaveBeenCalled();
+    });
+
+    it("returns 404 if user not found", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .post("/admin/login")
+        .send({ email: "unknown@test.com", password: "Password123" });
+
+      expect(res.status).toBe(404);
+      expect(res.body.error).toEqual(errorMessages.userNotFound);
+    });
+
+    it("returns 401 if password invalid", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(mockUser);
+      (verifyField as jest.Mock).mockResolvedValueOnce(false);
+
+      const res = await request(app)
+        .post("/admin/login")
+        .send({ email: "admin@test.com", password: "WrongPass12" });
+
+      expect(res.status).toBe(401);
+      expect(res.body.error).toEqual(errorMessages.invalidCredentials);
+    });
+
+    it("returns 400 if missing fields", async () => {
+      const res = await request(app).post("/admin/login").send({ email: "" });
+      expect(res.status).toBe(400);
+    });
+
+    it("handles unexpected error", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockRejectedValueOnce(
+        new Error("DB down")
+      );
+      const res = await request(app)
+        .post("/admin/login")
+        .send({ email: "admin@test.com", password: "ValidPass123" });
+
+      expect(res.status).toBe(500);
+    });
+  });
+
   describe("GET /admin/renew", () => {
     it("Should return 401 if no tokens provided", async () => {
       const res = await request(app).get("/admin/renew");
