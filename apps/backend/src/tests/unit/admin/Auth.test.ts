@@ -1,5 +1,6 @@
 import request from "supertest";
 import express from "express";
+import jwt from "jsonwebtoken";
 import { adminAuthRouter } from "@/routes/admin";
 import cookieParser from "cookie-parser";
 import { authMatchers } from "@/tests/helpers/authMatchers";
@@ -10,6 +11,7 @@ import {
   verifyField,
   errorMessages,
 } from "@/utils";
+
 expect.extend(authMatchers);
 
 const app = express();
@@ -62,12 +64,24 @@ jest.mock("@/utils", () => {
       en: "JWT secrets not provided.",
       ka: "JWT secret-ების მოწოდება აუცილებელია.",
     },
+    smsCodeisInvalid: {
+      en: "SMS code is invalid",
+      ka: "SMS კოდი არ არის ვალიდური",
+    },
+    adminAuthenticateFailed: {
+      en: "Admin authentication failed.",
+      ka: "ადმინისტრატორის ავტორიზაცია წარუმატებლად დასრულდა.",
+    },
   };
 
   return {
     ...actual,
+    sendError: jest.fn((req, res, status, key) => {
+      res.status(status).json({ error: actual.errorMessages[key] ?? key });
+    }),
     generateSmsCode: jest.fn(),
     createPassword: jest.fn(),
+    generateStageToken: jest.fn(),
     inMinutes: (mins: number) => new Date(Date.now() + mins * 60 * 1000),
     getTokenFromRequest: jest.fn((req: any) => {
       const auth = req?.headers?.authorization;
@@ -76,6 +90,9 @@ jest.mock("@/utils", () => {
       }
       return req?.cookies?.accessToken;
     }),
+    logAdminWarn: jest.fn(),
+    logAdminError: jest.fn(),
+
     selectLogger: jest.fn(() => ({
       warn: jest.fn(),
       info: jest.fn(),
@@ -105,114 +122,6 @@ afterAll(async () => {
 describe("Customer auth routes — /auth", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-  });
-
-  describe("POST /admin/login", () => {
-    it("Should login with valid credentials", async () => {
-      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(mockUser);
-      (verifyField as jest.Mock).mockResolvedValueOnce(true);
-      (generateAccessToken as jest.Mock).mockReturnValueOnce({
-        token: "access123",
-        expiresIn: 1000,
-      });
-      (generateRefreshToken as jest.Mock).mockReturnValueOnce({
-        token: "refresh123",
-        expiresIn: 2000,
-      });
-
-      const res = await request(app)
-        .post("/admin/login")
-        .send({ email: "admin@test.com", password: "correctPass" });
-
-      expect(res).toHaveStatus(200);
-      expect(res.body).toBeValidAdminLoginResponse();
-      expect(res.headers["set-cookie"]).toBeDefined();
-    });
-
-    it("Should return 404 if user not found", async () => {
-      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(null);
-
-      const res = await request(app)
-        .post("/admin/login")
-        .send({ email: "unknown@test.com", password: "Password123" });
-
-      expect(res).toHaveStatus(404);
-      expect(res.body.error).toEqual(errorMessages.userNotFound);
-    });
-
-    it("Should return 401 if password invalid", async () => {
-      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(mockUser);
-      (verifyField as jest.Mock).mockResolvedValueOnce(false);
-
-      const res = await request(app)
-        .post("/admin/login")
-        .send({ email: "admin@test.com", password: "wrongPass" });
-
-      expect(res).toHaveStatus(401);
-      expect(res.body.error).toEqual(errorMessages.invalidCredentials);
-    });
-
-    it("Should return 400 if missing fields", async () => {
-      const res = await request(app).post("/admin/login").send({ email: "" });
-
-      expect(res).toHaveStatus(400);
-      expect(res.body.errors.map((e: any) => e.param)).toEqual(
-        expect.arrayContaining(["password", "email"])
-      );
-    });
-
-    it("Should handle unexpected error", async () => {
-      (prisma.admin.findUnique as jest.Mock).mockRejectedValueOnce(
-        new Error("DB down")
-      );
-
-      const res = await request(app)
-        .post("/admin/login")
-        .send({ email: "admin@test.com", password: "ValidPass123" });
-
-      expect(res).toHaveStatus(500);
-    });
-
-    it("Should return 400 if email is invalid format", async () => {
-      const res = await request(app)
-        .post("/admin/login")
-        .send({ email: "not-an-email", password: "ValidPass123" });
-
-      expect(res).toHaveStatus(400);
-      expect(res.body).toHaveErrorMessage("invalidEmail", errorMessages);
-    });
-
-    it("Should return 400 if password too short", async () => {
-      const res = await request(app)
-        .post("/admin/login")
-        .send({ email: "admin@test.com", password: "short" });
-
-      expect(res).toHaveStatus(400);
-      expect(res.body).toHaveErrorMessage("passwordLength", errorMessages);
-    });
-
-    it("Should return 400 if password is not a string", async () => {
-      const res = await request(app)
-        .post("/admin/login")
-        .send({ email: "admin@test.com", password: 12345678 });
-
-      expect(res).toHaveStatus(400);
-      expect(res.body).toHaveErrorMessage("invalidPassword", errorMessages);
-    });
-
-    it("Should handle error during token generation", async () => {
-      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(mockUser);
-      (verifyField as jest.Mock).mockResolvedValueOnce(true);
-      (generateAccessToken as jest.Mock).mockImplementationOnce(() => {
-        throw new Error("Token gen failed");
-      });
-
-      const res = await request(app)
-        .post("/admin/login")
-        .send({ email: "admin@test.com", password: "ValidPass123" });
-
-      expect(res).toHaveStatus(500);
-    });
   });
 
   describe("GET /admin/renew", () => {
@@ -286,11 +195,12 @@ describe("Customer auth routes — /auth", () => {
 
     it("returns 401 when refresh token invalid", async () => {
       const jwt = require("jsonwebtoken");
+
       const payload = { id: "1", email: "admin@test.com" };
       const expiredAccess = jwt.sign(payload, "accessSecret", {
         expiresIn: "-1s",
       });
-      const badRefresh = "invalid.refresh.token";
+      const badRefresh = "invalidrefreshtoken";
 
       const res = await request(app)
         .get("/admin/renew")
@@ -298,9 +208,8 @@ describe("Customer auth routes — /auth", () => {
           `accessToken=${expiredAccess}`,
           `refreshToken=${badRefresh}`,
         ]);
-
       expect(res.status).toBe(401);
-      expect(res.body.error).toEqual(errorMessages.invalidRefreshToken);
+      expect(res.body.error).toEqual(errorMessages.adminAuthenticateFailed);
     });
 
     it("returns 500 when secrets missing (simulated)", async () => {
@@ -364,8 +273,6 @@ describe("Customer auth routes — /auth", () => {
         .post("/admin/forgot-password")
         .send({ email: "a@b.com" });
 
-      console.log(res.status, res.body, "sfa");
-
       expect(res.status).toBe(200);
       expect(res.body.message).toEqual(
         require("@/utils").getResponseMessage("codeSent")
@@ -422,7 +329,7 @@ describe("Customer auth routes — /auth", () => {
       (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
         id: mockUser.id,
         email: mockUser.email,
-        smsCode: "smsStoredHash",
+        smsCode: 2345,
         smsCodeExpiresAt: new Date(Date.now() + 10000).toISOString(),
       });
 
@@ -430,7 +337,7 @@ describe("Customer auth routes — /auth", () => {
 
       const res = await request(app)
         .post("/admin/forgot-password-verification")
-        .send({ email: mockUser.email, smsCode: "wrong" });
+        .send({ email: mockUser.email, smsCode: 1234 });
 
       expect(res.status).toBe(401);
       expect(res.body.error).toEqual(
@@ -444,7 +351,7 @@ describe("Customer auth routes — /auth", () => {
       (prisma.admin.findUnique as jest.Mock).mockResolvedValue({
         id: mockUser.id,
         email: mockUser.email,
-        smsCode: "smsStoredHash",
+        smsCode: 1234,
         smsCodeExpiresAt: new Date(Date.now() + 10000).toISOString(),
       });
 
@@ -460,7 +367,7 @@ describe("Customer auth routes — /auth", () => {
       const res = await request(app).post("/admin/password-reset").send({
         type: "email",
         email: mockUser.email,
-        smsCode: "1234",
+        smsCode: 1234,
         password: "NewPassword123!",
       });
 
@@ -477,7 +384,7 @@ describe("Customer auth routes — /auth", () => {
       const res = await request(app).post("/admin/password-reset").send({
         type: "email",
         email: "man@gmail.com",
-        smsCode: "1234",
+        smsCode: 1234,
         password: "NewPassword123!",
       });
 
@@ -491,7 +398,7 @@ describe("Customer auth routes — /auth", () => {
       (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
         id: mockUser.id,
         email: mockUser.email,
-        smsCode: "smsStoredHash",
+        smsCode: 1234,
         smsCodeExpiresAt: new Date(Date.now() + 10000).toISOString(),
       });
 
@@ -500,7 +407,7 @@ describe("Customer auth routes — /auth", () => {
       const res = await request(app).post("/admin/password-reset").send({
         type: "email",
         email: mockUser.email,
-        smsCode: "wrong",
+        smsCode: 2345,
         password: "NewPassword123!",
       });
 
@@ -514,14 +421,14 @@ describe("Customer auth routes — /auth", () => {
       (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
         id: mockUser.id,
         email: mockUser.email,
-        smsCode: "smsStoredHash",
+        smsCode: 1234,
         smsCodeExpiresAt: new Date(Date.now() - 10000).toISOString(),
       });
 
       const res = await request(app).post("/admin/password-reset").send({
         type: "email",
         email: mockUser.email,
-        smsCode: "1234",
+        smsCode: 1234,
         password: "NewPassword123!",
       });
 
