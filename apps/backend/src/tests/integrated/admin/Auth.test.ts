@@ -40,8 +40,7 @@ jest.mock("@sendgrid/mail", () => ({
 
 jest.mock("@/utils", () => {
   const actual = jest.requireActual("@/utils");
-
-  const errorMsgs = {
+  const errorMessages = {
     ...((actual as any).errorMessages ?? {}),
     invalidPassword: { en: "Invalid password", ka: "არასწორი პაროლი" },
     passwordLength: { en: "Password length", ka: "პაროლის სიგრძე" },
@@ -63,13 +62,24 @@ jest.mock("@/utils", () => {
       en: "JWT secrets not provided.",
       ka: "JWT secret-ების მოწოდება აუცილებელია.",
     },
+    smsCodeisInvalid: {
+      en: "SMS code is invalid",
+      ka: "SMS კოდი არ არის ვალიდური",
+    },
+    adminAuthenticateFailed: {
+      en: "Admin authentication failed.",
+      ka: "ადმინისტრატორის ავტორიზაცია წარუმატებლად დასრულდა.",
+    },
   };
 
   return {
     ...actual,
+    sendError: jest.fn((req, res, status, key) => {
+      res.status(status).json({ error: actual.errorMessages[key] ?? key });
+    }),
     generateSmsCode: jest.fn(),
     createPassword: jest.fn(),
-    getResponseMessage: jest.fn((k: string) => k),
+    generateStageToken: jest.fn(),
     inMinutes: (mins: number) => new Date(Date.now() + mins * 60 * 1000),
     getTokenFromRequest: jest.fn((req: any) => {
       const auth = req?.headers?.authorization;
@@ -78,19 +88,19 @@ jest.mock("@/utils", () => {
       }
       return req?.cookies?.accessToken;
     }),
+    logAdminWarn: jest.fn(),
+    logAdminError: jest.fn(),
+
     selectLogger: jest.fn(() => ({
       warn: jest.fn(),
       info: jest.fn(),
       error: jest.fn(),
     })),
-    logAdminInfo: jest.fn(),
-    logAdminWarn: jest.fn(),
-    logAdminError: jest.fn(),
     getClientIp: jest.fn().mockResolvedValue("hashedIp"),
     verifyField: jest.fn(),
     generateAccessToken: jest.fn(),
     generateRefreshToken: jest.fn(),
-    errorMessages: errorMsgs,
+    errorMessages,
   };
 });
 
@@ -113,28 +123,32 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
   });
 
   describe("POST /admin/login", () => {
-    it("logs in with valid credentials and sets cookies", async () => {
+    it("sends OTP code when valid credentials", async () => {
       (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(mockUser);
       (verifyField as jest.Mock).mockResolvedValueOnce(true);
-      (generateAccessToken as jest.Mock).mockReturnValueOnce({
-        token: "access123",
-        expiresIn: 1000,
+      (require("@/utils").generateSmsCode as jest.Mock).mockResolvedValueOnce({
+        hashedSmsCode: 1234,
       });
-      (generateRefreshToken as jest.Mock).mockReturnValueOnce({
-        token: "refresh123",
-        expiresIn: 2000,
+      (prisma.admin.update as jest.Mock).mockResolvedValueOnce({});
+      (require("@/utils").generateStageToken as jest.Mock).mockReturnValueOnce({
+        token: "stage-token",
       });
 
       const res = await request(app)
         .post("/admin/login")
-        .send({ email: "admin@test.com", password: "correctPass" });
+        .send({ email: "admin@test.com", password: "hashedPass" });
 
       expect(res).toHaveStatus(200);
-      expect(res.body).toBeValidAdminLoginResponse();
-      expect(res.headers["set-cookie"]).toBeDefined();
+      expect(res.body.message).toEqual(
+        require("@/utils").getResponseMessage("codeSent")
+      );
+      expect(res.headers["set-cookie"]).toEqual(
+        expect.arrayContaining([expect.stringContaining("admin_verify_stage=")])
+      );
+      expect(prisma.admin.update).toHaveBeenCalled();
     });
 
-    it("returns 404 when user not found", async () => {
+    it("returns 404 if user not found", async () => {
       (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(null);
 
       const res = await request(app)
@@ -147,13 +161,13 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
       );
     });
 
-    it("returns 401 when password invalid", async () => {
+    it("returns 401 if password invalid", async () => {
       (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(mockUser);
       (verifyField as jest.Mock).mockResolvedValueOnce(false);
 
       const res = await request(app)
         .post("/admin/login")
-        .send({ email: "admin@test.com", password: "Password12345" });
+        .send({ email: "admin@test.com", password: "WrongPass12" });
 
       expect(res).toHaveStatus(401);
       expect(res.body.error).toEqual(
@@ -161,12 +175,160 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
       );
     });
 
-    it("returns 400 when validation fails (missing/invalid fields)", async () => {
+    it("returns 400 if missing fields", async () => {
       const res = await request(app).post("/admin/login").send({ email: "" });
+      expect(res).toHaveStatus(400);
+    });
+  });
+
+  describe("POST /admin/verify-otp", () => {
+    beforeEach(() => {
+      (prisma.admin.findUnique as jest.Mock).mockReset();
+      jest.spyOn(jwt, "verify").mockReturnValue({ id: mockUser.id } as any);
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+    it("verifies OTP, sets access & refresh tokens", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        smsCode: 1234,
+        smsCodeExpiresAt: new Date(Date.now() + 5000),
+      });
+      (verifyField as jest.Mock).mockResolvedValueOnce(true);
+      (generateAccessToken as jest.Mock).mockReturnValueOnce({
+        token: "access123",
+        expiresIn: 1000,
+      });
+      (generateRefreshToken as jest.Mock).mockReturnValueOnce({
+        token: "refresh123",
+        expiresIn: 2000,
+      });
+
+      const res = await request(app)
+        .post("/admin/verify-otp")
+        .set("Cookie", ["admin_verify_stage=stage-token"])
+        .send({ code: 1234 });
+
+      expect(res).toHaveStatus(200);
+      expect(res.body.message).toEqual(
+        require("@/utils").getResponseMessage("loginSuccessful")
+      );
+      expect(res.headers["set-cookie"]).toEqual(
+        expect.arrayContaining([
+          expect.stringContaining("accessToken="),
+          expect.stringContaining("refreshToken="),
+        ])
+      );
+    });
+
+    it("returns 404 if admin not found", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .post("/admin/verify-otp")
+        .set("Cookie", ["admin_verify_stage=stage-token"])
+        .send({ code: 2345 });
+
+      expect(res).toHaveStatus(404);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.userNotFound
+      );
+    });
+
+    it("returns 400 if code expired", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        smsCode: 2345,
+        smsCodeExpiresAt: new Date(Date.now() - 5000),
+      });
+
+      const res = await request(app)
+        .post("/admin/verify-otp")
+        .set("Cookie", ["admin_verify_stage=stage-token"])
+        .send({ code: 1234 });
 
       expect(res).toHaveStatus(400);
-      const params = res.body.errors.map((e: any) => e.param);
-      expect(params).toEqual(expect.arrayContaining(["password", "email"]));
+    });
+
+    it("returns 401 if code invalid", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        smsCode: 2345,
+        smsCodeExpiresAt: new Date(Date.now() + 5000),
+      });
+      (verifyField as jest.Mock).mockResolvedValueOnce(false);
+
+      const res = await request(app)
+        .post("/admin/verify-otp")
+        .set("Cookie", ["admin_verify_stage=stage-token"])
+        .send({ code: 3456 });
+
+      expect(res).toHaveStatus(401);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.smsCodeisInvalid
+      );
+    });
+  });
+
+  describe("POST /admin/resend-otp", () => {
+    beforeEach(() => {
+      (prisma.admin.findUnique as jest.Mock).mockReset();
+      jest.spyOn(jwt, "verify").mockReturnValue({ id: mockUser.id } as any);
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+    it("resends OTP if expired", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        smsCodeExpiresAt: new Date(Date.now() - 1000),
+      });
+      (require("@/utils").generateSmsCode as jest.Mock).mockResolvedValueOnce({
+        hashedSmsCode: "newHash",
+      });
+      (prisma.admin.update as jest.Mock).mockResolvedValueOnce({});
+
+      const res = await request(app)
+        .post("/admin/resend-otp")
+        .set("Cookie", ["admin_verify_stage=stage-token"])
+        .send({ email: mockUser.email });
+
+      expect(res).toHaveStatus(200);
+      expect(res.body.message).toEqual(
+        require("@/utils").getResponseMessage("verificationCodeResent")
+      );
+      expect(prisma.admin.update).toHaveBeenCalled();
+    });
+
+    it("returns 404 if admin not found", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .post("/admin/resend-otp")
+        .set("Cookie", ["admin_verify_stage=stage-token"])
+        .send({ email: mockUser.email });
+
+      expect(res).toHaveStatus(404);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.userNotFound
+      );
+    });
+
+    it("returns 400 if code still valid", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        smsCodeExpiresAt: new Date(Date.now() + 10000),
+      });
+
+      const res = await request(app)
+        .post("/admin/resend-otp")
+        .set("Cookie", ["admin_verify_stage=stage-token"])
+        .send({ email: mockUser.email });
+
+      expect(res).toHaveStatus(400);
     });
   });
 
@@ -257,7 +419,7 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
 
       expect(res).toHaveStatus(401);
       expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.invalidRefreshToken
+        require("@/utils").errorMessages.adminAuthenticateFailed
       );
     });
 
