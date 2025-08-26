@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import { adminAuthRouter } from "@/routes/admin";
 import { prisma } from "@/config";
 import {
+  errorMessages,
   generateAccessToken,
   generateRefreshToken,
   verifyField,
@@ -156,9 +157,7 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
         .send({ email: "unknown@test.com", password: "Password123" });
 
       expect(res).toHaveStatus(404);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.userNotFound
-      );
+      expect(res.body).toHaveErrorMessage("userNotFound", errorMessages);
     });
 
     it("returns 401 if password invalid", async () => {
@@ -170,9 +169,7 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
         .send({ email: "admin@test.com", password: "WrongPass12" });
 
       expect(res).toHaveStatus(401);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.invalidCredentials
-      );
+      expect(res.body).toHaveErrorMessage("invalidCredentials", errorMessages);
     });
 
     it("returns 400 if missing fields", async () => {
@@ -232,9 +229,7 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
         .send({ code: 2345 });
 
       expect(res).toHaveStatus(404);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.userNotFound
-      );
+      expect(res.body).toHaveErrorMessage("userNotFound", errorMessages);
     });
 
     it("returns 400 if code expired", async () => {
@@ -266,9 +261,7 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
         .send({ code: 3456 });
 
       expect(res).toHaveStatus(401);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.smsCodeisInvalid
-      );
+      expect(res.body).toHaveErrorMessage("smsCodeisInvalid", errorMessages);
     });
   });
 
@@ -312,9 +305,8 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
         .send({ email: mockUser.email });
 
       expect(res).toHaveStatus(404);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.userNotFound
-      );
+
+      expect(res.body).toHaveErrorMessage("userNotFound", errorMessages);
     });
 
     it("returns 400 if code still valid", async () => {
@@ -337,9 +329,7 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
       const res = await request(app).get("/admin/renew");
 
       expect(res).toHaveStatus(401);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.noTokenProvided
-      );
+      expect(res.body).toHaveErrorMessage("noTokenProvided", errorMessages);
     });
 
     it("succeeds with valid access token cookie", async () => {
@@ -391,7 +381,7 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
           `refreshToken=${refreshToken}`,
         ]);
 
-      expect(res.status).toBe(200);
+      expect(res).toHaveStatus(200);
       expect(res.headers["set-cookie"] || []).toEqual(
         expect.arrayContaining([expect.stringContaining("accessToken=")])
       );
@@ -418,8 +408,9 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
         ]);
 
       expect(res).toHaveStatus(401);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.adminAuthenticateFailed
+      expect(res.body).toHaveErrorMessage(
+        "adminAuthenticateFailed",
+        errorMessages
       );
     });
 
@@ -441,8 +432,9 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
         ]);
 
       expect(res).toHaveStatus(500);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.jwtSecretNotProvided
+      expect(res.body).toHaveErrorMessage(
+        "jwtSecretNotProvided",
+        errorMessages
       );
     });
 
@@ -473,7 +465,7 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
           `refreshToken=${refreshToken}`,
         ]);
 
-      expect(res.status).toBe(500);
+      expect(res).toHaveStatus(500);
     });
   });
 
@@ -522,8 +514,9 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
         .send({ email: mockUser.email });
 
       expect(res).toHaveStatus(400);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.verificationCodeStillValid
+      expect(res.body).toHaveErrorMessage(
+        "verificationCodeStillValid",
+        errorMessages
       );
     });
   });
@@ -555,9 +548,7 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
         .send({ email: "no@test.com", smsCode: 2345 });
 
       expect(res).toHaveStatus(404);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.userNotFound
-      );
+      expect(res.body).toHaveErrorMessage("userNotFound", errorMessages);
     });
 
     it("returns 400 when code expired", async () => {
@@ -572,8 +563,9 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
         .send({ email: mockUser.email, smsCode: 2345 });
 
       expect(res).toHaveStatus(400);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.verificationCodeExpired
+      expect(res.body).toHaveErrorMessage(
+        "verificationCodeExpired",
+        errorMessages
       );
     });
 
@@ -590,9 +582,7 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
         .send({ email: mockUser.email, smsCode: 1234 });
 
       expect(res).toHaveStatus(401);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.smsCodeisInvalid
-      );
+      expect(res.body).toHaveErrorMessage("smsCodeisInvalid", errorMessages);
     });
   });
 
@@ -636,9 +626,7 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
       });
 
       expect(res).toHaveStatus(404);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.userNotFound
-      );
+      expect(res.body).toHaveErrorMessage("userNotFound", errorMessages);
     });
 
     it("returns 400 when code expired", async () => {
@@ -655,8 +643,9 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
       });
 
       expect(res).toHaveStatus(400);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.verificationCodeExpired
+      expect(res.body).toHaveErrorMessage(
+        "verificationCodeExpired",
+        errorMessages
       );
     });
 
@@ -675,9 +664,7 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
       });
 
       expect(res).toHaveStatus(401);
-      expect(res.body.error).toEqual(
-        require("@/utils").errorMessages.smsCodeisInvalid
-      );
+      expect(res.body).toHaveErrorMessage("smsCodeisInvalid", errorMessages);
     });
     it("matches snapshot on renew with valid tokens", async () => {
       const payload = { id: mockUser.id, email: mockUser.email };
