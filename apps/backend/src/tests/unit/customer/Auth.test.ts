@@ -715,7 +715,6 @@ describe("Customer auth routes — /auth", () => {
         password: "NewPassword123!",
       });
 
-      console.log(res.body.error, res.body.errors);
       expect(res).toHaveStatus(400);
       expect(res.body).toHaveErrorMessage(
         "verificationCodeExpired",
