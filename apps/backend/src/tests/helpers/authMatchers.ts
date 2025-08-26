@@ -29,9 +29,11 @@ export const authMatchers = {
     expectedKey: string,
     errorMessages: ErrorMessages
   ) {
-    const found = received.errors?.some(
-      (e: any) => e.message?.en === errorMessages[expectedKey]?.en
-    );
+    const found = received.errors
+      ? received.errors?.some(
+          (e: any) => e.message?.en === errorMessages[expectedKey]?.en
+        )
+      : received.error?.en === errorMessages[expectedKey]?.en;
     return {
       pass: found,
       message: () =>
