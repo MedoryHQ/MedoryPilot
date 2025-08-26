@@ -188,6 +188,90 @@ describe("Customer auth routes — /auth", () => {
     });
   });
 
+  describe("POST /admin/verify-otp", () => {
+    beforeEach(() => {
+      (prisma.admin.findUnique as jest.Mock).mockReset();
+      jest.spyOn(jwt, "verify").mockReturnValue({ id: mockUser.id } as any);
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+    it("verifies otp, sets tokens and returns user data", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        smsCode: 1234,
+        smsCodeExpiresAt: new Date(Date.now() + 10000),
+      });
+      (verifyField as jest.Mock).mockResolvedValueOnce(true);
+      (generateAccessToken as jest.Mock).mockReturnValueOnce({
+        token: "access-abc",
+        expiresIn: 1000,
+      });
+      (generateRefreshToken as jest.Mock).mockReturnValueOnce({
+        token: "refresh-abc",
+        expiresIn: 2000,
+      });
+
+      const res = await request(app)
+        .post("/admin/verify-otp")
+        .set("Cookie", ["admin_verify_stage=fakeStageToken"])
+        .send({ code: 1234 });
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toEqual(
+        require("@/utils").getResponseMessage("loginSuccessful")
+      );
+      expect(res.headers["set-cookie"]).toBeDefined();
+    });
+
+    it("returns 404 if admin not found", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .post("/admin/verify-otp")
+        .set("Cookie", ["admin_verify_stage=fakeStageToken"])
+        .send({ code: 2345 });
+
+      expect(res.status).toBe(404);
+      expect(res.body.error).toEqual(errorMessages.userNotFound);
+    });
+
+    it("returns 400 if code expired", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        smsCode: 2345,
+        smsCodeExpiresAt: new Date(Date.now() - 1000),
+      });
+
+      const res = await request(app)
+        .post("/admin/verify-otp")
+        .set("Cookie", ["admin_verify_stage=fakeStageToken"])
+        .send({ code: 1234 });
+
+      expect(res.status).toBe(400);
+    });
+
+    it("returns 401 if code invalid", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        smsCode: 2345,
+        smsCodeExpiresAt: new Date(Date.now() + 10000),
+      });
+      (verifyField as jest.Mock).mockResolvedValueOnce(false);
+
+      const res = await request(app)
+        .post("/admin/verify-otp")
+        .set("Cookie", ["admin_verify_stage=fakeStageToken"])
+        .send({ code: 3456 });
+
+      expect(res.status).toBe(401);
+      expect(res.body.error).toEqual(
+        errorMessages.smsCodeisInvalid ?? "smsCodeisInvalid"
+      );
+    });
+  });
+
   describe("GET /admin/renew", () => {
     it("Should return 401 if no tokens provided", async () => {
       const res = await request(app).get("/admin/renew");
