@@ -2,6 +2,7 @@ import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import * as Routes from "./routes";
 import * as AuthRoutes from "./pages/Auth";
+import CustomLayout from "./components/Layout";
 
 type AnyRoute = {
   path?: string;
@@ -32,7 +33,11 @@ const createRoutes = (routesObj: Record<string, AnyRoute> | any) => {
     return {
       ...route,
       path: `${route.path}`,
-      element: renderRouteElement(route)
+      element: (
+        <CustomLayout route={route} path={route.path}>
+          {renderRouteElement(route)}
+        </CustomLayout>
+      )
     };
   });
 };
@@ -44,7 +49,8 @@ export const Router = () => {
       element: <>PraxisSync</>
     },
     ...createRoutes(Routes),
-    ...createRoutes(AuthRoutes)
+    ...createRoutes(AuthRoutes),
+    { path: "/404", element: <div>404 Page</div> }
   ];
 
   const router = createBrowserRouter(routesWithLayout);
