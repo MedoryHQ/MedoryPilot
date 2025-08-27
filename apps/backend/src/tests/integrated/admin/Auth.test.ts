@@ -124,31 +124,6 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
   });
 
   describe("POST /admin/login", () => {
-    it("sends OTP code when valid credentials", async () => {
-      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(mockUser);
-      (verifyField as jest.Mock).mockResolvedValueOnce(true);
-      (require("@/utils").generateSmsCode as jest.Mock).mockResolvedValueOnce({
-        hashedSmsCode: 1234,
-      });
-      (prisma.admin.update as jest.Mock).mockResolvedValueOnce({});
-      (require("@/utils").generateStageToken as jest.Mock).mockReturnValueOnce({
-        token: "stage-token",
-      });
-
-      const res = await request(app)
-        .post("/admin/login")
-        .send({ email: "admin@test.com", password: "hashedPass" });
-
-      expect(res).toHaveStatus(200);
-      expect(res.body.message).toEqual(
-        require("@/utils").getResponseMessage("codeSent")
-      );
-      expect(res.headers["set-cookie"]).toEqual(
-        expect.arrayContaining([expect.stringContaining("admin_verify_stage=")])
-      );
-      expect(prisma.admin.update).toHaveBeenCalled();
-    });
-
     it("returns 404 if user not found", async () => {
       (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(null);
 
@@ -176,6 +151,31 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
       const res = await request(app).post("/admin/login").send({ email: "" });
       expect(res).toHaveStatus(400);
     });
+
+    it("sends OTP code when valid credentials", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(mockUser);
+      (verifyField as jest.Mock).mockResolvedValueOnce(true);
+      (require("@/utils").generateSmsCode as jest.Mock).mockResolvedValueOnce({
+        hashedSmsCode: 1234,
+      });
+      (prisma.admin.update as jest.Mock).mockResolvedValueOnce({});
+      (require("@/utils").generateStageToken as jest.Mock).mockReturnValueOnce({
+        token: "stage-token",
+      });
+
+      const res = await request(app)
+        .post("/admin/login")
+        .send({ email: "admin@test.com", password: "hashedPass" });
+
+      expect(res).toHaveStatus(200);
+      expect(res.body.message).toEqual(
+        require("@/utils").getResponseMessage("codeSent")
+      );
+      expect(res.headers["set-cookie"]).toEqual(
+        expect.arrayContaining([expect.stringContaining("admin_verify_stage=")])
+      );
+      expect(prisma.admin.update).toHaveBeenCalled();
+    });
   });
 
   describe("POST /admin/verify-otp", () => {
@@ -186,38 +186,6 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
 
     afterEach(() => {
       jest.restoreAllMocks();
-    });
-    it("verifies OTP, sets access & refresh tokens", async () => {
-      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
-        ...mockUser,
-        smsCode: 1234,
-        smsCodeExpiresAt: new Date(Date.now() + 5000),
-      });
-      (verifyField as jest.Mock).mockResolvedValueOnce(true);
-      (generateAccessToken as jest.Mock).mockReturnValueOnce({
-        token: "access123",
-        expiresIn: 1000,
-      });
-      (generateRefreshToken as jest.Mock).mockReturnValueOnce({
-        token: "refresh123",
-        expiresIn: 2000,
-      });
-
-      const res = await request(app)
-        .post("/admin/verify-otp")
-        .set("Cookie", ["admin_verify_stage=stage-token"])
-        .send({ code: 1234 });
-
-      expect(res).toHaveStatus(200);
-      expect(res.body.message).toEqual(
-        require("@/utils").getResponseMessage("loginSuccessful")
-      );
-      expect(res.headers["set-cookie"]).toEqual(
-        expect.arrayContaining([
-          expect.stringContaining("accessToken="),
-          expect.stringContaining("refreshToken="),
-        ])
-      );
     });
 
     it("returns 404 if admin not found", async () => {
@@ -263,6 +231,39 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
       expect(res).toHaveStatus(401);
       expect(res.body).toHaveErrorMessage("smsCodeisInvalid", errorMessages);
     });
+
+    it("verifies OTP, sets access & refresh tokens", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        smsCode: 1234,
+        smsCodeExpiresAt: new Date(Date.now() + 5000),
+      });
+      (verifyField as jest.Mock).mockResolvedValueOnce(true);
+      (generateAccessToken as jest.Mock).mockReturnValueOnce({
+        token: "access123",
+        expiresIn: 1000,
+      });
+      (generateRefreshToken as jest.Mock).mockReturnValueOnce({
+        token: "refresh123",
+        expiresIn: 2000,
+      });
+
+      const res = await request(app)
+        .post("/admin/verify-otp")
+        .set("Cookie", ["admin_verify_stage=stage-token"])
+        .send({ code: 1234 });
+
+      expect(res).toHaveStatus(200);
+      expect(res.body.message).toEqual(
+        require("@/utils").getResponseMessage("loginSuccessful")
+      );
+      expect(res.headers["set-cookie"]).toEqual(
+        expect.arrayContaining([
+          expect.stringContaining("accessToken="),
+          expect.stringContaining("refreshToken="),
+        ])
+      );
+    });
   });
 
   describe("POST /admin/resend-otp", () => {
@@ -273,27 +274,6 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
 
     afterEach(() => {
       jest.restoreAllMocks();
-    });
-    it("resends OTP if expired", async () => {
-      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
-        ...mockUser,
-        smsCodeExpiresAt: new Date(Date.now() - 1000),
-      });
-      (require("@/utils").generateSmsCode as jest.Mock).mockResolvedValueOnce({
-        hashedSmsCode: "newHash",
-      });
-      (prisma.admin.update as jest.Mock).mockResolvedValueOnce({});
-
-      const res = await request(app)
-        .post("/admin/resend-otp")
-        .set("Cookie", ["admin_verify_stage=stage-token"])
-        .send({ email: mockUser.email });
-
-      expect(res).toHaveStatus(200);
-      expect(res.body.message).toEqual(
-        require("@/utils").getResponseMessage("verificationCodeResent")
-      );
-      expect(prisma.admin.update).toHaveBeenCalled();
     });
 
     it("returns 404 if admin not found", async () => {
@@ -321,6 +301,28 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
         .send({ email: mockUser.email });
 
       expect(res).toHaveStatus(400);
+    });
+
+    it("resends OTP if expired", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        smsCodeExpiresAt: new Date(Date.now() - 1000),
+      });
+      (require("@/utils").generateSmsCode as jest.Mock).mockResolvedValueOnce({
+        hashedSmsCode: "newHash",
+      });
+      (prisma.admin.update as jest.Mock).mockResolvedValueOnce({});
+
+      const res = await request(app)
+        .post("/admin/resend-otp")
+        .set("Cookie", ["admin_verify_stage=stage-token"])
+        .send({ email: mockUser.email });
+
+      expect(res).toHaveStatus(200);
+      expect(res.body.message).toEqual(
+        require("@/utils").getResponseMessage("verificationCodeResent")
+      );
+      expect(prisma.admin.update).toHaveBeenCalled();
     });
   });
 
@@ -522,24 +524,6 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
   });
 
   describe("POST /admin/forgot-password-verification", () => {
-    it("verifies code successfully", async () => {
-      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
-        ...mockUser,
-        smsCode: 2345,
-        smsCodeExpiresAt: new Date(Date.now() + 5000).toISOString(),
-      });
-      (require("@/utils").verifyField as jest.Mock).mockReturnValueOnce(true);
-
-      const res = await request(app)
-        .post("/admin/forgot-password-verification")
-        .send({ email: mockUser.email, smsCode: 2345 });
-
-      expect(res).toHaveStatus(200);
-      expect(res.body.message).toEqual(
-        require("@/utils").getResponseMessage("codeVerified")
-      );
-    });
-
     it("returns 404 when admin not found", async () => {
       (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(null);
 
@@ -584,38 +568,27 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
       expect(res).toHaveStatus(401);
       expect(res.body).toHaveErrorMessage("smsCodeisInvalid", errorMessages);
     });
-  });
 
-  describe("POST /admin/password-reset", () => {
-    it("resets password successfully", async () => {
+    it("verifies code successfully", async () => {
       (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
         ...mockUser,
-        smsCode: "hash123",
+        smsCode: 2345,
         smsCodeExpiresAt: new Date(Date.now() + 5000).toISOString(),
       });
       (require("@/utils").verifyField as jest.Mock).mockReturnValueOnce(true);
-      (require("@/utils").createPassword as jest.Mock).mockResolvedValueOnce(
-        "newHash"
-      );
-      (prisma.admin.update as jest.Mock).mockResolvedValueOnce({
-        ...mockUser,
-        passwordHash: "newHash",
-        smsCode: null,
-      });
 
-      const res = await request(app).post("/admin/password-reset").send({
-        email: mockUser.email,
-        password: "NewPassword123!",
-        smsCode: "1234",
-      });
+      const res = await request(app)
+        .post("/admin/forgot-password-verification")
+        .send({ email: mockUser.email, smsCode: 2345 });
 
       expect(res).toHaveStatus(200);
       expect(res.body.message).toEqual(
-        require("@/utils").getResponseMessage("passwordChanged")
+        require("@/utils").getResponseMessage("codeVerified")
       );
-      expect(prisma.admin.update).toHaveBeenCalled();
     });
+  });
 
+  describe("POST /admin/password-reset", () => {
     it("returns 404 when admin not found", async () => {
       (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(null);
 
@@ -666,6 +639,36 @@ describe("Admin auth (integration-style) — /admin/login & /admin/renew", () =>
       expect(res).toHaveStatus(401);
       expect(res.body).toHaveErrorMessage("smsCodeisInvalid", errorMessages);
     });
+
+    it("resets password successfully", async () => {
+      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        smsCode: "hash123",
+        smsCodeExpiresAt: new Date(Date.now() + 5000).toISOString(),
+      });
+      (require("@/utils").verifyField as jest.Mock).mockReturnValueOnce(true);
+      (require("@/utils").createPassword as jest.Mock).mockResolvedValueOnce(
+        "newHash"
+      );
+      (prisma.admin.update as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        passwordHash: "newHash",
+        smsCode: null,
+      });
+
+      const res = await request(app).post("/admin/password-reset").send({
+        email: mockUser.email,
+        password: "NewPassword123!",
+        smsCode: "1234",
+      });
+
+      expect(res).toHaveStatus(200);
+      expect(res.body.message).toEqual(
+        require("@/utils").getResponseMessage("passwordChanged")
+      );
+      expect(prisma.admin.update).toHaveBeenCalled();
+    });
+
     it("matches snapshot on renew with valid tokens", async () => {
       const payload = { id: mockUser.id, email: mockUser.email };
       const accessToken = jwt.sign(
