@@ -24,7 +24,10 @@ export const useAuthStore = create(
         refreshToken: null,
         currentUser: null,
         otpSentAt: null,
-        setOtpSent: () => set({ otpSentAt: Date.now() }),
+        setOtpSent: () => {
+          const now = Date.now();
+          set({ otpSentAt: now });
+        },
         clearOtp: () => set({ otpSentAt: null }),
         login: ({ data }) => {
           set(() => ({

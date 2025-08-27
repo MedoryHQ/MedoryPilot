@@ -9,7 +9,7 @@ const UserIcon = () => <span style={{ color: "#9ca3af" }}>👤</span>;
 const LockIcon = () => <span style={{ color: "#9ca3af" }}>🔒</span>;
 
 interface Props {
-  onSuccess: () => void;
+  onSuccess: (email: string) => void;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
 }
 
@@ -24,7 +24,6 @@ const LoginForm = ({ onSuccess, setEmail }: Props) => {
     },
     onSuccess: () => {
       form.resetFields();
-      onSuccess();
     },
     onError: (error: ResponseError) => {
       setFormErrors(error, message, form);
@@ -36,6 +35,7 @@ const LoginForm = ({ onSuccess, setEmail }: Props) => {
       const values = await form.validateFields();
       setEmail(values.email);
       await mutateAsync(values);
+      onSuccess(values.email);
     } catch (error) {
       console.error("Form validation or submission error:", error);
     }

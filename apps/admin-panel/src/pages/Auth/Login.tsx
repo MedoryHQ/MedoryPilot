@@ -27,6 +27,12 @@ const Login = () => {
     }
   }, [otpSentAt]);
 
+  const handleLoginSuccess = (submittedEmail: string) => {
+    setStage("otp");
+    setEmail(submittedEmail);
+    setOtpSent();
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 p-4">
       <motion.div
@@ -54,13 +60,7 @@ const Login = () => {
             </div>
 
             {stage === "login" ? (
-              <LoginForm
-                onSuccess={() => {
-                  setOtpSent();
-                  setStage("otp");
-                }}
-                setEmail={setEmail}
-              />
+              <LoginForm onSuccess={handleLoginSuccess} setEmail={setEmail} />
             ) : (
               <OtpVerificationForm
                 onSuccess={() => {
