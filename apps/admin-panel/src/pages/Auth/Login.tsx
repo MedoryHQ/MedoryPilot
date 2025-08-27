@@ -1,45 +1,36 @@
-import { Form, Input, Button, Checkbox, Card, Image } from "antd";
+import { Card, Image } from "antd";
 import { motion } from "framer-motion";
-import { useAuthStore } from "@/store";
 import Logo from "@/assets/praxisSync.png";
-import useApp from "antd/es/app/useApp";
-// import {  useLocation, useNavigate } from "react-router-dom";
-import { useMutation } from "react-query";
-import axios from "@/api/axios";
-import { LoginFormValues, ResponseError } from "@/types";
-import { setFormErrors } from "@/utils";
-import AnimatedLeftPanelStatic from "@/components/ui/AnimatedLeftPanel";
 
-const UserIcon = () => <span style={{ color: "#9ca3af" }}>👤</span>;
-const LockIcon = () => <span style={{ color: "#9ca3af" }}>🔒</span>;
+import AnimatedLeftPanelStatic from "@/components/ui/AnimatedLeftPanel";
+import LoginForm from "@/components/auth/LoginForm";
+import OtpVerificationForm from "@/components/auth/OtpVerificationForm";
+import { useEffect, useState } from "react";
+import { useAuthStore } from "@/store";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [form] = Form.useForm();
+  const [stage, setStage] = useState<"login" | "otp">("login");
+  const [email, setEmail] = useState<string>("");
+  const { isLoggedIn, otpSentAt, setOtpSent, clearOtp } = useAuthStore();
+  const navigate = useNavigate();
 
-  const {
-    login
-    // isLoggedIn
-  } = useAuthStore();
-  const { message } = useApp();
-  // const navigate = useNavigate();
-  // const location = useLocation();
+  useEffect(() => {
+    if (isLoggedIn) navigate("/");
+  }, [isLoggedIn]);
 
-  const { mutateAsync: loginMutation, isLoading: loading } = useMutation({
-    mutationFn: async (values: any) => {
-      const { data } = await axios.post(`/auth/login`, values);
-      return data;
-    },
-    onSuccess: (data) => {
-      login(data);
-      form.resetFields();
-    },
-    onError: (error: ResponseError) => {
-      setFormErrors(error, message, form);
+  useEffect(() => {
+    if (otpSentAt) {
+      setStage("otp");
+    } else {
+      setStage("login");
     }
-  });
+  }, [otpSentAt]);
 
-  const onFinish = (values: LoginFormValues) => {
-    loginMutation(values);
+  const handleLoginSuccess = (submittedEmail: string) => {
+    setStage("otp");
+    setEmail(submittedEmail);
+    setOtpSent();
   };
 
   return (
@@ -53,89 +44,32 @@ const Login = () => {
         <Card className="login_card min-h-[474px] w-full overflow-hidden !rounded-[16px] border-0 shadow-[0_4px_20px_rgba(0,0,0,0.08)] sm:min-h-[548px] sm:w-[442px] lg:w-[780px]">
           <AnimatedLeftPanelStatic />
           <section className="w-full bg-white p-[30px] sm:w-[442px] sm:p-[48px]">
-            <Form
-              form={form}
-              name="login"
-              layout="vertical"
-              size="large"
-              onFinish={onFinish}
-              className="login_form"
-              initialValues={{ remember: true }}
-            >
-              <div className="!mb-[20px] flex w-full flex-col items-center justify-center">
-                {/* TODO: Change branding */}
-                <div className="mb-[10px] flex h-[60px] w-[60px] items-center justify-center rounded-full bg-slate-100 sm:mb-[16px] sm:h-[72px] sm:w-[72px]">
-                  <Image
-                    src={Logo}
-                    alt="Praxis Sync"
-                    preview={false}
-                    width={40}
-                    height={40}
-                  />
-                </div>
-                <h2 className="text-[22px] font-bold text-gray-800 sm:text-[26px]">
-                  Welcome Tamar!
-                </h2>
-                <p className="text-[14px] text-gray-400 sm:text-[16px]">
-                  Log in your account
-                </p>
+            <div className="mb-6 flex flex-col items-center">
+              <div className="mb-4 flex h-[60px] w-[60px] items-center justify-center rounded-full bg-slate-100">
+                <Image
+                  src={Logo}
+                  alt="Praxis Sync"
+                  preview={false}
+                  width={40}
+                />
               </div>
+              <h2 className="text-xl font-bold text-gray-800">Welcome!</h2>
+              <p className="text-sm text-gray-400">
+                {stage === "login" ? "Log in your account" : "Enter OTP code"}
+              </p>
+            </div>
 
-              <Form.Item
-                name="email"
-                label="Email"
-                className="!mb-4 sm:!mb-5"
-                rules={[
-                  { required: true, message: "Email Required" },
-                  { type: "email", message: "Invalid Email" }
-                ]}
-              >
-                <Input
-                  prefix={<UserIcon />}
-                  placeholder={"Email"}
-                  className="rounded-lg placeholder:!text-[12px] placeholder:opacity-[80%]"
-                />
-              </Form.Item>
-
-              <Form.Item
-                name="password"
-                label="Password"
-                rules={[{ required: true, message: "Password Required" }]}
-              >
-                <Input.Password
-                  prefix={<LockIcon />}
-                  placeholder={"Password"}
-                  className="rounded-lg"
-                />
-              </Form.Item>
-
-              <Form.Item className="!mt-2 !mb-3">
-                <div className="flex items-center justify-between">
-                  <Form.Item name="remember" valuePropName="checked" noStyle>
-                    <Checkbox className="!text-gray-800">Remember Me</Checkbox>
-                  </Form.Item>
-                  <Button
-                    type="link"
-                    className="!p-0 !text-[14px] !text-[#4250cb] hover:underline"
-                  >
-                    {/* {t('forgotPassword')} */}
-                    Forgot Password
-                  </Button>
-                </div>
-              </Form.Item>
-
-              <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  loading={loading}
-                  className="w-full rounded-[8px] border-0 !bg-[#4250cb] hover:opacity-90 sm:!h-[46px]"
-                  size="large"
-                >
-                  Login
-                </Button>
-              </Form.Item>
-            </Form>
+            {stage === "login" ? (
+              <LoginForm onSuccess={handleLoginSuccess} setEmail={setEmail} />
+            ) : (
+              <OtpVerificationForm
+                onSuccess={() => {
+                  clearOtp();
+                  navigate("/");
+                }}
+                email={email}
+              />
+            )}
           </section>
         </Card>
       </motion.div>

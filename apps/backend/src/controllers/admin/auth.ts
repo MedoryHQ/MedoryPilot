@@ -58,6 +58,32 @@ export const login = async (
       return sendError(req, res, 401, "invalidCredentials");
     }
 
+    if (!user.twoFactorAuth) {
+      const payload = { id: user.id, email: user.email };
+      const access = generateAccessToken(payload, "ADMIN");
+      const refresh = generateRefreshToken(payload, "ADMIN");
+
+      res.cookie("accessToken", access.token, {
+        ...cookieOptions,
+        maxAge: remember ? refresh.expiresIn : undefined,
+      });
+      res.cookie("refreshToken", refresh.token, {
+        ...cookieOptions,
+        maxAge: remember ? refresh.expiresIn : undefined,
+      });
+
+      logInfo("Admin logged in successfully", {
+        ip: (req as any).hashedIp,
+        userId: user.id,
+        event: "admin_verified",
+      });
+
+      return res.json({
+        message: getResponseMessage("loginSuccessful"),
+        data: { user: { email: user.email } },
+      });
+    }
+
     const {
       hashedSmsCode,
       //  smsCode
@@ -85,6 +111,7 @@ export const login = async (
       ...cookieOptions,
       maxAge: 5 * 60 * 1000,
     });
+
     return res.status(200).json({ message: getResponseMessage("codeSent") });
   } catch (error: unknown) {
     logCatchyError("Login exception", error, {
@@ -144,16 +171,16 @@ export const verifyOtp = async (
 
     res.clearCookie("admin_verify_stage");
 
+    const remember = (req as any).remember;
     const payload = { id: admin.id, email: admin.email };
     const access = generateAccessToken(payload, "ADMIN");
     const refresh = generateRefreshToken(payload, "ADMIN");
-
-    const remember = (req as any).remember;
 
     res.cookie("accessToken", access.token, {
       ...cookieOptions,
       maxAge: remember ? refresh.expiresIn : undefined,
     });
+
     res.cookie("refreshToken", refresh.token, {
       ...cookieOptions,
       maxAge: remember ? refresh.expiresIn : undefined,

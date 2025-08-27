@@ -10,6 +10,7 @@ exports[`Admin auth (integration-style) — /admin/login & /admin/renew POST /ad
         "email": "admin@test.com",
         "id": "1",
         "name": "Test Admin",
+        "twoFactorAuth": true,
       },
       "userType": "ADMIN",
     },

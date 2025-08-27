@@ -20,5 +20,6 @@ export function calculateAge(dob: Date | null): number | null {
 }
 
 export const inMinutes = (minutes: number): Date => {
-  return new Date(Date.now() + minutes * 60 * 1000);
+  // TODO: change 0.5 with minutes after development
+  return new Date(Date.now() + 0.5 * 60 * 1000);
 };

@@ -81,6 +81,9 @@ jest.mock("@/utils", () => {
     }),
     generateSmsCode: jest.fn(),
     createPassword: jest.fn(),
+    issueAdminTokens: jest.fn((res, admin, remember) =>
+      actual.issueAdminTokens(res, admin, remember)
+    ),
     generateStageToken: jest.fn(),
     inMinutes: (mins: number) => new Date(Date.now() + mins * 60 * 1000),
     getTokenFromRequest: jest.fn((req: any) => {
@@ -111,6 +114,7 @@ const mockUser = {
   email: "admin@test.com",
   passwordHash: "hashedPass",
   name: "Test Admin",
+  twoFactorAuth: true,
 };
 
 afterAll(async () => {
@@ -202,6 +206,7 @@ describe("Customer auth routes — /auth", () => {
         ...mockUser,
         smsCode: 1234,
         smsCodeExpiresAt: new Date(Date.now() + 10000),
+        twoFactorAuth: true,
       });
       (verifyField as jest.Mock).mockResolvedValueOnce(true);
       (generateAccessToken as jest.Mock).mockReturnValueOnce({
