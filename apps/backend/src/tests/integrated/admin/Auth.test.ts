@@ -110,6 +110,7 @@ const mockUser = {
   email: "admin@test.com",
   passwordHash: "hashedPass",
   name: "Test Admin",
+  twoFactorAuth: true,
 };
 
 afterAll(async () => {
