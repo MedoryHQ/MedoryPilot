@@ -8,8 +8,6 @@ import {
 } from "@/types/admin/auth";
 import { IForgetPasswordWithEmail } from "@/types/customer";
 import {
-  generateAccessToken,
-  generateRefreshToken,
   sendError,
   verifyField,
   cookieOptions,
@@ -21,6 +19,7 @@ import {
   generateSmsCode,
   createPassword,
   generateStageToken,
+  issueAdminTokens,
 } from "@/utils";
 import { NextFunction, Response, Request } from "express";
 
@@ -56,6 +55,17 @@ export const login = async (
         event: "admin_login_failed",
       });
       return sendError(req, res, 401, "invalidCredentials");
+    }
+
+    if (!user.twoFactorAuth) {
+      logInfo("Admin logged in without 2FA", {
+        ip: (req as any).hashedIp,
+        userId: user.id,
+        event: "admin_login_success",
+      });
+
+      const result = issueAdminTokens(res, user, remember);
+      return res.status(200).json(result);
     }
 
     const {
@@ -144,20 +154,8 @@ export const verifyOtp = async (
 
     res.clearCookie("admin_verify_stage");
 
-    const payload = { id: admin.id, email: admin.email };
-    const access = generateAccessToken(payload, "ADMIN");
-    const refresh = generateRefreshToken(payload, "ADMIN");
-
     const remember = (req as any).remember;
-
-    res.cookie("accessToken", access.token, {
-      ...cookieOptions,
-      maxAge: remember ? refresh.expiresIn : undefined,
-    });
-    res.cookie("refreshToken", refresh.token, {
-      ...cookieOptions,
-      maxAge: remember ? refresh.expiresIn : undefined,
-    });
+    const result = issueAdminTokens(res, admin, remember);
 
     logInfo("Admin verified successfully", {
       ip: (req as any).hashedIp,
@@ -165,10 +163,7 @@ export const verifyOtp = async (
       event: "admin_verified",
     });
 
-    return res.json({
-      message: getResponseMessage("loginSuccessful"),
-      data: { user: { email: admin.email } },
-    });
+    return res.json(result);
   } catch (error) {
     logCatchyError("Admin verify otp exception", error, {
       ip: (req as any).hashedIp,
