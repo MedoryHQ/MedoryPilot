@@ -13,16 +13,16 @@
   height: 548px;
 }
 
-.login_form .ant-form-item-required {
-  height: 12px !important;
-  font-size: 12px !important;
-}
-
-.login_form .ant-form-item-label {
+.ant-form-item-label {
   padding-bottom: 2px;
 }
 
-.login_form .ant-form-item-required::before {
+.ant-form-item-required {
+  font-size: 12px !important;
+  height: 12px !important;
+}
+
+.ant-form-item-required::before {
   color: #4250cb !important;
 }
 
@@ -114,6 +114,18 @@
   font-size: 14px;
 }
 
+.input-otp {
+  width: 100% !important;
+  display: flex !important;
+  gap: 8px !important;
+  justify-content: space-between !important;
+}
+
+.input-otp input {
+  max-width: 68px !important;
+  height: 70px !important;
+}
+
 @media (max-width: 640px) {
   .ant-form-item-explain-error {
     font-size: 12px;
@@ -121,5 +133,21 @@
 
   .login_card .ant-card-body {
     height: 474px;
+  }
+
+  .input-otp {
+    gap: 6px !important;
+  }
+
+  .input-otp input {
+    max-width: 70px !important;
+    height: 74px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .input-otp input {
+    max-width: 62px !important;
+    height: 66px !important;
   }
 }

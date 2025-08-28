@@ -4,10 +4,10 @@ import {
   Navigate,
   RouterProvider
 } from "react-router-dom";
-import * as Routes from "./routes";
+import * as Routes from "./pages";
 import * as AuthRoutes from "./pages/Auth";
-import CustomLayout from "./components/Layout";
 import { NotFound } from "./pages";
+import CustomLayout from "./components/Layout";
 
 type AnyRoute = {
   path?: string;

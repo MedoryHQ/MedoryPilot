@@ -1,8 +1,9 @@
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useQuery } from "react-query";
 import { useAuthStore } from "@/store";
 import axios from "@/api/axios";
-import { useQuery } from "react-query";
+import { Spin } from "antd";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -10,44 +11,67 @@ interface LayoutProps {
   path?: string;
 }
 
-const CustomLayout: React.FC<LayoutProps> = ({ children, route, path }) => {
-  const { isLoggedIn, login, logout, accessToken, refreshToken } =
-    useAuthStore();
+const CustomLayout: React.FC<LayoutProps> = ({ children, route }) => {
+  const { isLoggedIn, login, logout } = useAuthStore();
 
-  const { refetch } = useQuery("renew", {
-    queryFn: async () => {
-      if (!isLoggedIn) return;
-      const { data } = await axios.get(`/auth/renew`);
+  const { refetch, isRefetching } = useQuery(
+    "renew",
+    async () => {
+      const { data } = await axios.get("/auth/renew");
       return data;
     },
-    onSuccess(data) {
-      if (!data?.data) return logout();
-      login({
-        data: {
-          user: data.data.admin,
-          accessToken: accessToken!,
-          refreshToken: refreshToken!
+    {
+      enabled: false,
+      retry: false,
+      refetchOnWindowFocus: false,
+      onSuccess: (data) => {
+        if (data?.data?.user) {
+          login({
+            data: {
+              user: data.data.user
+            }
+          });
+        } else {
+          logout();
         }
-      });
-    },
-    onError() {
-      logout();
-    },
-    enabled: false
-  });
+      },
+      onError: () => {
+        logout();
+      }
+    }
+  );
+
+  const [checking, setChecking] = useState(true);
 
   const [searchParams] = useSearchParams();
-  const data = searchParams.get("data");
+  const searchData = searchParams.get("data");
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    if (data) {
-      navigate("/", { replace: true });
-    }
-  }, [data, navigate]);
+    let mounted = true;
+    setChecking(true);
+    void refetch()
+      .catch((error) => {
+        console.error("Error renewing session:", error);
+      })
+      .finally(() => {
+        if (mounted) setChecking(false);
+      });
+    return () => {
+      mounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
 
   useEffect(() => {
+    if (searchData) {
+      navigate("/", { replace: true });
+    }
+  }, [searchData, navigate]);
+
+  useEffect(() => {
+    if (checking || isRefetching) return;
     if (!route) return;
 
     const isAuthRoute = Boolean(route.isAuthRoute);
@@ -56,19 +80,27 @@ const CustomLayout: React.FC<LayoutProps> = ({ children, route, path }) => {
     if (isWildcard) return;
 
     if (isAuthRoute && isLoggedIn) {
-      navigate("/dashboard", { replace: true });
+      if (location.pathname !== "/dashboard") {
+        navigate("/dashboard", { replace: true });
+      }
       return;
     }
 
     if (!isAuthRoute && !isLoggedIn) {
-      navigate("/auth", { replace: true });
+      if (location.pathname !== "/auth") {
+        navigate("/auth", { replace: true });
+      }
       return;
     }
-  }, [route, isLoggedIn, navigate]);
+  }, [route, isLoggedIn, checking, isRefetching, location.pathname, navigate]);
 
-  useEffect(() => {
-    void refetch();
-  }, [location.pathname, refetch]);
+  if (checking) {
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center">
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen w-full">

@@ -10,27 +10,57 @@ import { useAuthStore } from "@/store";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [stage, setStage] = useState<"login" | "otp">("login");
-  const [email, setEmail] = useState<string>("");
-  const { isLoggedIn, otpSentAt, setOtpSent, clearOtp } = useAuthStore();
+  const initialStage =
+    typeof window !== "undefined" &&
+    sessionStorage.getItem("otpStage") === "otp"
+      ? "otp"
+      : "login";
+
+  const initialEmail =
+    typeof window !== "undefined"
+      ? (sessionStorage.getItem("otpEmail") ?? "")
+      : "";
+
+  const [stage, setStage] = useState<"login" | "otp">(initialStage);
+  const [email, setEmail] = useState<string>(initialEmail);
+  const { isLoggedIn, otpSentAt, setOtpSent, clearOtp, login } = useAuthStore();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (isLoggedIn) navigate("/");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn]);
 
   useEffect(() => {
-    if (otpSentAt) {
+    const sessionStage = sessionStorage.getItem("otpStage");
+    if (sessionStage === "otp") {
       setStage("otp");
+      const sEmail = sessionStorage.getItem("otpEmail");
+      if (sEmail) setEmail(sEmail);
     } else {
       setStage("login");
     }
   }, [otpSentAt]);
 
-  const handleLoginSuccess = (submittedEmail: string) => {
-    setStage("otp");
+  const handleLoginSuccess = async (
+    submittedEmail: string,
+    requiresOtp: boolean,
+    payload?: any
+  ) => {
     setEmail(submittedEmail);
-    setOtpSent();
+
+    if (requiresOtp) {
+      setStage("otp");
+      setOtpSent(submittedEmail);
+    } else {
+      login({
+        data: {
+          user: payload.data.user
+        }
+      });
+      clearOtp();
+      navigate("/");
+    }
   };
 
   return (
@@ -39,11 +69,11 @@ const Login = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full sm:max-w-[442px] lg:max-w-[780px]"
+        className="w-full max-w-[442px] lg:max-w-[780px]"
       >
         <Card className="login_card min-h-[474px] w-full overflow-hidden !rounded-[16px] border-0 shadow-[0_4px_20px_rgba(0,0,0,0.08)] sm:min-h-[548px] sm:w-[442px] lg:w-[780px]">
           <AnimatedLeftPanelStatic />
-          <section className="w-full bg-white p-[30px] sm:w-[442px] sm:p-[48px]">
+          <section className="flex w-full flex-col bg-white p-[30px] sm:w-[442px] sm:p-[48px]">
             <div className="mb-6 flex flex-col items-center">
               <div className="mb-4 flex h-[60px] w-[60px] items-center justify-center rounded-full bg-slate-100">
                 <Image
@@ -65,7 +95,7 @@ const Login = () => {
               <OtpVerificationForm
                 onSuccess={() => {
                   clearOtp();
-                  navigate("/");
+                  navigate("/dashboard");
                 }}
                 email={email}
               />
