@@ -30,11 +30,11 @@ export const setFormErrors = (
   if (err.response.data.errors) {
     err.response.data.errors.forEach((error) => {
       const errorMessage =
-        typeof error.msg === "string"
-          ? isJson(error.msg)
-            ? JSON.parse(error.msg).ka
-            : error.msg
-          : error.msg.ka;
+        typeof error.message === "string"
+          ? isJson(error.message)
+            ? JSON.parse(error.message).ka
+            : error.message
+          : error.message.ka;
 
       if (form) {
         const field = form.getFieldInstance(error.path);

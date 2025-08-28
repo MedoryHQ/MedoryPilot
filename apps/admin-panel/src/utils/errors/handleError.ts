@@ -1,4 +1,8 @@
-export const handleError = (error: any): string[] => {
+import { message } from "antd";
+import { toUpperCase } from "../i18n";
+import { ResponseError } from "@/types";
+
+export const handleError = (error: ResponseError): string[] => {
   const errorMessages: string[] = [];
 
   const globalError = {
@@ -27,4 +31,19 @@ export const handleError = (error: any): string[] => {
   }
 
   return errorMessages;
+};
+
+export const returnError = (
+  error: ResponseError,
+  defaultMessage?: string | null
+) => {
+  const errors = handleError(error);
+  console.log(errors);
+  if (errors) {
+    errors.forEach((error) => {
+      message.error(error);
+    });
+  } else {
+    message.error(toUpperCase(defaultMessage || "შეცდომა"));
+  }
 };

@@ -8,7 +8,7 @@ export interface ResponseError {
       errors?: {
         type: string;
         value: string;
-        msg:
+        message:
           | {
               ka: string;
               en: string;
