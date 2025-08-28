@@ -13,10 +13,22 @@ interface Props {
   email: string;
 }
 
+// TODO: transform to 5 minutes
+const OTP_TTL_MS = 0.5 * 60 * 1000;
+
+const parseSentAt = (raw: string | null): number | null => {
+  if (!raw) return null;
+  const n = Number(raw);
+  if (!Number.isNaN(n) && n > 0) return n;
+  const parsed = Date.parse(raw);
+  if (!Number.isNaN(parsed)) return parsed;
+  return null;
+};
+
 const OtpVerificationForm = ({ onSuccess, email }: Props) => {
   const [form] = Form.useForm();
   const { message } = useApp();
-  const { login, otpSentAt, setOtpSent } = useAuthStore();
+  const { login, otpSentAt, setOtpSent, clearOtp } = useAuthStore();
   const [timeLeft, setTimeLeft] = useState<number>(0);
 
   const [codeArray, setCodeArray] = useState<string[]>(Array(4).fill(""));
@@ -24,14 +36,40 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
 
   const code = codeArray.join("").trim();
 
+  const getCanonicalSentAt = (): number | null => {
+    if (otpSentAt) return otpSentAt;
+    try {
+      const raw = sessionStorage.getItem("otpSentAt");
+      return parseSentAt(raw);
+    } catch {
+      return null;
+    }
+  };
+
   useEffect(() => {
-    if (!otpSentAt) return;
-    const interval = setInterval(() => {
-      // change to 5 * 60 * 1000 in production
-      const diff = 0.5 * 60 * 1000 - (Date.now() - otpSentAt);
-      setTimeLeft(diff > 0 ? Math.ceil(diff / 1000) : 0);
-    }, 1000);
+    const sent = getCanonicalSentAt();
+    if (!sent) {
+      setTimeLeft(0);
+      return;
+    }
+
+    const alreadyExpired = Date.now() - sent >= OTP_TTL_MS;
+    if (alreadyExpired) {
+      clearOtp();
+      setTimeLeft(0);
+      return;
+    }
+
+    const update = () => {
+      const diffMs = OTP_TTL_MS - (Date.now() - sent);
+      const secs = diffMs > 0 ? Math.ceil(diffMs / 1000) : 0;
+      setTimeLeft(secs);
+    };
+
+    update();
+    const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [otpSentAt]);
 
   const resendDisabled = timeLeft > 0;
@@ -67,7 +105,8 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
     },
     onSuccess: () => {
       message.success("OTP resent successfully");
-      setOtpSent();
+      setOtpSent(email);
+      setTimeLeft(Math.ceil(OTP_TTL_MS / 1000));
     },
     onError: () => {
       message.error("Failed to resend OTP");

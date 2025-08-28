@@ -10,8 +10,19 @@ import { useAuthStore } from "@/store";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [stage, setStage] = useState<"login" | "otp">("login");
-  const [email, setEmail] = useState<string>("");
+  const initialStage =
+    typeof window !== "undefined" &&
+    sessionStorage.getItem("otpStage") === "otp"
+      ? "otp"
+      : "login";
+
+  const initialEmail =
+    typeof window !== "undefined"
+      ? (sessionStorage.getItem("otpEmail") ?? "")
+      : "";
+
+  const [stage, setStage] = useState<"login" | "otp">(initialStage);
+  const [email, setEmail] = useState<string>(initialEmail);
   const { isLoggedIn, otpSentAt, setOtpSent, clearOtp, login } = useAuthStore();
   const navigate = useNavigate();
 
@@ -21,8 +32,11 @@ const Login = () => {
   }, [isLoggedIn]);
 
   useEffect(() => {
-    if (otpSentAt) {
+    const sessionStage = sessionStorage.getItem("otpStage");
+    if (sessionStage === "otp") {
       setStage("otp");
+      const sEmail = sessionStorage.getItem("otpEmail");
+      if (sEmail) setEmail(sEmail);
     } else {
       setStage("login");
     }
@@ -37,7 +51,7 @@ const Login = () => {
 
     if (requiresOtp) {
       setStage("otp");
-      setOtpSent();
+      setOtpSent(submittedEmail);
     } else {
       login({
         data: {
@@ -81,7 +95,7 @@ const Login = () => {
               <OtpVerificationForm
                 onSuccess={() => {
                   clearOtp();
-                  navigate("/");
+                  navigate("/dashboard");
                 }}
                 email={email}
               />

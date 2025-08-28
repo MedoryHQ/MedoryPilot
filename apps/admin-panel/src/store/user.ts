@@ -6,7 +6,7 @@ interface AuthStore {
   isLoggedIn: boolean;
   currentUser: LoginResponse["user"] | null;
   otpSentAt: number | null;
-  setOtpSent: () => void;
+  setOtpSent: (email?: string) => void;
   clearOtp: () => void;
   login: (data: { data: LoginResponse }) => void;
   logout: () => void;
@@ -20,11 +20,27 @@ export const useAuthStore = create(
         isLoggedIn: false,
         currentUser: null,
         otpSentAt: null,
-        setOtpSent: () => {
+        setOtpSent: (email?: string) => {
           const now = Date.now();
+          try {
+            sessionStorage.setItem("otpStage", "otp");
+            sessionStorage.setItem("otpSentAt", String(now));
+            if (email) sessionStorage.setItem("otpEmail", String(email));
+          } catch (e) {
+            console.warn("sessionStorage not available", e);
+          }
           set({ otpSentAt: now });
         },
-        clearOtp: () => set({ otpSentAt: null }),
+        clearOtp: () => {
+          try {
+            sessionStorage.removeItem("otpStage");
+            sessionStorage.removeItem("otpSentAt");
+            sessionStorage.removeItem("otpEmail");
+          } catch (e) {
+            // noop
+          }
+          set({ otpSentAt: null });
+        },
         login: ({ data }) => {
           set(() => ({
             isLoggedIn: true,
