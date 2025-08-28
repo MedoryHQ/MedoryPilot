@@ -29,7 +29,6 @@ const LoginForm = ({ onSuccess, setEmail }: Props) => {
       onSuccess(variables.email, !hasUser ? true : false, data);
     },
     onError: (error: ResponseError) => {
-      console.log(error);
       setFormErrors(error, message, form);
       returnError(error, "Login failed");
     }

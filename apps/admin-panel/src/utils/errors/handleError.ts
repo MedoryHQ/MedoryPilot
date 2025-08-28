@@ -38,7 +38,6 @@ export const returnError = (
   defaultMessage?: string | null
 ) => {
   const errors = handleError(error);
-  console.log(errors);
   if (errors) {
     errors.forEach((error) => {
       message.error(error);
