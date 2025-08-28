@@ -2289,6 +2289,11 @@ ansi-styles@^4.1.0:
   dependencies:
     color-convert "^2.0.1"
 
+antd-input-otp@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/antd-input-otp/-/antd-input-otp-2.1.0.tgz#6b485afce3b7fac8839bc145b332749a55549bdd"
+  integrity sha512-igyTfFALQXZFiuUxUPk91zkGwCXtbt6+Gynk6bZJsXPU9Dpgs9vK9SVKwAadjP08MZjks1RKnCgcyUR8dQj1tA==
+
 antd@^5.27.1:
   version "5.27.1"
   resolved "https://registry.yarnpkg.com/antd/-/antd-5.27.1.tgz#5378fc017cb4057ffefe2a670f20e54b924d897d"
