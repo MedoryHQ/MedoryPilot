@@ -39,11 +39,11 @@ const Login = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full sm:max-w-[442px] lg:max-w-[780px]"
+        className="w-full max-w-[442px] lg:max-w-[780px]"
       >
         <Card className="login_card min-h-[474px] w-full overflow-hidden !rounded-[16px] border-0 shadow-[0_4px_20px_rgba(0,0,0,0.08)] sm:min-h-[548px] sm:w-[442px] lg:w-[780px]">
           <AnimatedLeftPanelStatic />
-          <section className="w-full bg-white p-[30px] sm:w-[442px] sm:p-[48px]">
+          <section className="flex w-full flex-col bg-white p-[30px] sm:w-[442px] sm:p-[48px]">
             <div className="mb-6 flex flex-col items-center">
               <div className="mb-4 flex h-[60px] w-[60px] items-center justify-center rounded-full bg-slate-100">
                 <Image

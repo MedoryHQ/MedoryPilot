@@ -50,50 +50,54 @@ const LoginForm = ({ onSuccess, setEmail }: Props) => {
       name="login"
       layout="vertical"
       size="large"
+      className="flex flex-1 flex-col justify-between"
       onFinish={() => {
         handleSubmit();
       }}
       initialValues={{ remember: true }}
     >
-      <Form.Item
-        name="email"
-        label="Email"
-        rules={[
-          { required: true, message: "Email Required" },
-          { type: "email", message: "Invalid Email" }
-        ]}
-      >
-        <Input
-          prefix={<UserIcon />}
-          placeholder="Email"
-          className="rounded-lg"
-        />
-      </Form.Item>
+      <fieldset>
+        <Form.Item
+          name="email"
+          label="Email"
+          className="!mb-4"
+          rules={[
+            { required: true, message: "Email Required" },
+            { type: "email", message: "Invalid Email" }
+          ]}
+        >
+          <Input
+            prefix={<UserIcon />}
+            placeholder="Email"
+            className="rounded-lg"
+          />
+        </Form.Item>
+        <Form.Item
+          name="password"
+          label="Password"
+          rules={[{ required: true, message: "Password Required" }]}
+        >
+          <Input.Password
+            prefix={<LockIcon />}
+            placeholder="Password"
+            className="rounded-lg"
+          />
+        </Form.Item>
+      </fieldset>
+      <footer>
+        <Form.Item name="remember" valuePropName="checked">
+          <Checkbox>Remember Me</Checkbox>
+        </Form.Item>
 
-      <Form.Item
-        name="password"
-        label="Password"
-        rules={[{ required: true, message: "Password Required" }]}
-      >
-        <Input.Password
-          prefix={<LockIcon />}
-          placeholder="Password"
-          className="rounded-lg"
-        />
-      </Form.Item>
-
-      <Form.Item name="remember" valuePropName="checked">
-        <Checkbox>Remember Me</Checkbox>
-      </Form.Item>
-
-      <Button
-        type="primary"
-        htmlType="submit"
-        loading={isLoading}
-        className="w-full rounded-lg"
-      >
-        Login
-      </Button>
+        <Button
+          type="primary"
+          htmlType="submit"
+          loading={isLoading}
+          className="w-full rounded-lg"
+        >
+          Login
+        </Button>
+      </footer>
     </Form>
   );
 };
