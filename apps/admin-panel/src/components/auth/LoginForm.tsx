@@ -9,7 +9,7 @@ const UserIcon = () => <span style={{ color: "#9ca3af" }}>👤</span>;
 const LockIcon = () => <span style={{ color: "#9ca3af" }}>🔒</span>;
 
 interface Props {
-  onSuccess: (email: string) => void;
+  onSuccess: (email: string, requiresOtp: boolean, payload?: any) => void;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
 }
 
@@ -25,7 +25,8 @@ const LoginForm = ({ onSuccess, setEmail }: Props) => {
     onSuccess: (data, variables) => {
       form.resetFields();
       message.success(toUpperCase(data.message["en"]));
-      onSuccess(variables.email);
+      const hasUser = Boolean(data?.data && data.data.user);
+      onSuccess(variables.email, !hasUser ? true : false, data);
     },
     onError: (error: ResponseError) => {
       console.log(error);

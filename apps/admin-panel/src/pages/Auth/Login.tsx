@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [stage, setStage] = useState<"login" | "otp">("login");
   const [email, setEmail] = useState<string>("");
-  const { isLoggedIn, otpSentAt, setOtpSent, clearOtp } = useAuthStore();
+  const { isLoggedIn, otpSentAt, setOtpSent, clearOtp, login } = useAuthStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,10 +27,27 @@ const Login = () => {
     }
   }, [otpSentAt]);
 
-  const handleLoginSuccess = (submittedEmail: string) => {
-    setStage("otp");
+  const handleLoginSuccess = async (
+    submittedEmail: string,
+    requiresOtp: boolean,
+    payload?: any
+  ) => {
     setEmail(submittedEmail);
-    setOtpSent();
+
+    if (requiresOtp) {
+      setStage("otp");
+      setOtpSent();
+    } else {
+      login({
+        data: {
+          user: payload.data.user,
+          accessToken: payload.data.accessToken,
+          refreshToken: payload.data.refreshToken
+        }
+      });
+      clearOtp();
+      navigate("/");
+    }
   };
 
   return (
