@@ -1,7 +1,7 @@
 import { Form, Input, Button, Checkbox } from "antd";
 import { useMutation } from "react-query";
 import { LoginFormValues, ResponseError } from "@/types";
-import { setFormErrors } from "@/utils";
+import { returnError, setFormErrors, toUpperCase } from "@/utils";
 import axios from "@/api/axios";
 import useApp from "antd/es/app/useApp";
 
@@ -17,16 +17,20 @@ const LoginForm = ({ onSuccess, setEmail }: Props) => {
   const [form] = Form.useForm();
   const { message } = useApp();
 
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutate, isLoading } = useMutation({
     mutationFn: async (values: LoginFormValues) => {
       const { data } = await axios.post(`/auth/login`, values);
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       form.resetFields();
+      message.success(toUpperCase(data.message["en"]));
+      onSuccess(variables.email);
     },
     onError: (error: ResponseError) => {
+      console.log(error);
       setFormErrors(error, message, form);
+      returnError(error, "Login failed");
     }
   });
 
@@ -34,10 +38,9 @@ const LoginForm = ({ onSuccess, setEmail }: Props) => {
     try {
       const values = await form.validateFields();
       setEmail(values.email);
-      await mutateAsync(values);
-      onSuccess(values.email);
+      mutate(values);
     } catch (error) {
-      console.error("Form validation or submission error:", error);
+      console.error("Form validation error:", error);
     }
   };
 
