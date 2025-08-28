@@ -40,9 +40,7 @@ const Login = () => {
     } else {
       login({
         data: {
-          user: payload.data.user,
-          accessToken: payload.data.accessToken,
-          refreshToken: payload.data.refreshToken
+          user: payload.data.user
         }
       });
       clearOtp();

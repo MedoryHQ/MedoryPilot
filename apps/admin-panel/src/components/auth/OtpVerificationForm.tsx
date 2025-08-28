@@ -48,9 +48,7 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
     onSuccess: (data) => {
       login({
         data: {
-          user: data.data.user,
-          accessToken: data.data.accessToken,
-          refreshToken: data.data.refreshToken
+          user: data.data.user
         }
       });
       form.resetFields();

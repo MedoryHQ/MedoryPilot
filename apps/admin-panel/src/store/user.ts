@@ -4,8 +4,6 @@ import { persist } from "zustand/middleware";
 
 interface AuthStore {
   isLoggedIn: boolean;
-  accessToken: string | null;
-  refreshToken: string | null;
   currentUser: LoginResponse["user"] | null;
   otpSentAt: number | null;
   setOtpSent: () => void;
@@ -20,8 +18,6 @@ export const useAuthStore = create(
     (set) => {
       return {
         isLoggedIn: false,
-        accessToken: null,
-        refreshToken: null,
         currentUser: null,
         otpSentAt: null,
         setOtpSent: () => {
@@ -32,8 +28,6 @@ export const useAuthStore = create(
         login: ({ data }) => {
           set(() => ({
             isLoggedIn: true,
-            accessToken: data.accessToken,
-            refreshToken: data.refreshToken,
             currentUser: data.user,
             updatedAt: new Date().toISOString()
           }));
@@ -41,8 +35,6 @@ export const useAuthStore = create(
         logout: () => {
           set(() => ({
             isLoggedIn: false,
-            accessToken: null,
-            refreshToken: null,
             currentUser: null,
             otpSentAt: null
           }));
