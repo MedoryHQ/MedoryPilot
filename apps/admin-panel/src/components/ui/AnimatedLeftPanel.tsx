@@ -1,5 +1,8 @@
 import React, { useMemo } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { toUpperCase } from "@/utils";
+import { useTranslation } from "react-i18next";
+import { cn } from "@/libs";
 
 const prefersReducedMotion =
   typeof window !== "undefined" &&
@@ -50,7 +53,7 @@ const AnimatedLeftPanel: React.FC<{ children?: React.ReactNode }> = ({
 }) => {
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
-
+  const { t, i18n } = useTranslation();
   const springConfig = { damping: 20, stiffness: 120 };
   const sx = useSpring(mx, springConfig);
   const sy = useSpring(my, springConfig);
@@ -122,7 +125,6 @@ const AnimatedLeftPanel: React.FC<{ children?: React.ReactNode }> = ({
         />
       ))}
 
-      {/* rotating ring */}
       <motion.svg
         width="120"
         height="120"
@@ -144,11 +146,15 @@ const AnimatedLeftPanel: React.FC<{ children?: React.ReactNode }> = ({
       </motion.svg>
 
       <div className="panel-content">
-        <h2 className="panel-title">Praxis Sync</h2>
+        <h2 className="panel-title">{toUpperCase(t("global.name"))}</h2>
 
-        <div className="panel-desc">
-          {children ??
-            "a dual-language SaaS platform that empowers doctors to digitize bookings, payments, documents, and patient engagement while giving clients seamless access to schedules, records, and services."}
+        <div
+          className={cn(
+            "panel-desc",
+            i18n.language === "ka" ? "text-[14px]" : "text-[16px]"
+          )}
+        >
+          {children ?? toUpperCase(t("global.description"))}
         </div>
       </div>
     </section>

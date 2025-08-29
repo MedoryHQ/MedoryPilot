@@ -8,6 +8,8 @@ import OtpVerificationForm from "@/components/auth/OtpVerificationForm";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/store";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { toUpperCase } from "@/utils";
 
 const Login = () => {
   const initialStage =
@@ -21,6 +23,7 @@ const Login = () => {
       ? (sessionStorage.getItem("otpEmail") ?? "")
       : "";
 
+  const { t } = useTranslation();
   const [stage, setStage] = useState<"login" | "otp">(initialStage);
   const [email, setEmail] = useState<string>(initialEmail);
   const { isLoggedIn, otpSentAt, setOtpSent, clearOtp, login } = useAuthStore();
@@ -83,9 +86,13 @@ const Login = () => {
                   width={40}
                 />
               </div>
-              <h2 className="text-xl font-bold text-gray-800">Welcome!</h2>
+              <h2 className="text-xl font-bold text-gray-800">
+                {toUpperCase(t("auth.welcome"))}!
+              </h2>
               <p className="text-sm text-gray-400">
-                {stage === "login" ? "Log in your account" : "Enter OTP code"}
+                {toUpperCase(
+                  stage === "login" ? t("auth.login") : t("auth.enterOtp")
+                )}
               </p>
             </div>
 
