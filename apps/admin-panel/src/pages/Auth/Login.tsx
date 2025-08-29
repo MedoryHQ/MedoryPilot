@@ -8,6 +8,9 @@ import OtpVerificationForm from "@/components/auth/OtpVerificationForm";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/store";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { toUpperCase } from "@/utils";
+import { LanguageChanger } from "@/components/ui/LanguageChanger";
 
 const Login = () => {
   const initialStage =
@@ -21,6 +24,7 @@ const Login = () => {
       ? (sessionStorage.getItem("otpEmail") ?? "")
       : "";
 
+  const { t } = useTranslation();
   const [stage, setStage] = useState<"login" | "otp">(initialStage);
   const [email, setEmail] = useState<string>(initialEmail);
   const { isLoggedIn, otpSentAt, setOtpSent, clearOtp, login } = useAuthStore();
@@ -74,6 +78,8 @@ const Login = () => {
         <Card className="login_card min-h-[474px] w-full overflow-hidden !rounded-[16px] border-0 shadow-[0_4px_20px_rgba(0,0,0,0.08)] sm:min-h-[548px] sm:w-[442px] lg:w-[780px]">
           <AnimatedLeftPanelStatic />
           <section className="flex w-full flex-col bg-white p-[30px] sm:w-[442px] sm:p-[48px]">
+            <LanguageChanger className="absolute top-3 right-3" />
+
             <div className="mb-6 flex flex-col items-center">
               <div className="mb-4 flex h-[60px] w-[60px] items-center justify-center rounded-full bg-slate-100">
                 <Image
@@ -83,9 +89,13 @@ const Login = () => {
                   width={40}
                 />
               </div>
-              <h2 className="text-xl font-bold text-gray-800">Welcome!</h2>
+              <h2 className="text-xl font-bold text-gray-800">
+                {toUpperCase(t("auth.welcome"))}!
+              </h2>
               <p className="text-sm text-gray-400">
-                {stage === "login" ? "Log in your account" : "Enter OTP code"}
+                {toUpperCase(
+                  stage === "login" ? t("auth.login") : t("auth.enterOtp")
+                )}
               </p>
             </div>
 

@@ -4,6 +4,7 @@ import { LoginFormValues, ResponseError } from "@/types";
 import { returnError, setFormErrors, toUpperCase } from "@/utils";
 import axios from "@/api/axios";
 import useApp from "antd/es/app/useApp";
+import { useTranslation } from "react-i18next";
 
 const UserIcon = () => <span style={{ color: "#9ca3af" }}>👤</span>;
 const LockIcon = () => <span style={{ color: "#9ca3af" }}>🔒</span>;
@@ -16,7 +17,7 @@ interface Props {
 const LoginForm = ({ onSuccess, setEmail }: Props) => {
   const [form] = Form.useForm();
   const { message } = useApp();
-
+  const { t, i18n } = useTranslation();
   const { mutate, isLoading } = useMutation({
     mutationFn: async (values: LoginFormValues) => {
       const { data } = await axios.post(`/auth/login`, values);
@@ -24,7 +25,7 @@ const LoginForm = ({ onSuccess, setEmail }: Props) => {
     },
     onSuccess: (data, variables) => {
       form.resetFields();
-      message.success(toUpperCase(data.message["en"]));
+      message.success(toUpperCase(data.message[i18n.language]));
       const hasUser = Boolean(data?.data && data.data.user);
       onSuccess(variables.email, !hasUser ? true : false, data);
     },
@@ -59,34 +60,50 @@ const LoginForm = ({ onSuccess, setEmail }: Props) => {
       <fieldset>
         <Form.Item
           name="email"
-          label="Email"
+          label={toUpperCase(t("auth.loginForm.email"))}
           className="!mb-4"
           rules={[
-            { required: true, message: "Email Required" },
-            { type: "email", message: "Invalid Email" }
+            {
+              required: true,
+              message: toUpperCase(t("auth.errors.emailRequired"))
+            },
+            {
+              type: "email",
+              message: toUpperCase(t("auth.errors.invalidEmail"))
+            }
           ]}
         >
           <Input
             prefix={<UserIcon />}
-            placeholder="Email"
+            placeholder={toUpperCase(t("auth.loginForm.email"))}
             className="rounded-lg"
           />
         </Form.Item>
         <Form.Item
           name="password"
-          label="Password"
-          rules={[{ required: true, message: "Password Required" }]}
+          label={toUpperCase(t("auth.loginForm.password"))}
+          rules={[
+            {
+              required: true,
+              message: toUpperCase(t("auth.errors.passwordRequired"))
+            },
+            {
+              min: 8,
+              max: 100,
+              message: toUpperCase(t("auth.errors.passwordLength"))
+            }
+          ]}
         >
           <Input.Password
             prefix={<LockIcon />}
-            placeholder="Password"
+            placeholder={toUpperCase(t("auth.loginForm.password"))}
             className="rounded-lg"
           />
         </Form.Item>
       </fieldset>
       <footer>
         <Form.Item name="remember" valuePropName="checked">
-          <Checkbox>Remember Me</Checkbox>
+          <Checkbox>{toUpperCase(t("auth.loginForm.remember"))}</Checkbox>
         </Form.Item>
 
         <Button
@@ -95,7 +112,7 @@ const LoginForm = ({ onSuccess, setEmail }: Props) => {
           loading={isLoading}
           className="w-full rounded-lg"
         >
-          Login
+          {toUpperCase(t("auth.loginForm.login"))}
         </Button>
       </footer>
     </Form>
