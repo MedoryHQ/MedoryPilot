@@ -2,11 +2,12 @@ import { Form, Button } from "antd";
 import { useMutation } from "react-query";
 import axios from "@/api/axios";
 import { ResponseError } from "@/types";
-import { setFormErrors } from "@/utils";
+import { returnError, setFormErrors, toUpperCase } from "@/utils";
 import { useAuthStore } from "@/store";
 import useApp from "antd/es/app/useApp";
 import { useEffect, useState } from "react";
 import { InputOTP } from "antd-input-otp";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   onSuccess: () => void;
@@ -30,7 +31,7 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
   const { message } = useApp();
   const { login, otpSentAt, setOtpSent, clearOtp } = useAuthStore();
   const [timeLeft, setTimeLeft] = useState<number>(0);
-
+  const { t, i18n } = useTranslation();
   const [codeArray, setCodeArray] = useState<string[]>(Array(4).fill(""));
   const [localError, setLocalError] = useState<string | null>(null);
 
@@ -84,6 +85,7 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
       return data;
     },
     onSuccess: (data) => {
+      message.success(toUpperCase(data.message[i18n.language]));
       login({
         data: {
           user: data.data.user
@@ -101,28 +103,30 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
 
   const { mutateAsync: resendOtp, isLoading: resending } = useMutation({
     mutationFn: async () => {
-      await axios.post(`/auth/resend-otp`, { email });
+      const { data } = await axios.post(`/auth/resend-otp`, { email });
+      return data;
     },
-    onSuccess: () => {
-      message.success("OTP resent successfully");
+    onSuccess: (data) => {
+      message.success(data.message[i18n.language]);
       setOtpSent(email);
       setTimeLeft(Math.ceil(OTP_TTL_MS / 1000));
     },
-    onError: () => {
-      message.error("Failed to resend OTP");
+    onError: (error: ResponseError) => {
+      setFormErrors(error, message, form);
+      returnError(error, "OTP verification failed");
     }
   });
 
   const handleSubmit = async () => {
     if (code.length !== 4) {
-      setLocalError("OTP must be 4 digits");
+      setLocalError(t("auth.errors.otpRequired"));
       return;
     }
     setLocalError(null);
     try {
       await verifyOtp({ code });
     } catch (err) {
-      setLocalError("Invalid OTP. Please try again.");
+      setLocalError(t("auth.errors.invalidOTP"));
     }
   };
 
@@ -146,7 +150,7 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
           className="flex h-full flex-col justify-between rounded-2xl bg-white p-4 sm:p-6"
         >
           <Form.Item
-            label="Verification Code"
+            label={toUpperCase(t("auth.otpForm.verificationCode"))}
             validateStatus={
               localError ? "error" : code.length === 4 ? "success" : undefined
             }
@@ -171,7 +175,7 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
               className="mt-2 w-full rounded-lg"
               disabled={code.length !== 4}
             >
-              Verify
+              {toUpperCase(t("auth.otpForm.verify"))}
             </Button>
 
             <Button
@@ -179,11 +183,13 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
               disabled={resendDisabled}
               onClick={() => resendOtp()}
               loading={resending}
-              className="mt-2 w-full"
+              className="mt-2 w-full !text-[12px] sm:!text-[16px]"
             >
-              {resendDisabled
-                ? `Resend available in ${Math.floor(timeLeft / 60)}:${String(timeLeft % 60).padStart(2, "0")}`
-                : "Resend OTP"}
+              {toUpperCase(
+                resendDisabled
+                  ? `${t("auth.otpForm.resendAvialible")} ${Math.floor(timeLeft / 60)}:${String(timeLeft % 60).padStart(2, "0")} ${t("auth.otpForm.inMin")}`
+                  : t("auth.otpForm.resend")
+              )}
             </Button>
           </footer>
         </Form>

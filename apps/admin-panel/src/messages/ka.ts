@@ -16,10 +16,20 @@ export const ka = {
         remember: "დამახსოვრება",
         login: "შესვლა"
       },
+      otpForm: {
+        verify: "ვერიფიკაცია",
+        resendAvialible: "გაგზავნას შეძლებთ: ",
+        resend: "კოდით გაგზავნა",
+        inMin: "წუთში",
+        verificationCode: "ვერიფიკაციის კოდი"
+      },
       errors: {
         emailRequired: "ელ-ფოსტა აუცილებელია",
         invalidEmail: "არასწორი ელ-ფოსტა",
-        passwordRequired: "პაროლი აუცილებელია"
+        passwordRequired: "პაროლი აუცილებელია",
+        passwordLength: "პაროლი უნდა იყოს 8-დან 100 სიმბოლომდე სიგრძის",
+        otpRequired: "OTP კოდი უნდა შედგებოდეს 4 ციფრისგან",
+        invalidOTP: "არასწორი OTP კოდი, გთხოვთ სცადეთ თავიდან"
       }
     }
   }

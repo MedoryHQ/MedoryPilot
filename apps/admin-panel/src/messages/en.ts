@@ -17,10 +17,20 @@ export const en = {
         remember: "Remember Me",
         login: "Login"
       },
+      otpForm: {
+        verify: "Verify",
+        resendAvialible: "Resend avialible in: ",
+        resend: "Resend Otp",
+        inMin: "Min",
+        verificationCode: "Verification Code"
+      },
       errors: {
         emailRequired: "Email Required",
         invalidEmail: "Invalid Email",
-        passwordRequired: "Password Required"
+        passwordRequired: "Password Required",
+        passwordLength: "Password must be between 8 and 100 characters long",
+        otpRequired: "OTP must be 4 digits",
+        invalidOTP: "InvalidOTP. Please try again."
       }
     }
   }
