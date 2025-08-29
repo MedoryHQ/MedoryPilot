@@ -17,7 +17,7 @@ interface Props {
 const LoginForm = ({ onSuccess, setEmail }: Props) => {
   const [form] = Form.useForm();
   const { message } = useApp();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { mutate, isLoading } = useMutation({
     mutationFn: async (values: LoginFormValues) => {
       const { data } = await axios.post(`/auth/login`, values);
@@ -25,7 +25,7 @@ const LoginForm = ({ onSuccess, setEmail }: Props) => {
     },
     onSuccess: (data, variables) => {
       form.resetFields();
-      message.success(toUpperCase(data.message["en"]));
+      message.success(toUpperCase(data.message[i18n.language]));
       const hasUser = Boolean(data?.data && data.data.user);
       onSuccess(variables.email, !hasUser ? true : false, data);
     },
@@ -86,6 +86,11 @@ const LoginForm = ({ onSuccess, setEmail }: Props) => {
             {
               required: true,
               message: toUpperCase(t("auth.errors.passwordRequired"))
+            },
+            {
+              min: 8,
+              max: 100,
+              message: toUpperCase(t("auth.errors.passwordLength"))
             }
           ]}
         >
