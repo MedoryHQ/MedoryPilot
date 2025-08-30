@@ -152,15 +152,15 @@ describe("Customer auth routes — /auth", () => {
       expect(prisma.admin.update).toHaveBeenCalled();
     });
 
-    it("returns 404 if user not found", async () => {
+    it("returns 401 if user not found", async () => {
       (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce(null);
 
       const res = await request(app)
         .post("/admin/login")
         .send({ email: "unknown@test.com", password: "Password123" });
 
-      expect(res).toHaveStatus(404);
-      expect(res.body).toHaveErrorMessage("userNotFound", errorMessages);
+      expect(res).toHaveStatus(401);
+      expect(res.body).toHaveErrorMessage("invalidCredentials", errorMessages);
     });
 
     it("returns 401 if password invalid", async () => {
