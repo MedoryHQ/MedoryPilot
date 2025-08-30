@@ -1,8 +1,6 @@
 import { Card, Image } from "antd";
 import { motion } from "framer-motion";
 import Logo from "@/assets/medory.webp";
-
-import AnimatedLeftPanelStatic from "@/components/ui/AnimatedLeftPanel";
 import LoginForm from "@/components/auth/LoginForm";
 import OtpVerificationForm from "@/components/auth/OtpVerificationForm";
 import { useEffect, useState } from "react";
@@ -10,7 +8,7 @@ import { useAuthStore } from "@/store";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
-import { LanguageChanger } from "@/components/ui/LanguageChanger";
+import { LanguageChanger, AnimatedLeftPanel } from "@/components/ui";
 
 const Login = () => {
   const initialStage =
@@ -76,7 +74,7 @@ const Login = () => {
         className="w-full max-w-[442px] lg:max-w-[780px]"
       >
         <Card className="login_card min-h-[474px] w-full overflow-hidden !rounded-[16px] border-0 shadow-[0_4px_20px_rgba(0,0,0,0.08)] sm:min-h-[548px] sm:w-[442px] lg:w-[780px]">
-          <AnimatedLeftPanelStatic />
+          <AnimatedLeftPanel />
           <section className="flex w-full flex-col bg-white p-[30px] sm:w-[442px] sm:p-[48px]">
             <LanguageChanger className="absolute top-[14px] right-2" />
 

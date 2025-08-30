@@ -48,7 +48,7 @@ const FloatingBlob: React.FC<{
   );
 };
 
-const AnimatedLeftPanel: React.FC<{ children?: React.ReactNode }> = ({
+export const AnimatedLeftPanel: React.FC<{ children?: React.ReactNode }> = ({
   children
 }) => {
   const mx = useMotionValue(0);
@@ -160,5 +160,3 @@ const AnimatedLeftPanel: React.FC<{ children?: React.ReactNode }> = ({
     </section>
   );
 };
-
-export default AnimatedLeftPanel;

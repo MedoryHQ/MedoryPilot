@@ -11,7 +11,7 @@
   --card-foreground: #0f172a;
   --popover: #ffffff;
   --popover-foreground: #0f172a;
-  --primary: #2563eb;
+  --primary: #0651b3;
   --primary-foreground: #ffffff;
   --secondary: #f1f5f9;
   --secondary-foreground: #475569;
@@ -280,6 +280,44 @@
 .input-otp input {
   max-width: 68px !important;
   height: 70px !important;
+}
+
+.premium-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease-in-out;
+}
+
+.premium-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.premium-button:hover::before {
+  left: 100%;
+}
+
+.floating-action {
+  box-shadow: var(--shadow-lg);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transition: all 0.2s ease-in-out;
+}
+
+.floating-action:hover {
+  box-shadow: var(--shadow-xl);
+  transform: translateY(-1px);
 }
 
 @media (max-width: 640px) {
