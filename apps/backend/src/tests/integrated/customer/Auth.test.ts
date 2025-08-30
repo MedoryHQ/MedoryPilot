@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import { userAuthRouter } from "@/routes/customer";
 import { prisma } from "@/config";
 import { authMatchers } from "@/tests/helpers/authMatchers";
+import { errorMessages } from "@/utils";
 expect.extend(authMatchers);
 
 const app = express();
@@ -183,13 +184,14 @@ describe("Customer auth (integration-style) — /auth/*", () => {
       expect(res.headers["set-cookie"]).toBeDefined();
     });
 
-    it("returns 404 if user not found", async () => {
+    it("returns 401 if user not found", async () => {
       (prisma.user.findUnique as jest.Mock).mockResolvedValueOnce(null);
       const res = await request(app).post("/auth/login").send({
         phoneNumber: "+995555555000",
         password: "Password123!",
       });
-      expect(res).toHaveStatus(404);
+      expect(res).toHaveStatus(401);
+      expect(res.body).toHaveErrorMessage("invalidCredentials", errorMessages);
     });
   });
 

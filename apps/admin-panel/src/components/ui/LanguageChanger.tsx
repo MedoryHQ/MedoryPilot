@@ -17,9 +17,9 @@ export const LanguageChanger: React.FC<LanguageChangerProps> = ({
   };
 
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn("relative scale-[80%] sm:scale-[90%]", className)}>
       <Select value={language} onValueChange={changeLanguageHandler}>
-        <SelectTrigger className="border-border/50 bg-background/50 hover:bg-background/80 hover:border-primary/30 group h-11 w-28 rounded-2xl backdrop-blur-sm transition-all duration-300">
+        <SelectTrigger className="border-border/50 bg-background/50 hover:bg-background/80 hover:border-primary/30 group h-11 w-28 rounded-2xl transition-all duration-300">
           <div className="flex items-center gap-2">
             <div className="relative">
               <div className="border-border/30 h-6 w-6 overflow-hidden rounded-full border shadow-sm">
@@ -34,34 +34,33 @@ export const LanguageChanger: React.FC<LanguageChangerProps> = ({
             </span>
           </div>
         </SelectTrigger>
-        <SelectContent className="border-border/50 bg-background/95 min-w-48 rounded-2xl shadow-2xl backdrop-blur-xl">
+        <SelectContent className="border-border/50 bg-background/95 min-w-32 rounded-xl shadow-xl backdrop-blur-md">
           <SelectItem
             value="en"
-            className="hover:bg-accent/10 cursor-pointer rounded-xl py-3 transition-colors duration-200"
+            className="hover:bg-accent/10 group cursor-pointer rounded-lg py-1.5 transition-colors duration-200"
           >
-            <div className="flex items-center gap-3">
-              <div className="border-border/30 flex h-7 w-7 items-center justify-center overflow-hidden rounded-full border shadow-sm">
-                <span className="text-base">🇺🇸</span>
+            <div className="flex items-center gap-2">
+              <div className="border-border/5 flex h-5 w-5 items-center justify-center overflow-hidden rounded-full border shadow-sm">
+                <span className="text-xs">🇺🇸</span>
               </div>
               <div className="flex flex-col">
-                <span className="font-medium">English</span>
-                <span className="text-muted-foreground text-xs">
-                  United States
-                </span>
+                <span className="text-xs font-medium">English</span>
+                <span className="text-[10px] opacity-80">United States</span>
               </div>
             </div>
           </SelectItem>
+
           <SelectItem
             value="ka"
-            className="hover:bg-accent/10 cursor-pointer rounded-xl py-3 transition-colors duration-200"
+            className="hover:bg-accent/10 group cursor-pointer rounded-lg py-1.5 transition-colors duration-200"
           >
-            <div className="flex items-center gap-3">
-              <div className="border-border/30 flex h-7 w-7 items-center justify-center overflow-hidden rounded-full border shadow-sm">
-                <span className="text-base">🇬🇪</span>
+            <div className="flex items-center gap-2">
+              <div className="border-border/5 flex h-5 w-5 items-center justify-center overflow-hidden rounded-full border shadow-sm">
+                <span className="text-xs">🇬🇪</span>
               </div>
               <div className="flex flex-col">
-                <span className="font-medium">ქართული</span>
-                <span className="text-muted-foreground text-xs">Georgia</span>
+                <span className="text-xs font-medium">ქართული</span>
+                <span className="text-[10px] opacity-80">Georgia</span>
               </div>
             </div>
           </SelectItem>

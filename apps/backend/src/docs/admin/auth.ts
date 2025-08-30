@@ -42,8 +42,6 @@
  *                   example: "OTP code sent"
  *       401:
  *         description: Invalid credentials
- *       404:
- *         description: Admin not found
  *       400:
  *         description: Validation errors (e.g., invalid email or password)
  *       500:

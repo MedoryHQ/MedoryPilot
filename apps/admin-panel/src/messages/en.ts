@@ -1,9 +1,9 @@
 export const en = {
   translation: {
     global: {
-      name: "Praxis Sync",
+      name: "Medory",
       description:
-        "a dual-language SaaS platform that empowers doctors to digitize bookings, payments, documents, and patient engagement while giving clients seamless access to schedules, records, and services.",
+        "Helps doctors save time and handle more appointments while patients schedule, connect, and pay in minutes.",
 
       doctor: "Tamar Chaduneli"
     },

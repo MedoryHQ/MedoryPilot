@@ -1,10 +1,11 @@
-import { Form, Input, Button, Checkbox } from "antd";
+import { Form, Input, Checkbox } from "antd";
 import { useMutation } from "react-query";
 import { LoginFormValues, ResponseError } from "@/types";
 import { returnError, setFormErrors, toUpperCase } from "@/utils";
 import axios from "@/api/axios";
 import useApp from "antd/es/app/useApp";
 import { useTranslation } from "react-i18next";
+import { Button } from "../ui";
 
 const UserIcon = () => <span style={{ color: "#9ca3af" }}>👤</span>;
 const LockIcon = () => <span style={{ color: "#9ca3af" }}>🔒</span>;
@@ -107,10 +108,9 @@ const LoginForm = ({ onSuccess, setEmail }: Props) => {
         </Form.Item>
 
         <Button
-          type="primary"
-          htmlType="submit"
+          type="submit"
           loading={isLoading}
-          className="w-full rounded-lg"
+          className="premium-button floating-action mt-2 w-full rounded-lg"
         >
           {toUpperCase(t("auth.loginForm.login"))}
         </Button>
