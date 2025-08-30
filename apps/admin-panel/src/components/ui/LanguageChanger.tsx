@@ -34,40 +34,33 @@ export const LanguageChanger: React.FC<LanguageChangerProps> = ({
             </span>
           </div>
         </SelectTrigger>
-        <SelectContent className="border-border/50 bg-background/95 min-w-38 rounded-2xl shadow-2xl backdrop-blur-xl sm:min-w-48">
+        <SelectContent className="border-border/50 bg-background/95 min-w-32 rounded-xl shadow-xl backdrop-blur-md">
           <SelectItem
             value="en"
-            className="hover:bg-accent/10 group cursor-pointer rounded-xl py-2 transition-colors duration-200 sm:py-3"
+            className="hover:bg-accent/10 group cursor-pointer rounded-lg py-1.5 transition-colors duration-200"
           >
-            <div className="flex items-center gap-2 sm:gap-3">
-              <div className="border-border/5 flex h-5 w-5 items-center justify-center overflow-hidden rounded-full border shadow-sm sm:h-7 sm:w-7">
-                <span className="text-[14px] sm:text-base">🇺🇸</span>
+            <div className="flex items-center gap-2">
+              <div className="border-border/5 flex h-5 w-5 items-center justify-center overflow-hidden rounded-full border shadow-sm">
+                <span className="text-xs">🇺🇸</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-[14px] font-medium sm:text-base">
-                  English
-                </span>
-                <span className="text-[10px] opacity-80 sm:text-xs">
-                  United States
-                </span>
+                <span className="text-xs font-medium">English</span>
+                <span className="text-[10px] opacity-80">United States</span>
               </div>
             </div>
           </SelectItem>
+
           <SelectItem
             value="ka"
-            className="hover:bg-accent/10 group cursor-pointer rounded-xl py-2 transition-colors duration-200 sm:py-3"
+            className="hover:bg-accent/10 group cursor-pointer rounded-lg py-1.5 transition-colors duration-200"
           >
-            <div className="flex items-center gap-2 sm:gap-3">
-              <div className="border-border/5 flex h-5 w-5 items-center justify-center overflow-hidden rounded-full border shadow-sm sm:h-7 sm:w-7">
-                <span className="text-[14px] sm:text-base">🇬🇪</span>
+            <div className="flex items-center gap-2">
+              <div className="border-border/5 flex h-5 w-5 items-center justify-center overflow-hidden rounded-full border shadow-sm">
+                <span className="text-xs">🇬🇪</span>
               </div>
-              <div className="flex flex-col text-[14px] sm:text-base">
-                <span className="text-[14px] font-medium sm:text-base">
-                  ქართული
-                </span>
-                <span className="text-[10px] opacity-80 sm:text-xs">
-                  Georgia
-                </span>
+              <div className="flex flex-col">
+                <span className="text-xs font-medium">ქართული</span>
+                <span className="text-[10px] opacity-80">Georgia</span>
               </div>
             </div>
           </SelectItem>
