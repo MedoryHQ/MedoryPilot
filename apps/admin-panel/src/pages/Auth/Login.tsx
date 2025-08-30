@@ -1,6 +1,6 @@
 import { Card, Image } from "antd";
 import { motion } from "framer-motion";
-import Logo from "@/assets/medory.jpg";
+import Logo from "@/assets/medory.webp";
 
 import AnimatedLeftPanelStatic from "@/components/ui/AnimatedLeftPanel";
 import LoginForm from "@/components/auth/LoginForm";
