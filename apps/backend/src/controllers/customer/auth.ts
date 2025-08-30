@@ -278,22 +278,13 @@ export const UserLogin = async (
       },
     });
 
-    if (!user) {
-      logWarn("User login failed: not found", {
+    if (!user || !(await verifyField(password, user.passwordHash))) {
+      logWarn("User login failed: invalid credentials", {
         ip: (req as any).hashedIp,
+        userId: user?.id,
         event: "user_login_failed",
       });
-      return sendError(req, res, 404, "userNotFound");
-    }
-    const isPasswordValid = verifyField(password, user.passwordHash);
-
-    if (!isPasswordValid) {
-      logWarn("User login failed: invalid password", {
-        ip: (req as any).hashedIp,
-        userId: user.id,
-        event: "user_login_failed",
-      });
-      return sendError(req, res, 400, "invalidPassword");
+      return sendError(req, res, 401, "invalidCredentials");
     }
 
     const {
