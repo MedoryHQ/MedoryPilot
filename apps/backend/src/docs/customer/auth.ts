@@ -158,8 +158,8 @@
  *                           type: string
  *       400:
  *         description: Invalid password
- *       404:
- *         description: User not found
+ *       401:
+ *         description: Invalid credentials
  *
  * /auth/verification-resend:
  *   post:
