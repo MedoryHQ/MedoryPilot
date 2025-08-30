@@ -1,6 +1,6 @@
-# PraxisSync
+# Medory
 
-PraxisSync is a multi-language (EN/GE) SaaS designed to digitize and streamline operations for solo medical practices, featuring a patient web app and a robust admin panel.
+Medory is a doctor’s personal assistant SaaS that digitizes and automates core workflows. It combines fast appointment booking and secure payments with built-in messaging, a rules/workflow engine, and editable, schema-backed patient records, examination sheets, Form 100, and lab results are stored as structured data (not PDFs) for searchability and automation. Patients can view their history, connect directly with their doctor, and schedule and pay in minutes. Medory reduces administrative overhead, helps doctors handle more appointments, and streamlines patient–doctor interactions.
 
 ---
 
