@@ -39,20 +39,11 @@ export const login = async (
     });
 
     const user = await prisma.admin.findUnique({ where: { email } });
-    if (!user) {
-      logWarn("Login failed: user not found", {
-        ip: (req as any).hashedIp,
-        path: req.path,
-        event: "admin_login_failed",
-      });
-      return sendError(req, res, 404, "userNotFound");
-    }
 
-    const validPassword = await verifyField(password, user.passwordHash);
-    if (!validPassword) {
-      logWarn("Login failed: invalid password", {
+    if (!user || !(await verifyField(password, user.passwordHash))) {
+      logWarn("Login failed: invalid credentials", {
         ip: (req as any).hashedIp,
-        userId: user.id,
+        userId: user?.id,
         event: "admin_login_failed",
       });
       return sendError(req, res, 401, "invalidCredentials");
