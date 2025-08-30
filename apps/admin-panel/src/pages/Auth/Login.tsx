@@ -78,7 +78,7 @@ const Login = () => {
         <Card className="login_card min-h-[474px] w-full overflow-hidden !rounded-[16px] border-0 shadow-[0_4px_20px_rgba(0,0,0,0.08)] sm:min-h-[548px] sm:w-[442px] lg:w-[780px]">
           <AnimatedLeftPanelStatic />
           <section className="flex w-full flex-col bg-white p-[30px] sm:w-[442px] sm:p-[48px]">
-            <LanguageChanger className="absolute top-3 right-3" />
+            <LanguageChanger className="absolute top-[14px] right-2" />
 
             <div className="mb-6 flex flex-col items-center">
               <Image
