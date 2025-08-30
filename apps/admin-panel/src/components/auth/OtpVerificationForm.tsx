@@ -1,4 +1,4 @@
-import { Form, Button } from "antd";
+import { Form, Button as AntButton } from "antd";
 import { useMutation } from "react-query";
 import axios from "@/api/axios";
 import { ResponseError } from "@/types";
@@ -8,6 +8,7 @@ import useApp from "antd/es/app/useApp";
 import { useEffect, useState } from "react";
 import { InputOTP } from "antd-input-otp";
 import { useTranslation } from "react-i18next";
+import { Button } from "../ui";
 
 interface Props {
   onSuccess: () => void;
@@ -169,16 +170,15 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
           </Form.Item>
           <footer>
             <Button
-              type="primary"
-              htmlType="submit"
+              type="submit"
               loading={verifying}
-              className="mt-2 w-full rounded-lg"
+              className="premium-button floating-action mt-2 w-full rounded-lg"
               disabled={code.length !== 4}
             >
               {toUpperCase(t("auth.otpForm.verify"))}
             </Button>
 
-            <Button
+            <AntButton
               type="link"
               disabled={resendDisabled}
               onClick={() => resendOtp()}
@@ -190,7 +190,7 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
                   ? `${t("auth.otpForm.resendAvialible")} ${Math.floor(timeLeft / 60)}:${String(timeLeft % 60).padStart(2, "0")} ${t("auth.otpForm.inMin")}`
                   : t("auth.otpForm.resend")
               )}
-            </Button>
+            </AntButton>
           </footer>
         </Form>
       </div>
