@@ -1,6 +1,6 @@
 import { Card, Image } from "antd";
 import { motion } from "framer-motion";
-import Logo from "@/assets/praxisSync.png";
+import Logo from "@/assets/medory.jpg";
 
 import AnimatedLeftPanelStatic from "@/components/ui/AnimatedLeftPanel";
 import LoginForm from "@/components/auth/LoginForm";
@@ -81,14 +81,12 @@ const Login = () => {
             <LanguageChanger className="absolute top-3 right-3" />
 
             <div className="mb-6 flex flex-col items-center">
-              <div className="mb-4 flex h-[60px] w-[60px] items-center justify-center rounded-full bg-slate-100">
-                <Image
-                  src={Logo}
-                  alt="Praxis Sync"
-                  preview={false}
-                  width={40}
-                />
-              </div>
+              <Image
+                className="mb-3 !h-[52px] !w-[52px] rounded-full sm:mb-4 sm:!h-[60px] sm:!w-[60px]"
+                src={Logo}
+                preview={false}
+                alt="Medory"
+              />
               <h2 className="text-xl font-bold text-gray-800">
                 {toUpperCase(t("auth.welcome"))}!
               </h2>

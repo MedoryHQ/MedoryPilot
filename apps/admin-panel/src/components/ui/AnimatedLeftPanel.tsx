@@ -151,7 +151,7 @@ const AnimatedLeftPanel: React.FC<{ children?: React.ReactNode }> = ({
         <div
           className={cn(
             "panel-desc",
-            i18n.language === "ka" ? "text-[14px]" : "text-[16px]"
+            i18n.language === "ka" ? "text-[15px]" : "text-[18px]"
           )}
         >
           {children ?? toUpperCase(t("global.description"))}
