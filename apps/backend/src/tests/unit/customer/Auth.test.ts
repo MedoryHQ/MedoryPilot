@@ -86,6 +86,10 @@ jest.mock("@/utils", () => {
         en: "Login successful",
         ka: "შესახებ წარმატებით დასრულდა",
       },
+      invalidCredentials: {
+        en: "Invalid email or password",
+        ka: "არასწორი ელ-ფოსტა ან პაროლი",
+      },
       verificationCodeResent: {
         en: "Verification code resent successfully",
         ka: "ვერიფიკაცის კოდი წარმატებით გამოიგზავნა ხელახლა",
@@ -221,18 +225,18 @@ describe("Customer auth routes — /auth", () => {
       expect(prisma.refreshToken.create).toHaveBeenCalled();
     });
 
-    it("returns 404 when user not found", async () => {
+    it("returns 401 when user not found", async () => {
       (prisma.user.findUnique as jest.Mock).mockResolvedValueOnce(null);
 
       const res = await request(app)
         .post("/auth/login")
         .send({ phoneNumber: "+995555555552", password: "whatever" });
 
-      expect(res).toHaveStatus(404);
-      expect(res.body).toHaveErrorMessage("userNotFound", errorMessages);
+      expect(res).toHaveStatus(401);
+      expect(res.body).toHaveErrorMessage("invalidCredentials", errorMessages);
     });
 
-    it("returns 400 when password invalid", async () => {
+    it("returns 401 when password invalid", async () => {
       (prisma.user.findUnique as jest.Mock).mockResolvedValueOnce(mockUser);
       (require("@/utils").verifyField as jest.Mock).mockReturnValueOnce(false);
 
@@ -241,8 +245,8 @@ describe("Customer auth routes — /auth", () => {
         password: "BadPassword123",
       });
 
-      expect(res).toHaveStatus(400);
-      expect(res.body).toHaveErrorMessage("invalidPassword", errorMessages);
+      expect(res).toHaveStatus(401);
+      expect(res.body).toHaveErrorMessage("invalidCredentials", errorMessages);
     });
 
     it("returns 400 when validation fails (missing/invalid fields)", async () => {
