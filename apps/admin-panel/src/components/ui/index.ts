@@ -16,3 +16,4 @@ export * from "./avatar";
 export * from "./accordion";
 export * from "./checkbox";
 export * from "./table";
+export * from "./separator";
