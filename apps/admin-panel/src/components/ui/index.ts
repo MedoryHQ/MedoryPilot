@@ -5,3 +5,4 @@ export * from "./select";
 export * from "./switch";
 export * from "./toggle";
 export * from "./sonner";
+export * from "./skeleton";
