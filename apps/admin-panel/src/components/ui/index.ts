@@ -11,3 +11,4 @@ export * from "./pagination";
 export * from "./card";
 export * from "./progress";
 export * from "./dropdown-menu";
+export * from "./badge";
