@@ -8,3 +8,4 @@ export * from "./sonner";
 export * from "./skeleton";
 export * from "./toggle-group";
 export * from "./pagination";
+export * from "./card";
