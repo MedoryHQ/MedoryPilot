@@ -9,3 +9,4 @@ export * from "./skeleton";
 export * from "./toggle-group";
 export * from "./pagination";
 export * from "./card";
+export * from "./progress";
