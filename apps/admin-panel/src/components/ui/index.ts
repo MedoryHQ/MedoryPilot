@@ -14,3 +14,4 @@ export * from "./dropdown-menu";
 export * from "./badge";
 export * from "./avatar";
 export * from "./accordion";
+export * from "./checkbox";
