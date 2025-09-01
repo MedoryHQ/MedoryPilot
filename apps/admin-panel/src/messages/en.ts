@@ -4,8 +4,9 @@ export const en = {
       name: "Medory",
       description:
         "Helps doctors save time and handle more appointments while patients schedule, connect, and pay in minutes.",
-
-      doctor: "Tamar Chaduneli"
+      platform: "Healthcare Platform",
+      doctor: "Tamar Chaduneli",
+      close: "Close"
     },
     auth: {
       welcome: "Welcome",
@@ -32,6 +33,25 @@ export const en = {
         otpRequired: "OTP must be 4 digits",
         invalidOTP: "InvalidOTP. Please try again."
       }
+    },
+    menu: {
+      dashboard: "Dashboard",
+      patients: "Patients",
+      appointments: "Appointments",
+      examinations: "Examinations",
+      visits: "Visits",
+      documents: "Documents",
+      messages: "Messages",
+      website: "Website",
+      home: "Home",
+      services: "Services",
+      news: "News",
+      blogs: "Blogs",
+      analytics: "Analytics",
+      settings: "Settings",
+      general: "General",
+      profile: "Profile",
+      security: "Security"
     }
   }
 };
