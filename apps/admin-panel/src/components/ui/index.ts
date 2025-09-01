@@ -17,3 +17,4 @@ export * from "./accordion";
 export * from "./checkbox";
 export * from "./table";
 export * from "./separator";
+export * from "./tooltip";
