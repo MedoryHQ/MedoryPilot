@@ -18,3 +18,4 @@ export * from "./checkbox";
 export * from "./table";
 export * from "./separator";
 export * from "./tooltip";
+export * from "./sheet";

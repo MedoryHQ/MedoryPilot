@@ -5,7 +5,8 @@ export const en = {
       description:
         "Helps doctors save time and handle more appointments while patients schedule, connect, and pay in minutes.",
 
-      doctor: "Tamar Chaduneli"
+      doctor: "Tamar Chaduneli",
+      close: "Close"
     },
     auth: {
       welcome: "Welcome",
