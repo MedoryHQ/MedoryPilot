@@ -4,7 +4,7 @@ export const en = {
       name: "Medory",
       description:
         "Helps doctors save time and handle more appointments while patients schedule, connect, and pay in minutes.",
-
+      platform: "Healthcare Platform",
       doctor: "Tamar Chaduneli",
       close: "Close"
     },
