@@ -4,6 +4,7 @@ import { useQuery } from "react-query";
 import { useAuthStore } from "@/store";
 import axios from "@/api/axios";
 import { Spin } from "antd";
+import { Shell } from "./Shell";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -104,7 +105,9 @@ const CustomLayout: React.FC<LayoutProps> = ({ children, route }) => {
 
   return (
     <div className="flex min-h-screen w-full">
-      <main className="flex-1">{children}</main>
+      <main className="flex-1">
+        {isLoggedIn ? <Shell>{children}</Shell> : children}
+      </main>
     </div>
   );
 };
