@@ -19,3 +19,4 @@ export * from "./table";
 export * from "./separator";
 export * from "./tooltip";
 export * from "./sheet";
+export * from "./collapsible";
