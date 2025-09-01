@@ -20,7 +20,7 @@ interface SideBarContainerProps {
   isMobile: boolean;
   toggleMenu: (menuKey: string) => void;
   isActive: (key: string) => boolean;
-  onPageChange: (key: string) => void;
+  onPageChange: (href: string | undefined) => void;
   isChildActive: (parentKey: string, childKey: string) => boolean;
   handleItemClick: (item: SidebarItem) => void;
 }
@@ -120,7 +120,7 @@ export const SidebarContainer: React.FC<SideBarContainerProps> = ({
                                   ? "active"
                                   : ""
                               }`}
-                              onClick={() => onPageChange(child.key)}
+                              onClick={() => onPageChange(child.href)}
                             >
                               <div className="flex h-4 w-4 flex-shrink-0 items-center justify-center">
                                 {child.icon}
@@ -143,7 +143,7 @@ export const SidebarContainer: React.FC<SideBarContainerProps> = ({
                       className={`sidebar-item h-12 w-full justify-start gap-3 text-white/80 transition-all duration-200 hover:text-white ${
                         isActive(item.key) ? "active" : ""
                       }`}
-                      onClick={() => onPageChange(item.key)}
+                      onClick={() => onPageChange(item.href)}
                     >
                       <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center">
                         {item.icon}
