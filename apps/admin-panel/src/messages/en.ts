@@ -32,6 +32,25 @@ export const en = {
         otpRequired: "OTP must be 4 digits",
         invalidOTP: "InvalidOTP. Please try again."
       }
+    },
+    menu: {
+      dashboard: "Dashboard",
+      patients: "Patients",
+      appointments: "Appointments",
+      examinations: "Examinations",
+      visits: "Visits",
+      documents: "Documents",
+      messages: "Messages",
+      website: "Website",
+      home: "Home",
+      services: "Services",
+      news: "News",
+      blogs: "Blogs",
+      analytics: "Analytics",
+      settings: "Settings",
+      general: "General",
+      profile: "Profile",
+      security: "Security"
     }
   }
 };

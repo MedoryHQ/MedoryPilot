@@ -31,6 +31,25 @@ export const ka = {
         otpRequired: "OTP კოდი უნდა შედგებოდეს 4 ციფრისგან",
         invalidOTP: "არასწორი OTP კოდი, გთხოვთ სცადეთ თავიდან"
       }
+    },
+    menu: {
+      dashboard: "დაფა",
+      patients: "პაციენტები",
+      appointments: "შეხვედრები",
+      examinations: "გამოკვლევები",
+      visits: "ვიზიტები",
+      documents: "დოკუმენტები",
+      messages: "შეტყობინებები",
+      website: "ვებ საიტი",
+      home: "მთავარი",
+      services: "სერვისები",
+      news: "სიახლეები",
+      blogs: "ბლოგები",
+      analytics: "ანალიტიკა",
+      settings: "პარამეტრები",
+      general: "ზოგადი",
+      profile: "პროფილი",
+      security: "უსაფრთხოება"
     }
   }
 };
