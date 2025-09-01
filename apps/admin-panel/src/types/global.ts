@@ -22,3 +22,8 @@ export interface File {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface MenuItem {
+  key?: string;
+  children?: MenuItem[];
+}
