@@ -19,7 +19,7 @@ export const SidebarHeader: React.FC<SideBarHeaderProps> = ({
 }) => {
   const { t } = useTranslation();
   return (
-    <div className="border-b-sidebar-border shrink-0 border-b-[1px]">
+    <div className="border-sidebar-border flex-shrink-0 border-b p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <motion.div

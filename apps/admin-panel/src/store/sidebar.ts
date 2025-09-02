@@ -10,7 +10,7 @@ export const useSidebarStore = create(
   persist<SidebarStore>(
     (set) => {
       return {
-        collapsed: false,
+        collapsed: window.innerWidth < 768,
         toggleCollapsed: () => set((s) => ({ collapsed: !s.collapsed }))
       };
     },

@@ -111,18 +111,22 @@ export const Sidebar: React.FC = () => {
     <TooltipProvider>
       <div
         className={cn(
-          "bg-sidebar text-sidebar-foreground border-r-sidebar-border fixed top-0 left-0 z-[50] flex h-[100vh] flex-col transition-all duration-200 ease-out",
-          collapsed ? "w-[72px]" : "w-[240px]"
+          "bg-sidebar text-sidebar-foreground border-sidebar-border fixed top-0 left-0 z-[50] flex h-screen flex-col border-r transition-all duration-200 ease-out",
+          collapsed || isMobile ? "w-[72px]" : "w-[240px]"
         )}
       >
-        <SidebarHeader collapsed isMobile toggleCollapsed={toggleCollapsed} />
+        <SidebarHeader
+          collapsed={collapsed}
+          isMobile={isMobile}
+          toggleCollapsed={toggleCollapsed}
+        />
         <SidebarContainer
           items={items}
           handleFlyoutEnter={handleFlyoutEnter}
           handleFlyoutLeave={handleFlyoutLeave}
           isMenuExpanded={isMenuExpanded}
-          collapsed
-          isMobile
+          collapsed={collapsed}
+          isMobile={isMobile}
           toggleMenu={toggleMenu}
           isActive={isActive}
           onPageChange={onPageChange}
