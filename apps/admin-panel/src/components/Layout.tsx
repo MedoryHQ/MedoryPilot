@@ -15,32 +15,29 @@ interface LayoutProps {
 const CustomLayout: React.FC<LayoutProps> = ({ children, route }) => {
   const { isLoggedIn, login, logout } = useAuthStore();
 
-  const { refetch, isRefetching } = useQuery(
-    "renew",
-    async () => {
-      const { data } = await axios.get("/auth/renew");
+  const { refetch, isRefetching } = useQuery("renew", {
+    queryFn: async () => {
+      if (!isLoggedIn) {
+        return;
+      }
+      const { data } = await axios.get(`/auth/renew`);
       return data;
     },
-    {
-      enabled: false,
-      retry: false,
-      refetchOnWindowFocus: false,
-      onSuccess: (data) => {
-        if (data?.data?.user) {
-          login({
-            data: {
-              user: data.data.user
-            }
-          });
-        } else {
-          logout();
-        }
-      },
-      onError: () => {
+    onSuccess: (data) => {
+      if (data?.data?.user) {
+        login({
+          data: {
+            user: data.data.user
+          }
+        });
+      } else {
         logout();
       }
+    },
+    onError() {
+      logout();
     }
-  );
+  });
 
   const [checking, setChecking] = useState(true);
 

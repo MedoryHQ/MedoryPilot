@@ -1,5 +1,5 @@
 const Main = () => {
-  return <div>PraxisSync</div>;
+  return <div>Dashboard</div>;
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
