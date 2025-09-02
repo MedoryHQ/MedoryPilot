@@ -6,7 +6,12 @@ export const en = {
         "Helps doctors save time and handle more appointments while patients schedule, connect, and pay in minutes.",
       platform: "Healthcare Platform",
       doctor: "Tamar Chaduneli",
+      adminPannel: "Medory Admin Panel",
+      search: "Search...",
       close: "Close"
+    },
+    pages: {
+      dashboard: "Dashboard"
     },
     auth: {
       welcome: "Welcome",

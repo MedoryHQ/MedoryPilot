@@ -7,7 +7,12 @@ export const ka = {
       platform: "Healthcare პლატფორმა",
 
       doctor: "თამარ ჩადუნელი",
+      adminPannel: "Medory ადმინ პანელი",
+      search: "ძიება...",
       close: "დახურვა"
+    },
+    pages: {
+      dashboard: "Dashboard"
     },
     auth: {
       welcome: "გამარობა",
