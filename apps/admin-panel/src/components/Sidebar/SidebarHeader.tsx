@@ -27,12 +27,7 @@ export const SidebarHeader: React.FC<SideBarHeaderProps> = ({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <Image
-              className="h-6 w-6 object-contain"
-              src={Logo}
-              preview={false}
-              alt="Medory"
-            />
+            <img className="h-6 w-6 object-contain" src={Logo} alt="Medory" />
           </motion.div>
           <AnimatePresence>
             {!collapsed && !isMobile && (
