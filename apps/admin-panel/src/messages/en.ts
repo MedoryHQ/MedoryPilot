@@ -57,6 +57,14 @@ export const en = {
       general: "General",
       profile: "Profile",
       security: "Security"
+    },
+    sidebar: {
+      doctor: "DR",
+      administrator: "Administrator",
+      profile: "Profile",
+      settings: "Settings",
+      helpAndSupport: "Help & Support",
+      logout: "Logout"
     }
   }
 };

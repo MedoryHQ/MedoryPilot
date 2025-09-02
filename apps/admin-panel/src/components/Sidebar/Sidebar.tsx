@@ -5,7 +5,12 @@ import { getMenuItemLevels } from "@/utils";
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { TooltipProvider } from "../ui";
-import { SidebarHeader, SidebarContainer, SidebarMobileDrawer } from ".";
+import {
+  SidebarHeader,
+  SidebarContainer,
+  SidebarMobileDrawer,
+  SidebarFooter
+} from ".";
 
 export const Sidebar: React.FC = () => {
   const navigate = useNavigate();
@@ -132,6 +137,11 @@ export const Sidebar: React.FC = () => {
           onPageChange={onPageChange}
           isChildActive={isChildActive}
           handleItemClick={handleItemClick}
+        />
+        <SidebarFooter
+          collapsed={collapsed}
+          isMobile={isMobile}
+          onPageChange={onPageChange}
         />
       </div>
       <SidebarMobileDrawer

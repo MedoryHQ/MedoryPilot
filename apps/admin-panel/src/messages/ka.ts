@@ -58,6 +58,14 @@ export const ka = {
       general: "ზოგადი",
       profile: "პროფილი",
       security: "უსაფრთხოება"
+    },
+    sidebar: {
+      doctor: "DR",
+      administrator: "ადმინისტრატორი",
+      profile: "პროფილი",
+      settings: "პარამეტრები",
+      helpAndSupport: "დახმარება",
+      logout: "გამოსვლა"
     }
   }
 };
