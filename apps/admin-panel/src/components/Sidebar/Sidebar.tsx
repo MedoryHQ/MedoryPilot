@@ -1,5 +1,5 @@
 import { cn, useMenuItems } from "@/libs";
-import { useAuthStore, useSidebarStore } from "@/store";
+import { useSidebarStore } from "@/store";
 import { MenuItem, SidebarItem } from "@/types";
 import { getMenuItemLevels } from "@/utils";
 import { useEffect, useRef, useState } from "react";
@@ -9,14 +9,14 @@ import {
   SidebarHeader,
   SidebarContainer,
   SidebarMobileDrawer,
-  SidebarFooter
+  SidebarFooter,
+  SidebarFlyout
 } from ".";
 
 export const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
-  // const { currentUser, logout } = useAuthStore();
   const items = useMenuItems();
   const itemLevels = getMenuItemLevels(items as MenuItem[]);
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
@@ -144,6 +144,17 @@ export const Sidebar: React.FC = () => {
           onPageChange={onPageChange}
         />
       </div>
+      <SidebarFlyout
+        handleFlyoutLeave={handleFlyoutLeave}
+        collapsed={collapsed}
+        isMobile={isMobile}
+        onPageChange={onPageChange}
+        isChildActive={isChildActive}
+        currentFlyoutItem={currentFlyoutItem}
+        flyoutMenu={flyoutMenu}
+        flyoutTimeoutRef={flyoutTimeoutRef}
+        setFlyoutMenu={setFlyoutMenu}
+      />
       <SidebarMobileDrawer
         setMobileDrawer={setMobileDrawer}
         mobileDrawer={mobileDrawer}
