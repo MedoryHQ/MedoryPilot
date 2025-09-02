@@ -1,7 +1,6 @@
 import { cn, useMenuItems } from "@/libs";
 import { useSidebarStore } from "@/store";
-import { MenuItem, SidebarItem } from "@/types";
-import { getMenuItemLevels } from "@/utils";
+import { SidebarItem } from "@/types";
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { TooltipProvider } from "../ui";
@@ -18,7 +17,6 @@ export const Sidebar: React.FC = () => {
   const location = useLocation();
   const currentPath = location.pathname;
   const items = useMenuItems();
-  const itemLevels = getMenuItemLevels(items as MenuItem[]);
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [mobileDrawer, setMobileDrawer] = useState<{
@@ -52,6 +50,7 @@ export const Sidebar: React.FC = () => {
 
     setExpandedMenus(activeKeys);
     return () => window.removeEventListener("resize", handleResize);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const toggleMenu = (menuKey: string) => {
@@ -101,14 +100,9 @@ export const Sidebar: React.FC = () => {
     console.log("page change...");
   };
 
-  const handleLogout = () => {
-    console.log("Logging out...");
-  };
-
   const isMenuExpanded = (menuKey: string) => expandedMenus.includes(menuKey);
   const isActive = (key: string) => currentPath.startsWith(key);
-  const isChildActive = (parentKey: string, childKey: string) =>
-    currentPath.startsWith(childKey);
+  const isChildActive = (childKey: string) => currentPath.startsWith(childKey);
 
   const currentFlyoutItem = items.find((item) => item.key === flyoutMenu?.key);
 
