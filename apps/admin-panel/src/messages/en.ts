@@ -56,6 +56,7 @@ export const en = {
       settings: "Settings",
       general: "General",
       profile: "Profile",
+      helpAndSupport: "Help & Support",
       security: "Security"
     },
     sidebar: {

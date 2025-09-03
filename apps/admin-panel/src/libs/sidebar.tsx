@@ -8,7 +8,8 @@ import {
   Settings,
   BarChart3,
   Globe,
-  User
+  User,
+  HelpCircle
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -124,6 +125,12 @@ export const useMenuItems = (): SidebarItem[] => {
           key: "settings-security",
           icon: <Settings className="h-4 w-4" />,
           label: t("menu.security")
+        },
+        {
+          href: "settings/help-and-support",
+          key: "help-and-support",
+          icon: <HelpCircle className="h-4 w-4" />,
+          label: t("menu.helpAndSupport")
         }
       ]
     }
