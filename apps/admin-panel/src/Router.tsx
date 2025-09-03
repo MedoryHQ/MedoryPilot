@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import * as Routes from "./pages";
 import * as AuthRoutes from "./pages/Auth";
-import { NotFound } from "./pages";
+import { NotFound } from "./pages/NotFound";
 import CustomLayout from "./components/Layout";
 
 type AnyRoute = {
