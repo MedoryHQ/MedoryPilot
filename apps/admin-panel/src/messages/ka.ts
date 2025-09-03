@@ -57,6 +57,9 @@ export const ka = {
       settings: "პარამეტრები",
       general: "ზოგადი",
       profile: "პროფილი",
+      helpAndSupport: "დახმარება",
+      "help-and-support": "დახმარება",
+      landing: "ლენდინგი",
       security: "უსაფრთხოება"
     },
     sidebar: {

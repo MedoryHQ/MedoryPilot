@@ -77,7 +77,10 @@ export const SidebarFooter: React.FC<SideBarFooterProps> = ({
                 className="w-56 rounded-xl border-0 bg-white px-3 shadow-xl"
                 sideOffset={8}
               >
-                <DropdownMenuItem className="flex cursor-pointer items-center gap-3 rounded-lg py-3">
+                <DropdownMenuItem
+                  onClick={() => onPageChange("settings/profile")}
+                  className="flex cursor-pointer items-center gap-3 rounded-lg py-3"
+                >
                   <User className="h-4 w-4 text-gray-500" />
                   <span> {toUpperCase(t("sidebar.profile"))}</span>
                 </DropdownMenuItem>
@@ -88,7 +91,10 @@ export const SidebarFooter: React.FC<SideBarFooterProps> = ({
                   <Settings className="h-4 w-4 text-gray-500" />
                   <span> {toUpperCase(t("sidebar.settings"))}</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="flex cursor-pointer items-center gap-3 rounded-lg py-3">
+                <DropdownMenuItem
+                  onClick={() => onPageChange("settings/help-and-support")}
+                  className="flex cursor-pointer items-center gap-3 rounded-lg py-3"
+                >
                   <HelpCircle className="h-4 w-4 text-gray-500" />
                   <span>{toUpperCase(t("sidebar.helpAndSupport"))}</span>
                 </DropdownMenuItem>

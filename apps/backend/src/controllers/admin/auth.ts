@@ -163,7 +163,6 @@ export const verifyOtp = async (
     res.clearCookie("admin_verify_stage");
 
     const remember = (req as any).remember;
-    console.log(remember);
     const payload = { id: admin.id, email: admin.email };
     const access = generateAccessToken(payload, "ADMIN");
     const refresh = generateRefreshToken(payload, "ADMIN");
