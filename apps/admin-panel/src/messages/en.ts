@@ -57,6 +57,8 @@ export const en = {
       general: "General",
       profile: "Profile",
       helpAndSupport: "Help & Support",
+      "help-and-support": "Help & Support",
+      landing: "Landing",
       security: "Security"
     },
     sidebar: {

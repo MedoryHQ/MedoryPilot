@@ -58,6 +58,8 @@ export const ka = {
       general: "ზოგადი",
       profile: "პროფილი",
       helpAndSupport: "დახმარება",
+      "help-and-support": "დახმარება",
+      landing: "ლენდინგი",
       security: "უსაფრთხოება"
     },
     sidebar: {
