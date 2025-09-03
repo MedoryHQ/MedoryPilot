@@ -16,6 +16,7 @@ export const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
+  const normalizedPath = currentPath.replace(/^\/|\/$/g, "");
   const items = useMenuItems();
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
   const [isMobile, setIsMobile] = useState<boolean>(false);
@@ -41,10 +42,8 @@ export const Sidebar: React.FC = () => {
     const activeKeys = items
       .filter((item) =>
         item.children
-          ? item.children.some((child: any) =>
-              currentPath.startsWith(child.href!)
-            )
-          : currentPath.startsWith(item.href!)
+          ? item.children.some((child: any) => child.href === normalizedPath)
+          : item.href === normalizedPath
       )
       .map((item) => item.key || item.href || "");
 
@@ -97,13 +96,21 @@ export const Sidebar: React.FC = () => {
   };
 
   const onPageChange = (href: string | undefined) => {
-    console.log("page change...");
+    if (href) navigate(`/${href}`);
   };
 
   const isMenuExpanded = (menuKey: string) => expandedMenus.includes(menuKey);
-  const isActive = (key: string) => currentPath.startsWith(key);
-  const isChildActive = (childKey: string) => currentPath.startsWith(childKey);
+  const isActive = (key: string) => {
+    if (!key) return false;
+    return normalizedPath === key || normalizedPath.startsWith(key + "/");
+  };
 
+  const isChildActive = (childHref?: string) => {
+    if (!childHref) return false;
+    return (
+      childHref === normalizedPath || normalizedPath.startsWith(childHref + "/")
+    );
+  };
   const currentFlyoutItem = items.find((item) => item.key === flyoutMenu?.key);
 
   return (

@@ -21,7 +21,7 @@ interface SideBarContainerProps {
   toggleMenu: (menuKey: string) => void;
   isActive: (key: string) => boolean;
   onPageChange: (href: string | undefined) => void;
-  isChildActive: (parentKey: string, childKey: string) => boolean;
+  isChildActive: (childHref?: string) => boolean;
   handleItemClick: (item: SidebarItem) => void;
 }
 
@@ -116,9 +116,7 @@ export const SidebarContainer: React.FC<SideBarContainerProps> = ({
                             <Button
                               variant="ghost"
                               className={`sidebar-item h-10 w-full justify-start gap-3 text-white/70 transition-all duration-200 hover:text-white ${
-                                isChildActive(item.key, child.key)
-                                  ? "active"
-                                  : ""
+                                isChildActive(child.href) ? "active" : ""
                               }`}
                               onClick={() => onPageChange(child.href)}
                             >
