@@ -4,11 +4,9 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Core Design Tokens */
   --font-size: 14px;
   --radius: 0.75rem;
 
-  /* Developer Tokens & CSS Variables */
   --sidebar-width: 240px;
   --sidebar-collapsed: 72px;
   --sidebar-height: 100vh;
@@ -16,13 +14,11 @@
   --content-border: #e6edf3;
   --accent: #1677ff;
 
-  /* Sidebar Frame Colors */
   --sidebar-bg-light: #243149;
   --site-frame-bg-light: #2c3b57;
   --sidebar-bg: var(--sidebar-bg-light);
   --site-frame-bg: var(--site-frame-bg-light);
 
-  /* Light Theme */
   --background: #ffffff;
   --foreground: #0f172a;
   --content-bg: #ffffff;
@@ -55,7 +51,6 @@
   --chart-4: #93c5fd;
   --chart-5: #dbeafe;
 
-  /* Shadow System */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -64,7 +59,6 @@
   --shadow-xl:
     0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 
-  /* Sidebar Tokens */
   --sidebar: var(--sidebar-bg);
   --sidebar-foreground: #ffffff;
   --sidebar-primary: var(--accent);
@@ -78,7 +72,6 @@
 }
 
 .dark {
-  /* Dark Theme Overrides */
   --sidebar-bg-dark: #050b1a;
   --content-bg-dark: #0d1624;
   --content-text-dark: #e6eef8;
@@ -117,7 +110,6 @@
   --shadow-xl:
     0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5);
 
-  /* Dark Sidebar */
   --sidebar: var(--sidebar-bg-dark);
   --sidebar-foreground: #ffffff;
   --sidebar-primary: var(--accent);
@@ -196,12 +188,12 @@
       "Segoe UI",
       Roboto,
       sans-serif;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
   }
 }
 
-/**
- * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
- */
 @layer base {
   :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {
     h1 {
@@ -262,6 +254,16 @@ html {
 *::after,
 *::before {
   box-sizing: border-box;
+}
+
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 0.2s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-loading * {
+  transition: none !important;
 }
 
 .login_card .ant-card-body {
@@ -435,17 +437,6 @@ html {
   animation: pulse 2s infinite;
 }
 
-.slide-in {
-  animation: slideIn 0.3s ease-out;
-}
-
-.fade-in {
-  animation: fadeIn 0.2s ease-out;
-}
-
-.scale-in {
-  animation: scaleIn 0.2s ease-out;
-}
 .sidebar-root {
   background: var(--sidebar);
   color: var(--sidebar-foreground);
@@ -465,14 +456,12 @@ html {
   width: var(--sidebar-collapsed);
 }
 
-/* Sidebar/Header */
 .sidebar-header {
   flex-shrink: 0;
   border-bottom: 1px solid var(--sidebar-border);
   padding: 16px;
 }
 
-/* Sidebar/MenuList with proper scroll container */
 .sidebar-menu-container {
   flex: 1;
   overflow: hidden;
@@ -540,14 +529,12 @@ html {
   border-radius: 0 2px 2px 0;
 }
 
-/* Sidebar/Submenu - NO separate scrollbar, uses parent scroll */
 .sidebar-submenu {
-  overflow: visible; /* Remove separate scrollbar artifact */
+  overflow: visible;
   margin-left: 16px;
   padding-left: 8px;
 }
 
-/* Sidebar/DrawerMobile - Full screen drawer for mobile nested items */
 .sidebar-drawer-mobile {
   background: var(--sidebar) !important;
   color: var(--sidebar-foreground) !important;
@@ -569,13 +556,11 @@ html {
   background: var(--sidebar);
 }
 
-/* Ensure accordion content doesn't create separate scroll */
 .sidebar-menu-list .accordion-content {
   overflow: visible !important;
   max-height: none !important;
 }
 
-/* Fix any collapsible content scroll issues */
 .sidebar-menu-list [data-state="open"] {
   overflow: visible;
 }
@@ -588,7 +573,6 @@ html {
   backdrop-filter: blur(20px);
 }
 
-/* Tooltip Styles */
 .sidebar-tooltip {
   background: var(--sidebar);
   color: var(--sidebar-foreground);
@@ -601,21 +585,16 @@ html {
   backdrop-filter: blur(10px);
 }
 
-/* Mobile-first behavior - always collapsed on mobile */
 @media (max-width: 768px) {
   .sidebar-root {
     width: var(--sidebar-collapsed) !important;
   }
 
-  /* Remove any mobile expand functionality */
   .sidebar-root .mobile-toggle {
     display: none !important;
   }
 }
 
-/* Responsive layout and spacing improvements */
-
-/* Responsive layout: 3-column to single-column stack */
 @media (max-width: 1024px) {
   .dashboard-three-column {
     display: flex;
@@ -629,24 +608,20 @@ html {
 }
 
 @media (max-width: 768px) {
-  /* Sidebar always collapsed on mobile */
   .sidebar-root {
     width: var(--sidebar-collapsed) !important;
   }
 
-  /* Single column stack on mobile */
   .dashboard-grid {
     grid-template-columns: 1fr !important;
     gap: 16px;
   }
 
-  /* Responsive card grids */
   .dashboard-three-column {
     grid-template-columns: 1fr !important;
     gap: 16px;
   }
 
-  /* Mobile-optimized dashboard header */
   .dashboard-header {
     flex-direction: column;
     align-items: stretch !important;
@@ -657,7 +632,6 @@ html {
     font-size: 1.5rem;
   }
 
-  /* Mobile appointment cards */
   .appointment-card {
     flex-direction: column;
     align-items: stretch !important;
@@ -676,7 +650,6 @@ html {
 }
 
 @media (max-width: 640px) {
-  /* Very small screens - even more compact */
   .dashboard-grid {
     gap: 12px;
   }
@@ -877,4 +850,16 @@ html {
   50% {
     opacity: 0.2;
   }
+}
+
+.slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.scale-in {
+  animation: scaleIn 0.2s ease-out;
 }
