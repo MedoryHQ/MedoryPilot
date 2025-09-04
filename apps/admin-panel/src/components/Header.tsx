@@ -1,14 +1,17 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { toUpperCase } from "@/utils";
-import { LanguageChanger, Search } from "./ui";
+import { Button, LanguageChanger, Search } from "./ui";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useThemeContext } from "@/providers/ThemeProvider";
+import { Moon, Sun } from "lucide-react";
 
 export const Header: React.FC = () => {
   const location = useLocation();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const currentPath = location.pathname.split("/");
+  const { isDarkMode, toggleTheme } = useThemeContext();
 
   return (
     <motion.header
@@ -32,6 +35,27 @@ export const Header: React.FC = () => {
         <div className="flex items-center gap-4">
           <Search />
           <LanguageChanger />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleTheme}
+            className="hover:bg-muted h-9 w-9 p-0"
+            title={
+              isDarkMode
+                ? i18n.language === "en"
+                  ? "Switch to light mode"
+                  : "ნათელ რეჟიმზე გადართვა"
+                : i18n.language === "en"
+                  ? "Switch to dark mode"
+                  : "მუქ რეჟიმზე გადართვა"
+            }
+          >
+            {isDarkMode ? (
+              <Sun className="text-foreground h-4 w-4" />
+            ) : (
+              <Moon className="text-foreground h-4 w-4" />
+            )}
+          </Button>
         </div>
       </div>
     </motion.header>
