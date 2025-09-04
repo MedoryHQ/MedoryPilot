@@ -27,3 +27,4 @@ export * from "./scroll-area";
 export * from "./resizable";
 export * from "./popover";
 export * from "./label";
+export * from "./dialog";
