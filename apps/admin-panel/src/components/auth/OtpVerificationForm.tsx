@@ -71,7 +71,7 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
     update();
     const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    //
   }, [otpSentAt]);
 
   const resendDisabled = timeLeft > 0;

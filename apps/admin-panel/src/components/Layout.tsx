@@ -5,6 +5,7 @@ import { useAuthStore } from "@/store";
 import axios from "@/api/axios";
 import { Spin } from "antd";
 import { Shell } from "./Shell";
+import { Sidebar } from "./Sidebar";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -12,10 +13,18 @@ interface LayoutProps {
   path?: string;
 }
 
+export const LoadingScreen: React.FC = () => {
+  return (
+    <div className="flex min-h-screen w-full items-center justify-center">
+      <Spin size="large" />
+    </div>
+  );
+};
+
 const CustomLayout: React.FC<LayoutProps> = ({ children, route }) => {
   const { isLoggedIn, login, logout } = useAuthStore();
 
-  const { refetch, isRefetching } = useQuery("renew", {
+  const { refetch } = useQuery("renew", {
     queryFn: async () => {
       if (!isLoggedIn) {
         return;
@@ -59,7 +68,7 @@ const CustomLayout: React.FC<LayoutProps> = ({ children, route }) => {
     return () => {
       mounted = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    //
   }, [location.pathname]);
 
   useEffect(() => {
@@ -69,7 +78,7 @@ const CustomLayout: React.FC<LayoutProps> = ({ children, route }) => {
   }, [searchData, navigate]);
 
   useEffect(() => {
-    if (checking || isRefetching) return;
+    if (checking) return;
     if (!route) return;
 
     const isAuthRoute = Boolean(route.isAuthRoute);
@@ -90,20 +99,21 @@ const CustomLayout: React.FC<LayoutProps> = ({ children, route }) => {
       }
       return;
     }
-  }, [route, isLoggedIn, checking, isRefetching, location.pathname, navigate]);
-
-  if (checking) {
-    return (
-      <div className="flex min-h-screen w-full items-center justify-center">
-        <Spin size="large" />
-      </div>
-    );
-  }
+  }, [route, isLoggedIn, checking, location.pathname, navigate]);
 
   return (
     <div className="flex min-h-screen w-full">
       <main className="flex-1">
-        {isLoggedIn ? <Shell>{children}</Shell> : children}
+        {isLoggedIn ? (
+          <>
+            <Sidebar />
+            <Shell>{checking ? <LoadingScreen /> : children}</Shell>
+          </>
+        ) : checking ? (
+          <LoadingScreen />
+        ) : (
+          children
+        )}
       </main>
     </div>
   );

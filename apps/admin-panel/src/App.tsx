@@ -2,6 +2,7 @@ import { ConfigProvider, Empty, App as AntApp } from "antd";
 import { Router } from "./Router";
 import { QueryClientProvider } from "react-query";
 import { queryClient, theme, table, modal } from "./utils";
+import { ThemeProvider } from "./providers/ThemeProvider";
 
 function App() {
   return (
@@ -12,11 +13,13 @@ function App() {
       componentSize="large"
       renderEmpty={() => <Empty description="No data" />}
     >
-      <AntApp>
-        <QueryClientProvider client={queryClient}>
-          <Router />
-        </QueryClientProvider>
-      </AntApp>
+      <ThemeProvider defaultTheme="system" storageKey="medory-theme">
+        <AntApp>
+          <QueryClientProvider client={queryClient}>
+            <Router />
+          </QueryClientProvider>
+        </AntApp>
+      </ThemeProvider>
     </ConfigProvider>
   );
 }

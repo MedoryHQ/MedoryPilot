@@ -1,13 +1,13 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { toUpperCase } from "@/utils";
-import { LanguageChanger, Search } from "./ui";
+import { ThemeSwitcher, LanguageChanger, Search } from "./ui";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 export const Header: React.FC = () => {
   const location = useLocation();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const currentPath = location.pathname.split("/");
 
   return (
@@ -32,6 +32,7 @@ export const Header: React.FC = () => {
         <div className="flex items-center gap-4">
           <Search />
           <LanguageChanger />
+          <ThemeSwitcher />
         </div>
       </div>
     </motion.header>

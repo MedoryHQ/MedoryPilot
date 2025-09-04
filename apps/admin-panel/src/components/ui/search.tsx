@@ -31,7 +31,7 @@ export const Search: React.FC = () => {
     }, 500);
 
     return () => clearTimeout(handler);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    //
   }, [searchValue]);
 
   return (

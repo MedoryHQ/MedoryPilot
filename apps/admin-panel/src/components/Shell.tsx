@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Sidebar } from "./Sidebar/Sidebar";
 import { Header } from "./Header";
 import { cn } from "@/libs";
 import { useSidebarStore } from "@/store";
@@ -24,13 +23,11 @@ export const Shell: React.FC<ShellProps> = ({ children }) => {
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    //
   }, [collapsed]);
 
   return (
     <div className="bg-background min-h-screen">
-      <Sidebar />
-
       <div
         className={cn(
           "bg-background min-h-screen transition-all duration-200 ease-out",
