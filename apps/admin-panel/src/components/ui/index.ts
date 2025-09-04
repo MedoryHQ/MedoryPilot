@@ -28,3 +28,4 @@ export * from "./resizable";
 export * from "./popover";
 export * from "./label";
 export * from "./dialog";
+export * from "./calendar";
