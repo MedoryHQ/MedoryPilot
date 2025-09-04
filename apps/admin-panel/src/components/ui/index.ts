@@ -24,3 +24,4 @@ export * from "./search";
 export * from "./textarea";
 export * from "./slider";
 export * from "./scroll-area";
+export * from "./resizable";
