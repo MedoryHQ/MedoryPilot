@@ -22,3 +22,4 @@ export * from "./sheet";
 export * from "./collapsible";
 export * from "./search";
 export * from "./textarea";
+export * from "./slider";
