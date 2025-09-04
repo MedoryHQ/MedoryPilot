@@ -24,7 +24,7 @@ export const Shell: React.FC<ShellProps> = ({ children }) => {
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    //
   }, [collapsed]);
 
   return (

@@ -88,7 +88,7 @@ export const Sidebar: React.FC = () => {
     setExpandedMenus(foundKeys);
 
     return () => window.removeEventListener("resize", handleResize);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    //
   }, []);
 
   const toggleMenu = useCallback(
@@ -138,7 +138,7 @@ export const Sidebar: React.FC = () => {
         onPageChange(item.href);
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    //
     [collapsed, isMobile]
   );
 

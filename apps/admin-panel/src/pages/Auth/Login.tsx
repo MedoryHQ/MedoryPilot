@@ -30,7 +30,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isLoggedIn) navigate("/");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    //
   }, [isLoggedIn]);
 
   useEffect(() => {
