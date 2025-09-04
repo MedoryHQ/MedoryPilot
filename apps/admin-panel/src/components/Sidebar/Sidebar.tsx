@@ -144,7 +144,7 @@ export const Sidebar: React.FC = () => {
 
   const onPageChange = useCallback(
     (href: string | undefined) => {
-      if (href) navigate(`/${href}`);
+      if (href) navigate(`/${href}`!);
     },
     [navigate]
   );
