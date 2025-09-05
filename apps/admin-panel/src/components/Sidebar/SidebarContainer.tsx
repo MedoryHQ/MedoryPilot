@@ -101,7 +101,7 @@ const TopLevelItem: React.FC<{
             open={isExpanded && !collapsed && !isMobile}
             onOpenChange={toggle}
           >
-            <Tooltip>
+            <Tooltip open={collapsed ? undefined : false}>
               <TooltipTrigger asChild>
                 <CollapsibleTrigger asChild>
                   <Button
@@ -171,7 +171,7 @@ const TopLevelItem: React.FC<{
     }
 
     return (
-      <Tooltip>
+      <Tooltip open={collapsed ? undefined : false}>
         <TooltipTrigger asChild>
           <Button
             variant="ghost"
