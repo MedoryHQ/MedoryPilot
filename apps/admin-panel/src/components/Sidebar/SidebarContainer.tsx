@@ -139,7 +139,7 @@ const TopLevelItem: React.FC<{
                 </CollapsibleTrigger>
               </TooltipTrigger>
 
-              {(collapsed || isMobile) && (
+              {collapsed && isMobile && (
                 <TooltipContent side="right" className="sidebar-tooltip">
                   <p>{toUpperCase(item.label)}</p>
                 </TooltipContent>
@@ -198,7 +198,7 @@ const TopLevelItem: React.FC<{
           </Button>
         </TooltipTrigger>
 
-        {(collapsed || isMobile) && (
+        {(collapsed || isMobile) && !item?.children?.length && (
           <TooltipContent side="right" className="sidebar-tooltip">
             <p>{toUpperCase(item.label)}</p>
           </TooltipContent>
