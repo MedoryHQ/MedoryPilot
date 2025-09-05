@@ -44,7 +44,7 @@ export const Search: React.FC = () => {
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
         placeholder={toUpperCase(t("global.search"))}
-        className="bg-muted/50 border-border h-10 w-48 rounded-lg pr-4 pl-12 transition-all duration-300 lg:w-96"
+        className="bg-muted/50 text-foreground border-border h-10 w-48 rounded-lg pr-4 pl-12 transition-all duration-300 lg:w-96"
       />
     </div>
   );

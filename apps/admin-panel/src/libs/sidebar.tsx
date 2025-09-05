@@ -47,8 +47,8 @@ export const useMenuItems = (): SidebarItem[] => {
           label: t("menu.visits")
         },
         {
-          key: "examinations-list",
-          href: "examinations",
+          key: "examinations-all",
+          href: "examinations/all",
           icon: <FileText className="h-4 w-4" />,
           label: t("menu.examinations")
         },
@@ -73,7 +73,7 @@ export const useMenuItems = (): SidebarItem[] => {
       children: [
         {
           key: "landing-home",
-          href: "landing",
+          href: "landing/home",
           icon: <Home className="h-4 w-4" />,
           label: t("menu.home")
         },
@@ -110,7 +110,7 @@ export const useMenuItems = (): SidebarItem[] => {
       children: [
         {
           key: "settings-general",
-          href: "settings",
+          href: "settings/general",
           icon: <Settings className="h-4 w-4" />,
           label: t("menu.general")
         },

@@ -45,6 +45,7 @@ export const ka = {
       patients: "პაციენტები",
       appointments: "შეხვედრები",
       examinations: "გამოკვლევები",
+      all: "გამოკვლევები",
       visits: "ვიზიტები",
       documents: "დოკუმენტები",
       messages: "შეტყობინებები",
@@ -69,6 +70,10 @@ export const ka = {
       settings: "პარამეტრები",
       helpAndSupport: "დახმარება",
       logout: "გამოსვლა"
+    },
+    theme: {
+      switchToDark: "მუქ რეჟიმზე გადართვა",
+      switchToLight: "ნათელ რეჟიმზე გადართვა"
     }
   }
 };

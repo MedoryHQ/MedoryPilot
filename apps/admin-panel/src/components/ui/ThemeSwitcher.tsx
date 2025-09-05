@@ -3,9 +3,10 @@ import { useTranslation } from "react-i18next";
 import { useThemeContext } from "@/providers/ThemeProvider";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "./button";
+import { toUpperCase } from "@/utils";
 
 export const ThemeSwitcher: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { isDarkMode, toggleTheme } = useThemeContext();
 
   return (
@@ -14,15 +15,9 @@ export const ThemeSwitcher: React.FC = () => {
       size="sm"
       onClick={toggleTheme}
       className="hover:bg-muted h-9 w-9 p-0"
-      title={
-        isDarkMode
-          ? i18n.language === "en"
-            ? "Switch to light mode"
-            : "ნათელ რეჟიმზე გადართვა"
-          : i18n.language === "en"
-            ? "Switch to dark mode"
-            : "მუქ რეჟიმზე გადართვა"
-      }
+      title={toUpperCase(
+        t(isDarkMode ? "theme.switchToLight" : "theme.switchToDark")
+      )}
     >
       {isDarkMode ? (
         <Sun className="text-foreground h-4 w-4" />

@@ -103,7 +103,7 @@ const CustomLayout: React.FC<LayoutProps> = ({ children, route }) => {
 
   return (
     <div className="flex min-h-screen w-full">
-      <main className="flex-1">
+      <main className="!text-foreground flex-1">
         {isLoggedIn ? (
           <>
             <Sidebar />

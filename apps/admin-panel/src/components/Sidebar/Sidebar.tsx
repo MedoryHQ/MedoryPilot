@@ -11,6 +11,7 @@ import {
   SidebarFooter,
   SidebarFlyout
 } from ".";
+import { motion } from "framer-motion";
 
 export const Sidebar: React.FC = () => {
   const navigate = useNavigate();
@@ -158,11 +159,18 @@ export const Sidebar: React.FC = () => {
 
   return (
     <TooltipProvider>
-      <div
+      <motion.div
         className={cn(
           "bg-sidebar text-sidebar-foreground border-sidebar-border fixed top-0 left-0 z-[50] flex h-screen flex-col border-r transition-all duration-200 ease-out",
           collapsed || isMobile ? "w-[72px]" : "w-[240px]"
         )}
+        animate={{
+          width: collapsed ? 72 : 240
+        }}
+        transition={{
+          duration: 0.3,
+          ease: [0.16, 1, 0.3, 1]
+        }}
       >
         <SidebarHeader
           collapsed={collapsed}
@@ -185,7 +193,7 @@ export const Sidebar: React.FC = () => {
           isMobile={isMobile}
           onPageChange={onPageChange}
         />
-      </div>
+      </motion.div>
       <SidebarFlyout
         handleFlyoutLeave={handleFlyoutLeave}
         collapsed={collapsed}

@@ -44,6 +44,7 @@ export const en = {
       patients: "Patients",
       appointments: "Appointments",
       examinations: "Examinations",
+      all: "Examinations",
       visits: "Visits",
       documents: "Documents",
       messages: "Messages",
@@ -68,6 +69,10 @@ export const en = {
       settings: "Settings",
       helpAndSupport: "Help & Support",
       logout: "Logout"
+    },
+    theme: {
+      switchToDark: "Switch to dark mode",
+      switchToLight: "Switch to light mode"
     }
   }
 };

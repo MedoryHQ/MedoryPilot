@@ -113,7 +113,6 @@ const Login = () => {
   );
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const authNavigationRoute = {
   element: <Login />,
   path: "/auth",
