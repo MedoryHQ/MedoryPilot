@@ -4,7 +4,7 @@ const Home = () => {
 
 export const HomeNavigationRoute = {
   element: <Home />,
-  path: "/landing"
+  path: "/landing/home"
 };
 
 export default Home;

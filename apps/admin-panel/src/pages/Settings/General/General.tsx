@@ -4,7 +4,7 @@ const General = () => {
 
 export const GeneralNavigationRoute = {
   element: <General />,
-  path: "/settings"
+  path: "/settings/general"
 };
 
 export default General;

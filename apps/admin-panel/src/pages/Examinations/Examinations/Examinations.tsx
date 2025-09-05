@@ -4,7 +4,7 @@ const Examinations = () => {
 
 export const ExaminationsNavigationRoute = {
   element: <Examinations />,
-  path: "/examinations"
+  path: "/examinations/all"
 };
 
 export default Examinations;
