@@ -69,6 +69,10 @@ export const ka = {
       settings: "პარამეტრები",
       helpAndSupport: "დახმარება",
       logout: "გამოსვლა"
+    },
+    theme: {
+      switchToDark: "მუქ რეჟიმზე გადართვა",
+      switchToLight: "ნათელ რეჟიმზე გადართვა"
     }
   }
 };

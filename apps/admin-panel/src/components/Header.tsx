@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 
 export const Header: React.FC = () => {
   const location = useLocation();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const currentPath = location.pathname.split("/");
 
   return (
