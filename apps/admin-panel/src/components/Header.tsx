@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { toUpperCase, useIsMobile } from "@/utils";
+import { toUpperCase } from "@/utils";
 import { ThemeSwitcher, LanguageChanger, Search } from "./ui";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -8,10 +8,25 @@ import { useSidebarStore } from "@/store";
 
 export const Header: React.FC = () => {
   const location = useLocation();
-  const { t } = useTranslation();
-  const { collapsed } = useSidebarStore();
-  const isMobile = useIsMobile();
   const currentPath = location.pathname.split("/");
+  const { t } = useTranslation();
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const { collapsed, toggleCollapsed } = useSidebarStore();
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+
+      if (mobile && !collapsed) {
+        toggleCollapsed();
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+    //
+  }, [collapsed]);
 
   return (
     <motion.div

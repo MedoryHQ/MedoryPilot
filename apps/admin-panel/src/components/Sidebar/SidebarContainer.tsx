@@ -12,6 +12,7 @@ import {
 import { ChevronDown } from "lucide-react";
 import { SidebarItem } from "@/types";
 import { useLocation } from "react-router-dom";
+import { toUpperCase } from "@/utils";
 
 const normalize = (p?: string) => (p ? p.replace(/^\/|\/$/g, "") : "");
 
@@ -41,7 +42,9 @@ const ChildItem: React.FC<{
       <div className="flex h-4 w-4 flex-shrink-0 items-center justify-center">
         {child.icon}
       </div>
-      <span className="truncate text-sm font-medium">{child.label}</span>
+      <span className="truncate text-sm font-medium">
+        {toUpperCase(child.label)}
+      </span>
     </Button>
   );
 });
@@ -121,7 +124,7 @@ const TopLevelItem: React.FC<{
                           className="flex flex-1 items-center justify-between"
                         >
                           <span className="truncate font-medium">
-                            {item.label}
+                            {toUpperCase(item.label)}
                           </span>
                           <motion.div
                             animate={{ rotate: isExpanded ? 90 : 0 }}
@@ -138,7 +141,7 @@ const TopLevelItem: React.FC<{
 
               {(collapsed || isMobile) && (
                 <TooltipContent side="right" className="sidebar-tooltip">
-                  <p>{item.label}</p>
+                  <p>{toUpperCase(item.label)}</p>
                 </TooltipContent>
               )}
             </Tooltip>
@@ -188,7 +191,7 @@ const TopLevelItem: React.FC<{
                   exit={{ opacity: 0 }}
                   className="truncate font-medium"
                 >
-                  {item.label}
+                  {toUpperCase(item.label)}
                 </motion.span>
               )}
             </AnimatePresence>
@@ -197,7 +200,7 @@ const TopLevelItem: React.FC<{
 
         {(collapsed || isMobile) && (
           <TooltipContent side="right" className="sidebar-tooltip">
-            <p>{item.label}</p>
+            <p>{toUpperCase(item.label)}</p>
           </TooltipContent>
         )}
       </Tooltip>

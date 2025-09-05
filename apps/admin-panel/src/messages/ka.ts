@@ -45,6 +45,7 @@ export const ka = {
       patients: "პაციენტები",
       appointments: "შეხვედრები",
       examinations: "გამოკვლევები",
+      all: "გამოკვლევები",
       visits: "ვიზიტები",
       documents: "დოკუმენტები",
       messages: "შეტყობინებები",

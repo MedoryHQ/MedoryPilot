@@ -44,6 +44,7 @@ export const en = {
       patients: "Patients",
       appointments: "Appointments",
       examinations: "Examinations",
+      all: "Examinations",
       visits: "Visits",
       documents: "Documents",
       messages: "Messages",
