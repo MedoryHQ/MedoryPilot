@@ -5,17 +5,17 @@ import {
   Button,
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuSeparator,
+  DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
   Tooltip,
+  TooltipContent,
   TooltipTrigger
 } from "../ui";
 import { ChevronDown, HelpCircle, LogOut, Settings, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
 import { useState } from "react";
-import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
-import { TooltipContent } from "@radix-ui/react-tooltip";
 import { useAuthStore } from "@/store";
 
 interface SideBarFooterProps {
@@ -33,10 +33,13 @@ export const SidebarFooter: React.FC<SideBarFooterProps> = ({
   const [showUserMenu, setShowUserMenu] = useState(false);
   const { logout, currentUser } = useAuthStore();
 
+  const userName = `Dr. ${currentUser?.firstName} ${currentUser?.lastName}`;
+
   return (
     <div className="flex-shrink-0 border-t border-[var(--sidebar-border)] p-4">
       <AnimatePresence>
         {!collapsed && !isMobile ? (
+          // Full desktop dropdown
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -56,7 +59,7 @@ export const SidebarFooter: React.FC<SideBarFooterProps> = ({
                     </Avatar>
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-sm font-semibold text-white">
-                        {`Dr. ${currentUser?.firstName} ${currentUser?.lastName}`}
+                        {userName}
                       </div>
                       <div className="truncate text-xs text-white/70">
                         {toUpperCase(t("sidebar.administrator"))}
@@ -71,6 +74,7 @@ export const SidebarFooter: React.FC<SideBarFooterProps> = ({
                   </div>
                 </Button>
               </DropdownMenuTrigger>
+
               <DropdownMenuContent
                 side="top"
                 align="end"
@@ -82,14 +86,14 @@ export const SidebarFooter: React.FC<SideBarFooterProps> = ({
                   className="flex cursor-pointer items-center gap-3 rounded-lg py-3"
                 >
                   <User className="h-4 w-4 text-gray-500" />
-                  <span> {toUpperCase(t("sidebar.profile"))}</span>
+                  <span>{toUpperCase(t("sidebar.profile"))}</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  className="flex cursor-pointer items-center gap-3 rounded-lg py-3"
                   onClick={() => onPageChange("settings")}
+                  className="flex cursor-pointer items-center gap-3 rounded-lg py-3"
                 >
                   <Settings className="h-4 w-4 text-gray-500" />
-                  <span> {toUpperCase(t("sidebar.settings"))}</span>
+                  <span>{toUpperCase(t("sidebar.settings"))}</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => onPageChange("settings/help-and-support")}
@@ -98,47 +102,67 @@ export const SidebarFooter: React.FC<SideBarFooterProps> = ({
                   <HelpCircle className="h-4 w-4 text-gray-500" />
                   <span>{toUpperCase(t("sidebar.helpAndSupport"))}</span>
                 </DropdownMenuItem>
+
                 <DropdownMenuSeparator className="bg-gray-100" />
+
                 <DropdownMenuItem
                   className="flex cursor-pointer items-center gap-3 rounded-lg py-3 text-red-600 focus:bg-red-50 focus:text-red-600"
                   onClick={logout}
                 >
                   <LogOut className="h-4 w-4" />
-                  <span> {toUpperCase(t("sidebar.logout"))}</span>
+                  <span>{toUpperCase(t("sidebar.logout"))}</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </motion.div>
         ) : (
+          // Collapsed sidebar: keep old avatar look with tooltip, dropdown on click contains only logout
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="flex justify-center"
           >
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-12 w-12 rounded-xl hover:bg-white/10"
+            <DropdownMenu>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-12 w-12 rounded-xl hover:bg-white/10"
+                    >
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-600 text-sm font-semibold text-white">
+                          {toUpperCase(t("sidebar.doctor"))}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="right"
+                  className="rounded-lg border border-[#3a4866] bg-[#243149] p-3 text-xs font-medium text-white shadow-lg backdrop-blur-sm"
                 >
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-600 text-sm font-semibold text-white">
-                      {toUpperCase(t("sidebar.doctor"))}
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent
-                side="right"
-                className="rounded-lg border border-[#3a4866] bg-[#243149] p-3 text-xs font-medium text-white shadow-lg backdrop-blur-sm"
+                  <p>{userName}</p>
+                </TooltipContent>
+              </Tooltip>
+
+              <DropdownMenuContent
+                side="top"
+                align="end"
+                className="w-48 rounded-xl border-0 bg-white px-3 text-black shadow-xl"
+                sideOffset={8}
               >
-                <p>
-                  {`Dr. ${currentUser?.firstName} ${currentUser?.lastName}`}
-                </p>
-              </TooltipContent>
-            </Tooltip>
+                <DropdownMenuItem
+                  className="flex cursor-pointer items-center gap-3 rounded-lg py-3 text-red-600 focus:bg-red-50 focus:text-red-600"
+                  onClick={logout}
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>{toUpperCase(t("sidebar.logout"))}</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </motion.div>
         )}
       </AnimatePresence>
