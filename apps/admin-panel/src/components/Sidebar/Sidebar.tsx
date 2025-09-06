@@ -2,7 +2,7 @@ import { cn, useMenuItems } from "@/libs";
 import { useSidebarStore } from "@/store";
 import { SidebarItem } from "@/types";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { TooltipProvider } from "../ui";
 import {
   SidebarHeader,
@@ -11,9 +11,11 @@ import {
   SidebarFlyout
 } from ".";
 import { motion } from "framer-motion";
+import { getSyncedExpandedMenus } from "@/utils";
 
 export const Sidebar: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const items = useMenuItems();
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
 
@@ -25,97 +27,41 @@ export const Sidebar: React.FC = () => {
   } | null>(null);
 
   useEffect(() => {
-    const currentPath = window.location.pathname || "/";
-    const normalizedPath = currentPath.replace(/^\/|\/$/g, "");
-
-    const foundKeys: string[] = [];
-    const seen = new Set<string>();
-
-    const normalize = (p?: string) => (p ? p.replace(/^\/|\/$/g, "") : "");
-
-    const traverse = (item: any, topKey: string | null = null): boolean => {
-      const itemHref = normalize(item.href);
-      const key = topKey ?? item.key ?? item.href ?? "";
-
-      if (itemHref) {
-        if (
-          normalizedPath === itemHref ||
-          normalizedPath.startsWith(itemHref + "/")
-        ) {
-          if (!seen.has(key)) {
-            seen.add(key);
-            foundKeys.push(key);
-          }
-          return true;
-        }
-      }
-
-      if (item.children && item.children.length) {
-        for (const child of item.children) {
-          const childMatched = traverse(
-            child,
-            topKey ?? item.key ?? item.href ?? ""
-          );
-          if (childMatched) {
-            const parentKey = item.key ?? item.href ?? "";
-            if (parentKey && !seen.has(parentKey)) {
-              seen.add(parentKey);
-              foundKeys.push(parentKey);
-            }
-            return true;
-          }
-        }
-      }
-      return false;
-    };
-
-    for (const it of items) {
-      traverse(it, it.key ?? it.href ?? "");
-    }
-
-    setExpandedMenus(foundKeys);
-  }, []);
+    const pathname = typeof window !== "undefined" ? location.pathname : "/";
+    setExpandedMenus((prev) => getSyncedExpandedMenus(prev, items, pathname));
+  }, [location.pathname]);
 
   const handleFlyoutEnter = useCallback(
     (item: SidebarItem, event: React.MouseEvent) => {
       if (!collapsed || !item.children) return;
-
       if (flyoutTimeoutRef.current) {
         clearTimeout(flyoutTimeoutRef.current);
       }
-
       const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
       setFlyoutMenu({
         key: item.key,
-        position: {
-          x: rect.right + 8,
-          y: rect.top
-        }
+        position: { x: rect.right + 8, y: rect.top }
       });
     },
     [collapsed]
   );
 
   const handleFlyoutLeave = useCallback(() => {
-    flyoutTimeoutRef.current = setTimeout(() => {
-      setFlyoutMenu(null);
-    }, 150);
+    flyoutTimeoutRef.current = setTimeout(() => setFlyoutMenu(null), 150);
   }, []);
-
-  const handleItemClick = useCallback(
-    (item: SidebarItem) => {
-      if (!item.children) {
-        onPageChange(item.href);
-      }
-    },
-    [collapsed]
-  );
 
   const onPageChange = useCallback(
     (href: string | undefined) => {
-      if (href) navigate(`/${href}`!);
+      if (href) navigate(`/${href}`);
     },
     [navigate]
+  );
+
+  const handleItemClick = useCallback(
+    (item: SidebarItem) => {
+      if (!item.children) onPageChange(item.href);
+    },
+    [onPageChange]
   );
 
   const isMenuExpanded = useCallback(
@@ -131,7 +77,7 @@ export const Sidebar: React.FC = () => {
     );
   }, []);
 
-  const currentFlyoutItem = items.find((item) => item.key === flyoutMenu?.key);
+  const currentFlyoutItem = items.find((it) => it.key === flyoutMenu?.key);
 
   return (
     <TooltipProvider>
