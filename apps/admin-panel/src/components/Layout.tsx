@@ -6,6 +6,7 @@ import axios from "@/api/axios";
 import { Spin } from "antd";
 import { Shell } from "./Shell";
 import { Sidebar } from "./Sidebar";
+import { MobileNavigation } from "./MobileNavigation";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -49,7 +50,6 @@ const CustomLayout: React.FC<LayoutProps> = ({ children, route }) => {
   });
 
   const [checking, setChecking] = useState(true);
-
   const [searchParams] = useSearchParams();
   const searchData = searchParams.get("data");
   const navigate = useNavigate();
@@ -106,7 +106,10 @@ const CustomLayout: React.FC<LayoutProps> = ({ children, route }) => {
       <main className="!text-foreground flex-1">
         {isLoggedIn ? (
           <>
+            {/* Desktop/Tabled Sidebar*/}
             <Sidebar />
+            {/* Mobile Sidebar*/}
+            <MobileNavigation />
             <Shell>{checking ? <LoadingScreen /> : children}</Shell>
           </>
         ) : checking ? (

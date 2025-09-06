@@ -7,7 +7,6 @@ import { TooltipProvider } from "../ui";
 import {
   SidebarHeader,
   SidebarContainer,
-  SidebarMobileDrawer,
   SidebarFooter,
   SidebarFlyout
 } from ".";
@@ -17,11 +16,7 @@ export const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const items = useMenuItems();
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
-  const [isMobile, setIsMobile] = useState<boolean>(false);
-  const [mobileDrawer, setMobileDrawer] = useState<{
-    open: boolean;
-    item: SidebarItem | null;
-  }>({ open: false, item: null });
+
   const { collapsed, toggleCollapsed } = useSidebarStore();
   const flyoutTimeoutRef = useRef<NodeJS.Timeout>(null);
   const [flyoutMenu, setFlyoutMenu] = useState<{
@@ -30,14 +25,6 @@ export const Sidebar: React.FC = () => {
   } | null>(null);
 
   useEffect(() => {
-    const handleResize = () => {
-      const mobile = window.innerWidth < 768;
-      setIsMobile(mobile);
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
     const currentPath = window.location.pathname || "/";
     const normalizedPath = currentPath.replace(/^\/|\/$/g, "");
 
@@ -87,25 +74,11 @@ export const Sidebar: React.FC = () => {
     }
 
     setExpandedMenus(foundKeys);
-
-    return () => window.removeEventListener("resize", handleResize);
-    //
   }, []);
 
-  const toggleMenu = useCallback(
-    (menuKey: string) => {
-      if (isMobile) return;
-      setExpandedMenus((prev) =>
-        prev.includes(menuKey)
-          ? prev.filter((key) => key !== menuKey)
-          : [...prev, menuKey]
-      );
-    },
-    [isMobile]
-  );
   const handleFlyoutEnter = useCallback(
     (item: SidebarItem, event: React.MouseEvent) => {
-      if (!collapsed || isMobile || !item.children) return;
+      if (!collapsed || !item.children) return;
 
       if (flyoutTimeoutRef.current) {
         clearTimeout(flyoutTimeoutRef.current);
@@ -120,7 +93,7 @@ export const Sidebar: React.FC = () => {
         }
       });
     },
-    [collapsed, isMobile]
+    [collapsed]
   );
 
   const handleFlyoutLeave = useCallback(() => {
@@ -131,16 +104,11 @@ export const Sidebar: React.FC = () => {
 
   const handleItemClick = useCallback(
     (item: SidebarItem) => {
-      if (item.children && isMobile) {
-        setMobileDrawer({ open: true, item });
-      } else if (item.children && collapsed) {
-        return;
-      } else if (!item.children) {
+      if (!item.children) {
         onPageChange(item.href);
       }
     },
-    //
-    [collapsed, isMobile]
+    [collapsed]
   );
 
   const onPageChange = useCallback(
@@ -155,14 +123,22 @@ export const Sidebar: React.FC = () => {
     [expandedMenus]
   );
 
+  const toggleMenu = useCallback((menuKey: string) => {
+    setExpandedMenus((prev) =>
+      prev.includes(menuKey)
+        ? prev.filter((key) => key !== menuKey)
+        : [...prev, menuKey]
+    );
+  }, []);
+
   const currentFlyoutItem = items.find((item) => item.key === flyoutMenu?.key);
 
   return (
     <TooltipProvider>
       <motion.div
         className={cn(
-          "bg-sidebar text-sidebar-foreground border-sidebar-border fixed top-0 left-0 z-[50] flex h-screen flex-col border-r transition-all duration-200 ease-out",
-          collapsed || isMobile ? "w-[72px]" : "w-[240px]"
+          "bg-sidebar text-sidebar-foreground border-sidebar-border fixed top-0 left-0 z-[50] hidden h-screen flex-col border-r transition-all duration-200 ease-out md:flex",
+          collapsed ? "w-[72px]" : "w-[240px]"
         )}
         animate={{
           width: collapsed ? 72 : 240
@@ -174,40 +150,28 @@ export const Sidebar: React.FC = () => {
       >
         <SidebarHeader
           collapsed={collapsed}
-          isMobile={isMobile}
           toggleCollapsed={toggleCollapsed}
         />
         <SidebarContainer
           items={items}
           handleFlyoutEnter={handleFlyoutEnter}
           handleFlyoutLeave={handleFlyoutLeave}
+          toggleMenu={toggleMenu}
           isMenuExpanded={isMenuExpanded}
           collapsed={collapsed}
-          isMobile={isMobile}
-          toggleMenu={toggleMenu}
           onPageChange={onPageChange}
           handleItemClick={handleItemClick}
         />
-        <SidebarFooter
-          collapsed={collapsed}
-          isMobile={isMobile}
-          onPageChange={onPageChange}
-        />
+        <SidebarFooter collapsed={collapsed} onPageChange={onPageChange} />
       </motion.div>
       <SidebarFlyout
         handleFlyoutLeave={handleFlyoutLeave}
         collapsed={collapsed}
-        isMobile={isMobile}
         onPageChange={onPageChange}
         currentFlyoutItem={currentFlyoutItem}
         flyoutMenu={flyoutMenu}
         flyoutTimeoutRef={flyoutTimeoutRef}
         setFlyoutMenu={setFlyoutMenu}
-      />
-      <SidebarMobileDrawer
-        setMobileDrawer={setMobileDrawer}
-        mobileDrawer={mobileDrawer}
-        onPageChange={onPageChange}
       />
     </TooltipProvider>
   );

@@ -11,7 +11,6 @@ const pathMatches = (current: string, candidate?: string) =>
 
 interface SidebarFlyoutProps {
   onPageChange: (href: string | undefined) => void;
-  isMobile: boolean;
   collapsed: boolean;
   flyoutMenu: {
     key: string;
@@ -32,7 +31,6 @@ interface SidebarFlyoutProps {
 }
 
 export const SidebarFlyout: React.FC<SidebarFlyoutProps> = ({
-  isMobile,
   collapsed,
   flyoutMenu,
   flyoutTimeoutRef,
@@ -46,7 +44,7 @@ export const SidebarFlyout: React.FC<SidebarFlyoutProps> = ({
 
   return (
     <AnimatePresence>
-      {flyoutMenu && !isMobile && collapsed && (
+      {flyoutMenu && collapsed && (
         <motion.div
           initial={{ opacity: 0, scale: 0.95, x: -10 }}
           animate={{ opacity: 1, scale: 1, x: 0 }}

@@ -55,7 +55,6 @@ const TopLevelItem: React.FC<{
   isExpanded: boolean;
   toggle: () => void;
   collapsed: boolean;
-  isMobile: boolean;
   onItemClick: (item: SidebarItem) => void;
   handleFlyoutEnter: (item: SidebarItem, e: React.MouseEvent) => void;
   handleFlyoutLeave: () => void;
@@ -65,7 +64,6 @@ const TopLevelItem: React.FC<{
     isExpanded,
     toggle,
     collapsed,
-    isMobile,
     onItemClick,
     handleFlyoutEnter,
     handleFlyoutLeave
@@ -97,10 +95,7 @@ const TopLevelItem: React.FC<{
           onMouseEnter={(e) => handleFlyoutEnter(item, e)}
           onMouseLeave={handleFlyoutLeave}
         >
-          <Collapsible
-            open={isExpanded && !collapsed && !isMobile}
-            onOpenChange={toggle}
-          >
+          <Collapsible open={isExpanded && !collapsed} onOpenChange={toggle}>
             <Tooltip open={collapsed ? undefined : false}>
               <TooltipTrigger asChild>
                 <CollapsibleTrigger asChild>
@@ -116,7 +111,7 @@ const TopLevelItem: React.FC<{
                     </div>
 
                     <AnimatePresence>
-                      {!collapsed && !isMobile && (
+                      {!collapsed && (
                         <motion.div
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
@@ -139,7 +134,7 @@ const TopLevelItem: React.FC<{
                 </CollapsibleTrigger>
               </TooltipTrigger>
 
-              {collapsed && isMobile && (
+              {collapsed && (
                 <TooltipContent side="right" className="sidebar-tooltip">
                   <p>{toUpperCase(item.label)}</p>
                 </TooltipContent>
@@ -184,7 +179,7 @@ const TopLevelItem: React.FC<{
               {item.icon}
             </div>
             <AnimatePresence>
-              {!collapsed && !isMobile && (
+              {!collapsed && (
                 <motion.span
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -198,7 +193,7 @@ const TopLevelItem: React.FC<{
           </Button>
         </TooltipTrigger>
 
-        {(collapsed || isMobile) && !item?.children?.length && (
+        {collapsed && !item?.children?.length && (
           <TooltipContent side="right" className="sidebar-tooltip">
             <p>{toUpperCase(item.label)}</p>
           </TooltipContent>
@@ -215,7 +210,6 @@ interface SideBarContainerProps {
   handleFlyoutLeave: () => void;
   isMenuExpanded: (menuKey: string) => boolean;
   collapsed: boolean;
-  isMobile: boolean;
   toggleMenu: (menuKey: string) => void;
   onPageChange: (href: string | undefined) => void;
   handleItemClick: (item: SidebarItem) => void;
@@ -227,7 +221,6 @@ export const SidebarContainer: React.FC<SideBarContainerProps> = ({
   handleFlyoutLeave,
   isMenuExpanded,
   collapsed,
-  isMobile,
   toggleMenu,
   handleItemClick
 }) => {
@@ -242,7 +235,6 @@ export const SidebarContainer: React.FC<SideBarContainerProps> = ({
                 isExpanded={isMenuExpanded(item.key)}
                 toggle={() => toggleMenu(item.key)}
                 collapsed={collapsed}
-                isMobile={isMobile}
                 onItemClick={handleItemClick}
                 handleFlyoutEnter={handleFlyoutEnter}
                 handleFlyoutLeave={handleFlyoutLeave}

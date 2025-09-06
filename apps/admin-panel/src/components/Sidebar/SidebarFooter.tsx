@@ -20,13 +20,11 @@ import { useAuthStore } from "@/store";
 
 interface SideBarFooterProps {
   collapsed: boolean;
-  isMobile: boolean;
   onPageChange: (href: string | undefined) => void;
 }
 
 export const SidebarFooter: React.FC<SideBarFooterProps> = ({
   collapsed,
-  isMobile,
   onPageChange
 }) => {
   const { t } = useTranslation();
@@ -38,8 +36,7 @@ export const SidebarFooter: React.FC<SideBarFooterProps> = ({
   return (
     <div className="flex-shrink-0 border-t border-[var(--sidebar-border)] p-4">
       <AnimatePresence>
-        {!collapsed && !isMobile ? (
-          // Full desktop dropdown
+        {!collapsed ? (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -116,7 +113,6 @@ export const SidebarFooter: React.FC<SideBarFooterProps> = ({
             </DropdownMenu>
           </motion.div>
         ) : (
-          // Collapsed sidebar: keep old avatar look with tooltip, dropdown on click contains only logout
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
