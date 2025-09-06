@@ -8,7 +8,9 @@ export const en = {
       doctor: "Tamar Chaduneli",
       adminPannel: "Medory Admin Panel",
       search: "Search...",
-      close: "Close"
+      close: "Close",
+      preferences: "Preferences",
+      language: "Language"
     },
     pages: {
       dashboard: "Dashboard"
@@ -72,7 +74,9 @@ export const en = {
     },
     theme: {
       switchToDark: "Switch to dark mode",
-      switchToLight: "Switch to light mode"
+      switchToLight: "Switch to light mode",
+      darkMode: "Dark mode",
+      lightMode: "Light mode"
     }
   }
 };

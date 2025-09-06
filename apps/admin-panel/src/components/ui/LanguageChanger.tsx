@@ -1,7 +1,14 @@
 import { cn } from "@/libs";
-import { Select, SelectContent, SelectItem, SelectTrigger } from "./select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "./select";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { Languages } from "lucide-react";
 
 interface LanguageChangerProps {
   className?: string;
@@ -64,6 +71,36 @@ export const LanguageChanger: React.FC<LanguageChangerProps> = ({
               </div>
             </div>
           </SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+  );
+};
+
+export const MobileLanguageChanger: React.FC<LanguageChangerProps> = ({
+  className
+}) => {
+  const { t, i18n } = useTranslation();
+  const onLanguageChange = (lang: string) => i18n.changeLanguage(lang);
+
+  return (
+    <div
+      className={cn(
+        "bg-muted/30 flex items-center justify-between rounded-xl p-3",
+        className
+      )}
+    >
+      <div className="flex items-center gap-3">
+        <Languages className="h-5 w-5" />
+        <span className="font-medium">{t("global.language", "Language")}</span>
+      </div>
+      <Select value={i18n.language} onValueChange={onLanguageChange}>
+        <SelectTrigger className="h-8 w-24 border-0 bg-transparent">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="en">EN</SelectItem>
+          <SelectItem value="ka">ქარ</SelectItem>
         </SelectContent>
       </Select>
     </div>
