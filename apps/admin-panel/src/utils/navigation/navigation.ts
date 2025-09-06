@@ -15,7 +15,10 @@ export function computeInitialExpandedKeys(
   const foundKeys: string[] = [];
   const seen = new Set<string>();
 
-  const traverse = (item: any, topKey: string | null = null): boolean => {
+  const traverse = (
+    item: SidebarItem,
+    topKey: string | null = null
+  ): boolean => {
     const itemHref = normalize(item.href);
     const key = topKey ?? item.key ?? item.href ?? "";
 
@@ -56,4 +59,22 @@ export function computeInitialExpandedKeys(
   }
 
   return foundKeys;
+}
+
+export const arraysEqual = (a: string[], b: string[]) => {
+  if (a === b) return true;
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+};
+
+export function getSyncedExpandedMenus(
+  prev: string[],
+  items: SidebarItem[],
+  pathname: string
+) {
+  const keys = computeInitialExpandedKeys(items, pathname);
+  return arraysEqual(prev, keys) ? prev : keys;
 }
