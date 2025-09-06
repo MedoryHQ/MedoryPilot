@@ -12,3 +12,7 @@ export interface SidebarSubItem {
   icon: React.ReactNode;
   label: string;
 }
+
+export interface NavItem extends SidebarItem {
+  action?: string;
+}
