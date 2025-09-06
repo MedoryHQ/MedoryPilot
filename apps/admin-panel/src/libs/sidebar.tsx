@@ -1,4 +1,4 @@
-import { SidebarItem } from "@/types";
+import { NavItem, SidebarItem } from "@/types";
 import {
   Home,
   Users,
@@ -9,7 +9,8 @@ import {
   BarChart3,
   Globe,
   User,
-  HelpCircle
+  HelpCircle,
+  Menu
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -134,5 +135,24 @@ export const useMenuItems = (): SidebarItem[] => {
         }
       ]
     }
+  ];
+};
+
+export const usePrimaryNavItems = (): NavItem[] => {
+  const { t } = useTranslation();
+  return [
+    {
+      key: "dashboard",
+      href: "dashboard",
+      icon: <Home />,
+      label: t("menu.dashboard")
+    },
+    {
+      key: "patients",
+      href: "patients",
+      icon: <Users />,
+      label: t("menu.patients")
+    },
+    { key: "menu", icon: <Menu />, label: t("menu.menu"), action: "openMenu" }
   ];
 };

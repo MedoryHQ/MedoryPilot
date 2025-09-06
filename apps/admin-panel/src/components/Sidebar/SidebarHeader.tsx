@@ -1,6 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Logo from "@/assets/medory.webp";
-import { Image } from "antd";
 import { Button } from "../ui";
 import { ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -8,13 +7,11 @@ import { toUpperCase } from "@/utils";
 
 interface SideBarHeaderProps {
   collapsed: boolean;
-  isMobile: boolean;
   toggleCollapsed: () => void;
 }
 
 export const SidebarHeader: React.FC<SideBarHeaderProps> = ({
   collapsed,
-  isMobile,
   toggleCollapsed
 }) => {
   const { t } = useTranslation();
@@ -30,7 +27,7 @@ export const SidebarHeader: React.FC<SideBarHeaderProps> = ({
             <img className="h-6 w-6 object-contain" src={Logo} alt="Medory" />
           </motion.div>
           <AnimatePresence>
-            {!collapsed && !isMobile && (
+            {!collapsed && (
               <motion.div
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -48,21 +45,19 @@ export const SidebarHeader: React.FC<SideBarHeaderProps> = ({
           </AnimatePresence>
         </div>
 
-        {!isMobile && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => toggleCollapsed()}
-            className="h-8 w-8 rounded-lg text-white/80 hover:bg-white/10 hover:text-white"
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => toggleCollapsed()}
+          className="h-8 w-8 rounded-lg text-white/80 hover:bg-white/10 hover:text-white"
+        >
+          <motion.div
+            animate={{ rotate: collapsed ? 0 : 180 }}
+            transition={{ duration: 0.2 }}
           >
-            <motion.div
-              animate={{ rotate: collapsed ? 0 : 180 }}
-              transition={{ duration: 0.2 }}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </motion.div>
-          </Button>
-        )}
+            <ChevronRight className="h-4 w-4" />
+          </motion.div>
+        </Button>
       </div>
     </div>
   );

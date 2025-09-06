@@ -68,7 +68,7 @@ export const errorMessages = {
   },
   loginSuccessful: {
     en: "Login successful",
-    ka: "შესახებ წარმატებით დასრულდა",
+    ka: "შესვლა წარმატებით დასრულდა",
   },
   verificationCodeResent: {
     en: "Verification code resent successfully",

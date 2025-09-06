@@ -9,7 +9,9 @@ export const ka = {
       doctor: "თამარ ჩადუნელი",
       adminPannel: "Medory ადმინ პანელი",
       search: "ძიება...",
-      close: "დახურვა"
+      close: "დახურვა",
+      preferences: "პრეფერენციები",
+      language: "ენა"
     },
     pages: {
       dashboard: "Dashboard"
@@ -73,7 +75,9 @@ export const ka = {
     },
     theme: {
       switchToDark: "მუქ რეჟიმზე გადართვა",
-      switchToLight: "ნათელ რეჟიმზე გადართვა"
+      switchToLight: "ნათელ რეჟიმზე გადართვა",
+      darkMode: "მუქი რეჟიმი",
+      lightMode: "ნათელი რეჟიმი"
     }
   }
 };

@@ -2,26 +2,23 @@ import { cn, useMenuItems } from "@/libs";
 import { useSidebarStore } from "@/store";
 import { SidebarItem } from "@/types";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { TooltipProvider } from "../ui";
 import {
   SidebarHeader,
   SidebarContainer,
-  SidebarMobileDrawer,
   SidebarFooter,
   SidebarFlyout
 } from ".";
 import { motion } from "framer-motion";
+import { getSyncedExpandedMenus } from "@/utils";
 
 export const Sidebar: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const items = useMenuItems();
   const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
-  const [isMobile, setIsMobile] = useState<boolean>(false);
-  const [mobileDrawer, setMobileDrawer] = useState<{
-    open: boolean;
-    item: SidebarItem | null;
-  }>({ open: false, item: null });
+
   const { collapsed, toggleCollapsed } = useSidebarStore();
   const flyoutTimeoutRef = useRef<NodeJS.Timeout>(null);
   const [flyoutMenu, setFlyoutMenu] = useState<{
@@ -30,124 +27,41 @@ export const Sidebar: React.FC = () => {
   } | null>(null);
 
   useEffect(() => {
-    const handleResize = () => {
-      const mobile = window.innerWidth < 768;
-      setIsMobile(mobile);
-    };
+    const pathname = typeof window !== "undefined" ? location.pathname : "/";
+    setExpandedMenus((prev) => getSyncedExpandedMenus(prev, items, pathname));
+  }, [location.pathname]);
 
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    const currentPath = window.location.pathname || "/";
-    const normalizedPath = currentPath.replace(/^\/|\/$/g, "");
-
-    const foundKeys: string[] = [];
-    const seen = new Set<string>();
-
-    const normalize = (p?: string) => (p ? p.replace(/^\/|\/$/g, "") : "");
-
-    const traverse = (item: any, topKey: string | null = null): boolean => {
-      const itemHref = normalize(item.href);
-      const key = topKey ?? item.key ?? item.href ?? "";
-
-      if (itemHref) {
-        if (
-          normalizedPath === itemHref ||
-          normalizedPath.startsWith(itemHref + "/")
-        ) {
-          if (!seen.has(key)) {
-            seen.add(key);
-            foundKeys.push(key);
-          }
-          return true;
-        }
-      }
-
-      if (item.children && item.children.length) {
-        for (const child of item.children) {
-          const childMatched = traverse(
-            child,
-            topKey ?? item.key ?? item.href ?? ""
-          );
-          if (childMatched) {
-            const parentKey = item.key ?? item.href ?? "";
-            if (parentKey && !seen.has(parentKey)) {
-              seen.add(parentKey);
-              foundKeys.push(parentKey);
-            }
-            return true;
-          }
-        }
-      }
-      return false;
-    };
-
-    for (const it of items) {
-      traverse(it, it.key ?? it.href ?? "");
-    }
-
-    setExpandedMenus(foundKeys);
-
-    return () => window.removeEventListener("resize", handleResize);
-    //
-  }, []);
-
-  const toggleMenu = useCallback(
-    (menuKey: string) => {
-      if (isMobile) return;
-      setExpandedMenus((prev) =>
-        prev.includes(menuKey)
-          ? prev.filter((key) => key !== menuKey)
-          : [...prev, menuKey]
-      );
-    },
-    [isMobile]
-  );
   const handleFlyoutEnter = useCallback(
     (item: SidebarItem, event: React.MouseEvent) => {
-      if (!collapsed || isMobile || !item.children) return;
-
+      if (!collapsed || !item.children) return;
       if (flyoutTimeoutRef.current) {
         clearTimeout(flyoutTimeoutRef.current);
       }
-
       const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
       setFlyoutMenu({
         key: item.key,
-        position: {
-          x: rect.right + 8,
-          y: rect.top
-        }
+        position: { x: rect.right + 8, y: rect.top }
       });
     },
-    [collapsed, isMobile]
+    [collapsed]
   );
 
   const handleFlyoutLeave = useCallback(() => {
-    flyoutTimeoutRef.current = setTimeout(() => {
-      setFlyoutMenu(null);
-    }, 150);
+    flyoutTimeoutRef.current = setTimeout(() => setFlyoutMenu(null), 150);
   }, []);
-
-  const handleItemClick = useCallback(
-    (item: SidebarItem) => {
-      if (item.children && isMobile) {
-        setMobileDrawer({ open: true, item });
-      } else if (item.children && collapsed) {
-        return;
-      } else if (!item.children) {
-        onPageChange(item.href);
-      }
-    },
-    //
-    [collapsed, isMobile]
-  );
 
   const onPageChange = useCallback(
     (href: string | undefined) => {
-      if (href) navigate(`/${href}`!);
+      if (href) navigate(`/${href}`);
     },
     [navigate]
+  );
+
+  const handleItemClick = useCallback(
+    (item: SidebarItem) => {
+      if (!item.children) onPageChange(item.href);
+    },
+    [onPageChange]
   );
 
   const isMenuExpanded = useCallback(
@@ -155,14 +69,22 @@ export const Sidebar: React.FC = () => {
     [expandedMenus]
   );
 
-  const currentFlyoutItem = items.find((item) => item.key === flyoutMenu?.key);
+  const toggleMenu = useCallback((menuKey: string) => {
+    setExpandedMenus((prev) =>
+      prev.includes(menuKey)
+        ? prev.filter((key) => key !== menuKey)
+        : [...prev, menuKey]
+    );
+  }, []);
+
+  const currentFlyoutItem = items.find((it) => it.key === flyoutMenu?.key);
 
   return (
     <TooltipProvider>
       <motion.div
         className={cn(
-          "bg-sidebar text-sidebar-foreground border-sidebar-border fixed top-0 left-0 z-[50] flex h-screen flex-col border-r transition-all duration-200 ease-out",
-          collapsed || isMobile ? "w-[72px]" : "w-[240px]"
+          "bg-sidebar text-sidebar-foreground border-sidebar-border fixed top-0 left-0 z-[50] hidden h-screen flex-col border-r transition-all duration-200 ease-out md:flex",
+          collapsed ? "w-[72px]" : "w-[240px]"
         )}
         animate={{
           width: collapsed ? 72 : 240
@@ -174,40 +96,28 @@ export const Sidebar: React.FC = () => {
       >
         <SidebarHeader
           collapsed={collapsed}
-          isMobile={isMobile}
           toggleCollapsed={toggleCollapsed}
         />
         <SidebarContainer
           items={items}
           handleFlyoutEnter={handleFlyoutEnter}
           handleFlyoutLeave={handleFlyoutLeave}
+          toggleMenu={toggleMenu}
           isMenuExpanded={isMenuExpanded}
           collapsed={collapsed}
-          isMobile={isMobile}
-          toggleMenu={toggleMenu}
           onPageChange={onPageChange}
           handleItemClick={handleItemClick}
         />
-        <SidebarFooter
-          collapsed={collapsed}
-          isMobile={isMobile}
-          onPageChange={onPageChange}
-        />
+        <SidebarFooter collapsed={collapsed} onPageChange={onPageChange} />
       </motion.div>
       <SidebarFlyout
         handleFlyoutLeave={handleFlyoutLeave}
         collapsed={collapsed}
-        isMobile={isMobile}
         onPageChange={onPageChange}
         currentFlyoutItem={currentFlyoutItem}
         flyoutMenu={flyoutMenu}
         flyoutTimeoutRef={flyoutTimeoutRef}
         setFlyoutMenu={setFlyoutMenu}
-      />
-      <SidebarMobileDrawer
-        setMobileDrawer={setMobileDrawer}
-        mobileDrawer={mobileDrawer}
-        onPageChange={onPageChange}
       />
     </TooltipProvider>
   );
