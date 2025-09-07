@@ -79,6 +79,11 @@ export const ka = {
       switchToLight: "ნათელ რეჟიმზე გადართვა",
       darkMode: "მუქი რეჟიმი",
       lightMode: "ნათელი რეჟიმი"
+    },
+    search: {
+      results: "ძიების შედეგები",
+      noResults: "შედეგი ვერ მოიძებნა",
+      seeAllResults: "ყველა შედეგის ნახვა"
     }
   }
 };

@@ -78,6 +78,11 @@ export const en = {
       switchToLight: "Switch to light mode",
       darkMode: "Dark mode",
       lightMode: "Light mode"
+    },
+    search: {
+      results: "Search Results",
+      noResults: "No results",
+      seeAllResults: "See all results"
     }
   }
 };

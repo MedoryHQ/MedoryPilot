@@ -207,48 +207,38 @@ export const Search: React.FC<SearchProps> = ({
                   : "top-12 right-0 w-96"
               } `}
             >
-              <div className="border-border border-b p-3">
-                <h3 className="text-foreground text-sm font-medium">
-                  {toUpperCase(t("search.results") || "Search Results")}
-                </h3>
-              </div>
-
               <div className="max-h-80 overflow-y-auto">
-                {filteredResults.length > 0 ? (
-                  filteredResults.map((item, idx) => (
-                    <motion.button
-                      key={item.id}
-                      initial={{ opacity: 0, x: -6 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.12, delay: idx * 0.03 }}
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        handleItemClick(item);
-                      }}
-                      className="hover:bg-muted border-border flex w-full cursor-pointer items-center gap-3 border-b p-3 text-left last:border-b-0"
-                    >
-                      <span className="text-xl">{item.icon}</span>
-                      <div className="min-w-0 flex-1">
-                        <div className="text-foreground truncate text-sm font-medium">
-                          {item.name}
+                {filteredResults.length > 0
+                  ? filteredResults.map((item, idx) => (
+                      <motion.button
+                        key={item.id}
+                        initial={{ opacity: 0, x: -6 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.12, delay: idx * 0.03 }}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          handleItemClick(item);
+                        }}
+                        className="hover:bg-muted border-border flex w-full cursor-pointer items-center gap-3 border-b p-3 text-left last:border-b-0"
+                      >
+                        <span className="text-xl">{item.icon}</span>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-foreground truncate text-sm font-medium">
+                            {item.name}
+                          </div>
+                          <div className="text-muted-foreground text-xs">
+                            {item.category}
+                          </div>
                         </div>
-                        <div className="text-muted-foreground text-xs">
-                          {item.category}
-                        </div>
-                      </div>
-                    </motion.button>
-                  ))
-                ) : (
-                  <div className="text-muted-foreground p-4 text-sm">
-                    {toUpperCase(t("search.noResults") || "No results")}
-                  </div>
-                )}
+                      </motion.button>
+                    ))
+                  : null}
               </div>
               <div
                 onClick={() => handleSeeAll()}
-                className="text-primary hover:bg-primary/10 flex cursor-pointer items-center justify-center p-4 text-sm font-medium underline transition-all duration-300"
+                className="text-primary hover:bg-primary/10 flex cursor-pointer items-center justify-center p-4 text-[14px] font-medium transition-all duration-300 md:text-[14px]"
               >
-                {toUpperCase(t("search.seeAllResults") || "See all results")}
+                {toUpperCase(t("search.seeAllResults"))}
               </div>
             </motion.div>
           )}

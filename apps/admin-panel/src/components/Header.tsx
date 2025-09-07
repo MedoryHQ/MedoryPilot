@@ -14,8 +14,6 @@ export const Header: React.FC = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const { collapsed, toggleCollapsed } = useSidebarStore();
 
-  // TODO: Add results fetch query
-
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth < 768;
