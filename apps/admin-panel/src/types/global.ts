@@ -27,3 +27,11 @@ export interface MenuItem {
   key?: string;
   children?: MenuItem[];
 }
+
+export interface SearchResult {
+  id: string;
+  type: string;
+  name: string;
+  category: string;
+  icon: string;
+}
