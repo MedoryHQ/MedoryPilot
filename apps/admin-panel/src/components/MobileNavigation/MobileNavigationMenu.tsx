@@ -2,25 +2,57 @@ import { SidebarItem } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../ui";
 import { ChevronRight } from "lucide-react";
+import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { arraysEqual, computeInitialExpandedKeys, pathMatches } from "@/utils";
 
 interface MobileNavigationMenuProps {
-  fullMenuItems: SidebarItem[];
   isActive: (key: string) => boolean;
-  handleMenuItemClick: (item: SidebarItem) => void;
-  isMenuExpanded: (menuKey: string) => boolean;
-  isChildActive: (childHrefOrKey: string) => boolean;
   setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
   onPageChange: (href?: string) => void;
+  items: SidebarItem[];
+  current: string;
 }
 export const MobileNavigationMenu: React.FC<MobileNavigationMenuProps> = ({
-  fullMenuItems,
   isActive,
-  handleMenuItemClick,
-  isMenuExpanded,
-  isChildActive,
   setIsMenuOpen,
-  onPageChange
+  onPageChange,
+  items,
+  current
 }) => {
+  const location = useLocation();
+
+  const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
+  const isMenuExpanded = (menuKey: string) => expandedMenus.includes(menuKey);
+
+  const fullMenuItems = items;
+
+  useEffect(() => {
+    const pathname = typeof window !== "undefined" ? location.pathname : "/";
+    const keys = computeInitialExpandedKeys(items, pathname);
+    setExpandedMenus((prev) => (arraysEqual(prev, keys) ? prev : keys));
+  }, [location.pathname]);
+
+  const handleMenuItemClick = (item: SidebarItem) => {
+    if (item.children && item.children.length) {
+      toggleExpanded(item.key);
+    } else {
+      onPageChange(item.href);
+      setIsMenuOpen(false);
+    }
+  };
+
+  const toggleExpanded = (menuKey: string) => {
+    setExpandedMenus((prev) =>
+      prev.includes(menuKey)
+        ? prev.filter((key) => key !== menuKey)
+        : [...prev, menuKey]
+    );
+  };
+
+  const isChildActive = (childHrefOrKey: string) =>
+    pathMatches(current, childHrefOrKey);
+
   return (
     <div className="mb-8 space-y-2">
       {fullMenuItems.map((item, index) => (

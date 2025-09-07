@@ -764,6 +764,23 @@ button,
   transform: translateY(-1px);
 }
 
+.search-bar-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-bar-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.search-bar-list::-webkit-scrollbar-thumb {
+  background: var(--muted);
+  border-radius: 3px;
+}
+
+.search-bar-list::-webkit-scrollbar-thumb:hover {
+  background: var(--border);
+}
+
 @media (max-width: 1024px) {
   .dashboard-three-column {
     display: flex;
@@ -819,6 +836,25 @@ button,
   .appointment-card .appointment-actions {
     justify-content: flex-end;
     width: 100%;
+  }
+
+  .mobile-tap {
+    transition:
+      transform var(--duration-fast) var(--ease-out),
+      background-color var(--duration-fast) var(--ease-out);
+  }
+
+  .mobile-tap:active {
+    transform: scale(0.95);
+    background-color: var(--muted);
+  }
+
+  .bottom-nav-slide-up {
+    animation: slideUpFromBottom 0.3s var(--ease-out);
+  }
+
+  .drawer-slide-up {
+    animation: slideUpDrawer 0.3s var(--ease-out);
   }
 }
 
@@ -970,6 +1006,28 @@ button,
   to {
     opacity: 0;
     transform: translateX(-100%);
+  }
+}
+
+@keyframes slideUpFromBottom {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpDrawer {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
   }
 }
 

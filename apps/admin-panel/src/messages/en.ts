@@ -52,11 +52,14 @@ export const en = {
       messages: "Messages",
       website: "Website",
       home: "Home",
+      search: "Search",
+      notFound: "Not Found",
       services: "Services",
       news: "News",
       blogs: "Blogs",
       analytics: "Analytics",
       settings: "Settings",
+      menu: "Menu",
       general: "General",
       profile: "Profile",
       helpAndSupport: "Help & Support",
@@ -77,6 +80,11 @@ export const en = {
       switchToLight: "Switch to light mode",
       darkMode: "Dark mode",
       lightMode: "Light mode"
+    },
+    search: {
+      results: "Search Results",
+      noResults: "No results",
+      seeAllResults: "See all results"
     }
   }
 };

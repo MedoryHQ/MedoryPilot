@@ -54,9 +54,12 @@ export const ka = {
       website: "ვებ საიტი",
       home: "მთავარი",
       services: "სერვისები",
+      menu: "მენიუ",
       news: "სიახლეები",
       blogs: "ბლოგები",
       analytics: "ანალიტიკა",
+      notFound: "ვერ მოიძებნა",
+      search: "ძიება",
       settings: "პარამეტრები",
       general: "ზოგადი",
       profile: "პროფილი",
@@ -78,6 +81,11 @@ export const ka = {
       switchToLight: "ნათელ რეჟიმზე გადართვა",
       darkMode: "მუქი რეჟიმი",
       lightMode: "ნათელი რეჟიმი"
+    },
+    search: {
+      results: "ძიების შედეგები",
+      noResults: "შედეგი ვერ მოიძებნა",
+      seeAllResults: "ყველა შედეგის ნახვა"
     }
   }
 };
