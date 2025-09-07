@@ -57,6 +57,7 @@ export const en = {
       blogs: "Blogs",
       analytics: "Analytics",
       settings: "Settings",
+      menu: "Menu",
       general: "General",
       profile: "Profile",
       helpAndSupport: "Help & Support",

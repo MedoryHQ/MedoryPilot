@@ -54,6 +54,7 @@ export const ka = {
       website: "ვებ საიტი",
       home: "მთავარი",
       services: "სერვისები",
+      menu: "მენიუ",
       news: "სიახლეები",
       blogs: "ბლოგები",
       analytics: "ანალიტიკა",
