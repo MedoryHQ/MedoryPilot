@@ -58,6 +58,8 @@ export const ka = {
       news: "სიახლეები",
       blogs: "ბლოგები",
       analytics: "ანალიტიკა",
+      notFound: "ვერ მოიძებნა",
+      search: "ძიება",
       settings: "პარამეტრები",
       general: "ზოგადი",
       profile: "პროფილი",

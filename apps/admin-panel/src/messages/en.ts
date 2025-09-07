@@ -52,6 +52,8 @@ export const en = {
       messages: "Messages",
       website: "Website",
       home: "Home",
+      search: "Search",
+      notFound: "Not Found",
       services: "Services",
       news: "News",
       blogs: "Blogs",

@@ -185,7 +185,11 @@ export const Search: React.FC<SearchProps> = ({
         onFocus={() => setSearchFocused(true)}
         placeholder={toUpperCase(t("global.search"))}
         className={`bg-muted/50 text-foreground border-border h-10 rounded-lg pr-4 pl-12 transition-all duration-300 ${
-          isMobile ? (searchFocused ? "w-full" : "w-40") : "w-48 lg:w-96"
+          isMobile
+            ? searchFocused
+              ? "w-full"
+              : "w-40"
+            : "w-48 md:w-[250px] lg:w-96"
         }`}
         style={{ width: undefined }}
       />
@@ -204,7 +208,7 @@ export const Search: React.FC<SearchProps> = ({
               className={`border-border bg-background absolute z-50 overflow-hidden rounded-xl border shadow-lg backdrop-blur-md ${
                 isMobile && searchFocused
                   ? "top-full left-0 mt-2 w-full"
-                  : "top-12 right-0 w-96"
+                  : "top-12 right-0 w-[250px] lg:w-96"
               } `}
             >
               <div className="search-bar-list max-h-80 overflow-y-auto">

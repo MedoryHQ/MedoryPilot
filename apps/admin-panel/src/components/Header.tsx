@@ -72,7 +72,10 @@ export const Header: React.FC = () => {
               <div>
                 <h1 className="text-foreground font-semibold">
                   {toUpperCase(
-                    t(`menu.${currentPath[currentPath.length - 1]}`)
+                    t(
+                      `menu.${currentPath[currentPath.length - 1]}`,
+                      t("menu.notFound")
+                    )
                   )}
                 </h1>
                 <div className="text-muted-foreground text-xs">
