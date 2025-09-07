@@ -1,23 +1,25 @@
-// Search.tsx
+import React, {
+  useRef,
+  useEffect,
+  useMemo,
+  useCallback,
+  useState
+} from "react";
 import { Search as SearchIcon } from "lucide-react";
-import { useRef, useEffect } from "react";
 import { Input } from "./input";
 import { toUpperCase } from "@/utils";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { SearchResult } from "@/types";
 import { AnimatePresence, motion } from "framer-motion";
 
 interface SearchProps {
-  setShowSearchResults: React.Dispatch<React.SetStateAction<boolean>>;
   setSearchFocused: React.Dispatch<React.SetStateAction<boolean>>;
-  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
-  setSearchResults: React.Dispatch<React.SetStateAction<SearchResult[]>>;
-  searchQuery: string;
   isMobile: boolean;
   searchFocused: boolean;
 }
 
+// TODO: add query for search
 const searchableData: SearchResult[] = [
   {
     id: "p1",
@@ -28,6 +30,20 @@ const searchableData: SearchResult[] = [
   },
   {
     id: "p2",
+    type: "patient",
+    name: "Emma Wilson",
+    category: "Patients",
+    icon: "👤"
+  },
+  {
+    id: "p3",
+    type: "patient",
+    name: "Emma Wilson",
+    category: "Patients",
+    icon: "👤"
+  },
+  {
+    id: "p4",
     type: "patient",
     name: "Emma Wilson",
     category: "Patients",
@@ -58,30 +74,31 @@ const searchableData: SearchResult[] = [
 
 export const Search: React.FC<SearchProps> = ({
   setSearchFocused,
-  setShowSearchResults,
-  setSearchQuery,
-  setSearchResults,
   isMobile,
-  searchFocused,
-  searchQuery
+  searchFocused
 }) => {
   const searchRef = useRef<HTMLDivElement | null>(null);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [searchParams] = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("search") || ""
+  );
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    if (query.trim()) {
-      const filtered = searchableData.filter((item) =>
-        item.name.toLowerCase().includes(query.toLowerCase())
-      );
-      setSearchResults(filtered);
-      setShowSearchResults(true);
+  const filteredResults = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return [];
+    return searchableData.filter((it) => it.name.toLowerCase().includes(q));
+  }, [searchQuery]);
+
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      setSearchResults(filteredResults);
     } else {
       setSearchResults([]);
-      setShowSearchResults(false);
     }
-  };
+  }, [searchQuery, filteredResults, setSearchResults]);
 
   useEffect(() => {
     const onDocClick = (e: MouseEvent) => {
@@ -89,14 +106,12 @@ export const Search: React.FC<SearchProps> = ({
       if (!el) return;
       if (!el.contains(e.target as Node)) {
         setSearchFocused(false);
-        setShowSearchResults(false);
       }
     };
 
     const onEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setSearchFocused(false);
-        setShowSearchResults(false);
       }
     };
 
@@ -106,13 +121,41 @@ export const Search: React.FC<SearchProps> = ({
       document.removeEventListener("mousedown", onDocClick);
       document.removeEventListener("keydown", onEsc);
     };
-  }, [setSearchFocused, setShowSearchResults]);
+  }, [setSearchFocused]);
 
-  const handleItemClick = (item: SearchResult) => {
-    setShowSearchResults(false);
+  const handleSearch = useCallback(
+    (q: string) => {
+      setSearchQuery(q);
+    },
+    [setSearchQuery]
+  );
+
+  const blurActive = useCallback(() => {
+    try {
+      const active = document.activeElement as HTMLElement | null;
+      active?.blur();
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const handleItemClick = useCallback(
+    (item: SearchResult) => {
+      setSearchQuery("");
+      setSearchFocused(false);
+      blurActive();
+      navigate(`/${item.type}/${item.id}`);
+    },
+    [navigate, setSearchFocused, setSearchQuery, blurActive]
+  );
+
+  const handleSeeAll = useCallback(() => {
+    const seeAllUrl = `/search?query=${encodeURIComponent(searchQuery)}`;
     setSearchQuery("");
-    navigate(`/${item.type}/${item.id}`);
-  };
+    setSearchFocused(false);
+    blurActive();
+    navigate(seeAllUrl);
+  }, [navigate, searchQuery, setSearchFocused, setSearchQuery, blurActive]);
 
   const containerVariant = {
     hidden: { opacity: 0, y: -6, scale: 0.98 },
@@ -127,9 +170,7 @@ export const Search: React.FC<SearchProps> = ({
   return (
     <motion.div
       ref={searchRef}
-      animate={{
-        x: !isMobile && searchFocused ? -16 : 0
-      }}
+      animate={{ x: !isMobile && searchFocused ? -16 : 0 }}
       transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
       className={wrapperClass}
     >
@@ -143,11 +184,75 @@ export const Search: React.FC<SearchProps> = ({
         onChange={(e) => handleSearch(e.target.value)}
         onFocus={() => setSearchFocused(true)}
         placeholder={toUpperCase(t("global.search"))}
-        className={`bg-muted/50 text-foreground border-border h-10 rounded-lg pr-4 pl-12 transition-all duration-300 ${isMobile ? (searchFocused ? "w-full" : "w-40") : "w-48 lg:w-96"}`}
-        style={{
-          width: undefined
-        }}
+        className={`bg-muted/50 text-foreground border-border h-10 rounded-lg pr-4 pl-12 transition-all duration-300 ${
+          isMobile ? (searchFocused ? "w-full" : "w-40") : "w-48 lg:w-96"
+        }`}
+        style={{ width: undefined }}
       />
+
+      <AnimatePresence>
+        {searchFocused &&
+          filteredResults.length >= 0 &&
+          searchQuery.trim().length > 0 && (
+            <motion.div
+              key="search-results"
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              variants={containerVariant}
+              transition={{ duration: 0.16 }}
+              className={`border-border bg-background absolute z-50 overflow-hidden rounded-xl border shadow-lg backdrop-blur-md ${
+                isMobile && searchFocused
+                  ? "top-full left-0 mt-2 w-full"
+                  : "top-12 right-0 w-96"
+              } `}
+            >
+              <div className="border-border border-b p-3">
+                <h3 className="text-foreground text-sm font-medium">
+                  {toUpperCase(t("search.results") || "Search Results")}
+                </h3>
+              </div>
+
+              <div className="max-h-80 overflow-y-auto">
+                {filteredResults.length > 0 ? (
+                  filteredResults.map((item, idx) => (
+                    <motion.button
+                      key={item.id}
+                      initial={{ opacity: 0, x: -6 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.12, delay: idx * 0.03 }}
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        handleItemClick(item);
+                      }}
+                      className="hover:bg-muted border-border flex w-full cursor-pointer items-center gap-3 border-b p-3 text-left last:border-b-0"
+                    >
+                      <span className="text-xl">{item.icon}</span>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-foreground truncate text-sm font-medium">
+                          {item.name}
+                        </div>
+                        <div className="text-muted-foreground text-xs">
+                          {item.category}
+                        </div>
+                      </div>
+                    </motion.button>
+                  ))
+                ) : (
+                  <div className="text-muted-foreground p-4 text-sm">
+                    {toUpperCase(t("search.noResults") || "No results")}
+                  </div>
+                )}
+              </div>
+              <div
+                onClick={() => handleSeeAll()}
+                className="text-primary hover:bg-primary/10 flex cursor-pointer items-center justify-center p-4 text-sm font-medium underline transition-all duration-300"
+              >
+                {toUpperCase(t("search.seeAllResults") || "See all results")}
+              </div>
+            </motion.div>
+          )}
+      </AnimatePresence>
     </motion.div>
   );
 };

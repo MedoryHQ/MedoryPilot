@@ -2,21 +2,14 @@ import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { toUpperCase } from "@/utils";
 import { ThemeSwitcher, LanguageChanger, Search } from "./ui";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useSidebarStore } from "@/store";
-import { SearchResult } from "@/types";
 
 export const Header: React.FC = () => {
   const location = useLocation();
   const currentPath = location.pathname.split("/");
   const { t } = useTranslation();
-  const [searchParams] = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState(
-    searchParams.get("search") || ""
-  );
-  const [showSearchResults, setShowSearchResults] = useState(false);
-  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searchFocused, setSearchFocused] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const { collapsed, toggleCollapsed } = useSidebarStore();
@@ -92,11 +85,7 @@ export const Header: React.FC = () => {
 
             <div className="flex items-center gap-4">
               <Search
-                setShowSearchResults={setShowSearchResults}
                 setSearchFocused={setSearchFocused}
-                setSearchQuery={setSearchQuery}
-                setSearchResults={setSearchResults}
-                searchQuery={searchQuery}
                 isMobile={isMobile}
                 searchFocused={searchFocused}
               />
