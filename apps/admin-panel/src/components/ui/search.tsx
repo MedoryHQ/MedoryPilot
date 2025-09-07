@@ -207,7 +207,7 @@ export const Search: React.FC<SearchProps> = ({
                   : "top-12 right-0 w-96"
               } `}
             >
-              <div className="max-h-80 overflow-y-auto">
+              <div className="search-bar-list max-h-80 overflow-y-auto">
                 {filteredResults.length > 0
                   ? filteredResults.map((item, idx) => (
                       <motion.button
