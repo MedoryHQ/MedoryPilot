@@ -32,7 +32,7 @@ export const Header: React.FC = () => {
     <motion.div
       className="bg-background page-transition-container"
       animate={{
-        marginLeft: isMobile || collapsed ? 72 : 240
+        marginLeft: isMobile ? 0 : collapsed ? 72 : 240
       }}
       transition={{
         duration: 0.3,
@@ -59,8 +59,12 @@ export const Header: React.FC = () => {
 
           <div className="flex items-center gap-4">
             <Search />
-            <LanguageChanger />
-            <ThemeSwitcher />
+            {!isMobile ? (
+              <>
+                <LanguageChanger />
+                <ThemeSwitcher />
+              </>
+            ) : null}
           </div>
         </div>
       </motion.header>
