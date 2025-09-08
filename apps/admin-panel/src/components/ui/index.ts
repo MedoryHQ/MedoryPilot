@@ -36,3 +36,4 @@ export * from "./alert-dialog";
 export * from "./drawer";
 export * from "./form";
 export * from "./tabs";
+export * from "./toast";
