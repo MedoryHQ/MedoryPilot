@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
-import { useAuthStore } from "@/store";
+import { useAuthStore, useSidebarStore } from "@/store";
 import axios from "@/api/axios";
 import { Spin } from "antd";
 import { Shell } from "./Shell";
 import { Sidebar } from "./Sidebar";
 import { MobileNavigation } from "./MobileNavigation";
+import { cn } from "@/libs";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -14,10 +15,21 @@ interface LayoutProps {
   path?: string;
 }
 
-export const LoadingScreen: React.FC = () => {
+interface LoadingScreenProps {
+  collapsed: boolean;
+}
+
+export const LoadingScreen: React.FC<LoadingScreenProps> = ({ collapsed }) => {
   return (
-    <div className="flex min-h-screen w-full items-center justify-center">
-      <Spin size="large" />
+    <div
+      className={cn(
+        "absolute inset-0 flex min-h-screen w-full items-center justify-center"
+      )}
+    >
+      <Spin
+        className={cn(collapsed ? "md:left-[36px]" : "md:left-[120px]")}
+        size="large"
+      />
     </div>
   );
 };
@@ -53,6 +65,7 @@ const CustomLayout: React.FC<LayoutProps> = ({ children, route }) => {
   const [searchParams] = useSearchParams();
   const searchData = searchParams.get("data");
   const navigate = useNavigate();
+  const { collapsed } = useSidebarStore();
   const location = useLocation();
 
   useEffect(() => {
@@ -106,14 +119,14 @@ const CustomLayout: React.FC<LayoutProps> = ({ children, route }) => {
       <main className="!text-foreground flex-1">
         {isLoggedIn ? (
           <>
-            {/* Desktop/Tabled Sidebar*/}
             <Sidebar />
-            {/* Mobile Sidebar*/}
             <MobileNavigation />
-            <Shell>{checking ? <LoadingScreen /> : children}</Shell>
+            <Shell>
+              {checking ? <LoadingScreen collapsed={collapsed} /> : children}
+            </Shell>
           </>
         ) : checking ? (
-          <LoadingScreen />
+          <LoadingScreen collapsed={collapsed} />
         ) : (
           children
         )}
