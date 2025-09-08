@@ -32,3 +32,4 @@ export * from "./calendar";
 export * from "./breadcrumb";
 export * from "./ThemeSwitcher";
 export * from "./alert";
+export * from "./alert-dialog";
