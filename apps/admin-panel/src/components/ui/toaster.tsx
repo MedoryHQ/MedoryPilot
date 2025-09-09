@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Toast,
@@ -8,11 +7,10 @@ import {
   ToastDescription,
   ToastProvider,
   ToastTitle,
-  ToastViewport,
-  ToastAction
+  ToastViewport
 } from "./toast";
+import { CheckCircle, AlertCircle, AlertTriangle, Info } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
-import { CheckCircle, AlertCircle, AlertTriangle, Info, X } from "lucide-react";
 
 const Toaster = () => {
   const { toasts } = useToast();
@@ -94,7 +92,6 @@ const Toaster = () => {
                   <ToastClose className="opacity-70 transition-opacity hover:opacity-100" />
                 </div>
 
-                {/* Progress Bar for auto-dismiss */}
                 <motion.div
                   className="absolute bottom-0 left-0 h-1 bg-current opacity-20"
                   initial={{ width: "100%" }}

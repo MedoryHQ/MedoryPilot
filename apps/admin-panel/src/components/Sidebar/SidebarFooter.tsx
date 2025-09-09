@@ -75,7 +75,7 @@ export const SidebarFooter: React.FC<SideBarFooterProps> = ({
               <DropdownMenuContent
                 side="top"
                 align="end"
-                className="w-56 rounded-xl border-0 bg-white px-3 text-black shadow-xl"
+                className="w-56 rounded-xl border-0 bg-white p-1.5 text-black shadow-xl"
                 sideOffset={8}
               >
                 <DropdownMenuItem

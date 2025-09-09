@@ -1,53 +1,14 @@
+import { Action, State, ToasterToast, ToastOptions } from "@/types";
 import * as React from "react";
-import type { ToastActionElement, ToastProps } from "@/components/ui";
 
 const TOAST_LIMIT = 5;
 const TOAST_REMOVE_DELAY = 1000000;
-
-type ToasterToast = ToastProps & {
-  id: string;
-  title?: React.ReactNode;
-  description?: React.ReactNode;
-  action?: ToastActionElement;
-  variant?: "default" | "destructive" | "success" | "warning" | "info";
-};
-
-const actionTypes = {
-  ADD_TOAST: "ADD_TOAST",
-  UPDATE_TOAST: "UPDATE_TOAST",
-  DISMISS_TOAST: "DISMISS_TOAST",
-  REMOVE_TOAST: "REMOVE_TOAST"
-} as const;
 
 let count = 0;
 
 function genId() {
   count = (count + 1) % Number.MAX_SAFE_INTEGER;
   return count.toString();
-}
-
-type ActionType = typeof actionTypes;
-
-type Action =
-  | {
-      type: ActionType["ADD_TOAST"];
-      toast: ToasterToast;
-    }
-  | {
-      type: ActionType["UPDATE_TOAST"];
-      toast: Partial<ToasterToast>;
-    }
-  | {
-      type: ActionType["DISMISS_TOAST"];
-      toastId?: ToasterToast["id"];
-    }
-  | {
-      type: ActionType["REMOVE_TOAST"];
-      toastId?: ToasterToast["id"];
-    };
-
-interface State {
-  toasts: ToasterToast[];
 }
 
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
@@ -132,16 +93,6 @@ function dispatch(action: Action) {
   });
 }
 
-type Toast = Omit<ToasterToast, "id">;
-
-interface ToastOptions {
-  title: string;
-  description?: string;
-  variant?: "default" | "destructive" | "success" | "warning" | "info";
-  action?: ToastActionElement;
-  duration?: number;
-}
-
 function toast({
   title,
   description,
@@ -189,7 +140,7 @@ function toast({
   };
 }
 
-const toastHelpers = {
+const createToastHelpers = (t?: (key: string) => string) => ({
   success: (
     title: string,
     description?: string,
@@ -214,40 +165,58 @@ const toastHelpers = {
     options?: Partial<ToastOptions>
   ) => toast({ ...options, title, description, variant: "info" }),
 
-  // Action-specific toasts
   added: (item: string, description?: string) =>
     toast({
-      title: `${item} Added Successfully`,
-      description: description || `${item} has been added to the system.`,
+      title: t ? t("toast.added") : "Added Successfully",
+      description:
+        description ||
+        (t
+          ? t("toast.operation.successful")
+          : `${item} has been added to the system.`),
       variant: "success"
     }),
 
   updated: (item: string, description?: string) =>
     toast({
-      title: `${item} Updated`,
-      description: description || `${item} has been updated successfully.`,
+      title: t ? t("toast.updated") : "Updated Successfully",
+      description:
+        description ||
+        (t
+          ? t("toast.operation.successful")
+          : `${item} has been updated successfully.`),
       variant: "success"
     }),
 
   deleted: (item: string, description?: string) =>
     toast({
-      title: `${item} Deleted`,
-      description: description || `${item} has been permanently removed.`,
+      title: t ? t("toast.deleted") : "Deleted Successfully",
+      description:
+        description ||
+        (t
+          ? `${item} has been permanently removed.`
+          : `${item} has been permanently removed.`),
       variant: "destructive"
     }),
 
   saved: (item: string, description?: string) =>
     toast({
-      title: `${item} Saved`,
-      description: description || `Your changes have been saved successfully.`,
+      title: t ? t("toast.saved") : "Saved Successfully",
+      description:
+        description ||
+        (t
+          ? t("toast.settings.saved")
+          : "Your changes have been saved successfully."),
       variant: "success"
     }),
 
   failed: (action: string, description?: string) =>
     toast({
-      title: `${action} Failed`,
+      title: t ? t("toast.failed") : "Operation Failed",
       description:
-        description || `An error occurred while performing this action.`,
+        description ||
+        (t
+          ? t("toast.operation.failed")
+          : "An error occurred while performing this action."),
       variant: "destructive"
     }),
 
@@ -257,10 +226,72 @@ const toastHelpers = {
       description,
       variant: "info",
       duration: 0
-    })
-};
+    }),
 
-function useToast() {
+  patientAdded: (name?: string) =>
+    toast({
+      title: t ? t("toast.patient.added") : "Patient Added",
+      description: name
+        ? `${name} has been added to the system.`
+        : t
+          ? t("toast.operation.successful")
+          : "Patient has been added successfully.",
+      variant: "success"
+    }),
+
+  bookingCreated: (patient?: string) =>
+    toast({
+      title: t ? t("toast.booking.added") : "Booking Created",
+      description: patient
+        ? `Appointment scheduled for ${patient}.`
+        : t
+          ? t("toast.operation.successful")
+          : "Booking has been created successfully.",
+      variant: "success"
+    }),
+
+  bookingCancelled: (patient?: string) =>
+    toast({
+      title: t ? t("toast.booking.cancelled") : "Booking Cancelled",
+      description: patient
+        ? `Appointment for ${patient} has been cancelled.`
+        : t
+          ? "Booking has been cancelled."
+          : "Booking has been cancelled.",
+      variant: "destructive"
+    }),
+
+  dataSync: () =>
+    toast({
+      title: t ? t("toast.data.synced") : "Data Synchronized",
+      description: t
+        ? t("toast.operation.successful")
+        : "All data has been synchronized successfully.",
+      variant: "success"
+    }),
+
+  networkError: () =>
+    toast({
+      title: t ? t("toast.error") : "Network Error",
+      description: t
+        ? t("toast.network.error")
+        : "Please check your internet connection and try again.",
+      variant: "destructive"
+    }),
+
+  validationError: () =>
+    toast({
+      title: t ? t("toast.warning") : "Validation Error",
+      description: t
+        ? t("toast.validation.error")
+        : "Please check your input and try again.",
+      variant: "warning"
+    })
+});
+
+const toastHelpers = createToastHelpers();
+
+function useToast(t?: (key: string) => string) {
   const [state, setState] = React.useState<State>(memoryState);
 
   React.useEffect(() => {
@@ -273,9 +304,17 @@ function useToast() {
     };
   }, [state]);
 
+  const localizedHelpers = React.useMemo(
+    () => (t ? createToastHelpers(t) : toastHelpers),
+    [t]
+  );
+
   return {
     ...state,
-    toast: Object.assign(toast, toastHelpers),
+    toast: {
+      ...toast,
+      ...localizedHelpers
+    },
     dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId })
   };
 }
