@@ -6,6 +6,7 @@ import axios from "@/api/axios";
 import useApp from "antd/es/app/useApp";
 import { useTranslation } from "react-i18next";
 import { Button } from "../ui";
+import { useToast } from "@/hooks/useToast";
 
 const UserIcon = () => <span style={{ color: "#9ca3af" }}>👤</span>;
 const LockIcon = () => <span style={{ color: "#9ca3af" }}>🔒</span>;
@@ -18,7 +19,8 @@ interface Props {
 const LoginForm = ({ onSuccess, setEmail }: Props) => {
   const [form] = Form.useForm();
   const { message } = useApp();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+  const { toast } = useToast(t);
   const { mutate, isLoading } = useMutation({
     mutationFn: async (values: LoginFormValues) => {
       const { data } = await axios.post(`/auth/login`, values);
@@ -26,7 +28,7 @@ const LoginForm = ({ onSuccess, setEmail }: Props) => {
     },
     onSuccess: (data, variables) => {
       form.resetFields();
-      message.success(toUpperCase(data.message[i18n.language]));
+      toast.success(t("toast.success"), t("toast.operation.successful"));
       const hasUser = Boolean(data?.data && data.data.user);
       onSuccess(variables.email, !hasUser ? true : false, data);
     },
