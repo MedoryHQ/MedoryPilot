@@ -1,9 +1,8 @@
 import { Form, Input, Checkbox } from "antd";
 import { useMutation } from "react-query";
 import { LoginFormValues, ResponseError } from "@/types";
-import { returnError, setFormErrors, toUpperCase } from "@/utils";
+import { setFormErrors, toUpperCase } from "@/utils";
 import axios from "@/api/axios";
-import useApp from "antd/es/app/useApp";
 import { useTranslation } from "react-i18next";
 import { Button } from "../ui";
 import { useToast } from "@/hooks/useToast";
@@ -18,8 +17,7 @@ interface Props {
 
 const LoginForm = ({ onSuccess, setEmail }: Props) => {
   const [form] = Form.useForm();
-  const { message } = useApp();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { toast } = useToast(t);
   const { mutate, isLoading } = useMutation({
     mutationFn: async (values: LoginFormValues) => {
@@ -28,13 +26,12 @@ const LoginForm = ({ onSuccess, setEmail }: Props) => {
     },
     onSuccess: (data, variables) => {
       form.resetFields();
-      toast.success(t("toast.success"), t("toast.operation.successful"));
+      toast.success(t("toast.success"), data.message[i18n.language]);
       const hasUser = Boolean(data?.data && data.data.user);
       onSuccess(variables.email, !hasUser ? true : false, data);
     },
     onError: (error: ResponseError) => {
-      setFormErrors(error, message, form);
-      returnError(error, "Login failed");
+      setFormErrors(error, toast, t, i18n.language as "ka" | "en", form);
     }
   });
 

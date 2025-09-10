@@ -15,7 +15,8 @@ const ToastViewport = React.forwardRef<
   <ToastPrimitive.Viewport
     ref={ref}
     className={cn(
-      "fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:top-auto sm:right-0 sm:bottom-0 sm:flex-col md:max-w-[420px]",
+      "fixed top-0 right-0 z-[2147483647] flex max-h-screen w-full flex-col p-4 sm:p-6 md:max-w-[420px]",
+      "pointer-events-none",
       className
     )}
     {...props}
@@ -24,12 +25,36 @@ const ToastViewport = React.forwardRef<
 ToastViewport.displayName = ToastPrimitive.Viewport.displayName;
 
 const toastVariants = {
-  default: "border bg-background text-foreground",
-  destructive:
-    "destructive border-destructive/50 bg-destructive text-destructive-foreground",
-  success: "border-success/50 bg-success text-success-foreground",
-  warning: "border-warning/50 bg-warning text-warning-foreground",
-  info: "border-primary/50 bg-primary text-primary-foreground"
+  default: {
+    container:
+      "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100",
+    icon: "text-blue-500",
+    accent: "bg-blue-500"
+  },
+  destructive: {
+    container:
+      "bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800/50 text-red-900 dark:text-red-100",
+    icon: "text-red-500",
+    accent: "bg-red-500"
+  },
+  success: {
+    container:
+      "bg-green-50 dark:bg-green-950/50 border border-green-200 dark:border-green-800/50 text-green-900 dark:text-green-100",
+    icon: "text-green-500",
+    accent: "bg-green-500"
+  },
+  warning: {
+    container:
+      "bg-yellow-50 dark:bg-yellow-950/50 border border-yellow-200 dark:border-yellow-800/50 text-yellow-900 dark:text-yellow-100",
+    icon: "text-yellow-500",
+    accent: "bg-yellow-500"
+  },
+  info: {
+    container:
+      "bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800/50 text-blue-900 dark:text-blue-100",
+    icon: "text-blue-500",
+    accent: "bg-blue-500"
+  }
 };
 
 const Toast = React.forwardRef<
@@ -38,14 +63,18 @@ const Toast = React.forwardRef<
     variant?: keyof typeof toastVariants;
   }
 >(({ className, variant = "default", ...props }, ref) => {
+  const variantStyles = toastVariants[variant];
+
   return (
     <ToastPrimitive.Root
       ref={ref}
       className={cn(
-        "group pointer-events-auto relative flex w-full items-center justify-between space-x-2 overflow-hidden rounded-xl border p-4 pr-6 shadow-lg transition-all",
-        "data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-top-full data-[state=open]:sm:slide-in-from-bottom-full data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none",
-        "backdrop-blur-md",
-        toastVariants[variant],
+        "group pointer-events-auto relative flex w-full items-start justify-between gap-3 overflow-hidden rounded-xl p-4 shadow-lg",
+        "shadow-xl backdrop-blur-sm",
+        "transition-all duration-200 ease-out",
+        "data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)]",
+        "data-[swipe=move]:transition-none",
+        variantStyles.container,
         className
       )}
       {...props}
@@ -61,7 +90,11 @@ const ToastAction = React.forwardRef<
   <ToastPrimitive.Action
     ref={ref}
     className={cn(
-      "hover:bg-secondary focus:ring-ring group-[.destructive]:border-muted/40 group-[.destructive]:hover:border-destructive/30 group-[.destructive]:hover:bg-destructive group-[.destructive]:hover:text-destructive-foreground group-[.destructive]:focus:ring-destructive inline-flex h-8 shrink-0 items-center justify-center rounded-md border bg-transparent px-3 text-sm font-medium transition-colors focus:ring-1 focus:outline-none disabled:pointer-events-none disabled:opacity-50",
+      "inline-flex h-8 shrink-0 items-center justify-center rounded-lg border border-slate-300 bg-white px-3 text-sm font-medium transition-all duration-200 dark:border-slate-600 dark:bg-slate-700",
+      "hover:border-slate-400 hover:bg-slate-50 dark:hover:border-slate-500 dark:hover:bg-slate-600",
+      "focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none dark:focus:ring-offset-slate-800",
+      "disabled:pointer-events-none disabled:opacity-50",
+      "text-slate-700 dark:text-slate-200",
       className
     )}
     {...props}
@@ -76,7 +109,10 @@ const ToastClose = React.forwardRef<
   <ToastPrimitive.Close
     ref={ref}
     className={cn(
-      "text-foreground/50 hover:text-foreground absolute top-1 right-1 rounded-md p-1 opacity-0 transition-opacity group-hover:opacity-100 group-[.destructive]:text-red-300 group-[.destructive]:hover:text-red-50 focus:opacity-100 focus:ring-1 focus:outline-none group-[.destructive]:focus:ring-red-400 group-[.destructive]:focus:ring-offset-red-600",
+      "absolute top-2 right-2 rounded-lg p-1.5 text-slate-400 dark:text-slate-500",
+      "opacity-70 transition-all duration-200",
+      "hover:bg-slate-100 hover:text-slate-600 hover:opacity-100 dark:hover:bg-slate-700 dark:hover:text-slate-300",
+      "focus:opacity-100 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none dark:focus:ring-offset-slate-800",
       className
     )}
     toast-close=""
@@ -93,7 +129,11 @@ const ToastTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitive.Title
     ref={ref}
-    className={cn("text-sm font-semibold [&+div]:text-xs", className)}
+    className={cn(
+      "text-sm leading-5 font-semibold",
+      "[&+div]:mt-1 [&+div]:text-xs",
+      className
+    )}
     {...props}
   />
 ));
@@ -105,13 +145,12 @@ const ToastDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitive.Description
     ref={ref}
-    className={cn("text-sm opacity-90", className)}
+    className={cn("text-sm leading-5 opacity-80", className)}
     {...props}
   />
 ));
 ToastDescription.displayName = ToastPrimitive.Description.displayName;
 
-// Custom Toast Content Component with Icons
 interface ToastContentProps {
   variant?: keyof typeof toastVariants;
   title: string;
@@ -125,26 +164,37 @@ const ToastContent: React.FC<ToastContentProps> = ({
   description,
   action
 }) => {
+  const variantStyles = toastVariants[variant];
+
   const getIcon = () => {
+    const iconClass = cn("h-5 w-5 flex-shrink-0", variantStyles.icon);
+
     switch (variant) {
       case "success":
-        return <CheckCircle className="h-5 w-5 flex-shrink-0" />;
+        return <CheckCircle className={iconClass} />;
       case "destructive":
-        return <AlertCircle className="h-5 w-5 flex-shrink-0" />;
+        return <AlertCircle className={iconClass} />;
       case "warning":
-        return <AlertTriangle className="h-5 w-5 flex-shrink-0" />;
+        return <AlertTriangle className={iconClass} />;
       case "info":
-        return <Info className="h-5 w-5 flex-shrink-0" />;
+        return <Info className={iconClass} />;
       default:
-        return <Info className="h-5 w-5 flex-shrink-0" />;
+        return <Info className={iconClass} />;
     }
   };
 
   return (
     <>
-      <div className="flex flex-1 items-start gap-3">
-        {getIcon()}
-        <div className="flex-1 space-y-1">
+      <div
+        className={cn(
+          "absolute top-0 left-0 h-full w-1 rounded-l-xl",
+          variantStyles.accent
+        )}
+      />
+
+      <div className="flex flex-1 items-start gap-3 pl-2">
+        <div className="mt-0.5 flex-shrink-0">{getIcon()}</div>
+        <div className="min-w-0 flex-1 space-y-1">
           <ToastTitle>{title}</ToastTitle>
           {description && <ToastDescription>{description}</ToastDescription>}
         </div>
@@ -155,7 +205,6 @@ const ToastContent: React.FC<ToastContentProps> = ({
   );
 };
 
-// Enhanced Toast with Motion
 const MotionToast = React.forwardRef<
   React.ElementRef<typeof Toast>,
   React.ComponentPropsWithoutRef<typeof Toast> & {
@@ -163,29 +212,81 @@ const MotionToast = React.forwardRef<
     title: string;
     description?: string;
     action?: React.ReactNode;
+    duration?: number;
   }
->(({ variant = "default", title, description, action, ...props }, ref) => (
-  <motion.div
-    initial={{ opacity: 0, y: 50, scale: 0.3 }}
-    animate={{ opacity: 1, y: 0, scale: 1 }}
-    exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 } }}
-    transition={{
-      type: "spring",
-      stiffness: 300,
-      damping: 30,
-      duration: 0.4
-    }}
-  >
-    <Toast ref={ref} variant={variant} {...props}>
-      <ToastContent
-        variant={variant}
-        title={title}
-        description={description}
-        action={action}
-      />
-    </Toast>
-  </motion.div>
-));
+>(
+  (
+    {
+      variant = "default",
+      title,
+      description,
+      action,
+      duration = 5000,
+      ...props
+    },
+    ref
+  ) => {
+    const variantStyles = toastVariants[variant];
+
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 50, scale: 0.95 }}
+        animate={{
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          transition: {
+            type: "spring",
+            stiffness: 400,
+            damping: 30
+          }
+        }}
+        exit={{
+          opacity: 0,
+          x: 100,
+          scale: 0.95,
+          transition: { duration: 0.25, ease: "easeInOut" }
+        }}
+        drag="x"
+        dragConstraints={{ left: 0, right: 0 }}
+        dragElastic={0.5}
+        onDragEnd={(_, info) => {
+          if (info.offset.x > 100 || info.offset.x < -100) {
+            props.onOpenChange?.(false);
+          }
+        }}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        layout
+      >
+        <Toast ref={ref} variant={variant} {...props}>
+          <ToastContent
+            variant={variant}
+            title={title}
+            description={description}
+            action={action}
+          />
+
+          {duration > 0 && (
+            <motion.div
+              className={cn(
+                "absolute bottom-0 left-0 h-1 rounded-bl-xl",
+                variantStyles.accent,
+                "opacity-60"
+              )}
+              initial={{ width: "100%" }}
+              animate={{ width: "0%" }}
+              transition={{
+                duration: duration / 1000,
+                ease: "linear"
+              }}
+            />
+          )}
+        </Toast>
+      </motion.div>
+    );
+  }
+);
 MotionToast.displayName = "MotionToast";
 
 type ToastProps = React.ComponentPropsWithoutRef<typeof Toast>;

@@ -85,6 +85,56 @@ export const en = {
       results: "Search Results",
       noResults: "No results",
       seeAllResults: "See all results"
+    },
+    toast: {
+      addedTitle: "{{item}} Added Successfully",
+      addedDescription: "{{item}} has been added to the system.",
+      updatedTitle: "{{item}} Updated",
+      updatedDescription: "{{item}} has been updated successfully.",
+      deletedTitle: "{{item}} Deleted",
+      deletedDescription: "{{item}} has been permanently removed.",
+      savedTitle: "{{item}} Saved",
+      savedDescription: "Your changes have been saved successfully.",
+      failedTitle: "{{action}} Failed",
+      failedDescription: "An error occurred while performing this action.",
+
+      success: "Success",
+      error: "Error",
+      warning: "Warning",
+      info: "Information",
+
+      added: "Added Successfully",
+      updated: "Updated Successfully",
+      deleted: "Deleted Successfully",
+      saved: "Saved Successfully",
+      failed: "Operation Failed",
+      loading: "Loading",
+
+      patientAdded: "Patient added successfully",
+      patientUpdated: "Patient updated successfully",
+      patientDeleted: "Patient deleted successfully",
+
+      bookingAdded: "Booking created successfully",
+      bookingUpdated: "Booking updated successfully",
+      bookingDeleted: "Booking cancelled successfully",
+      bookingConfirmed: "Booking confirmed",
+      bookingCancelled: "Booking cancelled",
+
+      settingsSaved: "Settings saved successfully",
+      dataSynced: "Data synchronized successfully",
+      exportSuccess: "Data exported successfully",
+      importSuccess: "Data imported successfully",
+
+      operation: {
+        successful: "Operation completed successfully",
+        failed: "Operation failed. Please try again."
+      },
+
+      logout: "Logged out successfully",
+
+      validationError: "Please check your input and try again.",
+      networkError: "Network error. Please check your connection.",
+      permissionDenied: "Permission denied. Please contact your administrator."
     }
   }
 };

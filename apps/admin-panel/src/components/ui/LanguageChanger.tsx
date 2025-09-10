@@ -26,7 +26,7 @@ export const LanguageChanger: React.FC<LanguageChangerProps> = ({
   return (
     <div className={cn("relative scale-[80%] sm:scale-[90%]", className)}>
       <Select value={language} onValueChange={changeLanguageHandler}>
-        <SelectTrigger className="border-border/50 bg-background/50 hover:bg-background/80 hover:border-primary/30 group h-11 w-28 rounded-2xl transition-all duration-300">
+        <SelectTrigger className="border-border/50 bg-background/50 hover:bg-background/80 hover:border-primary/30 group h-11 w-28 rounded-2xl transition-all duration-200">
           <div className="flex items-center gap-2">
             <div className="relative">
               <div className="border-border/30 h-6 w-6 overflow-hidden rounded-full border shadow-sm">
@@ -34,9 +34,9 @@ export const LanguageChanger: React.FC<LanguageChangerProps> = ({
                   {language === "en" ? "🇺🇸" : "🇬🇪"}
                 </span>
               </div>
-              <div className="from-primary/20 to-accent/20 absolute -inset-0.5 rounded-full bg-gradient-to-br opacity-0 blur-sm transition-all duration-300 group-hover:opacity-100 group-hover:blur-md"></div>
+              <div className="from-primary/20 to-accent/20 absolute -inset-0.5 rounded-full bg-gradient-to-br opacity-0 blur-sm transition-all duration-200 group-hover:opacity-100 group-hover:blur-md"></div>
             </div>
-            <span className="text-foreground/80 group-hover:text-foreground text-xs font-medium transition-colors duration-300">
+            <span className="text-foreground/80 group-hover:text-foreground text-xs font-medium transition-colors duration-200">
               {language.toUpperCase()}
             </span>
           </div>
