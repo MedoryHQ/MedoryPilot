@@ -50,19 +50,6 @@
   --chart-3: #60a5fa;
   --chart-4: #93c5fd;
   --chart-5: #dbeafe;
-
-  --toast-background: var(--background);
-  --toast-foreground: var(--foreground);
-  --toast-border: var(--border);
-  --toast-success: var(--success);
-  --toast-success-foreground: var(--success-foreground);
-  --toast-destructive: var(--destructive);
-  --toast-destructive-foreground: var(--destructive-foreground);
-  --toast-warning: var(--warning);
-  --toast-warning-foreground: var(--warning-foreground);
-  --toast-info: var(--primary);
-  --toast-info-foreground: var(--primary-foreground);
-
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -159,17 +146,6 @@
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: #0f1629;
   --sidebar-ring: var(--accent);
-  --toast-background: var(--background);
-  --toast-foreground: var(--foreground);
-  --toast-border: var(--border);
-  --toast-success: var(--success);
-  --toast-success-foreground: var(--success-foreground);
-  --toast-destructive: var(--destructive);
-  --toast-destructive-foreground: var(--destructive-foreground);
-  --toast-warning: var(--warning);
-  --toast-warning-foreground: var(--warning-foreground);
-  --toast-info: var(--primary);
-  --toast-info-foreground: var(--primary-foreground);
 }
 
 @theme inline {
@@ -931,19 +907,6 @@ button,
     max-width: 70px !important;
     height: 74px !important;
   }
-
-  [data-radix-toast-viewport] {
-    left: 1rem !important;
-    right: 1rem !important;
-    bottom: 1rem !important;
-    width: auto !important;
-    max-width: none !important;
-  }
-
-  [data-radix-toast-root] {
-    border-radius: 0.75rem;
-    min-height: 3.5rem;
-  }
 }
 
 @media (max-width: 420px) {
@@ -1067,48 +1030,6 @@ button,
   }
 }
 
-@keyframes toastSlideInBottom {
-  from {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes toastSlideInTop {
-  from {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes toastSlideOutRight {
-  from {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-}
-
-@keyframes toastProgress {
-  from {
-    width: 100%;
-  }
-  to {
-    width: 0%;
-  }
-}
-
 .slide-in {
   animation: slideIn 0.3s ease-out;
 }
@@ -1127,32 +1048,4 @@ button,
 
 .animate-out {
   animation: exit 0.2s ease-in forwards;
-}
-
-[data-theme="dark"] .toast-viewport {
-  --toast-background: hsl(var(--background));
-  --toast-foreground: hsl(var(--foreground));
-  --toast-border: hsl(var(--border));
-}
-
-[data-theme="light"] .toast-viewport {
-  --toast-background: hsl(var(--background));
-  --toast-foreground: hsl(var(--foreground));
-  --toast-border: hsl(var(--border));
-}
-
-/* Ensure toasts are always on top */
-[data-radix-toast-viewport] {
-  position: fixed !important;
-  z-index: 2147483647 !important;
-}
-
-/* Toast hover and focus states */
-[data-radix-toast-root]:hover {
-  box-shadow: var(--shadow-lg);
-}
-
-[data-radix-toast-root]:focus-visible {
-  outline: 2px solid hsl(var(--ring));
-  outline-offset: 2px;
 }
