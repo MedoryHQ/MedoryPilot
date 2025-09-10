@@ -71,7 +71,7 @@ const Toast = React.forwardRef<
       className={cn(
         "group pointer-events-auto relative flex w-full items-start justify-between gap-3 overflow-hidden rounded-xl p-4 shadow-lg",
         "shadow-xl backdrop-blur-sm",
-        "transition-all duration-300 ease-out",
+        "transition-all duration-200 ease-out",
         "data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)]",
         "data-[swipe=move]:transition-none",
         variantStyles.container,

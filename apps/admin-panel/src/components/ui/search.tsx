@@ -184,7 +184,7 @@ export const Search: React.FC<SearchProps> = ({
         onChange={(e) => handleSearch(e.target.value)}
         onFocus={() => setSearchFocused(true)}
         placeholder={toUpperCase(t("global.search"))}
-        className={`bg-muted/50 text-foreground border-border h-10 rounded-lg pr-4 pl-12 transition-all duration-300 ${
+        className={`bg-muted/50 text-foreground border-border h-10 rounded-lg pr-4 pl-12 transition-all duration-200 ${
           isMobile
             ? searchFocused
               ? "w-full"
@@ -240,7 +240,7 @@ export const Search: React.FC<SearchProps> = ({
               </div>
               <div
                 onClick={() => handleSeeAll()}
-                className="text-primary hover:bg-primary/10 flex cursor-pointer items-center justify-center p-4 text-[14px] font-medium transition-all duration-300 md:text-[14px]"
+                className="text-primary hover:bg-primary/10 flex cursor-pointer items-center justify-center p-4 text-[14px] font-medium transition-all duration-200 md:text-[14px]"
               >
                 {toUpperCase(t("search.seeAllResults"))}
               </div>

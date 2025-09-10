@@ -15,7 +15,7 @@ import { useToast } from "@/hooks";
 
 const getToastStyles = (variant?: string, index?: number) => {
   const baseStyles =
-    "group pointer-events-auto relative flex w-full items-start gap-3 overflow-hidden p-4 shadow-xl backdrop-blur-sm transition-all duration-300 ease-out";
+    "group pointer-events-auto relative flex w-full items-start gap-3 overflow-hidden p-4 shadow-xl backdrop-blur-sm transition-all duration-200 ease-out";
 
   const radiusVariations = [
     "rounded-xl",
