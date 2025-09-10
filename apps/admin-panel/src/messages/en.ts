@@ -130,6 +130,8 @@ export const en = {
         failed: "Operation failed. Please try again."
       },
 
+      logout: "Logged out successfully",
+
       validationError: "Please check your input and try again.",
       networkError: "Network error. Please check your connection.",
       permissionDenied: "Permission denied. Please contact your administrator."

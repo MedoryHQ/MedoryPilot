@@ -17,9 +17,13 @@ interface LayoutProps {
 
 interface LoadingScreenProps {
   collapsed: boolean;
+  isAuth: boolean;
 }
 
-export const LoadingScreen: React.FC<LoadingScreenProps> = ({ collapsed }) => {
+export const LoadingScreen: React.FC<LoadingScreenProps> = ({
+  collapsed,
+  isAuth
+}) => {
   return (
     <div
       className={cn(
@@ -27,7 +31,9 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ collapsed }) => {
       )}
     >
       <Spin
-        className={cn(collapsed ? "md:left-[36px]" : "md:left-[120px]")}
+        className={cn(
+          isAuth ? "left-0" : collapsed ? "md:left-[36px]" : "md:left-[120px]"
+        )}
         size="large"
       />
     </div>
@@ -122,11 +128,21 @@ const CustomLayout: React.FC<LayoutProps> = ({ children, route }) => {
             <Sidebar />
             <MobileNavigation />
             <Shell>
-              {checking ? <LoadingScreen collapsed={collapsed} /> : children}
+              {checking ? (
+                <LoadingScreen
+                  collapsed={collapsed}
+                  isAuth={Boolean(route.isAuthRoute)}
+                />
+              ) : (
+                children
+              )}
             </Shell>
           </>
         ) : checking ? (
-          <LoadingScreen collapsed={collapsed} />
+          <LoadingScreen
+            collapsed={collapsed}
+            isAuth={Boolean(route.isAuthRoute)}
+          />
         ) : (
           children
         )}
