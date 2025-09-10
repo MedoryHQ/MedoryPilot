@@ -2,13 +2,13 @@ import { Form, Button as AntButton } from "antd";
 import { useMutation } from "react-query";
 import axios from "@/api/axios";
 import { ResponseError } from "@/types";
-import { returnError, setFormErrors, toUpperCase } from "@/utils";
+import { setFormErrors, toUpperCase } from "@/utils";
 import { useAuthStore } from "@/store";
-import useApp from "antd/es/app/useApp";
 import { useEffect, useState } from "react";
 import { InputOTP } from "antd-input-otp";
 import { useTranslation } from "react-i18next";
 import { Button } from "../ui";
+import { useToast } from "@/hooks";
 
 interface Props {
   onSuccess: () => void;
@@ -29,12 +29,12 @@ const parseSentAt = (raw: string | null): number | null => {
 
 const OtpVerificationForm = ({ onSuccess, email }: Props) => {
   const [form] = Form.useForm();
-  const { message } = useApp();
   const { login, otpSentAt, setOtpSent, clearOtp } = useAuthStore();
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const { t, i18n } = useTranslation();
   const [codeArray, setCodeArray] = useState<string[]>(Array(4).fill(""));
   const [localError, setLocalError] = useState<string | null>(null);
+  const { toast } = useToast(t);
 
   const code = codeArray.join("").trim();
 
@@ -86,7 +86,7 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
       return data;
     },
     onSuccess: (data) => {
-      message.success(toUpperCase(data.message[i18n.language]));
+      toast.success(t("toast.success"), data.message[i18n.language]);
       login({
         data: {
           user: data.data.user
@@ -98,7 +98,7 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
       onSuccess();
     },
     onError: (error: ResponseError) => {
-      setFormErrors(error, message, form);
+      setFormErrors(error, toast, t, i18n.language as "ka" | "en", form);
     }
   });
 
@@ -108,13 +108,12 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
       return data;
     },
     onSuccess: (data) => {
-      message.success(data.message[i18n.language]);
+      toast.success(t("toast.success"), data.message[i18n.language]);
       setOtpSent(email);
       setTimeLeft(Math.ceil(OTP_TTL_MS / 1000));
     },
     onError: (error: ResponseError) => {
-      setFormErrors(error, message, form);
-      returnError(error, "OTP verification failed");
+      setFormErrors(error, toast, t, i18n.language as "ka" | "en", form);
     }
   });
 

@@ -26,7 +26,7 @@ const LoginForm = ({ onSuccess, setEmail }: Props) => {
     },
     onSuccess: (data, variables) => {
       form.resetFields();
-      toast.success(t("toast.success"), t("toast.operation.successful"));
+      toast.success(t("toast.success"), data.message[i18n.language]);
       const hasUser = Boolean(data?.data && data.data.user);
       onSuccess(variables.email, !hasUser ? true : false, data);
     },
