@@ -1,7 +1,5 @@
 import { ResponseError } from "@/types";
 import { FormInstance } from "antd";
-import { MessageInstance } from "antd/es/message/interface";
-import i18n from "i18next";
 
 const defaultError = {
   en: "Something went wrong",
@@ -19,23 +17,25 @@ export const isJson = (str: string) => {
 
 export const throwErrMessage = (
   err: ResponseError,
-  message: MessageInstance
+  toast: ReturnType<any>["toast"],
+  t: (key: string) => string,
+  lang: "ka" | "en"
 ) => {
-  const lang = i18n.language as "ka" | "en";
-  if (err.response.data.error) {
-    message.error(err.response.data.error[lang]);
+  if (err?.response?.data?.error) {
+    toast.error(t("toast.error"), err.response.data.error[lang]);
   } else {
-    message.error(defaultError[lang]);
+    toast.error(t("toast.error"), defaultError[lang]);
   }
 };
 
 export const setFormErrors = (
   err: ResponseError,
-  message: MessageInstance,
+  toast: ReturnType<any>["toast"],
+  t: (key: string) => string,
+  lang: "ka" | "en",
   form?: FormInstance
 ) => {
-  if (err.response.data.errors) {
-    const lang = i18n.language as "ka" | "en";
+  if (err?.response?.data?.errors) {
     err.response.data.errors.forEach((error) => {
       const errorMessage =
         typeof error.message === "string"
@@ -55,13 +55,13 @@ export const setFormErrors = (
             }
           ]);
         } else {
-          message.error(errorMessage);
+          toast.error(t("toast.validationError"), errorMessage);
         }
       } else {
-        message.error(errorMessage);
+        toast.error(t("toast.validationError"), errorMessage);
       }
     });
   } else {
-    throwErrMessage(err, message);
+    throwErrMessage(err, toast, t, lang);
   }
 };
