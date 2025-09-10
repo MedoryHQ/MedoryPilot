@@ -36,13 +36,37 @@ export const SidebarFooter: React.FC<SideBarFooterProps> = ({
   return (
     <div className="flex-shrink-0 border-t border-[var(--sidebar-border)] p-4">
       <AnimatePresence>
-        {!collapsed ? (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-          >
-            <DropdownMenu open={showUserMenu} onOpenChange={setShowUserMenu}>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 10 }}
+        >
+          <DropdownMenu open={showUserMenu} onOpenChange={setShowUserMenu}>
+            {collapsed ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-12 w-12 rounded-xl hover:bg-white/10"
+                    >
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-600 text-sm font-semibold text-white">
+                          {toUpperCase(t("sidebar.doctor"))}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="right"
+                  className="bg-sidebar border-sidebar-border rounded-lg border p-3 text-xs font-medium text-white shadow-lg backdrop-blur-sm"
+                >
+                  <p>{userName}</p>
+                </TooltipContent>
+              </Tooltip>
+            ) : (
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
@@ -71,96 +95,48 @@ export const SidebarFooter: React.FC<SideBarFooterProps> = ({
                   </div>
                 </Button>
               </DropdownMenuTrigger>
+            )}
 
-              <DropdownMenuContent
-                side="top"
-                align="end"
-                className="w-56 rounded-xl border-0 bg-white p-1.5 text-black shadow-xl"
-                sideOffset={8}
+            <DropdownMenuContent
+              side="top"
+              align="end"
+              className="w-56 rounded-xl border-0 bg-white p-1.5 text-black shadow-xl"
+              sideOffset={8}
+            >
+              <DropdownMenuItem
+                onClick={() => onPageChange("settings/profile")}
+                className="flex cursor-pointer items-center gap-3 rounded-lg py-3"
               >
-                <DropdownMenuItem
-                  onClick={() => onPageChange("settings/profile")}
-                  className="flex cursor-pointer items-center gap-3 rounded-lg py-3"
-                >
-                  <User className="h-4 w-4 text-gray-500" />
-                  <span>{toUpperCase(t("sidebar.profile"))}</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => onPageChange("settings")}
-                  className="flex cursor-pointer items-center gap-3 rounded-lg py-3"
-                >
-                  <Settings className="h-4 w-4 text-gray-500" />
-                  <span>{toUpperCase(t("sidebar.settings"))}</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => onPageChange("settings/help-and-support")}
-                  className="flex cursor-pointer items-center gap-3 rounded-lg py-3"
-                >
-                  <HelpCircle className="h-4 w-4 text-gray-500" />
-                  <span>{toUpperCase(t("sidebar.helpAndSupport"))}</span>
-                </DropdownMenuItem>
-
-                <DropdownMenuSeparator className="bg-gray-100" />
-
-                <DropdownMenuItem
-                  className="flex cursor-pointer items-center gap-3 rounded-lg py-3 text-red-600 focus:bg-red-50 focus:text-red-600"
-                  onClick={logout}
-                >
-                  <LogOut className="h-4 w-4" />
-                  <span>{toUpperCase(t("sidebar.logout"))}</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </motion.div>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="flex justify-center"
-          >
-            <DropdownMenu>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-12 w-12 rounded-xl hover:bg-white/10"
-                    >
-                      <Avatar className="h-8 w-8">
-                        <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-600 text-sm font-semibold text-white">
-                          {toUpperCase(t("sidebar.doctor"))}
-                        </AvatarFallback>
-                      </Avatar>
-                    </Button>
-                  </DropdownMenuTrigger>
-                </TooltipTrigger>
-                <TooltipContent
-                  side="right"
-                  className="rounded-lg border border-[#3a4866] bg-[#243149] p-3 text-xs font-medium text-white shadow-lg backdrop-blur-sm"
-                >
-                  <p>{userName}</p>
-                </TooltipContent>
-              </Tooltip>
-
-              <DropdownMenuContent
-                side="top"
-                align="end"
-                className="w-48 rounded-xl border-0 bg-white px-3 text-black shadow-xl"
-                sideOffset={8}
+                <User className="h-4 w-4 text-gray-500" />
+                <span>{toUpperCase(t("sidebar.profile"))}</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => onPageChange("settings")}
+                className="flex cursor-pointer items-center gap-3 rounded-lg py-3"
               >
-                <DropdownMenuItem
-                  className="flex cursor-pointer items-center gap-3 rounded-lg py-3 text-red-600 focus:bg-red-50 focus:text-red-600"
-                  onClick={logout}
-                >
-                  <LogOut className="h-4 w-4" />
-                  <span>{toUpperCase(t("sidebar.logout"))}</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </motion.div>
-        )}
+                <Settings className="h-4 w-4 text-gray-500" />
+                <span>{toUpperCase(t("sidebar.settings"))}</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => onPageChange("settings/help-and-support")}
+                className="flex cursor-pointer items-center gap-3 rounded-lg py-3"
+              >
+                <HelpCircle className="h-4 w-4 text-gray-500" />
+                <span>{toUpperCase(t("sidebar.helpAndSupport"))}</span>
+              </DropdownMenuItem>
+
+              <DropdownMenuSeparator className="bg-gray-100" />
+
+              <DropdownMenuItem
+                className="flex cursor-pointer items-center gap-3 rounded-lg py-3 text-red-600 focus:bg-red-50 focus:text-red-600"
+                onClick={logout}
+              >
+                <LogOut className="h-4 w-4" />
+                <span>{toUpperCase(t("sidebar.logout"))}</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </motion.div>
       </AnimatePresence>
     </div>
   );
