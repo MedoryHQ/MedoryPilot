@@ -87,6 +87,7 @@ export const ka = {
       noResults: "შედეგი ვერ მოიძებნა",
       seeAllResults: "ყველა შედეგის ნახვა"
     },
+
     toast: {
       addedTitle: "{{item}} დამატებულია წარმატებით",
       addedDescription: "{{item}} დაემატა სისტემაში.",
@@ -98,31 +99,40 @@ export const ka = {
       savedDescription: "თქვენი ცვლილებები წარმატებით შეინახა.",
       failedTitle: "{{action}} ვერ შესრულდა",
       failedDescription: "მოხდა შეცდომა ამ მოქმედების შესრულებისას.",
+
       success: "წარმატება",
       error: "შეცდომა",
       warning: "გაფრთხილება",
       info: "ინფორმაცია",
+
       added: "წარმატებით დაემატა",
       updated: "წარმატებით განახლდა",
       deleted: "წარმატებით წაიშალა",
       saved: "წარმატებით შეინახა",
       failed: "ოპერაცია ვერ შესრულდა",
       loading: "იტვირთება",
+
       patientAdded: "პაციენტი წარმატებით დაემატა",
       patientUpdated: "პაციენტი წარმატებით განახლდა",
       patientDeleted: "პაციენტი წარმატებით წაიშალა",
+
       bookingAdded: "ჯავშანი წარმატებით შეიქმნა",
       bookingUpdated: "ჯავშანი წარმატებით განახლდა",
       bookingDeleted: "ჯავშანი წარმატებით გაუქმდა",
       bookingConfirmed: "ჯავშანი დადასტურდა",
       bookingCancelled: "ჯავშანი გაუქმდა",
+
       settingsSaved: "პარამეტრები წარმატებით შეინახა",
       dataSynced: "მონაცემები წარმატებით სინქრონიზირდა",
       exportSuccess: "მონაცემები წარმატებით გაიტანა",
       importSuccess: "მონაცემები წარმატებით შემოიტანა",
-      operationSuccessful: "ოპერაცია წარმატებით დასრულდა",
-      operationFailed: "ოპერაცია ვერ შესრულდა. გთხოვთ სცადოთ ხელახლა.",
-      validationFrror:
+
+      operation: {
+        successful: "ოპერაცია წარმატებით დასრულდა",
+        failed: "ოპერაცია ვერ შესრულდა. გთხოვთ სცადოთ ხელახლა."
+      },
+
+      validationError:
         "გთხოვთ გადაამოწმოთ თქვენი შეყვანილი მონაცემები და სცადოთ ხელახლა.",
       networkError: "ქსელის შეცდომა. გთხოვთ გადაამოწმოთ კავშირი.",
       permissionDenied: "წვდომა უარყოფილია. გთხოვთ დაუკავშირდეთ ადმინისტრატორს."

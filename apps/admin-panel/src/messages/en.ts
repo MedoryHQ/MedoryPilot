@@ -97,31 +97,40 @@ export const en = {
       savedDescription: "Your changes have been saved successfully.",
       failedTitle: "{{action}} Failed",
       failedDescription: "An error occurred while performing this action.",
+
       success: "Success",
       error: "Error",
       warning: "Warning",
       info: "Information",
+
       added: "Added Successfully",
       updated: "Updated Successfully",
       deleted: "Deleted Successfully",
       saved: "Saved Successfully",
       failed: "Operation Failed",
       loading: "Loading",
+
       patientAdded: "Patient added successfully",
       patientUpdated: "Patient updated successfully",
       patientDeleted: "Patient deleted successfully",
+
       bookingAdded: "Booking created successfully",
       bookingUpdated: "Booking updated successfully",
       bookingDeleted: "Booking cancelled successfully",
       bookingConfirmed: "Booking confirmed",
       bookingCancelled: "Booking cancelled",
+
       settingsSaved: "Settings saved successfully",
       dataSynced: "Data synchronized successfully",
       exportSuccess: "Data exported successfully",
       importSuccess: "Data imported successfully",
-      operationSuccessful: "Operation completed successfully",
-      operationFailed: "Operation failed. Please try again.",
-      validationFrror: "Please check your input and try again.",
+
+      operation: {
+        successful: "Operation completed successfully",
+        failed: "Operation failed. Please try again."
+      },
+
+      validationError: "Please check your input and try again.",
       networkError: "Network error. Please check your connection.",
       permissionDenied: "Permission denied. Please contact your administrator."
     }
