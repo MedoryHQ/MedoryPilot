@@ -1,2 +1,2 @@
 export * from "./handleError";
-export * from "./antd";
+export * from "./error";
