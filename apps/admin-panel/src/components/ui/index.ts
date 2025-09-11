@@ -37,3 +37,4 @@ export * from "./form";
 export * from "./tabs";
 export * from "./toast";
 export * from "./toaster";
+export * from "./input";
