@@ -7,7 +7,7 @@ export const en = {
       platform: "Healthcare Platform",
       doctor: "Tamar Chaduneli",
       adminPannel: "Medory Admin Panel",
-      overview: "Doctor Helper Platform",
+      overview: "Doctor Assistant Platform",
       search: "Search...",
       close: "Close",
       preferences: "Preferences",

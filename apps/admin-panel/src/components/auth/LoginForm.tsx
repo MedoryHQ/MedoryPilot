@@ -159,4 +159,4 @@ const LoginForm = ({ onSuccess }: Props) => {
   );
 };
 
-export default LoginForm;
+export { LoginForm };

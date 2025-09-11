@@ -94,8 +94,8 @@ const CustomLayout: React.FC<LayoutProps> = ({ children, route }) => {
     }
 
     if (!isAuthRoute && !isLoggedIn) {
-      if (location.pathname !== "/auth") {
-        navigate("/auth", { replace: true });
+      if (location.pathname !== "/login") {
+        navigate("/login", { replace: true });
       }
       return;
     }
