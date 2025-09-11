@@ -14,7 +14,7 @@
   --content-border: #e6edf3;
   --accent: #1677ff;
 
-  --sidebar-bg-light: #243149;
+  --sidebar-bg-light: #033372;
   --site-frame-bg-light: #2c3b57;
   --sidebar-bg: var(--sidebar-bg-light);
   --site-frame-bg: var(--site-frame-bg-light);
@@ -64,7 +64,7 @@
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: var(--accent);
   --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #3a4866;
+  --sidebar-border: #19529d;
   --sidebar-ring: var(--accent);
   --sidebar-hover: rgba(255, 255, 255, 0.1);
   --sidebar-active: rgba(255, 255, 255, 0.15);
@@ -142,7 +142,9 @@
   --sidebar-foreground: #ffffff;
   --sidebar-primary: var(--accent);
   --sidebar-primary-foreground: #ffffff;
+  --sidebar-hover: #2a4ac81a;
   --sidebar-accent: var(--accent);
+  --sidebar-active: #0b69a726;
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: #0f1629;
   --sidebar-ring: var(--accent);

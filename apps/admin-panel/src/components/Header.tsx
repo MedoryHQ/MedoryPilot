@@ -46,9 +46,6 @@ export const Header: React.FC = () => {
 
       <motion.div
         className="bg-background page-transition-container"
-        animate={{
-          marginLeft: isMobile ? 0 : collapsed ? 72 : 240
-        }}
         transition={{
           duration: 0.3,
           ease: [0.16, 1, 0.3, 1]

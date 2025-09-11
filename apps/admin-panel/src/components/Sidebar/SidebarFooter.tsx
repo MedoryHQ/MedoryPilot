@@ -72,7 +72,7 @@ export const SidebarFooter: React.FC<SideBarFooterProps> = ({
                   variant="ghost"
                   className="h-auto w-full rounded-xl p-3 text-left hover:bg-white/10"
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex w-full items-center justify-between gap-3">
                     <Avatar className="h-10 w-10 ring-2 ring-white/20">
                       <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-600 font-semibold text-white">
                         {toUpperCase(t("sidebar.doctor"))}
