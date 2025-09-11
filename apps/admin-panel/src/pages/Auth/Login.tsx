@@ -82,7 +82,7 @@ const Login = () => {
         </div>
 
         <div className="flex flex-1 items-center justify-center px-8">
-          <div className="w-full max-w-md">
+          <div className="w-full max-w-md lg:max-w-[470px]">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

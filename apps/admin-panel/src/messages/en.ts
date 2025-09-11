@@ -40,7 +40,7 @@ export const en = {
         email: "Email",
         password: "Password",
         remember: "Remember Me",
-        login: "Login"
+        login: "Sign In"
       },
       otpForm: {
         verify: "Verify",

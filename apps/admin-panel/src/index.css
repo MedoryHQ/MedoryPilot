@@ -404,12 +404,18 @@ button,
 }
 
 .ant-form-item-label {
-  padding-bottom: 2px;
+  padding-bottom: 2px !important;
+  font-size: 13px;
+  font-weight: 500;
 }
 
 .ant-form-item-required {
   font-size: 12px !important;
   height: 12px !important;
+}
+
+.ant-input-affix-wrapper {
+  border-radius: 14px;
 }
 
 .ant-form-item-required::before {

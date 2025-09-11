@@ -6,9 +6,7 @@ import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
 import { Button } from "../ui";
 import { useToast } from "@/hooks/useToast";
-
-const UserIcon = () => <span style={{ color: "#9ca3af" }}>👤</span>;
-const LockIcon = () => <span style={{ color: "#9ca3af" }}>🔒</span>;
+import { Mail } from "lucide-react";
 
 interface Props {
   onSuccess: (email: string, requiresOtp: boolean, payload?: any) => void;
@@ -72,7 +70,10 @@ const LoginForm = ({ onSuccess }: Props) => {
           ]}
         >
           <Input
-            prefix={<UserIcon />}
+            suffix={<Mail className="text-auth-text-secondary/50 h-5 w-5" />}
+            classNames={{
+              input: "h-[26px]"
+            }}
             placeholder={toUpperCase(t("auth.loginForm.email"))}
             className="rounded-lg"
           />
@@ -93,7 +94,9 @@ const LoginForm = ({ onSuccess }: Props) => {
           ]}
         >
           <Input.Password
-            prefix={<LockIcon />}
+            classNames={{
+              input: "h-[26px]"
+            }}
             placeholder={toUpperCase(t("auth.loginForm.password"))}
             className="rounded-lg"
           />
@@ -107,7 +110,7 @@ const LoginForm = ({ onSuccess }: Props) => {
         <Button
           type="submit"
           loading={isLoading}
-          className="premium-button floating-action mt-2 w-full rounded-lg"
+          className="premium-button floating-action mt-2 h-[40px] w-full rounded-lg text-[16px] font-semibold"
         >
           {toUpperCase(t("auth.loginForm.login"))}
         </Button>
