@@ -58,6 +58,14 @@
   --shadow-xl:
     0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 
+  --auth-form-bg: #f8fafc;
+  --auth-visual-bg: #1e40af;
+  --auth-visual-secondary: #3b82f6;
+  --auth-input-bg: #ffffff;
+  --auth-input-border: #cbd5e1;
+  --auth-text-primary: #1e293b;
+  --auth-text-secondary: #64748b;
+
   --sidebar: var(--sidebar-bg);
   --sidebar-foreground: #ffffff;
   --sidebar-primary: var(--accent);
@@ -148,6 +156,14 @@
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: #0f1629;
   --sidebar-ring: var(--accent);
+
+  --auth-form-bg: #0f172a;
+  --auth-visual-bg: #1e40af;
+  --auth-visual-secondary: #3b82f6;
+  --auth-input-bg: #1e293b;
+  --auth-input-border: #475569;
+  --auth-text-primary: #f1f5f9;
+  --auth-text-secondary: #94a3b8;
 }
 
 @theme inline {
@@ -202,6 +218,13 @@
   --color-content-border: var(--content-border);
   --color-sidebar-hover: var(--sidebar-hover);
   --color-sidebar-active: var(--sidebar-active);
+  --color-auth-form-bg: var(--auth-form-bg);
+  --color-auth-visual-bg: var(--auth-visual-bg);
+  --color-auth-visual-secondary: var(--auth-visual-secondary);
+  --color-auth-input-bg: var(--auth-input-bg);
+  --color-auth-input-border: var(--auth-input-border);
+  --color-auth-text-primary: var(--auth-text-primary);
+  --color-auth-text-secondary: var(--auth-text-secondary);
 }
 
 @layer base {
