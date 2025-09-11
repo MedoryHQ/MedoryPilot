@@ -47,7 +47,7 @@ export const getPageInfo = (loginState: LoginStage) => {
         title: "global.loginTitle",
         subtitle: "global.loginSubtitle"
       };
-    case "otp":
+    case "verify-otp":
       return {
         title: "global.otpTitle",
         subtitle: "global.otpSubtitle"
@@ -57,7 +57,7 @@ export const getPageInfo = (loginState: LoginStage) => {
         title: "global.passwordTitle",
         subtitle: "global.passwordSubtitle"
       };
-    case "reset-otp":
+    case "forgot-password-otp":
       return {
         title: "global.resetTitle",
         subtitle: "global.resetSubtitle"
