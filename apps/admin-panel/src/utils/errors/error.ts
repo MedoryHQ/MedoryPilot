@@ -65,3 +65,30 @@ export const setFormErrors = (
     throwErrMessage(err, toast, t, lang);
   }
 };
+
+export const setHookFormErrors = (
+  err: ResponseError,
+  toast: ReturnType<any>["toast"],
+  t: (key: string) => string,
+  lang: "ka" | "en",
+  setError?: (name: any, error: { message: string }) => void
+) => {
+  if (err?.response?.data?.errors) {
+    err.response.data.errors.forEach((error) => {
+      const errorMessage =
+        typeof error.message === "string"
+          ? isJson(error.message)
+            ? JSON.parse(error.message)[lang]
+            : error.message
+          : error.message[lang];
+
+      if (setError) {
+        setError(error.path, { message: errorMessage });
+      } else {
+        toast.error(t("toast.validationError"), errorMessage);
+      }
+    });
+  } else {
+    throwErrMessage(err, toast, t, lang);
+  }
+};
