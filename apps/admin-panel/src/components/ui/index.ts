@@ -1,4 +1,4 @@
-export * from "./AnimatedLeftPanel";
+export * from "./AnimatedRightPanel";
 export * from "./LanguageChanger";
 export * from "./button";
 export * from "./select";
@@ -37,3 +37,5 @@ export * from "./form";
 export * from "./tabs";
 export * from "./toast";
 export * from "./toaster";
+export * from "./input";
+export * from "./input-otp";

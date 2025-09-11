@@ -7,10 +7,27 @@ export const en = {
       platform: "Healthcare Platform",
       doctor: "Tamar Chaduneli",
       adminPannel: "Medory Admin Panel",
+      overview: "Modern Healthcare Management",
       search: "Search...",
       close: "Close",
       preferences: "Preferences",
-      language: "Language"
+      language: "Language",
+      patientTitle: "Patient Management",
+      patientDescription: "Comprehensive patient records",
+      schedulingTitle: "Smart Scheduling",
+      schedulingDescription: "Automated appointment booking",
+      dasboardTitle: "Analytics Dashboard",
+      dashboardDescription: "Real-time insights and reports",
+      loginTitle: "Welcome back",
+      loginSubtitle: "Sign in to your account to continue",
+      otpTitle: "Verify your email",
+      otpSubtitle: "Enter the verification code sent to your email",
+      passwordTitle: "Reset password",
+      passwordSubtitle: "Enter your email address to receive a reset code",
+      resetTitle: "Enter reset code",
+      resetSubtitle: "Enter the reset code from your email",
+      newPasswordTitle: "Create new password",
+      newPasswordSubtitle: "Choose a strong password for your account"
     },
     pages: {
       dashboard: "Dashboard"
@@ -23,14 +40,15 @@ export const en = {
         email: "Email",
         password: "Password",
         remember: "Remember Me",
-        login: "Login"
+        login: "Sign In"
       },
       otpForm: {
-        verify: "Verify",
+        verify: "Verify code",
         resendAvialible: "Resend avialible in: ",
-        resend: "Resend Otp",
+        resend: "Resend code",
         inMin: "Min",
-        verificationCode: "Verification Code"
+        verificationCode: "Verification Code",
+        codeSentAt: "Code sent to"
       },
       errors: {
         emailRequired: "Email Required",

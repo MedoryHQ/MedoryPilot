@@ -39,7 +39,7 @@ export const SidebarMobileDrawer: React.FC<SidebarMobileDrawerProps> = ({
     >
       <SheetContent side="left" className="sidebar-drawer-mobile w-full p-0">
         <motion.div
-          className="flex items-center justify-between border-b border-[#3a4866] bg-[#243149] p-4"
+          className="bg-sidebar border-sidebar-border flex items-center justify-between border-b p-4"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.3 }}

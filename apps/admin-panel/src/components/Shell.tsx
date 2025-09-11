@@ -7,7 +7,7 @@ interface ShellProps {
 
 export const Shell: React.FC<ShellProps> = ({ children }) => {
   return (
-    <div className="bg-background min-h-screen">
+    <div className="bg-background relative min-h-screen w-full scroll-auto">
       <div className="bg-background min-h-screen transition-all duration-200 ease-out">
         <Header />
         <main className="p-4 md:p-6 lg:p-8">{children}</main>

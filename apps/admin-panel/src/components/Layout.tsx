@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
-import { useAuthStore, useSidebarStore } from "@/store";
+import { useAuthStore } from "@/store";
 import axios from "@/api/axios";
 import { Spin } from "antd";
 import { Shell } from "./Shell";
 import { Sidebar } from "./Sidebar";
 import { MobileNavigation } from "./MobileNavigation";
-import { cn } from "@/libs";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -15,27 +14,10 @@ interface LayoutProps {
   path?: string;
 }
 
-interface LoadingScreenProps {
-  collapsed: boolean;
-  isAuth: boolean;
-}
-
-export const LoadingScreen: React.FC<LoadingScreenProps> = ({
-  collapsed,
-  isAuth
-}) => {
+export const LoadingScreen: React.FC = () => {
   return (
-    <div
-      className={cn(
-        "absolute inset-0 flex min-h-screen w-full items-center justify-center"
-      )}
-    >
-      <Spin
-        className={cn(
-          isAuth ? "left-0" : collapsed ? "md:left-[36px]" : "md:left-[120px]"
-        )}
-        size="large"
-      />
+    <div className="absolute inset-0 flex min-h-screen w-full items-center justify-center">
+      <Spin className="left-0" size="large" />
     </div>
   );
 };
@@ -71,7 +53,6 @@ const CustomLayout: React.FC<LayoutProps> = ({ children, route }) => {
   const [searchParams] = useSearchParams();
   const searchData = searchParams.get("data");
   const navigate = useNavigate();
-  const { collapsed } = useSidebarStore();
   const location = useLocation();
 
   useEffect(() => {
@@ -122,27 +103,15 @@ const CustomLayout: React.FC<LayoutProps> = ({ children, route }) => {
 
   return (
     <div className="flex min-h-screen w-full">
-      <main className="!text-foreground flex-1">
+      <main className="!text-foreground flex flex-1">
         {isLoggedIn ? (
           <>
             <Sidebar />
             <MobileNavigation />
-            <Shell>
-              {checking ? (
-                <LoadingScreen
-                  collapsed={collapsed}
-                  isAuth={Boolean(route.isAuthRoute)}
-                />
-              ) : (
-                children
-              )}
-            </Shell>
+            <Shell>{checking ? <LoadingScreen /> : children}</Shell>
           </>
         ) : checking ? (
-          <LoadingScreen
-            collapsed={collapsed}
-            isAuth={Boolean(route.isAuthRoute)}
-          />
+          <LoadingScreen />
         ) : (
           children
         )}

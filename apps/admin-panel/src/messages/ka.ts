@@ -7,11 +7,30 @@ export const ka = {
       platform: "Healthcare პლატფორმა",
 
       doctor: "თამარ ჩადუნელი",
+      overview: "თანამედროვე ჯანმრთელობის პლატფორმა",
       adminPannel: "Medory ადმინ პანელი",
       search: "ძიება...",
       close: "დახურვა",
       preferences: "პრეფერენციები",
-      language: "ენა"
+      language: "ენა",
+      patientTitle: "პაციენტების მენეჯმენტი",
+      patientDescription: "სხვადასხვატიპის პაციენტის ჩანაწერები",
+      schedulingTitle: "ვიზიტების დაგეგმვა",
+      schedulingDescription: "ვიზიტების ავტომატური დაჯავშნა",
+      dasboardTitle: "ანალიტიკური დეშბორდი",
+      dashboardDescription: "რეალურ დროში მიღებული ინფორმაცია და ანგარიშები",
+      loginTitle: "მოგესალმებით",
+      loginSubtitle: "გაიარეთ ავტორიზაცია თქვენს ანგარიშში გასაგრძელებლად",
+      otpTitle: "დაადასტურეთ თქვენი ელ-ფოსტა",
+      otpSubtitle:
+        "შეიყვანეთ ვერფიკაციის კოდი, რომელიც გამოგეგზავნათ ელ-ფოსტაზე",
+      passwordTitle: "პაროლის აღდგენა",
+      passwordSubtitle:
+        "შეიყვანეთ თქვენი ელ-ფოსტის მისამართი აღდგენის კოდის მისაღებად",
+      resetTitle: "შეიყვანეთ აღდგენის კოდი",
+      resetSubtitle: "შეიყვანეთ ელ-ფოსტაზე მიღებული აღდგენის კოდი",
+      newPasswordTitle: "ახალი პაროლის შექმნა",
+      newPasswordSubtitle: "აირჩიეთ ძლიერი პაროლი თქვენი ანგარიშისთვის"
     },
     pages: {
       dashboard: "Dashboard"
@@ -31,7 +50,8 @@ export const ka = {
         resendAvialible: "გაგზავნას შეძლებთ: ",
         resend: "კოდით გაგზავნა",
         inMin: "წუთში",
-        verificationCode: "ვერიფიკაციის კოდი"
+        verificationCode: "ვერიფიკაციის კოდი",
+        codeSentAt: "კოდი გამოგზიგზავნა"
       },
       errors: {
         emailRequired: "ელ-ფოსტა აუცილებელია",
