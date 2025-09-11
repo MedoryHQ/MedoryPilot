@@ -134,19 +134,6 @@ export const verifyOtp = async (
       return sendError(req, res, 404, "userNotFound");
     }
 
-    if (
-      !admin.smsCodeExpiresAt ||
-      new Date(admin.smsCodeExpiresAt) < new Date()
-    ) {
-      logWarn("Admin verification failed: code expired", {
-        ip: (req as any).hashedIp,
-        id: (req as any).userId,
-        event: "admin_verification_failed",
-      });
-
-      return sendError(req, res, 400, "verificationCodeExpired");
-    }
-
     const isValid = admin.smsCode
       ? await verifyField(code, admin.smsCode)
       : false;
@@ -413,17 +400,6 @@ export const forgotPasswordVerification = async (
       return sendError(req, res, 404, "userNotFound");
     }
 
-    if (
-      !admin.smsCodeExpiresAt ||
-      new Date(admin.smsCodeExpiresAt) < new Date()
-    ) {
-      logWarn("Forgot password verification failed: code expired", {
-        ip: (req as any).hashedIp,
-        event: "admin_forgot_password_verification_failed",
-      });
-      return sendError(req, res, 400, "verificationCodeExpired");
-    }
-
     const isSmsValid = await verifyField(smsCode, admin.smsCode);
     if (!isSmsValid) {
       logWarn("Forgot password verification failed: invalid code", {
@@ -471,17 +447,6 @@ export const resetPassword = async (
         event: "admin_reset_password_failed",
       });
       return sendError(req, res, 404, "userNotFound");
-    }
-
-    if (
-      !admin.smsCodeExpiresAt ||
-      new Date(admin.smsCodeExpiresAt) < new Date()
-    ) {
-      logWarn("Reset password failed: code expired", {
-        ip: (req as any).hashedIp,
-        event: "admin_reset_password_failed",
-      });
-      return sendError(req, res, 400, "verificationCodeExpired");
     }
 
     const isSmsValid = await verifyField(smsCode, admin.smsCode);
