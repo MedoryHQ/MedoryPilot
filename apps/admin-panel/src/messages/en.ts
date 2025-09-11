@@ -56,7 +56,7 @@ export const en = {
         passwordRequired: "Password Required",
         passwordLength: "Password must be between 8 and 100 characters long",
         otpRequired: "OTP must be 4 digits",
-        invalidOTP: "InvalidOTP. Please try again."
+        invalidOTP: "Invalid OTP. Please try again."
       }
     },
     menu: {

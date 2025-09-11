@@ -1,19 +1,23 @@
-import { Form, Button as AntButton } from "antd";
+import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
+import { useForm, Controller } from "react-hook-form";
 import axios from "@/api/axios";
 import { ResponseError } from "@/types";
-import { setFormErrors, toUpperCase } from "@/utils";
+import { setHookFormErrors, toUpperCase } from "@/utils";
 import { useAuthStore } from "@/store";
-import { useEffect, useState } from "react";
-import { InputOTP } from "antd-input-otp";
 import { useTranslation } from "react-i18next";
-import { Button } from "../ui";
+import { Button, InputOTP, InputOTPGroup, InputOTPSlot } from "../ui";
 import { useToast } from "@/hooks";
+import { cn } from "@/libs";
 
 interface Props {
   onSuccess: () => void;
   email: string;
 }
+
+type FormValues = {
+  code: string;
+};
 
 // TODO: transform to 5 minutes
 const OTP_TTL_MS = 0.5 * 60 * 1000;
@@ -28,15 +32,22 @@ const parseSentAt = (raw: string | null): number | null => {
 };
 
 const OtpVerificationForm = ({ onSuccess, email }: Props) => {
-  const [form] = Form.useForm();
   const { login, otpSentAt, setOtpSent, clearOtp } = useAuthStore();
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const { t, i18n } = useTranslation();
-  const [codeArray, setCodeArray] = useState<string[]>(Array(4).fill(""));
-  const [localError, setLocalError] = useState<string | null>(null);
   const { toast } = useToast(t);
+  const [localError, setLocalError] = useState<string | null>(null);
 
-  const code = codeArray.join("").trim();
+  const {
+    control,
+    handleSubmit,
+    setError,
+    clearErrors,
+    reset,
+    formState: { errors }
+  } = useForm<FormValues>({
+    defaultValues: { code: "" }
+  });
 
   const getCanonicalSentAt = (): number | null => {
     if (otpSentAt) return otpSentAt;
@@ -71,13 +82,9 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
     update();
     const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
-  }, [otpSentAt]);
+  }, [otpSentAt, clearOtp]);
 
   const resendDisabled = timeLeft > 0;
-
-  useEffect(() => {
-    if (code.length === 4 && localError) setLocalError(null);
-  }, [code, localError]);
 
   const { mutateAsync: verifyOtp, isLoading: verifying } = useMutation({
     mutationFn: async (values: { code: string }) => {
@@ -91,13 +98,18 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
           user: data.data.user
         }
       });
-      form.resetFields();
-      setCodeArray(Array(4).fill(""));
+      reset();
       setLocalError(null);
       onSuccess();
     },
     onError: (error: ResponseError) => {
-      setFormErrors(error, toast, t, i18n.language as "ka" | "en", form);
+      setHookFormErrors(
+        error,
+        toast,
+        t,
+        i18n.language as "ka" | "en",
+        setError
+      );
     }
   });
 
@@ -112,90 +124,124 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
       setTimeLeft(Math.ceil(OTP_TTL_MS / 1000));
     },
     onError: (error: ResponseError) => {
-      setFormErrors(error, toast, t, i18n.language as "ka" | "en", form);
+      setHookFormErrors(
+        error,
+        toast,
+        t,
+        i18n.language as "ka" | "en",
+        setError
+      );
     }
   });
 
-  const handleSubmit = async () => {
+  const onSubmit = async (values: FormValues) => {
+    const code = values.code ?? "";
     if (code.length !== 4) {
+      setError("code", { message: toUpperCase(t("auth.errors.otpRequired")) });
       setLocalError(t("auth.errors.otpRequired"));
       return;
     }
+
     setLocalError(null);
     try {
       await verifyOtp({ code });
-    } catch (err) {
+    } catch {
       setLocalError(t("auth.errors.invalidOTP"));
     }
-  };
-
-  const handleOtpChange = (val: string[]) => {
-    const cleaned = (val || [])
-      .slice(0, 4)
-      .map((s) => (s ?? "").toString().replace(/\D/g, ""));
-    while (cleaned.length < 4) cleaned.push("");
-    setCodeArray(cleaned);
   };
 
   return (
     <div className="flex h-full justify-center">
       <div className="w-[calc(100%-46px)] sm:w-[346px] lg:w-[420px]">
-        <Form
-          form={form}
-          name="otp"
-          layout="vertical"
-          size="large"
-          onFinish={handleSubmit}
+        <form
+          onSubmit={handleSubmit(onSubmit)}
           className="flex h-full flex-col justify-between rounded-2xl p-4 sm:p-6"
         >
           <p className="text-auth-text-secondary mb-5 text-sm">
             {toUpperCase(t("auth.otpForm.codeSentAt"))}{" "}
             <span className="text-auth-text-primary font-medium">{email}</span>
           </p>
-          <Form.Item
-            validateStatus={
-              localError ? "error" : code.length === 4 ? "success" : undefined
-            }
-            help={localError ?? undefined}
-            className="!mb-4"
-          >
-            <InputOTP
-              autoFocus
-              length={4}
-              inputType="numeric"
-              size="large"
-              value={codeArray}
-              onChange={handleOtpChange}
-              placeholder=""
+
+          <div className={cn("!mb-4")}>
+            <Controller
+              control={control}
+              name="code"
+              rules={{
+                required: toUpperCase(t("auth.errors.otpRequired")),
+                validate: (val) =>
+                  (val && val.length === 4) ||
+                  toUpperCase(t("auth.errors.otpRequired"))
+              }}
+              render={({ field }) => {
+                return (
+                  <>
+                    <InputOTP
+                      maxLength={4}
+                      value={field.value}
+                      onChange={(newValue: string) => {
+                        field.onChange(newValue);
+                        if (newValue.length === 4 && localError)
+                          setLocalError(null);
+                        if (newValue.length === 4 && errors.code) {
+                          clearErrors("code");
+                        }
+                      }}
+                      autoFocus
+                      className="input-otp"
+                    >
+                      <InputOTPGroup>
+                        <InputOTPSlot index={0} className="input-otp-slot" />
+                        <InputOTPSlot index={1} className="input-otp-slot" />
+                        <InputOTPSlot index={2} className="input-otp-slot" />
+                        <InputOTPSlot index={3} className="input-otp-slot" />
+                      </InputOTPGroup>
+                    </InputOTP>
+
+                    <div className="mt-2">
+                      {errors.code?.message ? (
+                        <p className="text-destructive text-sm">
+                          {errors.code.message}
+                        </p>
+                      ) : localError ? (
+                        <p className="text-destructive text-sm">{localError}</p>
+                      ) : null}
+                    </div>
+                  </>
+                );
+              }}
             />
-          </Form.Item>
+          </div>
 
           <footer>
             <Button
               type="submit"
               loading={verifying}
-              className="premium-button floating-action mt-2 w-full rounded-lg"
+              className="premium-button floating-action mt-2 mb-3 w-full rounded-lg"
               size={"xl"}
-              disabled={code.length !== 4}
+              disabled={verifying || (control && (errors.code ? true : false))}
             >
               {toUpperCase(t("auth.otpForm.verify"))}
             </Button>
 
-            <AntButton
-              type="link"
-              disabled={resendDisabled}
+            <button
+              type="button"
               onClick={() => resendOtp()}
-              loading={resending}
-              className="mt-2 w-full !text-[12px] sm:!text-[16px]"
+              disabled={resendDisabled || resending}
+              className={cn(
+                "mt-2 w-full cursor-pointer !text-[12px] sm:!text-[16px]",
+                resendDisabled || resending
+                  ? "cursor-not-allowed opacity-50"
+                  : "text-primary hover:text-primary/90"
+              )}
             >
               {toUpperCase(
                 resendDisabled
                   ? `${t("auth.otpForm.resendAvialible")} ${Math.floor(timeLeft / 60)}:${String(timeLeft % 60).padStart(2, "0")} ${t("auth.otpForm.inMin")}`
                   : t("auth.otpForm.resend")
               )}
-            </AntButton>
+            </button>
           </footer>
-        </Form>
+        </form>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 const Main = () => {
-  return <div className="h-[4000px]">Dashboard</div>;
+  return <div>Dashboard</div>;
 };
 
 export const mainNavigationRoute = {
