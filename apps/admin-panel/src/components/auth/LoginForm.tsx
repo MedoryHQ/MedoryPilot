@@ -110,7 +110,8 @@ const LoginForm = ({ onSuccess }: Props) => {
         <Button
           type="submit"
           loading={isLoading}
-          className="premium-button floating-action mt-2 h-[40px] w-full rounded-lg text-[16px] font-semibold"
+          size={"xl"}
+          className="premium-button floating-action mt-2 w-full rounded-lg"
         >
           {toUpperCase(t("auth.loginForm.login"))}
         </Button>

@@ -43,11 +43,12 @@ export const en = {
         login: "Sign In"
       },
       otpForm: {
-        verify: "Verify",
+        verify: "Verify code",
         resendAvialible: "Resend avialible in: ",
-        resend: "Resend Otp",
+        resend: "Resend code",
         inMin: "Min",
-        verificationCode: "Verification Code"
+        verificationCode: "Verification Code",
+        codeSentAt: "Code sent to"
       },
       errors: {
         emailRequired: "Email Required",

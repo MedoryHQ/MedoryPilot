@@ -68,6 +68,16 @@ const Login = () => {
     }
   };
 
+  const onLogin = () => {
+    navigate("/");
+    sessionStorage.removeItem("stage");
+    sessionStorage.removeItem("email");
+    setLoginState({
+      stage: "login",
+      email: ""
+    });
+  };
+
   return (
     <div className="flex min-h-screen w-full">
       <div className="bg-auth-form-bg flex flex-1 flex-col">
@@ -112,9 +122,7 @@ const Login = () => {
                     case "otp":
                       return (
                         <OtpVerificationForm
-                          onSuccess={() => {
-                            navigate("/");
-                          }}
+                          onSuccess={() => onLogin()}
                           email={loginState.email}
                         />
                       );

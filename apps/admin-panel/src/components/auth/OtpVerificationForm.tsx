@@ -71,7 +71,6 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
     update();
     const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
-    //
   }, [otpSentAt]);
 
   const resendDisabled = timeLeft > 0;
@@ -140,17 +139,20 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
 
   return (
     <div className="flex h-full justify-center">
-      <div className="w-[calc(100%-46px)] sm:w-[346px]">
+      <div className="w-[calc(100%-46px)] sm:w-[346px] lg:w-[420px]">
         <Form
           form={form}
           name="otp"
           layout="vertical"
           size="large"
           onFinish={handleSubmit}
-          className="flex h-full flex-col justify-between rounded-2xl bg-white p-4 sm:p-6"
+          className="flex h-full flex-col justify-between rounded-2xl p-4 sm:p-6"
         >
+          <p className="text-auth-text-secondary mb-5 text-sm">
+            {toUpperCase(t("auth.otpForm.codeSentAt"))}{" "}
+            <span className="text-auth-text-primary font-medium">{email}</span>
+          </p>
           <Form.Item
-            label={toUpperCase(t("auth.otpForm.verificationCode"))}
             validateStatus={
               localError ? "error" : code.length === 4 ? "success" : undefined
             }
@@ -167,11 +169,13 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
               placeholder=""
             />
           </Form.Item>
+
           <footer>
             <Button
               type="submit"
               loading={verifying}
               className="premium-button floating-action mt-2 w-full rounded-lg"
+              size={"xl"}
               disabled={code.length !== 4}
             >
               {toUpperCase(t("auth.otpForm.verify"))}

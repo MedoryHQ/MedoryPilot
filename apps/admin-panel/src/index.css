@@ -410,6 +410,10 @@ button,
 }
 
 .ant-form-item-required {
+  color: var(--foreground) !important;
+}
+
+.ant-form-item-required {
   font-size: 12px !important;
   height: 12px !important;
 }
@@ -517,8 +521,9 @@ button,
 }
 
 .input-otp input {
-  max-width: 68px !important;
-  height: 70px !important;
+  max-width: 82px !important;
+  border-radius: 20px;
+  height: 80px !important;
 }
 
 .premium-button {
@@ -936,6 +941,7 @@ button,
 
   .input-otp input {
     max-width: 70px !important;
+    border-radius: 16px;
     height: 74px !important;
   }
 }
@@ -943,6 +949,7 @@ button,
 @media (max-width: 420px) {
   .input-otp input {
     max-width: 62px !important;
+    border-radius: 14px;
     height: 66px !important;
   }
 }
