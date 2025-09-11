@@ -18,7 +18,19 @@ export const ka = {
       schedulingTitle: "ვიზიტების დაგეგმვა",
       schedulingDescription: "ვიზიტების ავტომატური დაჯავშნა",
       dasboardTitle: "ანალიტიკური დეშბორდი",
-      dashboardDescription: "რეალურ დროში მიღებული ინფორმაცია და ანგარიშები"
+      dashboardDescription: "რეალურ დროში მიღებული ინფორმაცია და ანგარიშები",
+      loginTitle: "მოგესალმებით",
+      loginSubtitle: "გაიარეთ ავტორიზაცია თქვენს ანგარიშში გასაგრძელებლად",
+      otpTitle: "დაადასტურეთ თქვენი ელფოსტა",
+      otpSubtitle:
+        "შეიყვანეთ ვერფიკაციის კოდი, რომელიც გამოგეგზავნათ ელფოსტაზე",
+      passwordTitle: "პაროლის აღდგენა",
+      passwordSubtitle:
+        "შეიყვანეთ თქვენი ელფოსტის მისამართი აღდგენის კოდის მისაღებად",
+      resetTitle: "შეიყვანეთ აღდგენის კოდი",
+      resetSubtitle: "შეიყვანეთ ელფოსტაზე მიღებული აღდგენის კოდი",
+      newPasswordTitle: "ახალი პაროლის შექმნა",
+      newPasswordSubtitle: "აირჩიეთ ძლიერი პაროლი თქვენი ანგარიშისთვის"
     },
     pages: {
       dashboard: "Dashboard"

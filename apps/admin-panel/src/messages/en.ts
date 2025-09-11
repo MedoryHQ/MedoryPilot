@@ -17,7 +17,17 @@ export const en = {
       schedulingTitle: "Smart Scheduling",
       schedulingDescription: "Automated appointment booking",
       dasboardTitle: "Analytics Dashboard",
-      dashboardDescription: "Real-time insights and reports"
+      dashboardDescription: "Real-time insights and reports",
+      loginTitle: "Welcome back",
+      loginSubtitle: "Sign in to your account to continue",
+      otpTitle: "Verify your email",
+      otpSubtitle: "Enter the verification code sent to your email",
+      passwordTitle: "Reset password",
+      passwordSubtitle: "Enter your email address to receive a reset code",
+      resetTitle: "Enter reset code",
+      resetSubtitle: "Enter the reset code from your email",
+      newPasswordTitle: "Create new password",
+      newPasswordSubtitle: "Choose a strong password for your account"
     },
     pages: {
       dashboard: "Dashboard"

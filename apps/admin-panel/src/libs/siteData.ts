@@ -37,33 +37,33 @@ export const getPageInfo = (loginState: LoginStage) => {
   switch (loginState.stage) {
     case "login":
       return {
-        title: "Welcome back",
-        subtitle: "Sign in to your account to continue"
+        title: "global.loginTitle",
+        subtitle: "global.loginSubtitle"
       };
     case "otp":
       return {
-        title: "Verify your email",
-        subtitle: "Enter the verification code sent to your email"
+        title: "global.otpTitle",
+        subtitle: "global.otpSubtitle"
       };
     case "forgot-password":
       return {
-        title: "Reset password",
-        subtitle: "Enter your email address to receive a reset code"
+        title: "global.passwordTitle",
+        subtitle: "global.passwordSubtitle"
       };
     case "reset-otp":
       return {
-        title: "Enter reset code",
-        subtitle: "Enter the reset code from your email"
+        title: "global.resetTitle",
+        subtitle: "global.resetSubtitle"
       };
     case "new-password":
       return {
-        title: "Create new password",
-        subtitle: "Choose a strong password for your account"
+        title: "global.newPasswordTitle",
+        subtitle: "global.newPasswordSubtitle"
       };
     default:
       return {
-        title: "Welcome back",
-        subtitle: "Sign in to your account to continue"
+        title: "global.loginTitle",
+        subtitle: "global.loginSubtitle"
       };
   }
 };

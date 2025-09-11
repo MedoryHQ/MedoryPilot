@@ -1,5 +1,4 @@
-import { Card, Image } from "antd";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Logo from "@/assets/medory.webp";
 import LoginForm from "@/components/auth/LoginForm";
 import OtpVerificationForm from "@/components/auth/OtpVerificationForm";
@@ -8,24 +7,28 @@ import { useAuthStore } from "@/store";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
-import { LanguageChanger, AnimatedLeftPanel } from "@/components/ui";
+import { LanguageChanger, AnimatedRightPanel } from "@/components/ui";
+import { LoginStage, Stage } from "@/types";
+import { getPageInfo } from "@/libs";
 
 const Login = () => {
   const initialStage =
-    typeof window !== "undefined" &&
-    sessionStorage.getItem("otpStage") === "otp"
-      ? "otp"
-      : "login";
+    (typeof window !== "undefined" && sessionStorage.getItem("stage")) ||
+    "login";
 
   const initialEmail =
     typeof window !== "undefined"
-      ? (sessionStorage.getItem("otpEmail") ?? "")
+      ? (sessionStorage.getItem("email") ?? "")
       : "";
 
   const { t } = useTranslation();
-  const [stage, setStage] = useState<"login" | "otp">(initialStage);
-  const [email, setEmail] = useState<string>(initialEmail);
+  const [loginState, setLoginState] = useState<LoginStage>({
+    stage: initialStage as Stage,
+    email: initialEmail
+  });
   const { isLoggedIn, otpSentAt, setOtpSent, clearOtp, login } = useAuthStore();
+  const { title, subtitle } = getPageInfo(loginState);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,13 +36,13 @@ const Login = () => {
   }, [isLoggedIn]);
 
   useEffect(() => {
-    const sessionStage = sessionStorage.getItem("otpStage");
-    if (sessionStage === "otp") {
-      setStage("otp");
-      const sEmail = sessionStorage.getItem("otpEmail");
-      if (sEmail) setEmail(sEmail);
-    } else {
-      setStage("login");
+    const stage = sessionStorage.getItem("stage") as Stage;
+    const email = sessionStorage.getItem("email");
+    if (stage && email) {
+      setLoginState({
+        stage,
+        email
+      });
     }
   }, [otpSentAt]);
 
@@ -48,10 +51,11 @@ const Login = () => {
     requiresOtp: boolean,
     payload?: any
   ) => {
-    setEmail(submittedEmail);
-
     if (requiresOtp) {
-      setStage("otp");
+      setLoginState({
+        stage: "otp",
+        email: submittedEmail
+      });
       setOtpSent(submittedEmail);
     } else {
       login({
@@ -65,49 +69,96 @@ const Login = () => {
   };
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 p-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-[442px] lg:max-w-[780px]"
-      >
-        <Card className="login_card min-h-[474px] w-full overflow-hidden !rounded-[16px] border-0 shadow-[0_4px_20px_rgba(0,0,0,0.08)] sm:min-h-[548px] sm:w-[442px] lg:w-[780px]">
-          <AnimatedLeftPanel />
-          <section className="flex w-full flex-col bg-white p-[30px] sm:w-[442px] sm:p-[48px]">
-            <LanguageChanger className="absolute top-[14px] right-2" />
+    <div className="flex min-h-screen w-full">
+      <div className="bg-auth-form-bg flex flex-1 flex-col">
+        <div className="flex items-center justify-between p-8">
+          <div className="flex items-center gap-3">
+            <img src={Logo} alt="Medory" className="h-8 w-8 rounded-[4px]" />
+            <span className="text-auth-text-primary font-semibold">
+              {toUpperCase(t("global.name"))}
+            </span>
+          </div>
+          <LanguageChanger />
+        </div>
 
-            <div className="mb-6 flex flex-col items-center">
-              <Image
-                className="mb-3 !h-[52px] !w-[52px] rounded-full sm:mb-4 sm:!h-[60px] sm:!w-[60px]"
-                src={Logo}
-                preview={false}
-                alt="Medory"
-              />
-              <h2 className="text-xl font-bold text-gray-800">
-                {toUpperCase(t("auth.welcome"))}!
-              </h2>
-              <p className="text-sm text-gray-400">
-                {toUpperCase(
-                  stage === "login" ? t("auth.login") : t("auth.enterOtp")
-                )}
+        <div className="flex flex-1 items-center justify-center px-8">
+          <div className="w-full max-w-md">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="mb-8 text-center"
+            >
+              <h1 className="text-auth-text-primary mb-2 text-3xl font-bold">
+                {toUpperCase(t(title))}
+              </h1>
+              <p className="text-auth-text-secondary">
+                {toUpperCase(t(subtitle))}
               </p>
-            </div>
+            </motion.div>
 
-            {stage === "login" ? (
-              <LoginForm onSuccess={handleLoginSuccess} setEmail={setEmail} />
-            ) : (
-              <OtpVerificationForm
-                onSuccess={() => {
-                  clearOtp();
-                  navigate("/dashboard");
-                }}
-                email={email}
-              />
-            )}
-          </section>
-        </Card>
-      </motion.div>
+            <motion.div
+              key={loginState.stage}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <AnimatePresence mode="wait">
+                {(() => {
+                  switch (loginState.stage) {
+                    case "login":
+                      return <LoginForm onSuccess={handleLoginSuccess} />;
+                    case "otp":
+                      return (
+                        <OtpVerificationForm
+                          onSuccess={() => {
+                            navigate("/");
+                          }}
+                          email={loginState.email}
+                        />
+                      );
+                    // case "forgot-password":
+                    //   return (
+                    //     <ForgotPasswordForm
+                    //       onSuccess={handleForgotPassword}
+                    //       onBackToLogin={handleBackToLogin}
+                    //     />
+                    //   );
+                    // case "reset-otp":
+                    //   return (
+                    //     <OtpVerificationForm
+                    //       onSuccess={handleResetOtpSuccess}
+                    //       email={loginState.email}
+                    //       mode="reset"
+                    //       onBack={() =>
+                    //         setLoginState((prev) => ({
+                    //           ...prev,
+                    //           stage: "forgot-password"
+                    //         }))
+                    //       }
+                    //     />
+                    //   );
+                    // case "new-password":
+                    //   return (
+                    //     <NewPasswordForm
+                    //       email={loginState.email}
+                    //       onSuccess={handlePasswordResetSuccess}
+                    //     />
+                    //   );
+                    default:
+                      return <LoginForm onSuccess={handleLoginSuccess} />;
+                  }
+                })()}
+              </AnimatePresence>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+
+      <div className="hidden lg:flex lg:w-1/2">
+        <AnimatedRightPanel />
+      </div>
     </div>
   );
 };

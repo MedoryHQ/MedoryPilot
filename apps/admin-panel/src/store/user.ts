@@ -23,9 +23,9 @@ export const useAuthStore = create(
         setOtpSent: (email?: string) => {
           const now = Date.now();
           try {
-            sessionStorage.setItem("otpStage", "otp");
+            sessionStorage.setItem("stage", "otp");
             sessionStorage.setItem("otpSentAt", String(now));
-            if (email) sessionStorage.setItem("otpEmail", String(email));
+            if (email) sessionStorage.setItem("email", String(email));
           } catch (e) {
             console.warn("sessionStorage not available", e);
           }
@@ -33,9 +33,9 @@ export const useAuthStore = create(
         },
         clearOtp: () => {
           try {
-            sessionStorage.removeItem("otpStage");
+            sessionStorage.removeItem("stage");
             sessionStorage.removeItem("otpSentAt");
-            sessionStorage.removeItem("otpEmail");
+            sessionStorage.removeItem("email");
           } catch (e) {
             // noop
           }

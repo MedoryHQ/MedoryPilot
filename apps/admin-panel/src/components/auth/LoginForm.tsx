@@ -12,10 +12,9 @@ const LockIcon = () => <span style={{ color: "#9ca3af" }}>🔒</span>;
 
 interface Props {
   onSuccess: (email: string, requiresOtp: boolean, payload?: any) => void;
-  setEmail: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const LoginForm = ({ onSuccess, setEmail }: Props) => {
+const LoginForm = ({ onSuccess }: Props) => {
   const [form] = Form.useForm();
   const { t, i18n } = useTranslation();
   const { toast } = useToast(t);
@@ -38,7 +37,6 @@ const LoginForm = ({ onSuccess, setEmail }: Props) => {
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      setEmail(values.email);
       mutate(values);
     } catch (error) {
       console.error("Form validation error:", error);
