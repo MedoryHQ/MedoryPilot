@@ -7,10 +7,17 @@ export const en = {
       platform: "Healthcare Platform",
       doctor: "Tamar Chaduneli",
       adminPannel: "Medory Admin Panel",
+      overview: "Modern Healthcare Management",
       search: "Search...",
       close: "Close",
       preferences: "Preferences",
-      language: "Language"
+      language: "Language",
+      patientTitle: "Patient Management",
+      patientDescription: "Comprehensive patient records",
+      schedulingTitle: "Smart Scheduling",
+      schedulingDescription: "Automated appointment booking",
+      dasboardTitle: "Analytics Dashboard",
+      dashboardDescription: "Real-time insights and reports"
     },
     pages: {
       dashboard: "Dashboard"

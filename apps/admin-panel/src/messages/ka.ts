@@ -7,11 +7,18 @@ export const ka = {
       platform: "Healthcare პლატფორმა",
 
       doctor: "თამარ ჩადუნელი",
+      overview: "თანამედროვე ჯანმრთელობის პლატფორმა",
       adminPannel: "Medory ადმინ პანელი",
       search: "ძიება...",
       close: "დახურვა",
       preferences: "პრეფერენციები",
-      language: "ენა"
+      language: "ენა",
+      patientTitle: "პაციენტების მენეჯმენტი",
+      patientDescription: "სხვადასხვატიპის პაციენტის ჩანაწერები",
+      schedulingTitle: "ვიზიტების დაგეგმვა",
+      schedulingDescription: "ვიზიტების ავტომატური დაჯავშნა",
+      dasboardTitle: "ანალიტიკური დეშბორდი",
+      dashboardDescription: "რეალურ დროში მიღებული ინფორმაცია და ანგარიშები"
     },
     pages: {
       dashboard: "Dashboard"

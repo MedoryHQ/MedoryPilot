@@ -1,4 +1,4 @@
-export * from "./AnimatedLeftPanel";
+export * from "./AnimatedRightPanel";
 export * from "./LanguageChanger";
 export * from "./button";
 export * from "./select";

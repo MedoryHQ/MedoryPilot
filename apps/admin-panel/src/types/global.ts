@@ -35,3 +35,15 @@ export interface SearchResult {
   category: string;
   icon: string;
 }
+
+export type Stage =
+  | "login"
+  | "otp"
+  | "forgot-password"
+  | "reset-otp"
+  | "new-password";
+
+export interface LoginStage {
+  stage: Stage;
+  email: string;
+}
