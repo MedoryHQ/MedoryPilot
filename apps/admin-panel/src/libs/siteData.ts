@@ -1,5 +1,12 @@
 import { LoginStage } from "@/types";
-import { Users, Calendar, BarChart3 } from "lucide-react";
+import {
+  Users,
+  Calendar,
+  BarChart3,
+  MessageCircle,
+  FileText,
+  Globe
+} from "lucide-react";
 
 type SubNavigationItem = {
   name: string;
@@ -83,5 +90,20 @@ export const platformServices = [
     icon: BarChart3,
     title: "global.dasboardTitle",
     desc: "global.dashboardDescription"
+  },
+  {
+    icon: MessageCircle,
+    title: "global.communicationTitle",
+    desc: "global.communicationDescription"
+  },
+  {
+    icon: FileText,
+    title: "global.filesTitle",
+    desc: "global.filesDescription"
+  },
+  {
+    icon: Globe,
+    title: "global.websiteTitle",
+    desc: "global.websiteDescription"
   }
 ];

@@ -7,17 +7,11 @@ export const en = {
       platform: "Healthcare Platform",
       doctor: "Tamar Chaduneli",
       adminPannel: "Medory Admin Panel",
-      overview: "Modern Healthcare Management",
+      overview: "Doctor Helper Platform",
       search: "Search...",
       close: "Close",
       preferences: "Preferences",
       language: "Language",
-      patientTitle: "Patient Management",
-      patientDescription: "Comprehensive patient records",
-      schedulingTitle: "Smart Scheduling",
-      schedulingDescription: "Automated appointment booking",
-      dasboardTitle: "Analytics Dashboard",
-      dashboardDescription: "Real-time insights and reports",
       loginTitle: "Welcome back",
       loginSubtitle: "Sign in to your account to continue",
       otpTitle: "Verify your email",
@@ -27,7 +21,22 @@ export const en = {
       resetTitle: "Enter reset code",
       resetSubtitle: "Enter the reset code from your email",
       newPasswordTitle: "Create new password",
-      newPasswordSubtitle: "Choose a strong password for your account"
+      newPasswordSubtitle: "Choose a strong password for your account",
+      patientTitle: "Patient Management",
+      patientDescription: "Comprehensive patient records",
+      schedulingTitle: "Smart Scheduling",
+      schedulingDescription: "Automated appointment booking",
+      dasboardTitle: "Analytics Dashboard",
+      dashboardDescription: "Real-time insights and reports",
+      communicationTitle: "Secure Communication",
+      communicationDescription:
+        "Patients and doctors can chat safely in real-time",
+      filesTitle: "File Management",
+      filesDescription:
+        "Exchange medical documents, examination sheets, and analysis reports securely",
+      websiteTitle: "Doctor CMS",
+      websiteDescription:
+        "Manage website content and information for your practice"
     },
     pages: {
       dashboard: "Dashboard"

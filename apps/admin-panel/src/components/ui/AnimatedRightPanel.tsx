@@ -3,12 +3,12 @@ import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
 import Logo from "@/assets/medory.webp";
-import { platformServices } from "@/libs";
+import { cn, platformServices } from "@/libs";
 
 export const AnimatedRightPanel: React.FC<{
   children?: React.ReactNode;
 }> = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   return (
     <div className="from-auth-visual-bg via-auth-visual-secondary to-auth-visual-bg relative flex-1 overflow-hidden bg-gradient-to-br">
       <div className="absolute inset-0">
@@ -155,7 +155,7 @@ export const AnimatedRightPanel: React.FC<{
         />
       </div>
 
-      <div className="relative z-10 flex h-full flex-col justify-center px-16 text-white">
+      <div className="relative z-10 flex h-full flex-col justify-center px-16 py-8 text-white xl:py-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -180,10 +180,24 @@ export const AnimatedRightPanel: React.FC<{
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <h2 className="mb-6 text-[24px] leading-tight font-bold xl:text-[32px] 2xl:text-[36px]">
+            <h2
+              className={cn(
+                "mb-6 leading-tight font-bold",
+                i18n.language === "en"
+                  ? "text-[24px] xl:text-[32px] 2xl:text-[36px]"
+                  : "text-[20px] xl:text-[24px] 2xl:text-[28px]"
+              )}
+            >
               {toUpperCase(t("global.overview"))}
             </h2>
-            <p className="mb-8 leading-relaxed text-white/90 lg:text-[18px] xl:text-xl">
+            <p
+              className={cn(
+                "mb-8 leading-relaxed text-white/90",
+                i18n.language === "en"
+                  ? "text-[18px] xl:text-[20px]"
+                  : "text-[16px] xl:text-[18px]"
+              )}
+            >
               {toUpperCase(t("global.description"))}
             </p>
           </motion.div>
