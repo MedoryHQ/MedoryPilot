@@ -28,7 +28,7 @@ const renderRouteElement = (route: AnyRoute) => {
 
 const createRoutes = (
   routesObj: Record<string, AnyRoute>,
-  authWrapper?: (el: JSX.Element) => JSX.Element
+  isAuth?: boolean
 ) => {
   if (!routesObj) return [];
 
@@ -39,9 +39,11 @@ const createRoutes = (
       path: route.path,
       element: (
         <CustomLayout route={route} path={route.path}>
-          {authWrapper
-            ? authWrapper(renderRouteElement(route))
-            : renderRouteElement(route)}
+          {isAuth ? (
+            <AuthWrapper>{renderRouteElement(route)}</AuthWrapper>
+          ) : (
+            renderRouteElement(route)
+          )}
         </CustomLayout>
       )
     }));
@@ -51,7 +53,7 @@ export const Router = () => {
   const routesWithLayout = [
     { path: "/", element: <Navigate to="/dashboard" replace /> },
     ...createRoutes(Routes),
-    ...createRoutes(AuthRoutes, AuthWrapper),
+    ...createRoutes(AuthRoutes, true),
     {
       path: "*",
       element: (

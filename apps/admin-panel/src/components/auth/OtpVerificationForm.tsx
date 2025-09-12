@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import { useForm, Controller } from "react-hook-form";
 import axios from "@/api/axios";
-import { LoginStage, ResponseError } from "@/types";
+import { ResponseError } from "@/types";
 import { setHookFormErrors, toUpperCase } from "@/utils";
 import { useAuthStore } from "@/store";
 import { useTranslation } from "react-i18next";
@@ -10,11 +10,7 @@ import { Button, InputOTP, InputOTPGroup, InputOTPSlot } from "../ui";
 import { useToast } from "@/hooks";
 import { cn } from "@/libs";
 import { useNavigate } from "react-router-dom";
-
-interface Props {
-  setLoginState?: React.Dispatch<React.SetStateAction<LoginStage>>;
-  email: string;
-}
+import { useAuthFlow } from "@/providers/AuthFlowProvider";
 
 type FormValues = {
   code: string;
@@ -32,14 +28,15 @@ const parseSentAt = (raw: string | null): number | null => {
   return null;
 };
 
-const OtpVerificationForm = ({ setLoginState, email }: Props) => {
+const OtpVerificationForm = () => {
   const { login, otpSentAt, setOtpSent, clearOtp } = useAuthStore();
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const { t, i18n } = useTranslation();
   const { toast } = useToast(t);
   const [localError, setLocalError] = useState<string | null>(null);
   const navigate = useNavigate();
-
+  const { active, setStage, setFlow, setEmail } = useAuthFlow();
+  const email = active.email;
   const {
     control,
     handleSubmit,
@@ -51,12 +48,15 @@ const OtpVerificationForm = ({ setLoginState, email }: Props) => {
     defaultValues: { code: "" }
   });
 
+  const resetFlow = () => {
+    setFlow("login");
+    setStage("login");
+    setEmail("");
+  };
+
   const handleOtpSuccess = () => {
-    if (setLoginState) {
-      setLoginState({ stage: "login", email: "" });
-    }
-    sessionStorage.removeItem("stage");
-    sessionStorage.removeItem("email");
+    resetFlow();
+    clearOtp();
     navigate("/");
   };
 
@@ -73,12 +73,15 @@ const OtpVerificationForm = ({ setLoginState, email }: Props) => {
   useEffect(() => {
     const sent = getCanonicalSentAt();
     if (!sent) {
+      resetFlow();
+      clearOtp();
       setTimeLeft(0);
       return;
     }
 
     const alreadyExpired = Date.now() - sent >= OTP_TTL_MS;
     if (alreadyExpired) {
+      resetFlow();
       clearOtp();
       setTimeLeft(0);
       return;

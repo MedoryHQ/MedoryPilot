@@ -1,15 +1,10 @@
+import { useAuthFlow } from "@/providers/AuthFlowProvider";
 import { useAuthStore } from "@/store";
-import { LoginStage } from "@/types";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const ForgetPassword = ({
-  loginState,
-  setLoginState
-}: {
-  loginState?: LoginStage;
-  setLoginState?: React.Dispatch<React.SetStateAction<LoginStage>>;
-}) => {
+const ForgetPassword = () => {
+  const { active } = useAuthFlow();
   const { isLoggedIn } = useAuthStore();
   const navigate = useNavigate();
 
@@ -17,7 +12,7 @@ const ForgetPassword = ({
     if (isLoggedIn) navigate("/");
   }, [isLoggedIn]);
 
-  switch (loginState?.stage) {
+  switch (active?.stage) {
     default:
       return <>forget</>;
   }

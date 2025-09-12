@@ -1,4 +1,4 @@
-import { LoginStage } from "@/types";
+import { Stage } from "@/types";
 import {
   Users,
   Calendar,
@@ -40,8 +40,8 @@ export const georgianMonths = [
   "დეკემბერი"
 ];
 
-export const getPageInfo = (loginState: LoginStage) => {
-  switch (loginState.stage) {
+export const getPageInfo = (stage: Stage) => {
+  switch (stage) {
     case "login":
       return {
         title: "global.loginTitle",

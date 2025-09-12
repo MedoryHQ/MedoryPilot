@@ -1,32 +1,18 @@
-import React, { JSX, useState } from "react";
+import React from "react";
 import { AnimatedRightPanel } from "../ui";
 import { AnimatePresence, motion } from "framer-motion";
 import Logo from "@/assets/medory.webp";
 import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
 import { LanguageChanger } from "@/components/ui";
-import { LoginStage, Stage } from "@/types";
 import { getPageInfo } from "@/libs";
+import { AuthFlowProvider, useAuthFlow } from "@/providers/AuthFlowProvider";
+import { Stage } from "@/types";
 
-export const AuthWrapper = (element: JSX.Element) => {
+const AuthInner: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { active } = useAuthFlow();
+  const { title, subtitle } = getPageInfo(active.stage as Stage);
   const { t } = useTranslation();
-
-  const initialStage =
-    (typeof window !== "undefined" && sessionStorage.getItem("stage")) ||
-    "login";
-
-  const initialEmail =
-    typeof window !== "undefined"
-      ? (sessionStorage.getItem("email") ?? "")
-      : "";
-
-  const [loginState, setLoginState] = useState<LoginStage>({
-    stage: initialStage as Stage,
-    email: initialEmail
-  });
-
-  const { title, subtitle } = getPageInfo(loginState);
-
   return (
     <div className="flex min-h-screen w-full">
       <div className="bg-auth-form-bg flex flex-1 flex-col">
@@ -34,7 +20,7 @@ export const AuthWrapper = (element: JSX.Element) => {
           <div className="flex items-center gap-3">
             <img src={Logo} alt="Medory" className="h-8 w-8 rounded-[4px]" />
             <span className="text-auth-text-primary font-semibold">
-              {toUpperCase(t("global.name"))}
+              {toUpperCase(t(title))}
             </span>
           </div>
           <LanguageChanger />
@@ -57,15 +43,13 @@ export const AuthWrapper = (element: JSX.Element) => {
             </motion.div>
 
             <motion.div
-              key={loginState.stage}
+              key={active.stage}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.3 }}
             >
-              <AnimatePresence mode="wait">
-                {React.cloneElement(element, { loginState, setLoginState })}
-              </AnimatePresence>
+              <AnimatePresence mode="wait">{children}</AnimatePresence>
             </motion.div>
           </div>
         </div>
@@ -75,5 +59,15 @@ export const AuthWrapper = (element: JSX.Element) => {
         <AnimatedRightPanel />
       </div>
     </div>
+  );
+};
+
+export const AuthWrapper: React.FC<{ children: React.ReactElement }> = ({
+  children
+}) => {
+  return (
+    <AuthFlowProvider>
+      <AuthInner>{children}</AuthInner>
+    </AuthFlowProvider>
   );
 };

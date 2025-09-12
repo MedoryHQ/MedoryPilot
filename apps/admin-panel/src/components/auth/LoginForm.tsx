@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
-import { LoginFormValues, LoginStage, ResponseError } from "@/types";
+import { LoginFormValues, ResponseError } from "@/types";
 import { setHookFormErrors, toUpperCase } from "@/utils";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
@@ -11,17 +11,15 @@ import { useState } from "react";
 import { cn } from "@/libs";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store";
+import { useAuthFlow } from "@/providers/AuthFlowProvider";
 
-interface Props {
-  setLoginState?: React.Dispatch<React.SetStateAction<LoginStage>>;
-}
-
-const LoginForm = ({ setLoginState }: Props) => {
+const LoginForm = () => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast(t);
   const [showPassword, setShowPassword] = useState(false);
   const { setOtpSent, clearOtp, login } = useAuthStore();
   const navigate = useNavigate();
+  const { setStage, setEmail, setFlow } = useAuthFlow();
 
   const {
     register,
@@ -42,7 +40,7 @@ const LoginForm = ({ setLoginState }: Props) => {
       reset();
       toast.success(t("toast.success"), data.message[i18n.language]);
       const hasUser = Boolean(data?.data && data.data.user);
-      handleLoginSuccess(variables.email, !hasUser ? true : false, data);
+      onLoginSuccess(variables.email, !hasUser ? true : false, data);
     },
     onError: (error: ResponseError) => {
       setHookFormErrors(
@@ -55,22 +53,20 @@ const LoginForm = ({ setLoginState }: Props) => {
     }
   });
 
-  const handleLoginSuccess = (
+  const onLoginSuccess = (
     submittedEmail: string,
     requiresOtp: boolean,
     payload?: any
   ) => {
+    setFlow("login");
+    setEmail(submittedEmail);
     if (requiresOtp) {
-      if (setLoginState) {
-        setLoginState({ stage: "verify-otp", email: submittedEmail });
-      }
+      setStage("verify-otp");
       setOtpSent(submittedEmail);
     } else {
       login({ data: { user: payload.data.user } });
       clearOtp();
-      if (setLoginState) {
-        setLoginState({ stage: "login", email: "" });
-      }
+      setStage("login");
       navigate("/");
     }
   };

@@ -1,35 +1,24 @@
+import { useEffect } from "react";
 import { LoginForm, OtpVerificationForm } from "@/components/auth";
 import { useAuthStore } from "@/store";
-import { LoginStage } from "@/types";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuthFlow } from "@/providers/AuthFlowProvider";
 
-const Login = ({
-  loginState,
-  setLoginState
-}: {
-  loginState?: LoginStage;
-  setLoginState?: React.Dispatch<React.SetStateAction<LoginStage>>;
-}) => {
+const Login: React.FC = () => {
+  const { active } = useAuthFlow();
   const { isLoggedIn } = useAuthStore();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (isLoggedIn) navigate("/");
-  }, [isLoggedIn]);
+  }, [isLoggedIn, navigate]);
 
-  switch (loginState?.stage) {
-    case "login":
-      return <LoginForm setLoginState={setLoginState} />;
+  switch (String(active.stage)) {
     case "verify-otp":
-      return (
-        <OtpVerificationForm
-          setLoginState={setLoginState}
-          email={loginState.email}
-        />
-      );
+      return <OtpVerificationForm />;
+    case "login":
     default:
-      return <LoginForm setLoginState={setLoginState} />;
+      return <LoginForm />;
   }
 };
 
