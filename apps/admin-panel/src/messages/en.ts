@@ -51,6 +51,11 @@ export const en = {
         remember: "Remember Me",
         login: "Sign In"
       },
+      forgetPassword: {
+        email: "Email",
+        backToLogin: "Back To Login",
+        send: "Send Reset Code"
+      },
       otpForm: {
         verify: "Verify code",
         resendAvialible: "Resend avialible in: ",

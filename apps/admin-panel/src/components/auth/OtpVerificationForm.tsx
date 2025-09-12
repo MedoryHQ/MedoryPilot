@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import { useForm, Controller } from "react-hook-form";
 import axios from "@/api/axios";
-import { ResponseError } from "@/types";
+import { LoginFlowState, ResponseError } from "@/types";
 import { setHookFormErrors, toUpperCase } from "@/utils";
 import { useAuthStore } from "@/store";
 import { useTranslation } from "react-i18next";
@@ -10,7 +10,6 @@ import { Button, InputOTP, InputOTPGroup, InputOTPSlot } from "../ui";
 import { useToast } from "@/hooks";
 import { cn } from "@/libs";
 import { useNavigate } from "react-router-dom";
-import { useAuthFlow } from "@/providers/AuthFlowProvider";
 
 type FormValues = {
   code: string;
@@ -28,15 +27,20 @@ const parseSentAt = (raw: string | null): number | null => {
   return null;
 };
 
-const OtpVerificationForm = () => {
+const OtpVerificationForm = ({
+  stage,
+  setStage
+}: {
+  stage: LoginFlowState;
+  setStage: Dispatch<SetStateAction<LoginFlowState>>;
+}) => {
   const { login, otpSentAt, setOtpSent, clearOtp } = useAuthStore();
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const { t, i18n } = useTranslation();
   const { toast } = useToast(t);
   const [localError, setLocalError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { active, setStage, setFlow, setEmail } = useAuthFlow();
-  const email = active.email;
+  const email = stage.email;
   const {
     control,
     handleSubmit,
@@ -49,9 +53,10 @@ const OtpVerificationForm = () => {
   });
 
   const resetFlow = () => {
-    setFlow("login");
-    setStage("login");
-    setEmail("");
+    setStage({
+      stage: "login",
+      email: ""
+    });
   };
 
   const handleOtpSuccess = () => {

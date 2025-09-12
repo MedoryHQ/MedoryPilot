@@ -52,6 +52,11 @@ export const ka = {
         remember: "დამახსოვრება",
         login: "შესვლა"
       },
+      forgetPassword: {
+        email: "ელ-ფოსტა",
+        backToLogin: "შესვლის გვერდზე დაბრუნება",
+        send: "კოდის გაგზავნა"
+      },
       otpForm: {
         verify: "ვერიფიკაცია",
         resendAvialible: "გაგზავნას შეძლებთ: ",

@@ -1,25 +1,27 @@
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
-import { LoginFormValues, ResponseError } from "@/types";
+import { LoginFlowState, LoginFormValues, ResponseError } from "@/types";
 import { setHookFormErrors, toUpperCase } from "@/utils";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
 import { Button, Input, Label, Checkbox } from "../ui";
 import { useToast } from "@/hooks/useToast";
 import { Mail, Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { cn } from "@/libs";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store";
-import { useAuthFlow } from "@/providers/AuthFlowProvider";
 
-const LoginForm = () => {
+const LoginForm = ({
+  setStage
+}: {
+  setStage: Dispatch<SetStateAction<LoginFlowState>>;
+}) => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast(t);
   const [showPassword, setShowPassword] = useState(false);
   const { setOtpSent, clearOtp, login } = useAuthStore();
   const navigate = useNavigate();
-  const { setStage, setEmail, setFlow } = useAuthFlow();
 
   const {
     register,
@@ -58,15 +60,19 @@ const LoginForm = () => {
     requiresOtp: boolean,
     payload?: any
   ) => {
-    setFlow("login");
-    setEmail(submittedEmail);
     if (requiresOtp) {
-      setStage("verify-otp");
+      setStage({
+        stage: "verify-otp",
+        email: submittedEmail
+      });
       setOtpSent(submittedEmail);
     } else {
       login({ data: { user: payload.data.user } });
       clearOtp();
-      setStage("login");
+      setStage({
+        stage: "login",
+        email: ""
+      });
       navigate("/");
     }
   };
