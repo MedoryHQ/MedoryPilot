@@ -18,8 +18,6 @@ const Login: React.FC = () => {
   const { loginStage, setLoginStage, resetStages } = useAuthStageStore();
   const { title, subtitle } = getPageInfo(loginStage.stage as Stage);
 
-  console.log(loginStage.stage);
-
   useEffect(() => {
     if (isLoggedIn) navigate("/");
   }, [isLoggedIn, navigate]);

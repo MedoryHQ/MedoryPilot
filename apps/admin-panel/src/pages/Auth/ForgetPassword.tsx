@@ -76,8 +76,6 @@ const ForgetPassword = () => {
                     verificationUrl="/auth/forgot-password-verification"
                     resendUrl="/auth/resend-otp"
                     onSuccess={(data) => {
-                      // handleOtpSuccess();
-                      console.log(data);
                       setForgetPasswordStage({
                         stage: "new-password",
                         email: forgetPasswordStage.email,

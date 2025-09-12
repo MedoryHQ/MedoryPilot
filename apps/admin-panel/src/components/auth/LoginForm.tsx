@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
-import { LoginFlowState, LoginFormValues, ResponseError } from "@/types";
+import { LoginFlowState, LoginFormValues } from "@/types";
 import { setHookFormErrors, toUpperCase } from "@/utils";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
@@ -11,6 +11,8 @@ import { useState } from "react";
 import { cn } from "@/libs";
 import { useNavigate } from "react-router-dom";
 import { useAuthStageStore, useAuthStore } from "@/store";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema } from "@/validations/authSchema";
 
 const LoginForm = ({
   setStage
@@ -31,6 +33,7 @@ const LoginForm = ({
     reset,
     formState: { errors }
   } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema(t)),
     defaultValues: { email: "", password: "", remember: true }
   });
 
@@ -45,7 +48,7 @@ const LoginForm = ({
       const hasUser = Boolean(data?.data && data.data.user);
       onLoginSuccess(variables.email, !hasUser ? true : false, data);
     },
-    onError: (error: ResponseError) => {
+    onError: (error: any) => {
       setHookFormErrors(
         error,
         toast,
@@ -62,18 +65,12 @@ const LoginForm = ({
     payload?: any
   ) => {
     if (requiresOtp) {
-      setStage({
-        stage: "verify-otp",
-        email: submittedEmail
-      });
+      setStage({ stage: "verify-otp", email: submittedEmail });
       setOtpSent(submittedEmail);
     } else {
       login({ data: { user: payload.data.user } });
       clearOtp();
-      setStage({
-        stage: "login",
-        email: ""
-      });
+      setStage({ stage: "login", email: "" });
       navigate("/");
     }
   };
@@ -81,7 +78,6 @@ const LoginForm = ({
   const onSubmit = (values: LoginFormValues) => {
     mutate(values);
   };
-
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
