@@ -326,16 +326,6 @@ export const forgotPassword = async (
       });
       return sendError(req, res, 404, "userNotFound");
     }
-    if (
-      admin.smsCodeExpiresAt &&
-      new Date(admin.smsCodeExpiresAt) > new Date()
-    ) {
-      logWarn("Forgot password failed: code still valid", {
-        ip: (req as any).hashedIp,
-        event: "admin_forgot_password_failed",
-      });
-      return sendError(req, res, 400, "verificationCodeStillValid");
-    }
 
     const {
       hashedSmsCode,
@@ -379,7 +369,8 @@ export const forgotPasswordVerification = async (
   next: NextFunction
 ) => {
   try {
-    const { smsCode, email } = req.body as IForgotAdminPasswordVerification;
+    const { code: smsCode, email } =
+      req.body as IForgotAdminPasswordVerification;
 
     logInfo("Forget password verification attempt", {
       ip: (req as any).hashedIp,
@@ -416,6 +407,7 @@ export const forgotPasswordVerification = async (
     });
     return res.status(200).json({
       message: getResponseMessage("codeVerified"),
+      code: smsCode,
     });
   } catch (error) {
     logCatchyError("Forgot password verification exception", error, {
@@ -432,7 +424,7 @@ export const resetPassword = async (
   next: NextFunction
 ) => {
   try {
-    const { email, password, smsCode } = req.body as IResetAdminPassword;
+    const { email, password, code: smsCode } = req.body as IResetAdminPassword;
 
     logInfo("Reset password attempt", {
       ip: (req as any).hashedIp,

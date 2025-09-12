@@ -18,11 +18,11 @@ export const forgotAdminPasswordValidation = [
 
 export const forgotAdminPasswordVerificationValidation = [
   emailValidation(),
-  codeValidation("smsCode"),
+  codeValidation("code"),
 ];
 
 export const resetAdminPasswordValidation = [
-  codeValidation("smsCode"),
+  codeValidation("code"),
   emailValidation(),
   passwordValidation(),
 ];

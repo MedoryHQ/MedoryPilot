@@ -1,11 +1,11 @@
 export interface IForgotAdminPasswordVerification {
   email: string;
-  smsCode: string;
+  code: string;
 }
 
 export interface IResetAdminPassword {
   email: string;
-  smsCode: string;
+  code: string;
   password: string;
 }
 
