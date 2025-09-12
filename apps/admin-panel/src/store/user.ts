@@ -5,9 +5,6 @@ import { persist } from "zustand/middleware";
 interface AuthStore {
   isLoggedIn: boolean;
   currentUser: LoginResponse["user"] | null;
-  otpSentAt: number | null;
-  setOtpSent: (email?: string) => void;
-  clearOtp: () => void;
   login: (data: { data: LoginResponse }) => void;
   logout: () => void;
   updatedAt?: string;
@@ -19,24 +16,6 @@ export const useAuthStore = create(
       return {
         isLoggedIn: false,
         currentUser: null,
-        otpSentAt: null,
-        setOtpSent: (email?: string) => {
-          const now = Date.now();
-          try {
-            if (email) sessionStorage.setItem("email", String(email));
-          } catch (e) {
-            console.warn("sessionStorage not available", e);
-          }
-          set({ otpSentAt: now });
-        },
-        clearOtp: () => {
-          try {
-            sessionStorage.removeItem("otpSentAt");
-          } catch (e) {
-            // noop
-          }
-          set({ otpSentAt: null });
-        },
         login: ({ data }) => {
           set(() => ({
             isLoggedIn: true,
@@ -47,8 +26,7 @@ export const useAuthStore = create(
         logout: () => {
           set(() => ({
             isLoggedIn: false,
-            currentUser: null,
-            otpSentAt: null
+            currentUser: null
           }));
         }
       };
