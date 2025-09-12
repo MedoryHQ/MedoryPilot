@@ -55,7 +55,7 @@ export const useTheme = ({
     try {
       localStorage.setItem(storageKey, theme);
     } catch {
-      // Silent fail if localStorage is not available
+      //
     }
 
     root.classList.remove("theme-loading");

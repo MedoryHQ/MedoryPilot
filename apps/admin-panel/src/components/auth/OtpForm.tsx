@@ -44,7 +44,6 @@ export const OtpForm = ({
     defaultValues: { code: "" }
   });
 
-  // Calculate OTP timer
   const getCanonicalSentAt = (): number | null => otpSentAt;
 
   useEffect(() => {

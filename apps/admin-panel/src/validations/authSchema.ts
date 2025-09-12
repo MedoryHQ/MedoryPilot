@@ -45,7 +45,7 @@ export const otpSchema = (t: (key: string) => string) =>
   z.object({
     code: z
       .string()
-      .regex(/^\d+$/, { message: toUpperCase(t("auth.errors.onlyDigits")) }) // ✅ only digits allowed
+      .regex(/^\d+$/, { message: toUpperCase(t("auth.errors.onlyDigits")) })
       .min(4, { message: toUpperCase(t("auth.errors.otpRequired")) })
       .max(4, { message: toUpperCase(t("auth.errors.otpRequired")) })
   });
