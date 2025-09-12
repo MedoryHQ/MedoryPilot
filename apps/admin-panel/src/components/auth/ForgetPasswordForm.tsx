@@ -13,6 +13,8 @@ import { useToast } from "@/hooks/useToast";
 import { Mail } from "lucide-react";
 import { cn } from "@/libs";
 import { useAuthStageStore } from "@/store";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { forgetPasswordSchema } from "@/validations/authSchema";
 
 const ForgetPasswordForm = ({
   setStage
@@ -30,6 +32,7 @@ const ForgetPasswordForm = ({
     reset,
     formState: { errors }
   } = useForm<ForgetPasswordValues>({
+    resolver: zodResolver(forgetPasswordSchema(t)),
     defaultValues: { email: "" }
   });
 
