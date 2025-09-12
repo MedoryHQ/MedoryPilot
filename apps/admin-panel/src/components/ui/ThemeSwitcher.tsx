@@ -15,7 +15,7 @@ export const ThemeSwitcher: React.FC = () => {
       variant="ghost"
       size="sm"
       onClick={toggleTheme}
-      className="hover:bg-muted h-9 w-9 p-0"
+      className="hover:bg-active h-9 w-9 p-0 transition-all duration-200"
       title={toUpperCase(
         t(isDarkMode ? "theme.switchToLight" : "theme.switchToDark")
       )}

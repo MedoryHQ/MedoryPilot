@@ -19,7 +19,7 @@ export const AuthWrapper: React.FC<{ children: React.ReactNode }> = ({
               {toUpperCase(t("global.name"))}
             </span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
             <LanguageChanger />
             <ThemeSwitcher />
           </div>
