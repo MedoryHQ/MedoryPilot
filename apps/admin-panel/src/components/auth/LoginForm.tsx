@@ -7,20 +7,21 @@ import { useTranslation } from "react-i18next";
 import { Button, Input, Label, Checkbox } from "../ui";
 import { useToast } from "@/hooks/useToast";
 import { Mail, Eye, EyeOff } from "lucide-react";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { cn } from "@/libs";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "@/store";
+import { useAuthStageStore, useAuthStore } from "@/store";
 
 const LoginForm = ({
   setStage
 }: {
-  setStage: Dispatch<SetStateAction<LoginFlowState>>;
+  setStage: (state: LoginFlowState) => void;
 }) => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast(t);
   const [showPassword, setShowPassword] = useState(false);
-  const { setOtpSent, clearOtp, login } = useAuthStore();
+  const { login } = useAuthStore();
+  const { setOtpSent, clearOtp } = useAuthStageStore();
   const navigate = useNavigate();
 
   const {

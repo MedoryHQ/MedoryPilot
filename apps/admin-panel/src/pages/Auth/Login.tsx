@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import { LoginForm, OtpVerificationForm } from "@/components/auth";
-import { useAuthStore } from "@/store";
+import { useEffect } from "react";
+import { LoginForm, OtpForm } from "@/components/auth";
+import { useAuthStageStore, useAuthStore } from "@/store";
 import { useNavigate } from "react-router-dom";
-import { LoginFlowState, Stage } from "@/types";
+import { Stage } from "@/types";
 import { getPageInfo } from "@/libs";
 import { AnimatePresence, motion } from "framer-motion";
 import { toUpperCase } from "@/utils";
@@ -10,17 +10,25 @@ import { useTranslation } from "react-i18next";
 
 const Login: React.FC = () => {
   const { isLoggedIn } = useAuthStore();
+  const { clearOtp } = useAuthStageStore();
+
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [stage, setStage] = useState<LoginFlowState>({
-    stage: "login",
-    email: ""
-  });
-  const { title, subtitle } = getPageInfo(stage.stage as Stage);
+  const { login } = useAuthStore();
+  const { loginStage, setLoginStage, resetStages } = useAuthStageStore();
+  const { title, subtitle } = getPageInfo(loginStage.stage as Stage);
+
+  console.log(loginStage.stage);
 
   useEffect(() => {
     if (isLoggedIn) navigate("/");
   }, [isLoggedIn, navigate]);
+
+  const handleOtpSuccess = () => {
+    resetStages();
+    clearOtp();
+    navigate("/");
+  };
 
   return (
     <div className="w-full max-w-md lg:max-w-[470px]">
@@ -37,7 +45,7 @@ const Login: React.FC = () => {
       </motion.div>
 
       <motion.div
-        key={stage.stage}
+        key={loginStage.stage}
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: 20 }}
@@ -45,14 +53,22 @@ const Login: React.FC = () => {
       >
         <AnimatePresence mode="wait">
           {(() => {
-            switch (String(stage.stage)) {
+            switch (String(loginStage.stage)) {
               case "verify-otp":
                 return (
-                  <OtpVerificationForm stage={stage} setStage={setStage} />
+                  <OtpForm
+                    email={loginStage.email || ""}
+                    verificationUrl="/auth/verify-otp"
+                    resendUrl="/auth/resend-otp"
+                    onSuccess={(data) => {
+                      login({ data: { user: data.data.user } });
+                      handleOtpSuccess();
+                    }}
+                  />
                 );
               case "login":
               default:
-                return <LoginForm setStage={setStage} />;
+                return <LoginForm setStage={setLoginStage} />;
             }
           })()}
         </AnimatePresence>
