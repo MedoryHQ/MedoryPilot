@@ -64,13 +64,24 @@ export const en = {
         verificationCode: "Verification Code",
         codeSentAt: "Code sent to"
       },
+      resetPassword: {
+        settingFor: "Setting new password for ",
+        newPassword: "New Password",
+        strength: "Strength",
+        confirmPassword: "Confirm Password",
+        updatePassword: "Update Password"
+      },
       errors: {
         emailRequired: "Email Required",
         invalidEmail: "Invalid Email",
         passwordRequired: "Password Required",
+        onlyDigits: "Only Digits",
         passwordLength: "Password must be between 8 and 100 characters long",
         otpRequired: "OTP must be 4 digits",
-        invalidOTP: "Invalid OTP. Please try again."
+        invalidOTP: "Invalid OTP. Please try again.",
+        passwordPattern:
+          "Password must contain uppercase, lowercase, and number",
+        passwordMismatch: "Passwords do not match"
       }
     },
     menu: {

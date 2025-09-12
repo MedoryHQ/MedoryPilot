@@ -65,13 +65,24 @@ export const ka = {
         verificationCode: "ვერიფიკაციის კოდი",
         codeSentAt: "კოდი გამოგზიგზავნა"
       },
+      resetPassword: {
+        settingFor: "ახალი პაროლის შექმნა: ",
+        newPassword: "ახალი პაროლი",
+        strength: "სიძლიერე",
+        confirmPassword: "პაროლის დადასტურება",
+        updatePassword: "პაროლის განახლება"
+      },
+
       errors: {
         emailRequired: "ელ-ფოსტა აუცილებელია",
         invalidEmail: "არასწორი ელ-ფოსტა",
+        onlyDigits: "მხოლოდ ციფრები",
         passwordRequired: "პაროლი აუცილებელია",
         passwordLength: "პაროლი უნდა იყოს 8-დან 100 სიმბოლომდე სიგრძის",
         otpRequired: "OTP კოდი უნდა შედგებოდეს 4 ციფრისგან",
-        invalidOTP: "არასწორი OTP კოდი, გთხოვთ სცადეთ თავიდან"
+        invalidOTP: "არასწორი OTP კოდი, გთხოვთ სცადეთ თავიდან",
+        passwordPattern: "პაროლი უნდა შეიცავდეს დიდ ასოს, პატარა ასოს და ციფრს",
+        passwordMismatch: "პაროლი არ დაემთხვა"
       }
     },
     menu: {

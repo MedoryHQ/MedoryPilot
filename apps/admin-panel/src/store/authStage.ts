@@ -18,7 +18,7 @@ export const useAuthStageStore = create<AuthStageStore>()(
   persist(
     (set) => ({
       loginStage: { stage: "login", email: "" },
-      forgetPasswordStage: { stage: "forgot-password", email: "" },
+      forgetPasswordStage: { stage: "forgot-password", email: "", code: null },
       otpSentAt: null,
 
       setLoginStage: (loginStage) => set({ loginStage }),
@@ -47,7 +47,11 @@ export const useAuthStageStore = create<AuthStageStore>()(
       resetStages: () =>
         set({
           loginStage: { stage: "login", email: "" },
-          forgetPasswordStage: { stage: "forgot-password", email: "" },
+          forgetPasswordStage: {
+            stage: "forgot-password",
+            email: "",
+            code: null
+          },
           otpSentAt: null
         })
     }),

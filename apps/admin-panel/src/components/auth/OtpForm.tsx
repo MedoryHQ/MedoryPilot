@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
 import { Button, InputOTP, InputOTPGroup, InputOTPSlot } from "../ui";
@@ -8,10 +9,7 @@ import { useToast } from "@/hooks";
 import { setHookFormErrors, toUpperCase } from "@/utils";
 import { useAuthStageStore } from "@/store";
 import { cn } from "@/libs";
-
-type FormValues = {
-  code: string;
-};
+import { OtpFormValues, otpSchema } from "@/validations/authSchema";
 
 interface OTPProps {
   email: string;
@@ -41,7 +39,10 @@ export const OtpForm = ({
     clearErrors,
     reset,
     formState: { errors }
-  } = useForm<FormValues>({ defaultValues: { code: "" } });
+  } = useForm<OtpFormValues>({
+    resolver: zodResolver(otpSchema(t)),
+    defaultValues: { code: "" }
+  });
 
   // Calculate OTP timer
   const getCanonicalSentAt = (): number | null => otpSentAt;
@@ -118,17 +119,10 @@ export const OtpForm = ({
     }
   });
 
-  const onSubmit = async (values: FormValues) => {
-    const code = values.code ?? "";
-    if (code.length !== 4) {
-      setError("code", { message: toUpperCase(t("auth.errors.otpRequired")) });
-      setLocalError(t("auth.errors.otpRequired"));
-      return;
-    }
-
+  const onSubmit = async (values: OtpFormValues) => {
     setLocalError(null);
     try {
-      await verifyOtp({ code, email });
+      await verifyOtp({ code: values.code, email });
     } catch {
       setLocalError(t("auth.errors.invalidOTP"));
     }
@@ -150,49 +144,42 @@ export const OtpForm = ({
             <Controller
               control={control}
               name="code"
-              rules={{
-                required: toUpperCase(t("auth.errors.otpRequired")),
-                validate: (val) =>
-                  (val && val.length === 4) ||
-                  toUpperCase(t("auth.errors.otpRequired"))
-              }}
-              render={({ field }) => {
-                return (
-                  <>
-                    <InputOTP
-                      maxLength={4}
-                      value={field.value}
-                      onChange={(newValue: string) => {
-                        field.onChange(newValue);
-                        if (newValue.length === 4 && localError)
-                          setLocalError(null);
-                        if (newValue.length === 4 && errors.code) {
-                          clearErrors("code");
-                        }
-                      }}
-                      autoFocus
-                      className="input-otp"
-                    >
-                      <InputOTPGroup>
-                        <InputOTPSlot index={0} className="input-otp-slot" />
-                        <InputOTPSlot index={1} className="input-otp-slot" />
-                        <InputOTPSlot index={2} className="input-otp-slot" />
-                        <InputOTPSlot index={3} className="input-otp-slot" />
-                      </InputOTPGroup>
-                    </InputOTP>
+              render={({ field }) => (
+                <>
+                  <InputOTP
+                    maxLength={4}
+                    value={field.value}
+                    onChange={(newValue: string) => {
+                      const sanitized = newValue.replace(/\D/g, "");
+                      field.onChange(sanitized);
 
-                    <div className="mt-2">
-                      {errors.code?.message ? (
-                        <p className="text-destructive text-sm">
-                          {errors.code.message}
-                        </p>
-                      ) : localError ? (
-                        <p className="text-destructive text-sm">{localError}</p>
-                      ) : null}
-                    </div>
-                  </>
-                );
-              }}
+                      if (sanitized.length === 4 && localError)
+                        setLocalError(null);
+                      if (sanitized.length === 4 && errors.code)
+                        clearErrors("code");
+                    }}
+                    autoFocus
+                    className="input-otp"
+                  >
+                    <InputOTPGroup>
+                      <InputOTPSlot index={0} className="input-otp-slot" />
+                      <InputOTPSlot index={1} className="input-otp-slot" />
+                      <InputOTPSlot index={2} className="input-otp-slot" />
+                      <InputOTPSlot index={3} className="input-otp-slot" />
+                    </InputOTPGroup>
+                  </InputOTP>
+
+                  <div className="mt-2">
+                    {errors.code?.message ? (
+                      <p className="text-destructive text-sm">
+                        {errors.code.message}
+                      </p>
+                    ) : localError ? (
+                      <p className="text-destructive text-sm">{localError}</p>
+                    ) : null}
+                  </div>
+                </>
+              )}
             />
           </div>
 
@@ -202,7 +189,7 @@ export const OtpForm = ({
               loading={verifying}
               className="premium-button floating-action mt-2 mb-3 w-full rounded-lg"
               size={"xl"}
-              disabled={verifying || (control && (errors.code ? true : false))}
+              disabled={verifying || !!errors.code}
             >
               {toUpperCase(t("auth.otpForm.verify"))}
             </Button>

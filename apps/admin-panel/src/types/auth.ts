@@ -8,19 +8,24 @@ export type ForgetPasswordValues = {
   email: string;
 };
 
-export type LoginStageValue = "login" | "verify-otp";
+export type PasswordResetValues = {
+  password: string;
+  repeatPassword: string;
+};
 
-export interface LoginFlowState {
-  stage: LoginStageValue;
-  email?: string;
-}
+export type LoginStageValue = "login" | "verify-otp";
 
 export type ForgotStageValue =
   | "forgot-password"
   | "forgot-password-otp"
   | "new-password";
+export interface LoginFlowState {
+  stage: LoginStageValue;
+  email?: string;
+}
 
 export interface ForgetPasswordFlowState {
   stage: ForgotStageValue;
   email?: string;
+  code?: string | null;
 }
