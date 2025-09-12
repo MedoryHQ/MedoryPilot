@@ -1,6 +1,6 @@
 import { LoginFlowState, ForgetPasswordFlowState } from "@/types";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, PersistStorage } from "zustand/middleware";
 
 interface AuthStageStore {
   loginStage: LoginFlowState;
@@ -13,6 +13,17 @@ interface AuthStageStore {
   clearOtp: () => void;
   resetStages: () => void;
 }
+
+const sessionStorageForZustand: PersistStorage<AuthStageStore> = {
+  getItem: (name) => {
+    const value = sessionStorage.getItem(name);
+    return value ? JSON.parse(value) : null;
+  },
+  setItem: (name, value) => {
+    sessionStorage.setItem(name, JSON.stringify(value));
+  },
+  removeItem: (name) => sessionStorage.removeItem(name)
+};
 
 export const useAuthStageStore = create<AuthStageStore>()(
   persist(
@@ -29,6 +40,7 @@ export const useAuthStageStore = create<AuthStageStore>()(
         const now = Date.now();
         try {
           if (email) sessionStorage.setItem("email", String(email));
+          sessionStorage.setItem("otpSentAt", btoa(String(now)));
         } catch {
           //
         }
@@ -57,16 +69,7 @@ export const useAuthStageStore = create<AuthStageStore>()(
     }),
     {
       name: "auth-stage-store",
-      storage: {
-        getItem: (name) => {
-          const value = sessionStorage.getItem(name);
-          return value ? JSON.parse(value) : null;
-        },
-        setItem: (name, value) => {
-          sessionStorage.setItem(name, JSON.stringify(value));
-        },
-        removeItem: (name) => sessionStorage.removeItem(name)
-      }
+      storage: sessionStorageForZustand
     }
   )
 );
