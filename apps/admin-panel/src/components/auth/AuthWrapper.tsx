@@ -10,6 +10,7 @@ import { getPageInfo } from "@/libs";
 
 export const AuthWrapper = (element: JSX.Element) => {
   const { t } = useTranslation();
+
   const initialStage =
     (typeof window !== "undefined" && sessionStorage.getItem("stage")) ||
     "login";

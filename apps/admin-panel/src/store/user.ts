@@ -23,7 +23,7 @@ export const useAuthStore = create(
         setOtpSent: (email?: string) => {
           const now = Date.now();
           try {
-            sessionStorage.setItem("stage", "otp");
+            sessionStorage.setItem("stage", "verify-otp");
             sessionStorage.setItem("otpSentAt", String(now));
             if (email) sessionStorage.setItem("email", String(email));
           } catch (e) {

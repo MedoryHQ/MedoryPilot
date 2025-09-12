@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
-import { LoginFormValues, ResponseError } from "@/types";
+import { LoginFormValues, LoginStage, ResponseError } from "@/types";
 import { setHookFormErrors, toUpperCase } from "@/utils";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
@@ -9,15 +9,19 @@ import { useToast } from "@/hooks/useToast";
 import { Mail, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/libs";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/store";
 
 interface Props {
-  onSuccess: (email: string, requiresOtp: boolean, payload?: any) => void;
+  setLoginState?: React.Dispatch<React.SetStateAction<LoginStage>>;
 }
 
-const LoginForm = ({ onSuccess }: Props) => {
+const LoginForm = ({ setLoginState }: Props) => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast(t);
   const [showPassword, setShowPassword] = useState(false);
+  const { setOtpSent, clearOtp, login } = useAuthStore();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -38,7 +42,7 @@ const LoginForm = ({ onSuccess }: Props) => {
       reset();
       toast.success(t("toast.success"), data.message[i18n.language]);
       const hasUser = Boolean(data?.data && data.data.user);
-      onSuccess(variables.email, !hasUser ? true : false, data);
+      handleLoginSuccess(variables.email, !hasUser ? true : false, data);
     },
     onError: (error: ResponseError) => {
       setHookFormErrors(
@@ -50,6 +54,26 @@ const LoginForm = ({ onSuccess }: Props) => {
       );
     }
   });
+
+  const handleLoginSuccess = (
+    submittedEmail: string,
+    requiresOtp: boolean,
+    payload?: any
+  ) => {
+    if (requiresOtp) {
+      if (setLoginState) {
+        setLoginState({ stage: "verify-otp", email: submittedEmail });
+      }
+      setOtpSent(submittedEmail);
+    } else {
+      login({ data: { user: payload.data.user } });
+      clearOtp();
+      if (setLoginState) {
+        setLoginState({ stage: "login", email: "" });
+      }
+      navigate("/");
+    }
+  };
 
   const onSubmit = (values: LoginFormValues) => {
     mutate(values);
@@ -136,15 +160,25 @@ const LoginForm = ({ onSuccess }: Props) => {
         )}
       </div>
 
-      <div className="flex items-center gap-2">
-        <Checkbox
-          id="remember"
-          {...register("remember")}
+      <div className="flex justify-between">
+        <div className="flex items-center gap-2">
+          <Checkbox
+            id="remember"
+            {...register("remember")}
+            disabled={isLoading}
+          />
+          <Label className="cursor-pointer" htmlFor="remember">
+            {toUpperCase(t("auth.loginForm.remember"))}
+          </Label>
+        </div>
+        <button
+          type="button"
+          onClick={() => navigate("/forget-password")}
+          className="text-primary hover:text-primary/80 cursor-pointer text-sm font-medium transition-colors"
           disabled={isLoading}
-        />
-        <Label className="cursor-pointer" htmlFor="remember">
-          {toUpperCase(t("auth.loginForm.remember"))}
-        </Label>
+        >
+          Forgot password?
+        </button>
       </div>
 
       <Button

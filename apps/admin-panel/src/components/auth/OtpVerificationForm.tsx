@@ -2,16 +2,17 @@ import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import { useForm, Controller } from "react-hook-form";
 import axios from "@/api/axios";
-import { ResponseError } from "@/types";
+import { LoginStage, ResponseError } from "@/types";
 import { setHookFormErrors, toUpperCase } from "@/utils";
 import { useAuthStore } from "@/store";
 import { useTranslation } from "react-i18next";
 import { Button, InputOTP, InputOTPGroup, InputOTPSlot } from "../ui";
 import { useToast } from "@/hooks";
 import { cn } from "@/libs";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
-  onSuccess: () => void;
+  setLoginState?: React.Dispatch<React.SetStateAction<LoginStage>>;
   email: string;
 }
 
@@ -31,12 +32,13 @@ const parseSentAt = (raw: string | null): number | null => {
   return null;
 };
 
-const OtpVerificationForm = ({ onSuccess, email }: Props) => {
+const OtpVerificationForm = ({ setLoginState, email }: Props) => {
   const { login, otpSentAt, setOtpSent, clearOtp } = useAuthStore();
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const { t, i18n } = useTranslation();
   const { toast } = useToast(t);
   const [localError, setLocalError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const {
     control,
@@ -48,6 +50,15 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
   } = useForm<FormValues>({
     defaultValues: { code: "" }
   });
+
+  const handleOtpSuccess = () => {
+    if (setLoginState) {
+      setLoginState({ stage: "login", email: "" });
+    }
+    sessionStorage.removeItem("stage");
+    sessionStorage.removeItem("email");
+    navigate("/");
+  };
 
   const getCanonicalSentAt = (): number | null => {
     if (otpSentAt) return otpSentAt;
@@ -100,7 +111,7 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
       });
       reset();
       setLocalError(null);
-      onSuccess();
+      handleOtpSuccess();
     },
     onError: (error: ResponseError) => {
       setHookFormErrors(
@@ -247,4 +258,4 @@ const OtpVerificationForm = ({ onSuccess, email }: Props) => {
   );
 };
 
-export default OtpVerificationForm;
+export { OtpVerificationForm };

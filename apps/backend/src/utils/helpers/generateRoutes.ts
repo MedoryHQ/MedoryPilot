@@ -5,12 +5,12 @@ import { determineAdminIp } from "@/middlewares/admin";
 import { determineCustomerIp } from "@/middlewares/customer/ip";
 
 const adminRouteList = [
-  { path: "/login", router: AdminRoutes.adminAuthRouter },
+  { path: "/auth", router: AdminRoutes.adminAuthRouter },
   { path: "/docs", router: AdminRoutes.SwaggerRouter },
 ];
 
 const customerRouteList = [
-  { path: "/login", router: CustomerRoutes.userAuthRouter },
+  { path: "/auth", router: CustomerRoutes.userAuthRouter },
 ];
 
 export const generateRoutes = (app: Express) => {

@@ -1,10 +1,9 @@
-import { LoginForm, OtpVerificationForm } from "@/components/auth";
 import { useAuthStore } from "@/store";
 import { LoginStage } from "@/types";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Login = ({
+const ForgetPassword = ({
   loginState,
   setLoginState
 }: {
@@ -19,24 +18,15 @@ const Login = ({
   }, [isLoggedIn]);
 
   switch (loginState?.stage) {
-    case "login":
-      return <LoginForm setLoginState={setLoginState} />;
-    case "verify-otp":
-      return (
-        <OtpVerificationForm
-          setLoginState={setLoginState}
-          email={loginState.email}
-        />
-      );
     default:
-      return <LoginForm setLoginState={setLoginState} />;
+      return <>forget</>;
   }
 };
 
-export const loginNavigationRoute = {
-  element: <Login />,
-  path: "/login",
+export const forgetPasswordNavigationRoute = {
+  element: <ForgetPassword />,
+  path: "/forget-password",
   isAuthRoute: true
 };
 
-export default Login;
+export default ForgetPassword;

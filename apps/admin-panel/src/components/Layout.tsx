@@ -110,8 +110,6 @@ const CustomLayout: React.FC<LayoutProps> = ({ children, route }) => {
             <MobileNavigation />
             <Shell>{checking ? <LoadingScreen /> : children}</Shell>
           </>
-        ) : checking ? (
-          <LoadingScreen />
         ) : (
           children
         )}

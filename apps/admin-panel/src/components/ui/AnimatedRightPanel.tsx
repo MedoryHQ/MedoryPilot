@@ -162,7 +162,7 @@ export const AnimatedRightPanel: React.FC<{
           transition={{ duration: 0.6 }}
           className="mb-12"
         >
-          <div className="mb-6 flex items-center gap-3">
+          <div className="mb-4 flex items-center gap-3 xl:mb-6">
             <img src={Logo} alt="Medory" className="h-12 w-12 rounded-[4px]" />
 
             <div>
@@ -182,7 +182,7 @@ export const AnimatedRightPanel: React.FC<{
           >
             <h2
               className={cn(
-                "mb-6 leading-tight font-bold",
+                "mb-4 leading-tight font-bold xl:mb-6",
                 i18n.language === "en"
                   ? "text-[24px] xl:text-[32px] 2xl:text-[36px]"
                   : "text-[20px] xl:text-[24px] 2xl:text-[28px]"
@@ -192,10 +192,10 @@ export const AnimatedRightPanel: React.FC<{
             </h2>
             <p
               className={cn(
-                "mb-8 leading-relaxed text-white/90",
+                "mb-2 leading-relaxed text-white/90 xl:mb-8",
                 i18n.language === "en"
-                  ? "text-[18px] xl:text-[20px]"
-                  : "text-[16px] xl:text-[18px]"
+                  ? "text-[16px] xl:text-[20px]"
+                  : "text-[14px] xl:text-[18px]"
               )}
             >
               {toUpperCase(t("global.description"))}
@@ -215,16 +215,16 @@ export const AnimatedRightPanel: React.FC<{
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
-              className="flex items-start gap-4"
+              className="flex items-start gap-3 xl:gap-4"
             >
-              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm">
-                <feature.icon className="h-5 w-5" />
+              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm xl:h-12 xl:w-12 xl:rounded-xl">
+                <feature.icon className="h-4 w-4 xl:h-5 xl:w-5" />
               </div>
               <div>
-                <h3 className="mb-1 text-[16px] font-semibold xl:text-lg">
+                <h3 className="mb-1 text-[14px] leading-[14px] font-semibold xl:text-[16px] xl:leading-[20px]">
                   {toUpperCase(t(feature.title))}
                 </h3>
-                <p className="text-[13px] text-white/70 xl:text-sm">
+                <p className="text-[12px] text-white/70 xl:text-sm xl:text-[13px]">
                   {toUpperCase(t(feature.desc))}
                 </p>
               </div>
