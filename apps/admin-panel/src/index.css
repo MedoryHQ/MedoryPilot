@@ -391,6 +391,10 @@ button,
     border-color var(--duration-fast) var(--ease-out);
 }
 
+.child-max > div {
+  width: 100%;
+}
+
 .focus-ring:focus-visible {
   box-shadow: 0 0 0 2px var(--ring);
   border-color: var(--ring);

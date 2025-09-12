@@ -24,7 +24,7 @@ export const LanguageChanger: React.FC<LanguageChangerProps> = ({
   };
 
   return (
-    <div className={cn("relative scale-[80%] sm:scale-[90%]", className)}>
+    <div className={cn("relative", className)}>
       <Select value={language} onValueChange={changeLanguageHandler}>
         <SelectTrigger className="border-border/50 bg-background/50 hover:bg-background/80 hover:border-primary/30 group h-11 w-28 rounded-2xl transition-all duration-200">
           <div className="flex items-center gap-2">

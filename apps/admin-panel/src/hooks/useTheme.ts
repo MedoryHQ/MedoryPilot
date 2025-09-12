@@ -1,4 +1,3 @@
-import { useAuthStore } from "@/store";
 import { useState, useEffect } from "react";
 
 export type Theme = "light" | "dark" | "system";
@@ -12,12 +11,8 @@ export const useTheme = ({
   defaultTheme = "system",
   storageKey = "medory-theme"
 }: UseThemeProps = {}) => {
-  const { isLoggedIn } = useAuthStore();
-
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window === "undefined") return defaultTheme;
-    if (!isLoggedIn) return "light";
-
     try {
       const stored = localStorage.getItem(storageKey);
       return (stored as Theme) || defaultTheme;
@@ -53,18 +48,14 @@ export const useTheme = ({
 
     root.classList.remove("light", "dark");
 
-    const actualTheme = !isLoggedIn
-      ? "light"
-      : theme === "system"
-        ? systemTheme
-        : theme;
+    const actualTheme = theme === "system" ? systemTheme : theme;
 
     root.classList.add(actualTheme);
 
     try {
       localStorage.setItem(storageKey, theme);
     } catch {
-      // Silent fail if localStorage is not available
+      //
     }
 
     root.classList.remove("theme-loading");
@@ -84,25 +75,19 @@ export const useTheme = ({
   }, []);
 
   const setThemePreference = (newTheme: Theme) => {
-    if (!isLoggedIn) return;
     setTheme(newTheme);
   };
 
-  const resolvedTheme = !isLoggedIn
-    ? "light"
-    : theme === "system"
-      ? systemTheme
-      : theme;
+  const resolvedTheme = theme === "system" ? systemTheme : theme;
 
   const isDarkMode = resolvedTheme === "dark";
 
   const toggleTheme = () => {
-    if (!isLoggedIn) return;
     setTheme((current) => (current === "dark" ? "light" : "dark"));
   };
 
   return {
-    theme: !isLoggedIn ? "light" : theme,
+    theme,
     resolvedTheme,
     systemTheme,
     isDarkMode,

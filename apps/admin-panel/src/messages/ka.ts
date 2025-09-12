@@ -3,32 +3,39 @@ export const ka = {
     global: {
       name: "Medory",
       description:
-        "ეხმარება ექიმებს დროის დაზოგვაში და მეტი ჯავშნის დამუშავებაში, ხოლო პაციენტები წუთებში ჯავშნიან, უკავშირდებიან და იხდის.",
+        "ეხმარება ექიმებს დროის დაზოგვაში და მეტი ჯავშნის დამუშავებაში, ხოლო პაციენტები წუთებში ჯავშნიან, უკავშირდებიან და იხდიან.",
       platform: "Healthcare პლატფორმა",
 
       doctor: "თამარ ჩადუნელი",
-      overview: "თანამედროვე ჯანმრთელობის პლატფორმა",
+      overview: "ექიმის დამხმარე პლატფორმა",
       adminPannel: "Medory ადმინ პანელი",
       search: "ძიება...",
       close: "დახურვა",
       preferences: "პრეფერენციები",
       language: "ენა",
       patientTitle: "პაციენტების მენეჯმენტი",
-      patientDescription: "სხვადასხვატიპის პაციენტის ჩანაწერები",
+      patientDescription: "სხვადასხვა ტიპის პაციენტის ჩანაწერები",
       schedulingTitle: "ვიზიტების დაგეგმვა",
       schedulingDescription: "ვიზიტების ავტომატური დაჯავშნა",
       dasboardTitle: "ანალიტიკური დეშბორდი",
       dashboardDescription: "რეალურ დროში მიღებული ინფორმაცია და ანგარიშები",
+      communicationTitle: "უსაფრთხო კომუნიკაცია",
+      communicationDescription:
+        "პაციენტებსა და ექიმებს შეუძლიათ უსაფრთხო კომუნიკაცია",
+      filesTitle: "ფაილების მართვა",
+      filesDescription:
+        "დანიშულების ფურლების, ფორმა 100-ების და სხვა დოკუმენტების უსაფრთხო გაცვლა",
+      websiteTitle: "ექიმის CMS",
+      websiteDescription: "ვებგვერდის კონტენტის და ინფორმაციის მართვა",
       loginTitle: "მოგესალმებით",
-      loginSubtitle: "გაიარეთ ავტორიზაცია თქვენს ანგარიშში გასაგრძელებლად",
+      loginSubtitle: "გაიარეთ ავტორიზაცია თქვენს ანგარიშში შესასვლელად",
       otpTitle: "დაადასტურეთ თქვენი ელ-ფოსტა",
       otpSubtitle:
         "შეიყვანეთ ვერფიკაციის კოდი, რომელიც გამოგეგზავნათ ელ-ფოსტაზე",
       passwordTitle: "პაროლის აღდგენა",
-      passwordSubtitle:
-        "შეიყვანეთ თქვენი ელ-ფოსტის მისამართი აღდგენის კოდის მისაღებად",
-      resetTitle: "შეიყვანეთ აღდგენის კოდი",
-      resetSubtitle: "შეიყვანეთ ელ-ფოსტაზე მიღებული აღდგენის კოდი",
+      passwordSubtitle: "შეიყვანეთ თქვენი ელ-ფოსტის მისამართი კოდის მისაღებად",
+      resetTitle: "შეიყვანეთ კოდი",
+      resetSubtitle: "შეიყვანეთ ელ-ფოსტაზე მიღებული კოდი",
       newPasswordTitle: "ახალი პაროლის შექმნა",
       newPasswordSubtitle: "აირჩიეთ ძლიერი პაროლი თქვენი ანგარიშისთვის"
     },
@@ -45,6 +52,11 @@ export const ka = {
         remember: "დამახსოვრება",
         login: "შესვლა"
       },
+      forgetPassword: {
+        email: "ელ-ფოსტა",
+        backToLogin: "შესვლის გვერდზე დაბრუნება",
+        send: "კოდის გაგზავნა"
+      },
       otpForm: {
         verify: "ვერიფიკაცია",
         resendAvialible: "გაგზავნას შეძლებთ: ",
@@ -53,13 +65,24 @@ export const ka = {
         verificationCode: "ვერიფიკაციის კოდი",
         codeSentAt: "კოდი გამოგზიგზავნა"
       },
+      resetPassword: {
+        settingFor: "ახალი პაროლის შექმნა: ",
+        newPassword: "ახალი პაროლი",
+        strength: "სიძლიერე",
+        confirmPassword: "პაროლის დადასტურება",
+        updatePassword: "პაროლის განახლება"
+      },
+
       errors: {
         emailRequired: "ელ-ფოსტა აუცილებელია",
         invalidEmail: "არასწორი ელ-ფოსტა",
+        onlyDigits: "მხოლოდ ციფრები",
         passwordRequired: "პაროლი აუცილებელია",
         passwordLength: "პაროლი უნდა იყოს 8-დან 100 სიმბოლომდე სიგრძის",
         otpRequired: "OTP კოდი უნდა შედგებოდეს 4 ციფრისგან",
-        invalidOTP: "არასწორი OTP კოდი, გთხოვთ სცადეთ თავიდან"
+        invalidOTP: "არასწორი OTP კოდი, გთხოვთ სცადეთ თავიდან",
+        passwordPattern: "პაროლი უნდა შეიცავდეს დიდ ასოს, პატარა ასოს და ციფრს",
+        passwordMismatch: "პაროლი არ დაემთხვა"
       }
     },
     menu: {

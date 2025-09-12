@@ -1,2 +1,5 @@
 export * from "./LoginForm";
-export * from "./OtpVerificationForm";
+export * from "./AuthWrapper";
+export * from "./ForgetPasswordForm";
+export * from "./OtpForm";
+export * from "./PasswordResetForm";

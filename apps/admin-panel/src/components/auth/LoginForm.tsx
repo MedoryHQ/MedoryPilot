@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
-import { LoginFormValues, ResponseError } from "@/types";
+import { LoginFlowState, LoginFormValues } from "@/types";
 import { setHookFormErrors, toUpperCase } from "@/utils";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
@@ -9,15 +9,22 @@ import { useToast } from "@/hooks/useToast";
 import { Mail, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/libs";
+import { useNavigate } from "react-router-dom";
+import { useAuthStageStore, useAuthStore } from "@/store";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema } from "@/validations/authSchema";
 
-interface Props {
-  onSuccess: (email: string, requiresOtp: boolean, payload?: any) => void;
-}
-
-const LoginForm = ({ onSuccess }: Props) => {
+const LoginForm = ({
+  setStage
+}: {
+  setStage: (state: LoginFlowState) => void;
+}) => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast(t);
   const [showPassword, setShowPassword] = useState(false);
+  const { login } = useAuthStore();
+  const { setOtpSent, clearOtp } = useAuthStageStore();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -26,6 +33,7 @@ const LoginForm = ({ onSuccess }: Props) => {
     reset,
     formState: { errors }
   } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema(t)),
     defaultValues: { email: "", password: "", remember: true }
   });
 
@@ -38,9 +46,9 @@ const LoginForm = ({ onSuccess }: Props) => {
       reset();
       toast.success(t("toast.success"), data.message[i18n.language]);
       const hasUser = Boolean(data?.data && data.data.user);
-      onSuccess(variables.email, !hasUser ? true : false, data);
+      onLoginSuccess(variables.email, !hasUser ? true : false, data);
     },
-    onError: (error: ResponseError) => {
+    onError: (error: any) => {
       setHookFormErrors(
         error,
         toast,
@@ -51,10 +59,25 @@ const LoginForm = ({ onSuccess }: Props) => {
     }
   });
 
+  const onLoginSuccess = (
+    submittedEmail: string,
+    requiresOtp: boolean,
+    payload?: any
+  ) => {
+    if (requiresOtp) {
+      setStage({ stage: "verify-otp", email: submittedEmail });
+      setOtpSent(submittedEmail);
+    } else {
+      login({ data: { user: payload.data.user } });
+      clearOtp();
+      setStage({ stage: "login", email: "" });
+      navigate("/");
+    }
+  };
+
   const onSubmit = (values: LoginFormValues) => {
     mutate(values);
   };
-
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -136,15 +159,25 @@ const LoginForm = ({ onSuccess }: Props) => {
         )}
       </div>
 
-      <div className="flex items-center gap-2">
-        <Checkbox
-          id="remember"
-          {...register("remember")}
+      <div className="flex justify-between">
+        <div className="flex items-center gap-2">
+          <Checkbox
+            id="remember"
+            {...register("remember")}
+            disabled={isLoading}
+          />
+          <Label className="cursor-pointer" htmlFor="remember">
+            {toUpperCase(t("auth.loginForm.remember"))}
+          </Label>
+        </div>
+        <button
+          type="button"
+          onClick={() => navigate("/forget-password")}
+          className="text-primary hover:text-primary/80 cursor-pointer text-sm font-medium transition-colors"
           disabled={isLoading}
-        />
-        <Label className="cursor-pointer" htmlFor="remember">
-          {toUpperCase(t("auth.loginForm.remember"))}
-        </Label>
+        >
+          Forgot password?
+        </button>
       </div>
 
       <Button
@@ -159,4 +192,4 @@ const LoginForm = ({ onSuccess }: Props) => {
   );
 };
 
-export default LoginForm;
+export { LoginForm };

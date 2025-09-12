@@ -1,5 +1,12 @@
-import { LoginStage } from "@/types";
-import { Users, Calendar, BarChart3 } from "lucide-react";
+import { Stage } from "@/types";
+import {
+  Users,
+  Calendar,
+  BarChart3,
+  MessageCircle,
+  FileText,
+  Globe
+} from "lucide-react";
 
 type SubNavigationItem = {
   name: string;
@@ -33,14 +40,14 @@ export const georgianMonths = [
   "დეკემბერი"
 ];
 
-export const getPageInfo = (loginState: LoginStage) => {
-  switch (loginState.stage) {
+export const getPageInfo = (stage: Stage) => {
+  switch (stage) {
     case "login":
       return {
         title: "global.loginTitle",
         subtitle: "global.loginSubtitle"
       };
-    case "otp":
+    case "verify-otp":
       return {
         title: "global.otpTitle",
         subtitle: "global.otpSubtitle"
@@ -50,7 +57,7 @@ export const getPageInfo = (loginState: LoginStage) => {
         title: "global.passwordTitle",
         subtitle: "global.passwordSubtitle"
       };
-    case "reset-otp":
+    case "forgot-password-otp":
       return {
         title: "global.resetTitle",
         subtitle: "global.resetSubtitle"
@@ -83,5 +90,20 @@ export const platformServices = [
     icon: BarChart3,
     title: "global.dasboardTitle",
     desc: "global.dashboardDescription"
+  },
+  {
+    icon: MessageCircle,
+    title: "global.communicationTitle",
+    desc: "global.communicationDescription"
+  },
+  {
+    icon: FileText,
+    title: "global.filesTitle",
+    desc: "global.filesDescription"
+  },
+  {
+    icon: Globe,
+    title: "global.websiteTitle",
+    desc: "global.websiteDescription"
   }
 ];

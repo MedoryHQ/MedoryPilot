@@ -1,4 +1,4 @@
-import React from "react";
+import React, { JSX } from "react";
 import {
   createBrowserRouter,
   Navigate,
@@ -8,6 +8,7 @@ import * as Routes from "./pages";
 import * as AuthRoutes from "./pages/Auth";
 import { NotFound } from "./pages/NotFound";
 import CustomLayout from "./components/Layout";
+import { AuthWrapper } from "./components/auth";
 
 type AnyRoute = {
   path?: string;
@@ -25,16 +26,24 @@ const renderRouteElement = (route: AnyRoute) => {
   return <></>;
 };
 
-const createRoutes = (routesObj: Record<string, AnyRoute> | any) => {
+const createRoutes = (
+  routesObj: Record<string, AnyRoute>,
+  isAuth?: boolean
+) => {
   if (!routesObj) return [];
+
   return Object.values(routesObj)
     .filter((r: any) => r && typeof r === "object" && "path" in r && r.path)
     .map((route: any) => ({
       ...route,
-      path: `${route.path}`,
+      path: route.path,
       element: (
         <CustomLayout route={route} path={route.path}>
-          {renderRouteElement(route)}
+          {isAuth ? (
+            <AuthWrapper>{renderRouteElement(route)}</AuthWrapper>
+          ) : (
+            renderRouteElement(route)
+          )}
         </CustomLayout>
       )
     }));
@@ -44,7 +53,7 @@ export const Router = () => {
   const routesWithLayout = [
     { path: "/", element: <Navigate to="/dashboard" replace /> },
     ...createRoutes(Routes),
-    ...createRoutes(AuthRoutes),
+    ...createRoutes(AuthRoutes, true),
     {
       path: "*",
       element: (

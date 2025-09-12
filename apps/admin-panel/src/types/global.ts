@@ -38,9 +38,9 @@ export interface SearchResult {
 
 export type Stage =
   | "login"
-  | "otp"
+  | "verify-otp"
   | "forgot-password"
-  | "reset-otp"
+  | "forgot-password-otp"
   | "new-password";
 
 export interface LoginStage {

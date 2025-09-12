@@ -76,7 +76,7 @@ function SheetContent({
             variants={variants[side]}
             transition={{ type: "tween", duration: 0.3 }}
             className={cn(
-              "bg-background fixed z-50 flex flex-col gap-4 overflow-y-auto shadow-lg", // ✅ scroll restored
+              "bg-background fixed z-50 flex flex-col gap-4 overflow-y-auto shadow-lg",
               side === "right" &&
                 "inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm",
               side === "left" &&
