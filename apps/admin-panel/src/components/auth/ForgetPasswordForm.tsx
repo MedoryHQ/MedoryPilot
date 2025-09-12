@@ -10,21 +10,18 @@ import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
 import { Button, Input, Label } from "../ui";
 import { useToast } from "@/hooks/useToast";
-import { ArrowLeft, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
 import { cn } from "@/libs";
-import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "@/store";
-import { Dispatch, SetStateAction } from "react";
+import { useAuthStageStore } from "@/store";
 
 const ForgetPasswordForm = ({
   setStage
 }: {
-  setStage: Dispatch<SetStateAction<ForgetPasswordFlowState>>;
+  setStage: (state: ForgetPasswordFlowState) => void;
 }) => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast(t);
-  const { setOtpSent, clearOtp } = useAuthStore();
-  const navigate = useNavigate();
+  const { setOtpSent } = useAuthStageStore();
 
   const {
     register,
@@ -69,11 +66,6 @@ const ForgetPasswordForm = ({
     mutate(values);
   };
 
-  const onBackToLogin = () => {
-    clearOtp();
-    navigate("/login");
-  };
-
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -115,17 +107,6 @@ const ForgetPasswordForm = ({
         className="premium-button floating-action mt-2 w-full rounded-lg"
       >
         {toUpperCase(t("auth.forgetPassword.send"))}
-      </Button>
-
-      <Button
-        type="button"
-        variant="outline"
-        onClick={onBackToLogin}
-        className="border-auth-input-border text-auth-text-secondary hover:text-auth-text-primary hover:bg-muted/50 h-11 w-full rounded-xl"
-        disabled={isLoading}
-      >
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        {toUpperCase(t("auth.forgetPassword.backToLogin"))}
       </Button>
     </form>
   );
