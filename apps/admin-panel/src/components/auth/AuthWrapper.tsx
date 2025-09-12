@@ -1,5 +1,5 @@
 import React from "react";
-import { AnimatedRightPanel } from "../ui";
+import { AnimatedRightPanel, ThemeSwitcher } from "../ui";
 import Logo from "@/assets/medory.webp";
 import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
@@ -19,7 +19,10 @@ export const AuthWrapper: React.FC<{ children: React.ReactNode }> = ({
               {toUpperCase(t("global.name"))}
             </span>
           </div>
-          <LanguageChanger />
+          <div className="flex items-center gap-4">
+            <LanguageChanger />
+            <ThemeSwitcher />
+          </div>
         </div>
 
         <div className="flex flex-1 items-center justify-center px-8">
