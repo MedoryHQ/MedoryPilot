@@ -1,46 +1,39 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import { useForm, Controller } from "react-hook-form";
 import axios from "@/api/axios";
-import { LoginFlowState, ResponseError } from "@/types";
-import { setHookFormErrors, toUpperCase } from "@/utils";
-import { useAuthStore } from "@/store";
 import { useTranslation } from "react-i18next";
 import { Button, InputOTP, InputOTPGroup, InputOTPSlot } from "../ui";
 import { useToast } from "@/hooks";
+import { setHookFormErrors, toUpperCase } from "@/utils";
+import { useAuthStageStore } from "@/store";
 import { cn } from "@/libs";
-import { useNavigate } from "react-router-dom";
 
 type FormValues = {
   code: string;
 };
 
-// TODO: transform to 5 minutes
+interface OTPProps {
+  email: string;
+  verificationUrl: string;
+  resendUrl: string;
+  onSuccess: (data: any) => void;
+}
+
 const OTP_TTL_MS = 0.5 * 60 * 1000;
 
-const parseSentAt = (raw: string | null): number | null => {
-  if (!raw) return null;
-  const n = Number(raw);
-  if (!Number.isNaN(n) && n > 0) return n;
-  const parsed = Date.parse(raw);
-  if (!Number.isNaN(parsed)) return parsed;
-  return null;
-};
-
-const OtpVerificationForm = ({
-  stage,
-  setStage
-}: {
-  stage: LoginFlowState;
-  setStage: Dispatch<SetStateAction<LoginFlowState>>;
-}) => {
-  const { login, otpSentAt, setOtpSent, clearOtp } = useAuthStore();
+export const OtpForm = ({
+  email,
+  verificationUrl,
+  resendUrl,
+  onSuccess
+}: OTPProps) => {
+  const { otpSentAt, setOtpSent, clearOtp, resetStages } = useAuthStageStore();
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const { t, i18n } = useTranslation();
   const { toast } = useToast(t);
   const [localError, setLocalError] = useState<string | null>(null);
-  const navigate = useNavigate();
-  const email = stage.email;
+
   const {
     control,
     handleSubmit,
@@ -48,37 +41,15 @@ const OtpVerificationForm = ({
     clearErrors,
     reset,
     formState: { errors }
-  } = useForm<FormValues>({
-    defaultValues: { code: "" }
-  });
+  } = useForm<FormValues>({ defaultValues: { code: "" } });
 
-  const resetFlow = () => {
-    setStage({
-      stage: "login",
-      email: ""
-    });
-  };
-
-  const handleOtpSuccess = () => {
-    resetFlow();
-    clearOtp();
-    navigate("/");
-  };
-
-  const getCanonicalSentAt = (): number | null => {
-    if (otpSentAt) return otpSentAt;
-    try {
-      const raw = sessionStorage.getItem("otpSentAt");
-      return parseSentAt(raw);
-    } catch {
-      return null;
-    }
-  };
+  // Calculate OTP timer
+  const getCanonicalSentAt = (): number | null => otpSentAt;
 
   useEffect(() => {
     const sent = getCanonicalSentAt();
     if (!sent) {
-      resetFlow();
+      resetStages();
       clearOtp();
       setTimeLeft(0);
       return;
@@ -86,7 +57,7 @@ const OtpVerificationForm = ({
 
     const alreadyExpired = Date.now() - sent >= OTP_TTL_MS;
     if (alreadyExpired) {
-      resetFlow();
+      resetStages();
       clearOtp();
       setTimeLeft(0);
       return;
@@ -94,8 +65,7 @@ const OtpVerificationForm = ({
 
     const update = () => {
       const diffMs = OTP_TTL_MS - (Date.now() - sent);
-      const secs = diffMs > 0 ? Math.ceil(diffMs / 1000) : 0;
-      setTimeLeft(secs);
+      setTimeLeft(diffMs > 0 ? Math.ceil(diffMs / 1000) : 0);
     };
 
     update();
@@ -106,22 +76,17 @@ const OtpVerificationForm = ({
   const resendDisabled = timeLeft > 0;
 
   const { mutateAsync: verifyOtp, isLoading: verifying } = useMutation({
-    mutationFn: async (values: { code: string }) => {
-      const { data } = await axios.post(`/auth/verify-otp`, values);
+    mutationFn: async (values: { code: string; email: string }) => {
+      const { data } = await axios.post(verificationUrl, values);
       return data;
     },
     onSuccess: (data) => {
       toast.success(t("toast.success"), data.message[i18n.language]);
-      login({
-        data: {
-          user: data.data.user
-        }
-      });
       reset();
       setLocalError(null);
-      handleOtpSuccess();
+      onSuccess(data);
     },
-    onError: (error: ResponseError) => {
+    onError: (error: any) => {
       setHookFormErrors(
         error,
         toast,
@@ -134,7 +99,7 @@ const OtpVerificationForm = ({
 
   const { mutateAsync: resendOtp, isLoading: resending } = useMutation({
     mutationFn: async () => {
-      const { data } = await axios.post(`/auth/resend-otp`, { email });
+      const { data } = await axios.post(resendUrl, { email });
       return data;
     },
     onSuccess: (data) => {
@@ -142,7 +107,7 @@ const OtpVerificationForm = ({
       setOtpSent(email);
       setTimeLeft(Math.ceil(OTP_TTL_MS / 1000));
     },
-    onError: (error: ResponseError) => {
+    onError: (error: any) => {
       setHookFormErrors(
         error,
         toast,
@@ -163,14 +128,14 @@ const OtpVerificationForm = ({
 
     setLocalError(null);
     try {
-      await verifyOtp({ code });
+      await verifyOtp({ code, email });
     } catch {
       setLocalError(t("auth.errors.invalidOTP"));
     }
   };
 
   return (
-    <div className="flex h-full justify-center">
+    <div className="flex h-full w-full justify-center">
       <div className="w-[calc(100%-46px)] sm:w-[346px] lg:w-[420px]">
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -255,7 +220,11 @@ const OtpVerificationForm = ({
             >
               {toUpperCase(
                 resendDisabled
-                  ? `${t("auth.otpForm.resendAvialible")} ${Math.floor(timeLeft / 60)}:${String(timeLeft % 60).padStart(2, "0")} ${t("auth.otpForm.inMin")}`
+                  ? `${t("auth.otpForm.resendAvialible")} ${Math.floor(
+                      timeLeft / 60
+                    )}:${String(timeLeft % 60).padStart(2, "0")} ${t(
+                      "auth.otpForm.inMin"
+                    )}`
                   : t("auth.otpForm.resend")
               )}
             </button>
@@ -265,5 +234,3 @@ const OtpVerificationForm = ({
     </div>
   );
 };
-
-export { OtpVerificationForm };
