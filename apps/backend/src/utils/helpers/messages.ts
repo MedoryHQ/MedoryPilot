@@ -56,6 +56,10 @@ export const errorMessages = {
     en: "Admin authentication failed.",
     ka: "ადმინისტრატორის ავტორიზაცია წარუმატებლად დასრულდა.",
   },
+  headerNotFound: {
+    en: "Header not found",
+    ka: "Header ვერ მოიძებნა",
+  },
 
   // Messages
   smsVerificationSent: {
@@ -85,6 +89,10 @@ export const errorMessages = {
   tokenRefreshed: {
     en: "Token refreshed",
     ka: "ტოკენი განახლდა",
+  },
+  headerDeleted: {
+    en: "Header deleted successfully",
+    ka: "Header წარმატებით წაიშალა",
   },
 
   // Validation errors

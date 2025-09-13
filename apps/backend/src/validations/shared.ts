@@ -1,7 +1,7 @@
 import { prisma } from "@/config";
 import { Translation } from "@/types/global";
 import { getResponseMessage, isUuid } from "@/utils";
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 
 export const validateTranslations = (
   translations: Translation,
@@ -189,3 +189,6 @@ export const codeValidation = (field = "code") =>
     .isLength({ min: 4, max: 6 })
     .isNumeric()
     .withMessage("invalidCode");
+
+export const uuidValidation = () =>
+  param("id").isUUID().withMessage("invalidId");

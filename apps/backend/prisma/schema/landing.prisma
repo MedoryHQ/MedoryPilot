@@ -1,7 +1,8 @@
 model Header {
   id String @id @default(uuid(7)) @db.Uuid
 
-  logo File?
+  logo   File?
+  active Boolean?
 
   translations HeaderTranslation[]
 
