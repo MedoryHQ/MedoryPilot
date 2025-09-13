@@ -12,6 +12,7 @@ const adminRouteList = [
 
 const customerRouteList = [
   { path: "/auth", router: CustomerRoutes.userAuthRouter },
+  { path: "/header", router: CustomerRoutes.headerRouter },
 ];
 
 export const generateRoutes = (app: Express) => {
