@@ -7,6 +7,7 @@ import {
   createHeaderValidation,
   deleteHeaderValidation,
   fetchHeaderValidation,
+  updateHeaderValidation,
 } from "@/validations/admin";
 
 export const adminHeaderRouter = Router();
@@ -59,6 +60,20 @@ adminHeaderRouter.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return headerController.createHeader(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminHeaderRouter.put(
+  "/:id",
+  isAdminVerified,
+  updateHeaderValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return headerController.updateHeader(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }
