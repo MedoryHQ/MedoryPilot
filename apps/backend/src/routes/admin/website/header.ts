@@ -3,7 +3,10 @@ import { GLOBAL_ERROR_MESSAGE } from "@/utils";
 import * as headerController from "@/controllers/admin/website/header";
 import { isAdminVerified } from "@/middlewares/admin";
 import { validationHandler } from "@/middlewares/global/validationHandler";
-import { fetchHeaderValidation } from "@/validations/admin";
+import {
+  deleteHeaderValidation,
+  fetchHeaderValidation,
+} from "@/validations/admin";
 
 export const adminHeaderRouter = Router();
 
@@ -27,6 +30,20 @@ adminHeaderRouter.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return headerController.fetchHeader(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminHeaderRouter.delete(
+  "/:id",
+  isAdminVerified,
+  deleteHeaderValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return headerController.deleteHeader(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }
