@@ -1,5 +1,6 @@
 import { prisma } from "@/config";
 import {
+  createTranslations,
   generateWhereInput,
   getPaginationAndFilters,
   getResponseMessage,
@@ -12,6 +13,7 @@ import {
   logAdminWarn as logWarn,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
+import { CreateHeaderDTO } from "@/types/admin";
 
 export const fetchHeaders = async (
   req: Request,
@@ -145,6 +147,61 @@ export const deleteHeader = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_fetch_header_exception",
+    });
+    next(error);
+  }
+};
+
+export const createHeader = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { translations, icon, active } = req.body as CreateHeaderDTO;
+
+    logInfo("Header create attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "header_create_attempt",
+    });
+
+    const translationsToCreate = createTranslations(translations);
+    const iconToCreate = icon
+      ? {
+          path: icon.path,
+          name: icon.name,
+          size: icon.size,
+        }
+      : undefined;
+
+    const header = await prisma.header.create({
+      data: {
+        active: !!active,
+        // @ts-expect-error translationsToCreate is not compatible with Prisma type
+        translations: { create: translationsToCreate },
+        icon: {
+          create: iconToCreate,
+        },
+      },
+    });
+
+    logInfo("Header created successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "header_created",
+    });
+
+    return res.json({
+      data: header,
+    });
+  } catch (error) {
+    logCatchyError("fetch_headers_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_fetch_headers_exception",
     });
     next(error);
   }
