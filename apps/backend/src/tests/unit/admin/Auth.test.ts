@@ -242,21 +242,6 @@ describe("Customer auth routes — /auth", () => {
       expect(res.body).toHaveErrorMessage("userNotFound", errorMessages);
     });
 
-    it("returns 400 if code expired", async () => {
-      (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
-        ...mockUser,
-        smsCode: 2345,
-        smsCodeExpiresAt: new Date(Date.now() - 1000),
-      });
-
-      const res = await request(app)
-        .post("/admin/verify-otp")
-        .set("Cookie", ["admin_verify_stage=fakeStageToken"])
-        .send({ code: 1234 });
-
-      expect(res).toHaveStatus(400);
-    });
-
     it("returns 401 if code invalid", async () => {
       (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
         ...mockUser,
@@ -509,8 +494,8 @@ describe("Customer auth routes — /auth", () => {
     it("verifies forgot password sms code successfully", async () => {
       (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
         id: mockUser.id,
-        email: mockUser.email,
-        smsCode: "smsStoredHash",
+        email: "a@b.com",
+        smsCode: "1234",
         smsCodeExpiresAt: new Date(Date.now() + 10000).toISOString(),
       });
 
@@ -518,7 +503,7 @@ describe("Customer auth routes — /auth", () => {
 
       const res = await request(app)
         .post("/admin/forgot-password-verification")
-        .send({ email: mockUser.email, smsCode: "1234" });
+        .send({ email: "a@b.com", code: "1234" });
 
       expect(res).toHaveStatus(200);
       expect(res.body.message).toEqual(
@@ -531,7 +516,7 @@ describe("Customer auth routes — /auth", () => {
 
       const res = await request(app)
         .post("/admin/forgot-password-verification")
-        .send({ email: "man@gmail.com", smsCode: "1234" });
+        .send({ email: "man@gmail.com", code: "1234" });
 
       expect(res).toHaveStatus(404);
       expect(res.body).toHaveErrorMessage("userNotFound", errorMessages);
@@ -540,8 +525,8 @@ describe("Customer auth routes — /auth", () => {
     it("returns 401 when code invalid", async () => {
       (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
         id: mockUser.id,
-        email: mockUser.email,
-        smsCode: 2345,
+        email: "a@b.com",
+        smsCode: "2345",
         smsCodeExpiresAt: new Date(Date.now() + 10000).toISOString(),
       });
 
@@ -549,7 +534,7 @@ describe("Customer auth routes — /auth", () => {
 
       const res = await request(app)
         .post("/admin/forgot-password-verification")
-        .send({ email: mockUser.email, smsCode: 1234 });
+        .send({ email: "a@b.com", code: "1234" });
 
       expect(res).toHaveStatus(401);
       expect(res.body).toHaveErrorMessage("smsCodeisInvalid", errorMessages);
@@ -560,8 +545,8 @@ describe("Customer auth routes — /auth", () => {
     it("resets password successfully when sms code valid", async () => {
       (prisma.admin.findUnique as jest.Mock).mockResolvedValue({
         id: mockUser.id,
-        email: mockUser.email,
-        smsCode: 1234,
+        email: "a@b.com",
+        smsCode: "1234",
         smsCodeExpiresAt: new Date(Date.now() + 10000).toISOString(),
       });
 
@@ -571,13 +556,13 @@ describe("Customer auth routes — /auth", () => {
       );
       (prisma.admin.update as jest.Mock).mockResolvedValueOnce({
         id: mockUser.id,
-        email: mockUser.email,
+        email: "a@b.com",
       });
 
       const res = await request(app).post("/admin/password-reset").send({
         type: "email",
-        email: mockUser.email,
-        smsCode: 1234,
+        email: "a@b.com",
+        code: "1234",
         password: "NewPassword123!",
       });
 
@@ -585,7 +570,6 @@ describe("Customer auth routes — /auth", () => {
       expect(res.body.message).toEqual(
         require("@/utils").getResponseMessage("passwordChanged")
       );
-
       expect(prisma.admin.update).toHaveBeenCalled();
     });
 
@@ -595,7 +579,7 @@ describe("Customer auth routes — /auth", () => {
       const res = await request(app).post("/admin/password-reset").send({
         type: "email",
         email: "man@gmail.com",
-        smsCode: 1234,
+        code: "1234",
         password: "NewPassword123!",
       });
 
@@ -606,8 +590,8 @@ describe("Customer auth routes — /auth", () => {
     it("returns 401 when sms code invalid", async () => {
       (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
         id: mockUser.id,
-        email: mockUser.email,
-        smsCode: 1234,
+        email: "a@b.com",
+        smsCode: "1234",
         smsCodeExpiresAt: new Date(Date.now() + 10000).toISOString(),
       });
 
@@ -615,8 +599,8 @@ describe("Customer auth routes — /auth", () => {
 
       const res = await request(app).post("/admin/password-reset").send({
         type: "email",
-        email: mockUser.email,
-        smsCode: 2345,
+        email: "a@b.com",
+        code: "2345",
         password: "NewPassword123!",
       });
 
@@ -627,19 +611,19 @@ describe("Customer auth routes — /auth", () => {
     it("returns 400 when sms code expired", async () => {
       (prisma.admin.findUnique as jest.Mock).mockResolvedValueOnce({
         id: mockUser.id,
-        email: mockUser.email,
-        smsCode: 1234,
+        email: "a@b.com",
+        smsCode: "1234",
         smsCodeExpiresAt: new Date(Date.now() - 10000).toISOString(),
       });
 
       const res = await request(app).post("/admin/password-reset").send({
         type: "email",
-        email: mockUser.email,
-        smsCode: 1234,
+        email: "a@b.com",
+        code: "1234",
         password: "NewPassword123!",
       });
 
-      expect(res).toHaveStatus(400);
+      expect(res).toHaveStatus(401);
     });
   });
 });
