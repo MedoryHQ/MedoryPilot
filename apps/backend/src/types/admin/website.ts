@@ -1,7 +1,11 @@
 import { Translations, File } from "../global";
 
 export interface CreateHeaderDTO {
-  icon: File | null;
+  logo: File | null;
   active?: boolean;
   translations: Translations;
+}
+
+export interface UpdateHeaderDTO extends CreateHeaderDTO {
+  id: string;
 }

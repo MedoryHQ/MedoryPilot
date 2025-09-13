@@ -13,7 +13,7 @@ import {
   logAdminWarn as logWarn,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
-import { CreateHeaderDTO } from "@/types/admin";
+import { CreateHeaderDTO, UpdateHeaderDTO } from "@/types/admin";
 
 export const fetchHeaders = async (
   req: Request,
@@ -143,10 +143,10 @@ export const deleteHeader = async (
       message: getResponseMessage("headerDeleted"),
     });
   } catch (error) {
-    logCatchyError("fetch_header_exception", error, {
+    logCatchyError("delete_header_exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_fetch_header_exception",
+      event: "admin_delete_header_exception",
     });
     next(error);
   }
@@ -158,7 +158,7 @@ export const createHeader = async (
   next: NextFunction
 ) => {
   try {
-    const { translations, icon, active } = req.body as CreateHeaderDTO;
+    const { translations, logo, active } = req.body as CreateHeaderDTO;
 
     logInfo("Header create attempt", {
       ip: (req as any).hashedIp,
@@ -168,11 +168,11 @@ export const createHeader = async (
     });
 
     const translationsToCreate = createTranslations(translations);
-    const iconToCreate = icon
+    const logoToCreate = logo
       ? {
-          path: icon.path,
-          name: icon.name,
-          size: icon.size,
+          path: logo.path,
+          name: logo.name,
+          size: logo.size,
         }
       : undefined;
 
@@ -181,8 +181,8 @@ export const createHeader = async (
         active: !!active,
         // @ts-expect-error translationsToCreate is not compatible with Prisma type
         translations: { create: translationsToCreate },
-        icon: {
-          create: iconToCreate,
+        logo: {
+          create: logoToCreate,
         },
       },
     });
@@ -198,10 +198,98 @@ export const createHeader = async (
       data: header,
     });
   } catch (error) {
-    logCatchyError("fetch_headers_exception", error, {
+    logCatchyError("create_headers_exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_fetch_headers_exception",
+      event: "admin_create_headers_exception",
+    });
+    next(error);
+  }
+};
+
+export const updateHeader = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    const { translations, logo, active } = req.body as UpdateHeaderDTO;
+
+    logInfo("Header update attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "header_update_attempt",
+    });
+
+    const translationsToCreate = createTranslations(translations);
+    const logoToCreate = logo
+      ? {
+          path: logo.path,
+          name: logo.name,
+          size: logo.size,
+        }
+      : undefined;
+
+    const findHeader = await prisma.header.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        logo: true,
+      },
+    });
+
+    if (!findHeader) {
+      logWarn("Header update failed: header not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "header_update_failed",
+      });
+      return sendError(req, res, 404, "headerNotFound");
+    }
+
+    const header = await prisma.header.update({
+      where: {
+        id,
+      },
+      data: {
+        translations: {
+          deleteMany: {},
+          // @ts-expect-error translationsToCreate is not compatible with Prisma type
+          create: translationsToCreate,
+        },
+        logo: logoToCreate
+          ? {
+              delete: findHeader.logo ? {} : undefined,
+              create: logoToCreate,
+            }
+          : findHeader.logo
+          ? { delete: {} }
+          : undefined,
+        ...(active ? { active: true } : {}),
+      },
+    });
+
+    logInfo("Header updated successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "header_updated",
+    });
+
+    return res.json({
+      data: header,
+    });
+  } catch (error) {
+    logCatchyError("update_headers_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_update_headers_exception",
     });
     next(error);
   }
