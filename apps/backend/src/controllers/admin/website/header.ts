@@ -51,3 +51,40 @@ export const fetchHeaders = async (
     next(error);
   }
 };
+
+export const fetchHeader = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    const header = await prisma.header.findMany({
+      where: {
+        id,
+      },
+      include: {
+        logo: true,
+        translations: {
+          include: {
+            language: {
+              select: {
+                code: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return res.status(200).json({ data: header });
+  } catch (error) {
+    logCatchyError("fetch_header_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_fetch_header_exception",
+    });
+    next(error);
+  }
+};
