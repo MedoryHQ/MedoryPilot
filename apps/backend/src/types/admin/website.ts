@@ -9,3 +9,7 @@ export interface CreateHeaderDTO {
 export interface UpdateHeaderDTO extends CreateHeaderDTO {
   id: string;
 }
+
+export interface GetTariffDTO {
+  type: "active" | "history";
+}

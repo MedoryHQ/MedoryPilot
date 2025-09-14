@@ -1,7 +1,11 @@
 import { prisma } from "@/config";
-import { getPaginationAndFilters } from "@/utils";
+import { getPaginationAndFilters, sendError } from "@/utils";
 import { NextFunction, Response, Request } from "express";
-import { logAdminError as logCatchyError } from "@/utils";
+import {
+  logAdminError as logCatchyError,
+  logAdminWarn as logWarn,
+} from "@/utils";
+import { GetTariffDTO } from "@/types/admin";
 
 export const fetchTariffs = async (
   req: Request,
@@ -39,6 +43,49 @@ export const fetchTariffs = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_fetch_tariffs_exception",
+    });
+    next(error);
+  }
+};
+
+export const fetchTariff = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+    const { type } = req.body as { type: "active" | "history" };
+
+    let data;
+
+    if (type === "active") {
+      data = await prisma.tariff.findUnique({
+        where: { id },
+      });
+    } else if (type === "history") {
+      data = await prisma.tariffHistory.findUnique({
+        where: { id },
+      });
+    }
+
+    if (!data) {
+      logWarn("Tariff fetch failed: tariff not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "tariff_fetch_failed",
+      });
+      return sendError(req, res, 404, "tariffNotFound");
+    }
+
+    return res.status(200).json({ data, type });
+  } catch (error) {
+    logCatchyError("fetch_tariff_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_fetch_tariff_exception",
     });
     next(error);
   }

@@ -60,6 +60,10 @@ export const errorMessages = {
     en: "Header not found",
     ka: "Header ვერ მოიძებნა",
   },
+  tariffNotFound: {
+    en: "Tariff not found",
+    ka: "Tariff ვერ მოიძებნა",
+  },
 
   // Messages
   smsVerificationSent: {
