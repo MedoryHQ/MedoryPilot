@@ -9,6 +9,7 @@ const adminRouteList = [
   { path: "/docs", router: AdminRoutes.SwaggerRouter },
   { path: "/header", router: AdminRoutes.adminHeaderRouter },
   { path: "/overview", router: AdminRoutes.adminOverviewRouter },
+  { path: "/tariff", router: AdminRoutes.adminTariffRouter },
 ];
 
 const customerRouteList = [
