@@ -98,6 +98,10 @@ export const errorMessages = {
     en: "Header deleted successfully",
     ka: "Header წარმატებით წაიშალა",
   },
+  tariffDeleted: {
+    en: "Tariff deleted successfully",
+    ka: "Tariff წარმატებით წაიშალა",
+  },
 
   // Validation errors
   invalidPhoneNumber: {

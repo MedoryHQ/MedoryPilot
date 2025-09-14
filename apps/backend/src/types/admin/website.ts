@@ -13,3 +13,5 @@ export interface UpdateHeaderDTO extends CreateHeaderDTO {
 export interface GetTariffDTO {
   type: "active" | "history";
 }
+
+export interface DeleteTariffDTO extends GetTariffDTO {}
