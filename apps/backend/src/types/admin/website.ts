@@ -15,3 +15,7 @@ export interface GetTariffDTO {
 }
 
 export interface DeleteTariffDTO extends GetTariffDTO {}
+
+export interface CreateTariffDTO {
+  price: number;
+}

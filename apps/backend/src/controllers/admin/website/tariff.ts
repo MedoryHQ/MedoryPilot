@@ -10,7 +10,7 @@ import {
   logAdminWarn as logWarn,
   logAdminInfo as logInfo,
 } from "@/utils";
-import { GetTariffDTO, DeleteTariffDTO } from "@/types/admin";
+import { GetTariffDTO, DeleteTariffDTO, CreateTariffDTO } from "@/types/admin";
 
 export const fetchTariffs = async (
   req: Request,
@@ -150,6 +150,62 @@ export const deleteTariff = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_delete_tariff_exception",
+    });
+    next(error);
+  }
+};
+
+export const createTariff = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { price } = req.body as CreateTariffDTO;
+
+    logInfo("Tariff create attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "tariff_create_attempt",
+    });
+
+    const currentTariff = await prisma.tariff.findFirst();
+
+    const tariff = await prisma.tariff.create({
+      data: { price },
+    });
+
+    if (currentTariff) {
+      await prisma.tariffHistory.create({
+        data: {
+          price: currentTariff.price,
+          fromDate: currentTariff.createdAt,
+          endDate: new Date(),
+          current: {
+            connect: { id: tariff.id },
+          },
+        },
+      });
+
+      await prisma.tariff.delete({
+        where: { id: currentTariff.id },
+      });
+    }
+
+    logInfo("Tariff created successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "tariff_created",
+    });
+
+    return res.json({ data: tariff });
+  } catch (error) {
+    logCatchyError("create_tariffs_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_create_tariffs_exception",
     });
     next(error);
   }
