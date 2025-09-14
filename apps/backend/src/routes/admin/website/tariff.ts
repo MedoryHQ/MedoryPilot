@@ -2,6 +2,8 @@ import { NextFunction, Router, Request, Response } from "express";
 import { GLOBAL_ERROR_MESSAGE } from "@/utils";
 import * as tariffController from "@/controllers/admin/website/tariff";
 import { isAdminVerified } from "@/middlewares/admin";
+import { validationHandler } from "@/middlewares/global/validationHandler";
+import { fetchTariffValidation } from "@/validations/admin/website/tariff.validations";
 
 export const adminTariffRouter = Router();
 
@@ -11,6 +13,20 @@ adminTariffRouter.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return tariffController.fetchTariffs(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminTariffRouter.get(
+  "/:id",
+  isAdminVerified,
+  fetchTariffValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return tariffController.fetchTariff(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }
