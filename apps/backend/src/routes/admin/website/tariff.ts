@@ -3,7 +3,10 @@ import { GLOBAL_ERROR_MESSAGE } from "@/utils";
 import * as tariffController from "@/controllers/admin/website/tariff";
 import { isAdminVerified } from "@/middlewares/admin";
 import { validationHandler } from "@/middlewares/global/validationHandler";
-import { fetchTariffValidation } from "@/validations/admin/website/tariff.validations";
+import {
+  deleteTariffValidation,
+  fetchTariffValidation,
+} from "@/validations/admin/website/tariff.validations";
 
 export const adminTariffRouter = Router();
 
@@ -27,6 +30,20 @@ adminTariffRouter.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return tariffController.fetchTariff(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminTariffRouter.delete(
+  "/:id",
+  isAdminVerified,
+  deleteTariffValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return tariffController.deleteTariff(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }

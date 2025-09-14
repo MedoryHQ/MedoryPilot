@@ -5,3 +5,5 @@ export const fetchTariffValidation = [
   uuidValidation,
   body("type").isIn(["active", "history"]).withMessage("invalidTariffType"),
 ];
+
+export const deleteTariffValidation = fetchTariffValidation;
