@@ -176,6 +176,10 @@ export const errorMessages = {
     en: "Invalid tariff type",
     ka: "არასწორი ტარიფის ტიპი",
   },
+  invalidPrice: {
+    en: "Invalid price",
+    ka: "არასწორი ფასი",
+  },
 } as const;
 
 export type ErrorKey = keyof typeof errorMessages;

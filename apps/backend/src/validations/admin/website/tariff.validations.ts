@@ -7,3 +7,7 @@ export const fetchTariffValidation = [
 ];
 
 export const deleteTariffValidation = fetchTariffValidation;
+
+export const createTariffValidation = [
+  body("price").isNumeric().withMessage("invalidPrice"),
+];
