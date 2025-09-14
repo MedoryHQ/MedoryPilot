@@ -164,6 +164,10 @@ export const errorMessages = {
     en: "Reset password type is invalid",
     ka: "პაროლის აღდგენის ტიპი არასწორია",
   },
+  invalidTariffType: {
+    en: "Invalid tariff type",
+    ka: "არასწორი ტარიფის ტიპი",
+  },
 } as const;
 
 export type ErrorKey = keyof typeof errorMessages;
