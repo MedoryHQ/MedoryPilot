@@ -10,7 +10,12 @@ import {
   logAdminWarn as logWarn,
   logAdminInfo as logInfo,
 } from "@/utils";
-import { GetTariffDTO, DeleteTariffDTO, CreateTariffDTO } from "@/types/admin";
+import {
+  GetTariffDTO,
+  DeleteTariffDTO,
+  CreateTariffDTO,
+  UpdateTariffDTO,
+} from "@/types/admin";
 
 export const fetchTariffs = async (
   req: Request,
@@ -206,6 +211,69 @@ export const createTariff = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_create_tariffs_exception",
+    });
+    next(error);
+  }
+};
+
+export const updateTariff = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    const { price } = req.body as UpdateTariffDTO;
+
+    logInfo("Tariff update attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "tariff_update_attempt",
+    });
+
+    const findTariff = await prisma.tariff.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!findTariff) {
+      logWarn("Tariff update failed: tariff not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "tariff_update_failed",
+      });
+      return sendError(req, res, 404, "tariffNotFound");
+    }
+
+    const tariff = await prisma.tariff.update({
+      where: {
+        id,
+      },
+      data: {
+        price,
+      },
+    });
+
+    logInfo("Tariff updated successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "tariff_updated",
+    });
+
+    return res.json({
+      data: tariff,
+    });
+  } catch (error) {
+    logCatchyError("update_tariffs_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_update_tariffs_exception",
     });
     next(error);
   }

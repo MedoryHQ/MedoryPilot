@@ -10,12 +10,22 @@ export interface UpdateHeaderDTO extends CreateHeaderDTO {
   id: string;
 }
 
+export type TariffType = "active" | "history";
+
 export interface GetTariffDTO {
-  type: "active" | "history";
+  type: TariffType;
+  id?: string;
 }
 
-export interface DeleteTariffDTO extends GetTariffDTO {}
+export interface DeleteTariffDTO {
+  id: string;
+  type: TariffType;
+}
 
 export interface CreateTariffDTO {
+  price: number;
+}
+
+export interface UpdateTariffDTO {
   price: number;
 }
