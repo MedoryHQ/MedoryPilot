@@ -7,6 +7,7 @@ import {
   createTariffValidation,
   deleteTariffValidation,
   fetchTariffValidation,
+  updateTariffValidation,
 } from "@/validations/admin/website/tariff.validations";
 
 export const adminTariffRouter = Router();
@@ -59,6 +60,20 @@ adminTariffRouter.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return tariffController.createTariff(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminTariffRouter.put(
+  "/:id",
+  isAdminVerified,
+  updateTariffValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return tariffController.updateTariff(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }
