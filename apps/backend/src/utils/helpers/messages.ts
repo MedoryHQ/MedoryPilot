@@ -60,6 +60,10 @@ export const errorMessages = {
     en: "Header not found",
     ka: "Header ვერ მოიძებნა",
   },
+  tariffNotFound: {
+    en: "Tariff not found",
+    ka: "Tariff ვერ მოიძებნა",
+  },
 
   // Messages
   smsVerificationSent: {
@@ -93,6 +97,10 @@ export const errorMessages = {
   headerDeleted: {
     en: "Header deleted successfully",
     ka: "Header წარმატებით წაიშალა",
+  },
+  tariffDeleted: {
+    en: "Tariff deleted successfully",
+    ka: "Tariff წარმატებით წაიშალა",
   },
 
   // Validation errors
@@ -163,6 +171,14 @@ export const errorMessages = {
   invalidResetPasswordType: {
     en: "Reset password type is invalid",
     ka: "პაროლის აღდგენის ტიპი არასწორია",
+  },
+  invalidTariffType: {
+    en: "Invalid tariff type",
+    ka: "არასწორი ტარიფის ტიპი",
+  },
+  invalidPrice: {
+    en: "Invalid price",
+    ka: "არასწორი ფასი",
   },
 } as const;
 
