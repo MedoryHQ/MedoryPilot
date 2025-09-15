@@ -180,6 +180,10 @@ export const errorMessages = {
     en: "Invalid price",
     ka: "არასწორი ფასი",
   },
+  invalidOrder: {
+    en: "Invalid Order",
+    ka: "არასწორი ფასი",
+  },
 } as const;
 
 export type ErrorKey = keyof typeof errorMessages;
