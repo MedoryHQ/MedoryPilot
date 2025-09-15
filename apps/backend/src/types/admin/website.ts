@@ -29,3 +29,13 @@ export interface CreateTariffDTO {
 export interface UpdateTariffDTO {
   price: number;
 }
+
+export interface CreateFaqDTO {
+  order?: number;
+  translations: Translations;
+}
+
+export interface UpdateFaqDTO {
+  order?: number;
+  translations: Translations;
+}
