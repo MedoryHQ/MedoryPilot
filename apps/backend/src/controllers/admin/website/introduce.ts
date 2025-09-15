@@ -1,5 +1,6 @@
 import { prisma } from "@/config";
 import {
+  createTranslations,
   generateWhereInput,
   getPaginationAndFilters,
   getResponseMessage,
@@ -12,6 +13,7 @@ import {
   logAdminWarn as logWarn,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
+import { CreateIntroduceDTO } from "@/types/admin";
 
 export const fetchIntroduces = async (
   req: Request,
@@ -152,6 +154,49 @@ export const deleteIntroduce = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_delete_introduce_exception",
+    });
+    next(error);
+  }
+};
+
+export const createIntroduce = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { translations } = req.body as CreateIntroduceDTO;
+
+    logInfo("Introduce create attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "introduce_create_attempt",
+    });
+
+    const translationsToCreate = createTranslations(translations);
+    const introduce = await prisma.introduce.create({
+      data: {
+        // @ts-expect-error translationsToCreate is not compatible with Prisma type
+        translations: { create: translationsToCreate },
+      },
+    });
+
+    logInfo("Introduce created successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "introduce_created",
+    });
+
+    return res.json({
+      data: introduce,
+    });
+  } catch (error) {
+    logCatchyError("create_introduces_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_create_introduces_exception",
     });
     next(error);
   }
