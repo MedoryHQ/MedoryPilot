@@ -6,6 +6,7 @@ import {
   createFAQValidation,
   deleteFAQValidation,
   fetchFAQValidation,
+  updateFAQValidation,
 } from "@/validations/admin";
 import { validationHandler } from "@/middlewares/global/validationHandler";
 
@@ -59,6 +60,20 @@ adminFAQRouter.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return FAQController.createFAQ(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminFAQRouter.put(
+  "/:id",
+  isAdminVerified,
+  updateFAQValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return FAQController.updateFAQ(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }
