@@ -64,6 +64,10 @@ export const errorMessages = {
     en: "Tariff not found",
     ka: "Tariff ვერ მოიძებნა",
   },
+  faqNotFound: {
+    en: "FAQ not found",
+    ka: "FAQ ვერ მოიძებნა",
+  },
 
   // Messages
   smsVerificationSent: {
