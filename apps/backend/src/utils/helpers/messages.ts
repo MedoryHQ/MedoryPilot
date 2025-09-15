@@ -68,6 +68,10 @@ export const errorMessages = {
     en: "FAQ not found",
     ka: "FAQ ვერ მოიძებნა",
   },
+  introduceNotFound: {
+    en: "Introduce not found",
+    ka: "Introduce ვერ მოიძებნა",
+  },
 
   // Messages
   smsVerificationSent: {

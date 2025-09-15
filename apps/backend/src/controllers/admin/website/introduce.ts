@@ -1,5 +1,9 @@
 import { prisma } from "@/config";
-import { generateWhereInput, getPaginationAndFilters } from "@/utils";
+import {
+  generateWhereInput,
+  getPaginationAndFilters,
+  sendError,
+} from "@/utils";
 import { NextFunction, Response, Request } from "express";
 import {
   logAdminError as logCatchyError,
@@ -48,6 +52,53 @@ export const fetchIntroduces = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_fetch_introduces_exception",
+    });
+    next(error);
+  }
+};
+
+export const fetchIntroduce = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    const introduce = await prisma.introduce.findMany({
+      where: {
+        id,
+      },
+      include: {
+        translations: {
+          include: {
+            language: {
+              select: {
+                code: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!introduce) {
+      logWarn("Introduce fetch failed: introduce not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "introduce_fetch_failed",
+      });
+      return sendError(req, res, 404, "introduceNotFound");
+    }
+
+    return res.status(200).json({ data: introduce });
+  } catch (error) {
+    logCatchyError("fetch_introduce_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_fetch_introduce_exception",
     });
     next(error);
   }
