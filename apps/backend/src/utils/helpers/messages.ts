@@ -106,6 +106,10 @@ export const errorMessages = {
     en: "Tariff deleted successfully",
     ka: "Tariff წარმატებით წაიშალა",
   },
+  FAQDeleted: {
+    en: "FAQ deleted successfully",
+    ka: "FAQ წარმატებით წაიშალა",
+  },
 
   // Validation errors
   invalidPhoneNumber: {
