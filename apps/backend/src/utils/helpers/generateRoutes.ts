@@ -10,6 +10,7 @@ const adminRouteList = [
   { path: "/header", router: AdminRoutes.adminHeaderRouter },
   { path: "/overview", router: AdminRoutes.adminOverviewRouter },
   { path: "/tariff", router: AdminRoutes.adminTariffRouter },
+  { path: "/faq", router: AdminRoutes.adminFAQRouter },
 ];
 
 const customerRouteList = [
