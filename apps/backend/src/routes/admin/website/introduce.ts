@@ -6,6 +6,7 @@ import {
   createIntroduceValidation,
   deleteIntroduceValidation,
   fetchIntroduceValidation,
+  updateIntroduceValidation,
 } from "@/validations/admin";
 import { validationHandler } from "@/middlewares/global/validationHandler";
 
@@ -59,6 +60,20 @@ adminIntroduceRouter.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return IntroduceController.createIntroduce(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminIntroduceRouter.put(
+  "/:id",
+  isAdminVerified,
+  updateIntroduceValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return IntroduceController.updateIntroduce(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }

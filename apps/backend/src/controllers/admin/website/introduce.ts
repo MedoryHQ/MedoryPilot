@@ -13,7 +13,7 @@ import {
   logAdminWarn as logWarn,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
-import { CreateIntroduceDTO } from "@/types/admin";
+import { CreateIntroduceDTO, UpdateIntroduceDTO } from "@/types/admin";
 
 export const fetchIntroduces = async (
   req: Request,
@@ -197,6 +197,74 @@ export const createIntroduce = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_create_introduces_exception",
+    });
+    next(error);
+  }
+};
+
+export const updateIntroduce = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    const { translations } = req.body as UpdateIntroduceDTO;
+
+    logInfo("Introduce update attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "introduce_update_attempt",
+    });
+
+    const translationsToCreate = createTranslations(translations);
+    const findIntroduce = await prisma.introduce.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!findIntroduce) {
+      logWarn("Introduce update failed: introduce not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "introduce_update_failed",
+      });
+      return sendError(req, res, 404, "introduceNotFound");
+    }
+
+    const introduce = await prisma.introduce.update({
+      where: {
+        id,
+      },
+      data: {
+        translations: {
+          deleteMany: {},
+          // @ts-expect-error translationsToCreate is not compatible with Prisma type
+          create: translationsToCreate,
+        },
+      },
+    });
+
+    logInfo("Introduce updated successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "introduce_updated",
+    });
+
+    return res.json({
+      data: introduce,
+    });
+  } catch (error) {
+    logCatchyError("update_introduces_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_update_introduces_exception",
     });
     next(error);
   }
