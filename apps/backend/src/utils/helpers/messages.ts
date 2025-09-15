@@ -64,6 +64,14 @@ export const errorMessages = {
     en: "Tariff not found",
     ka: "Tariff ვერ მოიძებნა",
   },
+  faqNotFound: {
+    en: "FAQ not found",
+    ka: "FAQ ვერ მოიძებნა",
+  },
+  introduceNotFound: {
+    en: "Introduce not found",
+    ka: "შესავალი ვერ მოიძებნა",
+  },
 
   // Messages
   smsVerificationSent: {
@@ -101,6 +109,14 @@ export const errorMessages = {
   tariffDeleted: {
     en: "Tariff deleted successfully",
     ka: "Tariff წარმატებით წაიშალა",
+  },
+  FAQDeleted: {
+    en: "FAQ deleted successfully",
+    ka: "FAQ წარმატებით წაიშალა",
+  },
+  introduceDeleted: {
+    en: "Introduce deleted successfully",
+    ka: "შესავალი წარმატებით წაიშალა",
   },
 
   // Validation errors
@@ -178,6 +194,10 @@ export const errorMessages = {
   },
   invalidPrice: {
     en: "Invalid price",
+    ka: "არასწორი ფასი",
+  },
+  invalidOrder: {
+    en: "Invalid Order",
     ka: "არასწორი ფასი",
   },
 } as const;

@@ -10,11 +10,15 @@ const adminRouteList = [
   { path: "/header", router: AdminRoutes.adminHeaderRouter },
   { path: "/overview", router: AdminRoutes.adminOverviewRouter },
   { path: "/tariff", router: AdminRoutes.adminTariffRouter },
+  { path: "/faq", router: AdminRoutes.adminFAQRouter },
+  { path: "/introduce", router: AdminRoutes.adminIntroduceRouter },
 ];
 
 const customerRouteList = [
   { path: "/auth", router: CustomerRoutes.userAuthRouter },
   { path: "/header", router: CustomerRoutes.headerRouter },
+  { path: "/faq", router: CustomerRoutes.FAQRouter },
+  { path: "/introduce", router: CustomerRoutes.introduceRouter },
 ];
 
 export const generateRoutes = (app: Express) => {
