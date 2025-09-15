@@ -2,6 +2,7 @@ import { prisma } from "@/config";
 import {
   generateWhereInput,
   getPaginationAndFilters,
+  getResponseMessage,
   sendError,
 } from "@/utils";
 import { NextFunction, Response, Request } from "express";
@@ -99,6 +100,58 @@ export const fetchIntroduce = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_fetch_introduce_exception",
+    });
+    next(error);
+  }
+};
+
+export const deleteIntroduce = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    logInfo("Introduce delete attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "introduce_delete_attempt",
+    });
+
+    const introduce = await prisma.introduce.delete({
+      where: {
+        id,
+      },
+    });
+
+    if (!introduce) {
+      logWarn("Introduce delete failed: introduce not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "introduce_delete_failed",
+      });
+      return sendError(req, res, 404, "introduceNotFound");
+    }
+
+    logInfo("Introduce deleted successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "introduce_deleted",
+    });
+
+    return res.status(200).json({
+      message: getResponseMessage("introduceDeleted"),
+    });
+  } catch (error) {
+    logCatchyError("delete_introduce_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_delete_introduce_exception",
     });
     next(error);
   }

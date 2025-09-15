@@ -70,7 +70,7 @@ export const errorMessages = {
   },
   introduceNotFound: {
     en: "Introduce not found",
-    ka: "Introduce ვერ მოიძებნა",
+    ka: "შესავალი ვერ მოიძებნა",
   },
 
   // Messages
@@ -113,6 +113,10 @@ export const errorMessages = {
   FAQDeleted: {
     en: "FAQ deleted successfully",
     ka: "FAQ წარმატებით წაიშალა",
+  },
+  introduceDeleted: {
+    en: "Introduce deleted successfully",
+    ka: "შესავალი წარმატებით წაიშალა",
   },
 
   // Validation errors
