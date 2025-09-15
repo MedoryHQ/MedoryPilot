@@ -11,6 +11,7 @@ const adminRouteList = [
   { path: "/overview", router: AdminRoutes.adminOverviewRouter },
   { path: "/tariff", router: AdminRoutes.adminTariffRouter },
   { path: "/faq", router: AdminRoutes.adminFAQRouter },
+  { path: "/introduce", router: AdminRoutes.adminIntroduceRouter },
 ];
 
 const customerRouteList = [

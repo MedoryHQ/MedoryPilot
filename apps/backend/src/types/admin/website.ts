@@ -39,3 +39,11 @@ export interface UpdateFaqDTO {
   order?: number;
   translations: Translations;
 }
+
+export interface CreateIntroduceDTO {
+  translations: Translations;
+}
+
+export interface UpdateIntroduceDTO {
+  translations: Translations;
+}
