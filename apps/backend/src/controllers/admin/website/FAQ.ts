@@ -21,7 +21,7 @@ export const fetchFAQs = async (
   next: NextFunction
 ) => {
   try {
-    const { skip, take, orderBy, search } = getPaginationAndFilters(req);
+    const { skip, take, search } = getPaginationAndFilters(req);
 
     const where = generateWhereInput<Prisma.FAQWhereInput>(search, {
       "translations.some.question": "insensitive",
@@ -32,7 +32,9 @@ export const fetchFAQs = async (
       prisma.fAQ.findMany({
         skip,
         take,
-        orderBy,
+        orderBy: {
+          order: "asc",
+        },
         where,
         include: {
           translations: {
