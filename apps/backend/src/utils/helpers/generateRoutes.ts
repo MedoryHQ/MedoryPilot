@@ -16,6 +16,7 @@ const adminRouteList = [
 const customerRouteList = [
   { path: "/auth", router: CustomerRoutes.userAuthRouter },
   { path: "/header", router: CustomerRoutes.headerRouter },
+  { path: "/faq", router: CustomerRoutes.FAQRouter },
 ];
 
 export const generateRoutes = (app: Express) => {
