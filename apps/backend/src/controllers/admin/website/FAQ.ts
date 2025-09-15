@@ -1,5 +1,6 @@
 import { prisma } from "@/config";
 import {
+  createTranslations,
   generateWhereInput,
   getPaginationAndFilters,
   getResponseMessage,
@@ -12,6 +13,7 @@ import {
   logAdminWarn as logWarn,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
+import { CreateFaqDTO } from "@/types/admin";
 
 export const fetchFAQs = async (
   req: Request,
@@ -152,6 +154,51 @@ export const deleteFAQ = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_delete_FAQ_exception",
+    });
+    next(error);
+  }
+};
+
+export const createFAQ = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { translations, order } = req.body as CreateFaqDTO;
+
+    logInfo("FAQ create attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "FAQ_create_attempt",
+    });
+
+    const translationsToCreate = createTranslations(translations);
+
+    const FAQ = await prisma.fAQ.create({
+      data: {
+        ...(order ? { order } : {}),
+        // @ts-expect-error translationsToCreate is not compatible with Prisma type
+        translations: { create: translationsToCreate },
+      },
+    });
+
+    logInfo("FAQ created successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "FAQ_created",
+    });
+
+    return res.json({
+      data: FAQ,
+    });
+  } catch (error) {
+    logCatchyError("create_FAQs_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_create_FAQs_exception",
     });
     next(error);
   }
