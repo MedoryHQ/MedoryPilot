@@ -3,4 +3,4 @@ export * from "./overview";
 export * from "./tariff";
 export * from "./FAQ";
 export * from "./introduce";
-export * from "./services";
+export * from "./service";

@@ -59,3 +59,15 @@ export interface UpdateServiceDTO {
   background?: File;
   translations: Translations;
 }
+
+export interface CreateContactDTO {
+  location?: string;
+  background?: File;
+  translations: Translations;
+}
+
+export interface UpdateContactDTO {
+  location?: string;
+  background?: File;
+  translations: Translations;
+}

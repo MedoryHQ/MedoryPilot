@@ -13,6 +13,7 @@ const adminRouteList = [
   { path: "/faq", router: AdminRoutes.adminFAQRouter },
   { path: "/introduce", router: AdminRoutes.adminIntroduceRouter },
   { path: "/service", router: AdminRoutes.adminServiceRouter },
+  { path: "/contact", router: AdminRoutes.adminContactRouter },
 ];
 
 const customerRouteList = [

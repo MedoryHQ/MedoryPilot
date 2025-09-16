@@ -1,6 +1,6 @@
 import { NextFunction, Router, Request, Response } from "express";
 import { GLOBAL_ERROR_MESSAGE } from "@/utils";
-import * as ServiceController from "@/controllers/admin/website/services";
+import * as ServiceController from "@/controllers/admin/website/service";
 import { isAdminVerified } from "@/middlewares/admin";
 import {
   createServiceValidation,
