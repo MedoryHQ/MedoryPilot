@@ -47,3 +47,15 @@ export interface CreateIntroduceDTO {
 export interface UpdateIntroduceDTO {
   translations: Translations;
 }
+
+export interface CreateServiceDTO {
+  icon?: File;
+  background?: File;
+  translations: Translations;
+}
+
+export interface UpdateServiceDTO {
+  icon?: File;
+  background?: File;
+  translations: Translations;
+}
