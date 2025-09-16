@@ -6,7 +6,7 @@ import {
   logAdminInfo as logInfo,
   logAdminWarn as logWarn,
 } from "@/utils";
-import { CreateContactDTO } from "@/types/admin";
+import { CreateContactDTO, UpdateContactDTO } from "@/types/admin";
 import { Prisma } from "@prisma/client";
 
 export const fetchContact = async (
@@ -152,6 +152,95 @@ export const createContact = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_create_contacts_exception",
+    });
+    next(error);
+  }
+};
+
+export const updateContact = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    const { translations, background, location } = req.body as UpdateContactDTO;
+
+    logInfo("Contact update attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "contact_update_attempt",
+    });
+
+    const translationsToCreate = Prisma.validator<
+      Prisma.ContactTranslationCreateWithoutContactInput[]
+    >()(createTranslations(translations) as any);
+    const backgroundToCreate = background
+      ? {
+          path: background.path,
+          name: background.name,
+          size: background.size,
+        }
+      : undefined;
+
+    const findContact = await prisma.contact.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        background: true,
+      },
+    });
+
+    if (!findContact) {
+      logWarn("Contact update failed: contact not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "contact_update_failed",
+      });
+      return sendError(req, res, 404, "contactNotFound");
+    }
+
+    const contact = await prisma.contact.update({
+      where: {
+        id,
+      },
+      data: {
+        ...(location ? { location } : {}),
+        translations: {
+          deleteMany: {},
+          create: translationsToCreate,
+        },
+        background: backgroundToCreate
+          ? {
+              delete: findContact.background ? {} : undefined,
+              create: backgroundToCreate,
+            }
+          : findContact.background
+          ? { delete: {} }
+          : undefined,
+      },
+    });
+
+    logInfo("Contact updated successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "contact_updated",
+    });
+
+    return res.json({
+      data: contact,
+    });
+  } catch (error) {
+    logCatchyError("update_contacts_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_update_contacts_exception",
     });
     next(error);
   }
