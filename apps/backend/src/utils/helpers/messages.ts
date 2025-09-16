@@ -200,6 +200,14 @@ export const errorMessages = {
     en: "Invalid Order",
     ka: "არასწორი თანმიმდევრობა",
   },
+  invalidIcon: {
+    en: "Invalid Icon",
+    ka: "არასწორი Icon",
+  },
+  invalidBackground: {
+    en: "Invalid Background",
+    ka: "არასწორი Background",
+  },
 } as const;
 
 export type ErrorKey = keyof typeof errorMessages;
