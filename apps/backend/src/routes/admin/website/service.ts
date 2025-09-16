@@ -3,6 +3,7 @@ import { GLOBAL_ERROR_MESSAGE } from "@/utils";
 import * as ServiceController from "@/controllers/admin/website/services";
 import { isAdminVerified } from "@/middlewares/admin";
 import {
+  createServiceValidation,
   deleteServiceValidation,
   fetchServiceValidation,
 } from "@/validations/admin";
@@ -44,6 +45,20 @@ adminServiceRouter.delete(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return ServiceController.deleteService(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminServiceRouter.post(
+  "/",
+  isAdminVerified,
+  createServiceValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return ServiceController.createService(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }
