@@ -20,6 +20,7 @@ const customerRouteList = [
   { path: "/header", router: CustomerRoutes.headerRouter },
   { path: "/faq", router: CustomerRoutes.FAQRouter },
   { path: "/introduce", router: CustomerRoutes.introduceRouter },
+  { path: "/service", router: CustomerRoutes.serviceRouter },
 ];
 
 export const generateRoutes = (app: Express) => {
