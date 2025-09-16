@@ -68,7 +68,7 @@ export const fetchIntroduce = async (
   try {
     const { id } = req.params;
 
-    const introduce = await prisma.introduce.findMany({
+    const introduce = await prisma.introduce.findUnique({
       where: {
         id,
       },

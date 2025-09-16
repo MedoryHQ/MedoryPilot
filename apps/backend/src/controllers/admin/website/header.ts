@@ -71,7 +71,7 @@ export const fetchHeader = async (
   try {
     const { id } = req.params;
 
-    const header = await prisma.header.findMany({
+    const header = await prisma.header.findUnique({
       where: {
         id,
       },

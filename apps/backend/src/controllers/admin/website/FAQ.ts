@@ -70,7 +70,7 @@ export const fetchFAQ = async (
   try {
     const { id } = req.params;
 
-    const FAQ = await prisma.fAQ.findMany({
+    const FAQ = await prisma.fAQ.findUnique({
       where: {
         id,
       },
