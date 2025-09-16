@@ -1,11 +1,13 @@
 import { prisma } from "@/config";
-import { getResponseMessage, sendError } from "@/utils";
+import { createTranslations, getResponseMessage, sendError } from "@/utils";
 import { NextFunction, Response, Request } from "express";
 import {
   logAdminError as logCatchyError,
   logAdminInfo as logInfo,
   logAdminWarn as logWarn,
 } from "@/utils";
+import { CreateContactDTO } from "@/types/admin";
+import { Prisma } from "@prisma/client";
 
 export const fetchContact = async (
   req: Request,
@@ -93,6 +95,63 @@ export const deleteContact = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_delete_contact_exception",
+    });
+    next(error);
+  }
+};
+
+export const createContact = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { translations, background, location } = req.body as CreateContactDTO;
+
+    logInfo("Contact create attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "contact_create_attempt",
+    });
+
+    const translationsToCreate = Prisma.validator<
+      Prisma.ContactTranslationCreateWithoutContactInput[]
+    >()(createTranslations(translations) as any);
+
+    const backgroundToCreate = background
+      ? {
+          path: background.path,
+          name: background.name,
+          size: background.size,
+        }
+      : undefined;
+
+    const contact = await prisma.contact.create({
+      data: {
+        ...(location ? { location } : {}),
+        translations: { create: translationsToCreate },
+        background: {
+          create: backgroundToCreate,
+        },
+      },
+    });
+
+    logInfo("Contact created successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "contact_created",
+    });
+
+    return res.json({
+      data: contact,
+    });
+  } catch (error) {
+    logCatchyError("create_contacts_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_create_contacts_exception",
     });
     next(error);
   }
