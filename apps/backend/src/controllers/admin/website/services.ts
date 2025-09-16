@@ -1,5 +1,9 @@
 import { prisma } from "@/config";
-import { generateWhereInput, getPaginationAndFilters } from "@/utils";
+import {
+  generateWhereInput,
+  getPaginationAndFilters,
+  sendError,
+} from "@/utils";
 import { NextFunction, Response, Request } from "express";
 import {
   logAdminError as logCatchyError,
@@ -50,6 +54,55 @@ export const fetchServices = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_fetch_services_exception",
+    });
+    next(error);
+  }
+};
+
+export const fetchService = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    const service = await prisma.service.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        icon: true,
+        background: true,
+        translations: {
+          include: {
+            language: {
+              select: {
+                code: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!service) {
+      logWarn("Service fetch failed: service not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "service_fetch_failed",
+      });
+      return sendError(req, res, 404, "serviceNotFound");
+    }
+
+    return res.status(200).json({ data: service });
+  } catch (error) {
+    logCatchyError("fetch_service_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_fetch_service_exception",
     });
     next(error);
   }

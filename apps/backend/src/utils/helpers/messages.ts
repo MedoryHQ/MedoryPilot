@@ -72,6 +72,10 @@ export const errorMessages = {
     en: "Introduce not found",
     ka: "შესავალი ვერ მოიძებნა",
   },
+  serviceNotFound: {
+    en: "Service not found",
+    ka: "სერვისი ვერ მოიძებნა",
+  },
 
   // Messages
   smsVerificationSent: {
