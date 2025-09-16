@@ -6,6 +6,7 @@ import {
   createServiceValidation,
   deleteServiceValidation,
   fetchServiceValidation,
+  updateServiceValidation,
 } from "@/validations/admin";
 import { validationHandler } from "@/middlewares/global/validationHandler";
 
@@ -59,6 +60,20 @@ adminServiceRouter.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return ServiceController.createService(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminServiceRouter.put(
+  "/:id",
+  isAdminVerified,
+  updateServiceValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return ServiceController.updateService(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }
