@@ -130,6 +130,10 @@ export const errorMessages = {
     en: "Service deleted successfully",
     ka: "სერვისი წარმატებით წაიშალა",
   },
+  contactDeleted: {
+    en: "Contact deleted successfully",
+    ka: "კონტაქტი წარმატებით წაიშალა",
+  },
 
   // Validation errors
   invalidPhoneNumber: {
