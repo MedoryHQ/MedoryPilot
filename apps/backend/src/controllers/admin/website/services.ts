@@ -1,5 +1,6 @@
 import { prisma } from "@/config";
 import {
+  createTranslations,
   generateWhereInput,
   getPaginationAndFilters,
   getResponseMessage,
@@ -12,6 +13,7 @@ import {
   logAdminWarn as logWarn,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
+import { CreateServiceDTO } from "@/types/admin";
 
 export const fetchServices = async (
   req: Request,
@@ -156,6 +158,73 @@ export const deleteService = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_delete_service_exception",
+    });
+    next(error);
+  }
+};
+
+export const createService = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { translations, background, icon } = req.body as CreateServiceDTO;
+
+    logInfo("Service create attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "service_create_attempt",
+    });
+
+    const translationsToCreate = Prisma.validator<
+      Prisma.ServiceTranslationCreateWithoutServiceInput[]
+    >()(createTranslations(translations) as any);
+
+    const iconToCreate = icon
+      ? {
+          path: icon.path,
+          name: icon.name,
+          size: icon.size,
+        }
+      : undefined;
+
+    const backgroundToCreate = background
+      ? {
+          path: background.path,
+          name: background.name,
+          size: background.size,
+        }
+      : undefined;
+
+    const service = await prisma.service.create({
+      data: {
+        translations: { create: translationsToCreate },
+        icon: {
+          create: iconToCreate,
+        },
+        background: {
+          create: backgroundToCreate,
+        },
+      },
+    });
+
+    logInfo("Service created successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "service_created",
+    });
+
+    return res.json({
+      data: service,
+    });
+  } catch (error) {
+    logCatchyError("create_services_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_create_services_exception",
     });
     next(error);
   }
