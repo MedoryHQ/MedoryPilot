@@ -13,7 +13,7 @@ import {
   logAdminWarn as logWarn,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
-import { CreateServiceDTO } from "@/types/admin";
+import { CreateServiceDTO, UpdateServiceDTO } from "@/types/admin";
 
 export const fetchServices = async (
   req: Request,
@@ -225,6 +225,112 @@ export const createService = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_create_services_exception",
+    });
+    next(error);
+  }
+};
+
+export const updateService = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    const { translations, background, icon } = req.body as UpdateServiceDTO;
+
+    logInfo("Service update attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "service_update_attempt",
+    });
+
+    const translationsToCreate = Prisma.validator<
+      Prisma.ServiceTranslationCreateWithoutServiceInput[]
+    >()(createTranslations(translations) as any);
+
+    const iconToCreate = icon
+      ? {
+          path: icon.path,
+          name: icon.name,
+          size: icon.size,
+        }
+      : undefined;
+
+    const backgroundToCreate = background
+      ? {
+          path: background.path,
+          name: background.name,
+          size: background.size,
+        }
+      : undefined;
+
+    const findService = await prisma.service.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        icon: true,
+        background: true,
+      },
+    });
+
+    if (!findService) {
+      logWarn("Service update failed: service not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "service_update_failed",
+      });
+      return sendError(req, res, 404, "serviceNotFound");
+    }
+
+    const service = await prisma.service.update({
+      where: {
+        id,
+      },
+      data: {
+        translations: {
+          deleteMany: {},
+          create: translationsToCreate,
+        },
+        icon: iconToCreate
+          ? {
+              delete: findService.icon ? {} : undefined,
+              create: iconToCreate,
+            }
+          : findService.icon
+          ? { delete: {} }
+          : undefined,
+        background: backgroundToCreate
+          ? {
+              delete: findService.background ? {} : undefined,
+              create: backgroundToCreate,
+            }
+          : findService.background
+          ? { delete: {} }
+          : undefined,
+      },
+    });
+
+    logInfo("Service updated successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "service_updated",
+    });
+
+    return res.json({
+      data: service,
+    });
+  } catch (error) {
+    logCatchyError("update_services_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_update_services_exception",
     });
     next(error);
   }
