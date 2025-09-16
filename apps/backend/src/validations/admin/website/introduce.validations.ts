@@ -1,9 +1,9 @@
 import { uuidValidation, validateTranslations } from "@/validations/shared";
 import { body } from "express-validator";
 
-export const fetchIntroduceValidation = [uuidValidation];
+export const fetchIntroduceValidation = [uuidValidation()];
 
-export const deleteIntroduceValidation = [uuidValidation];
+export const deleteIntroduceValidation = [uuidValidation()];
 
 export const createIntroduceValidation = [
   body("translations")
@@ -18,5 +18,5 @@ export const createIntroduceValidation = [
 
 export const updateIntroduceValidation = [
   ...createIntroduceValidation,
-  uuidValidation,
+  uuidValidation(),
 ];

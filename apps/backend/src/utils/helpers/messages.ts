@@ -198,7 +198,7 @@ export const errorMessages = {
   },
   invalidOrder: {
     en: "Invalid Order",
-    ka: "არასწორი ფასი",
+    ka: "არასწორი თანმიმდევრობა",
   },
 } as const;
 
