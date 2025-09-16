@@ -12,6 +12,8 @@ const adminRouteList = [
   { path: "/tariff", router: AdminRoutes.adminTariffRouter },
   { path: "/faq", router: AdminRoutes.adminFAQRouter },
   { path: "/introduce", router: AdminRoutes.adminIntroduceRouter },
+  { path: "/service", router: AdminRoutes.adminServiceRouter },
+  { path: "/contact", router: AdminRoutes.adminContactRouter },
 ];
 
 const customerRouteList = [
@@ -19,6 +21,8 @@ const customerRouteList = [
   { path: "/header", router: CustomerRoutes.headerRouter },
   { path: "/faq", router: CustomerRoutes.FAQRouter },
   { path: "/introduce", router: CustomerRoutes.introduceRouter },
+  { path: "/service", router: CustomerRoutes.serviceRouter },
+  { path: "/contact", router: CustomerRoutes.contactRouter },
 ];
 
 export const generateRoutes = (app: Express) => {

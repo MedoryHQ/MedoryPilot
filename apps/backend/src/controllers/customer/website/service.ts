@@ -4,33 +4,32 @@ import { NextFunction, Response, Request } from "express";
 import { logCustomerCatchyError as logCatchyError } from "@/utils";
 import { Prisma } from "@prisma/client";
 
-export const fetchFAQs = async (
+export const fetchServices = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { skip, take, search } = getPaginationAndFilters(req);
+    const { skip, take, search, orderBy } = getPaginationAndFilters(req);
 
-    const where = generateWhereInput<Prisma.FAQWhereInput>(search, {
-      "translations.some.question": "insensitive",
-      "translations.some.answer": "insensitive",
+    const where = generateWhereInput<Prisma.ServiceWhereInput>(search, {
+      "translations.some.title": "insensitive",
+      "translations.some.description": "insensitive",
     });
 
-    const [FAQs, count] = await Promise.all([
-      prisma.fAQ.findMany({
+    const [services, count] = await Promise.all([
+      prisma.service.findMany({
         skip,
         take,
-        orderBy: {
-          order: "asc",
-        },
+        orderBy,
         where,
         select: {
-          order: true,
+          icon: true,
+          background: true,
           translations: {
             select: {
-              answer: true,
-              question: true,
+              description: true,
+              title: true,
               language: {
                 select: {
                   code: true,
@@ -40,15 +39,15 @@ export const fetchFAQs = async (
           },
         },
       }),
-      prisma.fAQ.count({ where }),
+      prisma.service.count({ where }),
     ]);
 
-    return res.status(200).json({ data: FAQs, count });
+    return res.status(200).json({ data: services, count });
   } catch (error) {
-    logCatchyError("Fetch FAQs exception", error, {
+    logCatchyError("Fetch services exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_fetch_FAQs_exception",
+      event: "admin_fetch_services_exception",
     });
     next(error);
   }

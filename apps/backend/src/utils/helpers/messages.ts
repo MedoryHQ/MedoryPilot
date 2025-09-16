@@ -72,6 +72,14 @@ export const errorMessages = {
     en: "Introduce not found",
     ka: "შესავალი ვერ მოიძებნა",
   },
+  serviceNotFound: {
+    en: "Service not found",
+    ka: "სერვისი ვერ მოიძებნა",
+  },
+  contactNotFound: {
+    en: "Contact not found",
+    ka: "კონტაქტი ვერ მოიძებნა",
+  },
 
   // Messages
   smsVerificationSent: {
@@ -117,6 +125,14 @@ export const errorMessages = {
   introduceDeleted: {
     en: "Introduce deleted successfully",
     ka: "შესავალი წარმატებით წაიშალა",
+  },
+  serviceDeleted: {
+    en: "Service deleted successfully",
+    ka: "სერვისი წარმატებით წაიშალა",
+  },
+  contactDeleted: {
+    en: "Contact deleted successfully",
+    ka: "კონტაქტი წარმატებით წაიშალა",
   },
 
   // Validation errors
@@ -198,7 +214,19 @@ export const errorMessages = {
   },
   invalidOrder: {
     en: "Invalid Order",
-    ka: "არასწორი ფასი",
+    ka: "არასწორი თანმიმდევრობა",
+  },
+  invalidIcon: {
+    en: "Invalid Icon",
+    ka: "არასწორი Icon",
+  },
+  invalidBackground: {
+    en: "Invalid Background",
+    ka: "არასწორი Background",
+  },
+  invalidLocation: {
+    en: "Invalid Location",
+    ka: "არასწორი ლოკაცია",
   },
 } as const;
 

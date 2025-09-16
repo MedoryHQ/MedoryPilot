@@ -1,9 +1,9 @@
 import { uuidValidation, validateTranslations } from "@/validations/shared";
 import { body } from "express-validator";
 
-export const fetchHeaderValidation = [uuidValidation];
+export const fetchHeaderValidation = [uuidValidation()];
 
-export const deleteHeaderValidation = [uuidValidation];
+export const deleteHeaderValidation = [uuidValidation()];
 
 export const createHeaderValidation = [
   body("active").optional().isBoolean().withMessage("invalidActiveType"),
@@ -25,5 +25,5 @@ export const createHeaderValidation = [
 
 export const updateHeaderValidation = [
   ...createHeaderValidation,
-  uuidValidation,
+  uuidValidation(),
 ];

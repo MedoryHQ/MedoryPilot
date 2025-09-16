@@ -1,9 +1,9 @@
 import { uuidValidation, validateTranslations } from "@/validations/shared";
 import { body } from "express-validator";
 
-export const fetchFAQValidation = [uuidValidation];
+export const fetchFAQValidation = [uuidValidation()];
 
-export const deleteFAQValidation = [uuidValidation];
+export const deleteFAQValidation = [uuidValidation()];
 
 export const createFAQValidation = [
   body("order").optional().isInt().withMessage("invalidOrder"),
@@ -17,4 +17,4 @@ export const createFAQValidation = [
     ),
 ];
 
-export const updateFAQValidation = [...createFAQValidation, uuidValidation];
+export const updateFAQValidation = [...createFAQValidation, uuidValidation()];
