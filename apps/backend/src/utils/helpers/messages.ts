@@ -76,6 +76,10 @@ export const errorMessages = {
     en: "Service not found",
     ka: "სერვისი ვერ მოიძებნა",
   },
+  contactNotFound: {
+    en: "Contact not found",
+    ka: "კონტაქტი ვერ მოიძებნა",
+  },
 
   // Messages
   smsVerificationSent: {
@@ -215,6 +219,10 @@ export const errorMessages = {
   invalidBackground: {
     en: "Invalid Background",
     ka: "არასწორი Background",
+  },
+  invalidLocation: {
+    en: "Invalid Location",
+    ka: "არასწორი ლოკაცია",
   },
 } as const;
 
