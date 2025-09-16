@@ -176,12 +176,13 @@ export const createFAQ = async (
       event: "FAQ_create_attempt",
     });
 
-    const translationsToCreate = createTranslations(translations);
+    const translationsToCreate = Prisma.validator<
+      Prisma.FAQTranslationCreateWithoutFaqInput[]
+    >()(createTranslations(translations) as any);
 
     const FAQ = await prisma.fAQ.create({
       data: {
         ...(order ? { order } : {}),
-        // @ts-expect-error translationsToCreate is not compatible with Prisma type
         translations: { create: translationsToCreate },
       },
     });
@@ -223,7 +224,9 @@ export const updateFAQ = async (
       event: "FAQ_update_attempt",
     });
 
-    const translationsToCreate = createTranslations(translations);
+    const translationsToCreate = Prisma.validator<
+      Prisma.FAQTranslationCreateWithoutFaqInput[]
+    >()(createTranslations(translations) as any);
 
     const findFAQ = await prisma.fAQ.findUnique({
       where: {
@@ -250,7 +253,6 @@ export const updateFAQ = async (
         ...(order ? { order } : {}),
         translations: {
           deleteMany: {},
-          // @ts-expect-error translationsToCreate is not compatible with Prisma type
           create: translationsToCreate,
         },
       },

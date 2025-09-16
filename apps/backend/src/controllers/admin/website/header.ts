@@ -178,7 +178,10 @@ export const createHeader = async (
       event: "header_create_attempt",
     });
 
-    const translationsToCreate = createTranslations(translations);
+    const translationsToCreate = Prisma.validator<
+      Prisma.HeaderTranslationCreateWithoutHeaderInput[]
+    >()(createTranslations(translations) as any);
+
     const logoToCreate = logo
       ? {
           path: logo.path,
@@ -190,7 +193,6 @@ export const createHeader = async (
     const header = await prisma.header.create({
       data: {
         active: !!active,
-        // @ts-expect-error translationsToCreate is not compatible with Prisma type
         translations: { create: translationsToCreate },
         logo: {
           create: logoToCreate,
@@ -235,7 +237,9 @@ export const updateHeader = async (
       event: "header_update_attempt",
     });
 
-    const translationsToCreate = createTranslations(translations);
+    const translationsToCreate = Prisma.validator<
+      Prisma.HeaderTranslationCreateWithoutHeaderInput[]
+    >()(createTranslations(translations) as any);
     const logoToCreate = logo
       ? {
           path: logo.path,
@@ -271,7 +275,6 @@ export const updateHeader = async (
       data: {
         translations: {
           deleteMany: {},
-          // @ts-expect-error translationsToCreate is not compatible with Prisma type
           create: translationsToCreate,
         },
         logo: logoToCreate

@@ -174,10 +174,12 @@ export const createIntroduce = async (
       event: "introduce_create_attempt",
     });
 
-    const translationsToCreate = createTranslations(translations);
+    const translationsToCreate = Prisma.validator<
+      Prisma.IntroduceTranslationCreateWithoutIntroduceInput[]
+    >()(createTranslations(translations) as any);
+
     const introduce = await prisma.introduce.create({
       data: {
-        // @ts-expect-error translationsToCreate is not compatible with Prisma type
         translations: { create: translationsToCreate },
       },
     });
@@ -219,7 +221,10 @@ export const updateIntroduce = async (
       event: "introduce_update_attempt",
     });
 
-    const translationsToCreate = createTranslations(translations);
+    const translationsToCreate = Prisma.validator<
+      Prisma.IntroduceTranslationCreateWithoutIntroduceInput[]
+    >()(createTranslations(translations) as any);
+
     const findIntroduce = await prisma.introduce.findUnique({
       where: {
         id,
@@ -244,7 +249,6 @@ export const updateIntroduce = async (
       data: {
         translations: {
           deleteMany: {},
-          // @ts-expect-error translationsToCreate is not compatible with Prisma type
           create: translationsToCreate,
         },
       },
