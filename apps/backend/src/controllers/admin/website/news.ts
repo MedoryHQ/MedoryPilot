@@ -2,6 +2,7 @@ import { prisma } from "@/config";
 import {
   generateWhereInput,
   getPaginationAndFilters,
+  getResponseMessage,
   sendError,
 } from "@/utils";
 import { NextFunction, Response, Request } from "express";
@@ -100,6 +101,58 @@ export const fetchNews = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_fetch_news_exception",
+    });
+    next(error);
+  }
+};
+
+export const deleteNews = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    logInfo("News delete attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "news_delete_attempt",
+    });
+
+    const news = await prisma.news.delete({
+      where: {
+        id,
+      },
+    });
+
+    if (!news) {
+      logWarn("News delete failed: news not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "news_delete_failed",
+      });
+      return sendError(req, res, 404, "newsNotFound");
+    }
+
+    logInfo("News deleted successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "news_deleted",
+    });
+
+    return res.status(200).json({
+      message: getResponseMessage("newsDeleted"),
+    });
+  } catch (error) {
+    logCatchyError("delete_news_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_delete_news_exception",
     });
     next(error);
   }
