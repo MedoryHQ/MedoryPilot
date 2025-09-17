@@ -1,13 +1,13 @@
 import {
   generateMetaValidations,
-  uuidValidation,
+  slugValidation,
   validateTranslations,
 } from "@/validations/shared";
 import { body } from "express-validator";
 
-export const fetchNewsValidation = [uuidValidation()];
+export const fetchNewsValidation = [slugValidation()];
 
-export const deleteNewsValidation = [uuidValidation()];
+export const deleteNewsValidation = [slugValidation()];
 
 export const createNewsValidation = [
   body("showInLanding").isBoolean().withMessage("invalidShowInLanding"),
@@ -25,4 +25,4 @@ export const createNewsValidation = [
   ...generateMetaValidations(),
 ];
 
-export const updateNewsValidation = [...createNewsValidation, uuidValidation()];
+export const updateNewsValidation = [...createNewsValidation, slugValidation()];

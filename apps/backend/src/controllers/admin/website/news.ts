@@ -66,11 +66,11 @@ export const fetchNews = async (
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params;
+    const { slug } = req.params;
 
     const news = await prisma.news.findUnique({
       where: {
-        id,
+        slug,
       },
       include: {
         background: true,
@@ -114,7 +114,7 @@ export const deleteNews = async (
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params;
+    const { slug } = req.params;
 
     logInfo("News delete attempt", {
       ip: (req as any).hashedIp,
@@ -125,7 +125,7 @@ export const deleteNews = async (
 
     const news = await prisma.news.delete({
       where: {
-        id,
+        slug,
       },
     });
 
@@ -225,7 +225,7 @@ export const updateNews = async (
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params;
+    const { slug } = req.params;
 
     const { translations, background, order, ...rest } =
       req.body as UpdateNewsDTO;
@@ -250,7 +250,7 @@ export const updateNews = async (
 
     const findNews = await prisma.news.findUnique({
       where: {
-        id,
+        slug,
       },
       include: {
         background: true,
@@ -270,7 +270,7 @@ export const updateNews = async (
 
     const news = await prisma.news.update({
       where: {
-        id,
+        slug,
       },
       data: {
         ...rest,

@@ -25,7 +25,7 @@ adminNewsRouter.get(
 );
 
 adminNewsRouter.get(
-  "/:id",
+  "/:slug",
   isAdminVerified,
   fetchNewsValidation,
   validationHandler,
@@ -39,7 +39,7 @@ adminNewsRouter.get(
 );
 
 adminNewsRouter.delete(
-  "/:id",
+  "/:slug",
   isAdminVerified,
   deleteNewsValidation,
   validationHandler,
@@ -67,7 +67,7 @@ adminNewsRouter.post(
 );
 
 adminNewsRouter.put(
-  "/:id",
+  "/:slug",
   isAdminVerified,
   updateNewsValidation,
   validationHandler,
