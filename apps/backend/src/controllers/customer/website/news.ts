@@ -1,5 +1,9 @@
 import { prisma } from "@/config";
-import { generateWhereInput, getPaginationAndFilters } from "@/utils";
+import {
+  generateWhereInput,
+  getPaginationAndFilters,
+  sendError,
+} from "@/utils";
 import { NextFunction, Response, Request } from "express";
 import {
   logAdminError as logCatchyError,
@@ -26,10 +30,18 @@ export const fetchNewses = async (
         take,
         orderBy,
         where,
-        include: {
+        select: {
           background: true,
+          metaDescription: true,
+          metaImage: true,
+          metaKeywords: true,
+          metaTitle: true,
+          order: true,
+          showInLanding: true,
+          slug: true,
           translations: {
-            include: {
+            select: {
+              content: true,
               language: {
                 select: {
                   code: true,
@@ -47,7 +59,63 @@ export const fetchNewses = async (
     logCatchyError("fetch_newses_exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_fetch_newses_exception",
+      event: "fetch_newses_exception",
+    });
+    next(error);
+  }
+};
+
+export const fetchNews = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { slug } = req.params;
+
+    const news = await prisma.news.findUnique({
+      where: {
+        slug,
+      },
+      select: {
+        background: true,
+        metaDescription: true,
+        metaImage: true,
+        metaKeywords: true,
+        metaTitle: true,
+        order: true,
+        showInLanding: true,
+        slug: true,
+        translations: {
+          select: {
+            content: true,
+            language: {
+              select: {
+                code: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!news) {
+      logWarn("News fetch failed: news not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "news_fetch_failed",
+      });
+      return sendError(req, res, 404, "newsNotFound");
+    }
+
+    return res.status(200).json({ data: news });
+  } catch (error) {
+    logCatchyError("fetch_news_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "fetch_news_exception",
     });
     next(error);
   }
