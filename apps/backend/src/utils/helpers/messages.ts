@@ -80,6 +80,10 @@ export const errorMessages = {
     en: "Contact not found",
     ka: "კონტაქტი ვერ მოიძებნა",
   },
+  newsNotFound: {
+    en: "News not found",
+    ka: "სიახლე ვერ მოიძებნა",
+  },
 
   // Messages
   smsVerificationSent: {
@@ -133,6 +137,10 @@ export const errorMessages = {
   contactDeleted: {
     en: "Contact deleted successfully",
     ka: "კონტაქტი წარმატებით წაიშალა",
+  },
+  newsDeleted: {
+    en: "News deleted successfully",
+    ka: "სიახლე წარმატებით წაიშალა",
   },
 
   // Validation errors
@@ -227,6 +235,14 @@ export const errorMessages = {
   invalidLocation: {
     en: "Invalid Location",
     ka: "არასწორი ლოკაცია",
+  },
+  invalidShowInLanding: {
+    en: "Invalid show in landing",
+    ka: "არასწორი ლენდინგზე გამოჩენა",
+  },
+  invalidSlug: {
+    en: "Invalid Slug",
+    ka: "არასწორი სლაგი",
   },
 } as const;
 
