@@ -193,9 +193,9 @@ export const createNews = async (
         ...rest,
         ...(order && { order }),
         translations: { create: translationsToCreate },
-        background: {
-          create: backgroundToCreate,
-        },
+        ...(backgroundToCreate
+          ? { background: { create: backgroundToCreate } }
+          : {}),
       },
     });
 
