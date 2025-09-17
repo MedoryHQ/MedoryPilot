@@ -192,3 +192,6 @@ export const codeValidation = (field = "code") =>
 
 export const uuidValidation = () =>
   param("id").isUUID().withMessage("invalidId");
+
+export const slugValidation = () =>
+  param("slug").isString().withMessage("invalidSlug");
