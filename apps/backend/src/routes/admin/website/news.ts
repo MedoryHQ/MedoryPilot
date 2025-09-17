@@ -6,6 +6,7 @@ import {
   createNewsValidation,
   deleteNewsValidation,
   fetchNewsValidation,
+  updateNewsValidation,
 } from "@/validations/admin";
 import { validationHandler } from "@/middlewares/global/validationHandler";
 
@@ -59,6 +60,20 @@ adminNewsRouter.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return newsController.createNews(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminNewsRouter.put(
+  "/:id",
+  isAdminVerified,
+  updateNewsValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return newsController.updateNews(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }
