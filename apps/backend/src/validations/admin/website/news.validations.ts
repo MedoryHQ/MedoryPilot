@@ -14,8 +14,8 @@ export const createNewsValidation = [
   body("slug").isString().withMessage("invalidSlug"),
   body("order").optional().isInt().withMessage("invalidOrder"),
   body("background")
-    .isObject()
     .optional({ nullable: true })
+    .isObject()
     .withMessage("invalidBackground"),
   body("translations")
     .isObject()

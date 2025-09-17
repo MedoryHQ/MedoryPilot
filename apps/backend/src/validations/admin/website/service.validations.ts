@@ -7,12 +7,12 @@ export const deleteServiceValidation = [uuidValidation()];
 
 export const createServiceValidation = [
   body("icon")
-    .isObject()
     .optional({ nullable: true })
+    .isObject()
     .withMessage("invalidIcon"),
   body("background")
-    .isObject()
     .optional({ nullable: true })
+    .isObject()
     .withMessage("invalidBackground"),
   body("translations")
     .isObject()

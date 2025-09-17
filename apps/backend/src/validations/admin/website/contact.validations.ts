@@ -4,8 +4,8 @@ import { body } from "express-validator";
 export const createContactValidation = [
   body("location").optional().isString().withMessage("invalidLocation"),
   body("background")
-    .isObject()
     .optional({ nullable: true })
+    .isObject()
     .withMessage("invalidBackground"),
   body("translations")
     .isObject()
