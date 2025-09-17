@@ -24,6 +24,6 @@ export const createHeaderValidation = [
 ];
 
 export const updateHeaderValidation = [
-  ...createHeaderValidation,
   uuidValidation(),
+  ...createHeaderValidation,
 ];

@@ -71,3 +71,27 @@ export interface UpdateContactDTO {
   background?: File;
   translations: Translations;
 }
+
+export interface CreateNewsDTO {
+  showInLanding: boolean;
+  slug: string;
+  order?: number;
+  background?: File;
+  translations: Translations;
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string;
+  metaImage?: string;
+}
+
+export interface UpdateNewsDTO {
+  showInLanding: boolean;
+  slug: string;
+  order?: number;
+  background?: File;
+  translations: Translations;
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string;
+  metaImage?: string;
+}
