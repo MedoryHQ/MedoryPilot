@@ -13,7 +13,7 @@ import {
   logAdminWarn as logWarn,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
-import { CreateNewsDTO } from "@/types/admin";
+import { CreateNewsDTO, UpdateNewsDTO } from "@/types/admin";
 
 export const fetchNewses = async (
   req: Request,
@@ -214,6 +214,97 @@ export const createNews = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_create_newss_exception",
+    });
+    next(error);
+  }
+};
+
+export const updateNews = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    const { translations, background, order, ...rest } =
+      req.body as UpdateNewsDTO;
+
+    logInfo("News update attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "news_update_attempt",
+    });
+
+    const translationsToCreate = Prisma.validator<
+      Prisma.NewsTranslationCreateWithoutNewsInput[]
+    >()(createTranslations(translations) as any);
+    const backgroundToCreate = background
+      ? {
+          path: background.path,
+          name: background.name,
+          size: background.size,
+        }
+      : undefined;
+
+    const findNews = await prisma.news.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        background: true,
+      },
+    });
+
+    if (!findNews) {
+      logWarn("News update failed: news not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "news_update_failed",
+      });
+      return sendError(req, res, 404, "newsNotFound");
+    }
+
+    const news = await prisma.news.update({
+      where: {
+        id,
+      },
+      data: {
+        ...rest,
+        ...(order && { order }),
+        translations: {
+          deleteMany: {},
+          create: translationsToCreate,
+        },
+        background: backgroundToCreate
+          ? {
+              delete: findNews.background ? {} : undefined,
+              create: backgroundToCreate,
+            }
+          : findNews.background
+          ? { delete: {} }
+          : undefined,
+      },
+    });
+
+    logInfo("News updated successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "news_updated",
+    });
+
+    return res.json({
+      data: news,
+    });
+  } catch (error) {
+    logCatchyError("update_newss_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_update_newss_exception",
     });
     next(error);
   }
