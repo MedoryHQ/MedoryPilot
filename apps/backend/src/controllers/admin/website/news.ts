@@ -1,5 +1,6 @@
 import { prisma } from "@/config";
 import {
+  createTranslations,
   generateWhereInput,
   getPaginationAndFilters,
   getResponseMessage,
@@ -12,6 +13,7 @@ import {
   logAdminWarn as logWarn,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
+import { CreateNewsDTO } from "@/types/admin";
 
 export const fetchNewses = async (
   req: Request,
@@ -153,6 +155,65 @@ export const deleteNews = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_delete_news_exception",
+    });
+    next(error);
+  }
+};
+
+export const createNews = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { translations, background, order, ...rest } =
+      req.body as CreateNewsDTO;
+
+    logInfo("News create attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "news_create_attempt",
+    });
+
+    const translationsToCreate = Prisma.validator<
+      Prisma.NewsTranslationCreateWithoutNewsInput[]
+    >()(createTranslations(translations) as any);
+
+    const backgroundToCreate = background
+      ? {
+          path: background.path,
+          name: background.name,
+          size: background.size,
+        }
+      : undefined;
+
+    const news = await prisma.news.create({
+      data: {
+        ...rest,
+        ...(order && { order }),
+        translations: { create: translationsToCreate },
+        background: {
+          create: backgroundToCreate,
+        },
+      },
+    });
+
+    logInfo("News created successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "news_created",
+    });
+
+    return res.json({
+      data: news,
+    });
+  } catch (error) {
+    logCatchyError("create_newss_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_create_newss_exception",
     });
     next(error);
   }
