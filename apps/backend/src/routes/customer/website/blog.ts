@@ -6,7 +6,7 @@ export const blogRouter = Router();
 
 blogRouter.get("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    return blogController.fetchBloges(req, res, next);
+    return blogController.fetchBlogs(req, res, next);
   } catch {
     res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
   }
