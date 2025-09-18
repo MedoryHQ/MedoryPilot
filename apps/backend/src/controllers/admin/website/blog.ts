@@ -2,6 +2,7 @@ import { prisma } from "@/config";
 import {
   generateWhereInput,
   getPaginationAndFilters,
+  getResponseMessage,
   sendError,
 } from "@/utils";
 import { NextFunction, Response, Request } from "express";
@@ -127,6 +128,58 @@ export const fetchBlog = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_fetch_blog_exception",
+    });
+    next(error);
+  }
+};
+
+export const deleteBlog = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { slug } = req.params;
+
+    logInfo("Blog delete attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "blog_delete_attempt",
+    });
+
+    const blog = await prisma.blog.delete({
+      where: {
+        slug,
+      },
+    });
+
+    if (!blog) {
+      logWarn("Blog delete failed: blog not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "blog_delete_failed",
+      });
+      return sendError(req, res, 404, "blogNotFound");
+    }
+
+    logInfo("Blog deleted successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "blog_deleted",
+    });
+
+    return res.status(200).json({
+      message: getResponseMessage("blogDeleted"),
+    });
+  } catch (error) {
+    logCatchyError("delete_blog_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_delete_blog_exception",
     });
     next(error);
   }
