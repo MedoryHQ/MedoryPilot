@@ -6,6 +6,7 @@ import {
   createBlogValidation,
   deleteBlogValidation,
   fetchBlogValidation,
+  updateBlogValidation,
 } from "@/validations/admin";
 import { validationHandler } from "@/middlewares/global/validationHandler";
 
@@ -59,6 +60,20 @@ adminBlogRouter.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return blogController.createBlog(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminBlogRouter.put(
+  "/:slug",
+  isAdminVerified,
+  updateBlogValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return blogController.updateBlog(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }
