@@ -191,7 +191,7 @@ export const createIntroduce = async (
       event: "introduce_created",
     });
 
-    return res.json({
+    return res.status(201).json({
       data: introduce,
     });
   } catch (error) {

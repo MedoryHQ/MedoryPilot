@@ -217,7 +217,7 @@ export const createService = async (
       event: "service_created",
     });
 
-    return res.json({
+    return res.status(201).json({
       data: service,
     });
   } catch (error) {

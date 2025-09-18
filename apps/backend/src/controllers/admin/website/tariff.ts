@@ -205,7 +205,7 @@ export const createTariff = async (
       event: "tariff_created",
     });
 
-    return res.json({ data: tariff });
+    return res.status(201).json({ data: tariff });
   } catch (error) {
     logCatchyError("create_tariffs_exception", error, {
       ip: (req as any).hashedIp,

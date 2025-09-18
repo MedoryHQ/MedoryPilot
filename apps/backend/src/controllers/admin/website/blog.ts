@@ -237,7 +237,7 @@ export const createBlog = async (
       event: "blog_created",
     });
 
-    return res.json({
+    return res.status(201).json({
       data: blog,
     });
   } catch (error) {
