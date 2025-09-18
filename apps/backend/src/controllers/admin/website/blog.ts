@@ -13,7 +13,7 @@ import {
   logAdminWarn as logWarn,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
-import { CreateBlogDTO } from "@/types/admin";
+import { CreateBlogDTO, UpdateBlogDTO } from "@/types/admin";
 
 export const fetchBlogs = async (
   req: Request,
@@ -245,6 +245,101 @@ export const createBlog = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_create_blogs_exception",
+    });
+    next(error);
+  }
+};
+
+export const updateBlog = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { slug } = req.params;
+
+    const { translations, background, categories, ...rest } =
+      req.body as UpdateBlogDTO;
+
+    logInfo("Blog update attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "blog_update_attempt",
+    });
+
+    const translationsToCreate = Prisma.validator<
+      Prisma.BlogTranslationCreateWithoutBlogInput[]
+    >()(createTranslations(translations) as any);
+    const backgroundToCreate = background
+      ? {
+          path: background.path,
+          name: background.name,
+          size: background.size,
+        }
+      : undefined;
+
+    const findBlog = await prisma.blog.findUnique({
+      where: {
+        slug,
+      },
+      include: {
+        background: true,
+      },
+    });
+
+    if (!findBlog) {
+      logWarn("Blog update failed: blog not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "blog_update_failed",
+      });
+      return sendError(req, res, 404, "blogNotFound");
+    }
+
+    const blog = await prisma.blog.update({
+      where: {
+        slug,
+      },
+      data: {
+        ...rest,
+        categories: {
+          set: categories.map((id) => ({
+            id,
+          })),
+        },
+        translations: {
+          deleteMany: {},
+          create: translationsToCreate,
+        },
+        background: backgroundToCreate
+          ? {
+              delete: findBlog.background ? {} : undefined,
+              create: backgroundToCreate,
+            }
+          : findBlog.background
+          ? { delete: {} }
+          : undefined,
+      },
+    });
+
+    logInfo("Blog updated successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "blog_updated",
+    });
+
+    return res.json({
+      data: blog,
+    });
+  } catch (error) {
+    logCatchyError("update_blogs_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_update_blogs_exception",
     });
     next(error);
   }
