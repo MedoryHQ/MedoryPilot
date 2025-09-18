@@ -6,9 +6,8 @@ import {
 } from "@/utils";
 import { NextFunction, Response, Request } from "express";
 import {
-  logAdminError as logCatchyError,
-  logAdminInfo as logInfo,
-  logAdminWarn as logWarn,
+  logCustomerCatchyError as logCatchyError,
+  logCustomerWarn as logWarn,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
 
