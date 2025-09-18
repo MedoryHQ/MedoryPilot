@@ -95,3 +95,22 @@ export interface UpdateNewsDTO {
   metaKeywords?: string;
   metaImage?: string;
 }
+
+export interface CreateBlogDTO {
+  slug: string;
+  background?: File;
+  showInLanding: boolean;
+  landingOrder?: number;
+
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string;
+  metaImage?: string;
+
+  categories: string[];
+  translations: Translations;
+}
+
+export interface UpdateBlogDTO extends CreateBlogDTO {
+  id: string;
+}
