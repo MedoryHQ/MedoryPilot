@@ -244,6 +244,10 @@ export const errorMessages = {
     en: "Invalid Slug",
     ka: "არასწორი სლაგი",
   },
+  categoriesLength: {
+    en: "Categories must be an array with at least 1 category",
+    ka: "კატეგორიების მასივში უნდა იყოს მინიმუმ 1 კატეგორია",
+  },
 } as const;
 
 export type ErrorKey = keyof typeof errorMessages;
