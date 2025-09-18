@@ -17,4 +17,4 @@ export const createFAQValidation = [
     ),
 ];
 
-export const updateFAQValidation = [...createFAQValidation, uuidValidation()];
+export const updateFAQValidation = [uuidValidation(), ...createFAQValidation];

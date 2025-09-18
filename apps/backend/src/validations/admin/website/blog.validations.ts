@@ -61,4 +61,4 @@ export const createBlogValidation = [
   ...generateMetaValidations(),
 ];
 
-export const updateBlogValidation = [...createBlogValidation, slugValidation()];
+export const updateBlogValidation = [slugValidation(), ...createBlogValidation];

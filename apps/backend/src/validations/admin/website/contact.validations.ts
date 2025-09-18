@@ -18,6 +18,6 @@ export const createContactValidation = [
 ];
 
 export const updateContactValidation = [
-  ...createContactValidation,
   uuidValidation(),
+  ...createContactValidation,
 ];

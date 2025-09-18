@@ -25,4 +25,4 @@ export const createNewsValidation = [
   ...generateMetaValidations(),
 ];
 
-export const updateNewsValidation = [...createNewsValidation, slugValidation()];
+export const updateNewsValidation = [slugValidation(), ...createNewsValidation];

@@ -13,6 +13,6 @@ export const createTariffValidation = [
 ];
 
 export const updateTariffValidation = [
-  ...createTariffValidation,
   uuidValidation(),
+  ...createTariffValidation,
 ];

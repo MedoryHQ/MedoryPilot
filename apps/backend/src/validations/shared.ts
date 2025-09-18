@@ -194,4 +194,10 @@ export const uuidValidation = () =>
   param("id").isUUID().withMessage("invalidId");
 
 export const slugValidation = () =>
-  param("slug").isString().withMessage("invalidSlug");
+  param("slug")
+    .isString()
+    .trim()
+    .toLowerCase()
+    .isLength({ min: 1, max: 120 })
+    .matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+    .withMessage("invalidSlug");
