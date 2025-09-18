@@ -22,7 +22,10 @@ export const createBlogValidation = [
   body("translations")
     .isObject()
     .custom((translations) =>
-      validateTranslations(translations, [{ name: "content", required: true }])
+      validateTranslations(translations, [
+        { name: "content", required: true },
+        { name: "title", required: true },
+      ])
     ),
 
   body("categories")
