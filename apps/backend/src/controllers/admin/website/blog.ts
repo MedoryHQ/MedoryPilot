@@ -1,5 +1,9 @@
 import { prisma } from "@/config";
-import { generateWhereInput, getPaginationAndFilters } from "@/utils";
+import {
+  generateWhereInput,
+  getPaginationAndFilters,
+  sendError,
+} from "@/utils";
 import { NextFunction, Response, Request } from "express";
 import {
   logAdminError as logCatchyError,
@@ -62,6 +66,67 @@ export const fetchBlogs = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_fetch_bloges_exception",
+    });
+    next(error);
+  }
+};
+
+export const fetchBlog = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { slug } = req.params;
+
+    const blog = await prisma.blog.findUnique({
+      where: {
+        slug,
+      },
+      include: {
+        background: true,
+        categories: {
+          include: {
+            translations: {
+              include: {
+                language: {
+                  select: {
+                    code: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        translations: {
+          include: {
+            language: {
+              select: {
+                code: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!blog) {
+      logWarn("Blog fetch failed: blog not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "blog_fetch_failed",
+      });
+      return sendError(req, res, 404, "blogNotFound");
+    }
+
+    return res.status(200).json({ data: blog });
+  } catch (error) {
+    logCatchyError("fetch_blog_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_fetch_blog_exception",
     });
     next(error);
   }
