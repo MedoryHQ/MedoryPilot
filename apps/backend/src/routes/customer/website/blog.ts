@@ -1,0 +1,13 @@
+import { NextFunction, Router, Request, Response } from "express";
+import { GLOBAL_ERROR_MESSAGE } from "@/utils";
+import * as blogController from "@/controllers/customer/website/blog";
+
+export const blogRouter = Router();
+
+blogRouter.get("/", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    return blogController.fetchBloges(req, res, next);
+  } catch {
+    res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+  }
+});
