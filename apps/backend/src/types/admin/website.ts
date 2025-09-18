@@ -111,6 +111,4 @@ export interface CreateBlogDTO {
   translations: Translations;
 }
 
-export interface UpdateBlogDTO extends CreateBlogDTO {
-  id: string;
-}
+export interface UpdateBlogDTO extends CreateBlogDTO {}
