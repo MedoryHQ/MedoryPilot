@@ -17,6 +17,6 @@ export const createIntroduceValidation = [
 ];
 
 export const updateIntroduceValidation = [
-  ...createIntroduceValidation,
   uuidValidation(),
+  ...createIntroduceValidation,
 ];

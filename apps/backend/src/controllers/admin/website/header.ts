@@ -207,7 +207,7 @@ export const createHeader = async (
       event: "header_created",
     });
 
-    return res.json({
+    return res.status(201).json({
       data: header,
     });
   } catch (error) {

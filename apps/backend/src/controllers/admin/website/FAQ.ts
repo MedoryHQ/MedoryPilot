@@ -194,7 +194,7 @@ export const createFAQ = async (
       event: "FAQ_created",
     });
 
-    return res.json({
+    return res.status(201).json({
       data: FAQ,
     });
   } catch (error) {

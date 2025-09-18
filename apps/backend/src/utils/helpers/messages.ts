@@ -84,6 +84,10 @@ export const errorMessages = {
     en: "News not found",
     ka: "სიახლე ვერ მოიძებნა",
   },
+  blogNotFound: {
+    en: "Blog not found",
+    ka: "ბლოგი ვერ მოიძებნა",
+  },
 
   // Messages
   smsVerificationSent: {
@@ -141,6 +145,10 @@ export const errorMessages = {
   newsDeleted: {
     en: "News deleted successfully",
     ka: "სიახლე წარმატებით წაიშალა",
+  },
+  blogDeleted: {
+    en: "Blog deleted successfully",
+    ka: "ბლოგი წარმატებით წაიშალა",
   },
 
   // Validation errors
@@ -243,6 +251,10 @@ export const errorMessages = {
   invalidSlug: {
     en: "Invalid Slug",
     ka: "არასწორი სლაგი",
+  },
+  categoriesLength: {
+    en: "Categories must be an array with at least 1 category",
+    ka: "კატეგორიების მასივში უნდა იყოს მინიმუმ 1 კატეგორია",
   },
 } as const;
 

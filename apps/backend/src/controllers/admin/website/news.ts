@@ -191,7 +191,7 @@ export const createNews = async (
     const news = await prisma.news.create({
       data: {
         ...rest,
-        ...(order && { order }),
+        ...(order !== undefined ? { order } : {}),
         translations: { create: translationsToCreate },
         ...(backgroundToCreate
           ? { background: { create: backgroundToCreate } }
@@ -206,14 +206,14 @@ export const createNews = async (
       event: "news_created",
     });
 
-    return res.json({
+    return res.status(201).json({
       data: news,
     });
   } catch (error) {
-    logCatchyError("create_newss_exception", error, {
+    logCatchyError("create_newses_exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_create_newss_exception",
+      event: "admin_create_newses_exception",
     });
     next(error);
   }
@@ -274,7 +274,7 @@ export const updateNews = async (
       },
       data: {
         ...rest,
-        ...(order && { order }),
+        ...(order !== undefined ? { order } : {}),
         translations: {
           deleteMany: {},
           create: translationsToCreate,
@@ -301,10 +301,10 @@ export const updateNews = async (
       data: news,
     });
   } catch (error) {
-    logCatchyError("update_newss_exception", error, {
+    logCatchyError("update_newses_exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_update_newss_exception",
+      event: "admin_update_newses_exception",
     });
     next(error);
   }

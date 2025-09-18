@@ -26,72 +26,64 @@ export interface CreateTariffDTO {
   price: number;
 }
 
-export interface UpdateTariffDTO {
-  price: number;
-}
+export type UpdateTariffDTO = CreateTariffDTO;
 
 export interface CreateFaqDTO {
   order?: number;
   translations: Translations;
 }
 
-export interface UpdateFaqDTO {
-  order?: number;
-  translations: Translations;
-}
+export type UpdateFaqDTO = CreateFaqDTO;
 
 export interface CreateIntroduceDTO {
   translations: Translations;
 }
 
-export interface UpdateIntroduceDTO {
-  translations: Translations;
-}
+export type UpdateIntroduceDTO = CreateIntroduceDTO;
 
 export interface CreateServiceDTO {
   icon?: File;
-  background?: File;
+  background?: File | null;
   translations: Translations;
 }
 
-export interface UpdateServiceDTO {
-  icon?: File;
-  background?: File;
-  translations: Translations;
-}
+export type UpdateServiceDTO = CreateServiceDTO;
 
 export interface CreateContactDTO {
   location?: string;
-  background?: File;
+  background?: File | null;
   translations: Translations;
 }
 
-export interface UpdateContactDTO {
-  location?: string;
-  background?: File;
-  translations: Translations;
-}
+export type UpdateContactDTO = CreateContactDTO;
 
 export interface CreateNewsDTO {
   showInLanding: boolean;
   slug: string;
   order?: number;
-  background?: File;
+  background?: File | null;
   translations: Translations;
-  metaTitle?: string;
-  metaDescription?: string;
-  metaKeywords?: string;
-  metaImage?: string;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  metaKeywords?: string | null;
+  metaImage?: string | null;
 }
 
-export interface UpdateNewsDTO {
-  showInLanding: boolean;
+export type UpdateNewsDTO = CreateNewsDTO;
+
+export interface CreateBlogDTO {
   slug: string;
-  order?: number;
-  background?: File;
+  background?: File | null;
+  showInLanding: boolean;
+  landingOrder?: number;
+
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  metaKeywords?: string | null;
+  metaImage?: string | null;
+
+  categories: string[];
   translations: Translations;
-  metaTitle?: string;
-  metaDescription?: string;
-  metaKeywords?: string;
-  metaImage?: string;
 }
+
+export type UpdateBlogDTO = CreateBlogDTO;

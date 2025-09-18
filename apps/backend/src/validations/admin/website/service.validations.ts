@@ -25,6 +25,6 @@ export const createServiceValidation = [
 ];
 
 export const updateServiceValidation = [
-  ...createServiceValidation,
   uuidValidation(),
+  ...createServiceValidation,
 ];

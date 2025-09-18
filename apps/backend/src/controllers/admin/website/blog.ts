@@ -13,30 +13,42 @@ import {
   logAdminWarn as logWarn,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
-import { CreateServiceDTO, UpdateServiceDTO } from "@/types/admin";
+import { CreateBlogDTO, UpdateBlogDTO } from "@/types/admin";
 
-export const fetchServices = async (
+export const fetchBlogs = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { skip, take, search, orderBy } = getPaginationAndFilters(req);
+    const { skip, take, orderBy, search } = getPaginationAndFilters(req);
 
-    const where = generateWhereInput<Prisma.ServiceWhereInput>(search, {
+    const where = generateWhereInput<Prisma.BlogWhereInput>(search, {
       "translations.some.title": "insensitive",
-      "translations.some.description": "insensitive",
+      "translations.some.content": "insensitive",
     });
 
-    const [services, count] = await Promise.all([
-      prisma.service.findMany({
+    const [bloges, count] = await Promise.all([
+      prisma.blog.findMany({
         skip,
         take,
         orderBy,
         where,
         include: {
-          icon: true,
           background: true,
+          categories: {
+            include: {
+              translations: {
+                include: {
+                  language: {
+                    select: {
+                      code: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
           translations: {
             include: {
               language: {
@@ -48,35 +60,47 @@ export const fetchServices = async (
           },
         },
       }),
-      prisma.service.count({ where }),
+      prisma.blog.count({ where }),
     ]);
 
-    return res.status(200).json({ data: services, count });
+    return res.status(200).json({ data: bloges, count });
   } catch (error) {
-    logCatchyError("Fetch services exception", error, {
+    logCatchyError("fetch_bloges_exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_fetch_services_exception",
+      event: "admin_fetch_bloges_exception",
     });
     next(error);
   }
 };
 
-export const fetchService = async (
+export const fetchBlog = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params;
+    const { slug } = req.params;
 
-    const service = await prisma.service.findUnique({
+    const blog = await prisma.blog.findUnique({
       where: {
-        id,
+        slug,
       },
       include: {
-        icon: true,
         background: true,
+        categories: {
+          include: {
+            translations: {
+              include: {
+                language: {
+                  select: {
+                    code: true,
+                  },
+                },
+              },
+            },
+          },
+        },
         translations: {
           include: {
             language: {
@@ -89,106 +113,99 @@ export const fetchService = async (
       },
     });
 
-    if (!service) {
-      logWarn("Service fetch failed: service not found", {
+    if (!blog) {
+      logWarn("Blog fetch failed: blog not found", {
         ip: (req as any).hashedIp,
         id: (req as any).userId,
         path: req.path,
 
-        event: "service_fetch_failed",
+        event: "blog_fetch_failed",
       });
-      return sendError(req, res, 404, "serviceNotFound");
+      return sendError(req, res, 404, "blogNotFound");
     }
 
-    return res.status(200).json({ data: service });
+    return res.status(200).json({ data: blog });
   } catch (error) {
-    logCatchyError("fetch_service_exception", error, {
+    logCatchyError("fetch_blog_exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_fetch_service_exception",
+      event: "admin_fetch_blog_exception",
     });
     next(error);
   }
 };
 
-export const deleteService = async (
+export const deleteBlog = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params;
+    const { slug } = req.params;
 
-    logInfo("Service delete attempt", {
+    logInfo("Blog delete attempt", {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       path: req.path,
-      event: "service_delete_attempt",
+      event: "blog_delete_attempt",
     });
 
-    const service = await prisma.service.delete({
+    const blog = await prisma.blog.delete({
       where: {
-        id,
+        slug,
       },
     });
 
-    if (!service) {
-      logWarn("Service delete failed: service not found", {
+    if (!blog) {
+      logWarn("Blog delete failed: blog not found", {
         ip: (req as any).hashedIp,
         id: (req as any).userId,
         path: req.path,
 
-        event: "service_delete_failed",
+        event: "blog_delete_failed",
       });
-      return sendError(req, res, 404, "serviceNotFound");
+      return sendError(req, res, 404, "blogNotFound");
     }
 
-    logInfo("Service deleted successfully", {
+    logInfo("Blog deleted successfully", {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       path: req.path,
-      event: "service_deleted",
+      event: "blog_deleted",
     });
 
     return res.status(200).json({
-      message: getResponseMessage("serviceDeleted"),
+      message: getResponseMessage("blogDeleted"),
     });
   } catch (error) {
-    logCatchyError("delete_service_exception", error, {
+    logCatchyError("delete_blog_exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_delete_service_exception",
+      event: "admin_delete_blog_exception",
     });
     next(error);
   }
 };
 
-export const createService = async (
+export const createBlog = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { translations, background, icon } = req.body as CreateServiceDTO;
+    const { translations, background, categories, ...rest } =
+      req.body as CreateBlogDTO;
 
-    logInfo("Service create attempt", {
+    logInfo("Blog create attempt", {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       path: req.path,
-      event: "service_create_attempt",
+      event: "blog_create_attempt",
     });
 
     const translationsToCreate = Prisma.validator<
-      Prisma.ServiceTranslationCreateWithoutServiceInput[]
+      Prisma.BlogTranslationCreateWithoutBlogInput[]
     >()(createTranslations(translations) as any);
-
-    const iconToCreate = icon
-      ? {
-          path: icon.path,
-          name: icon.name,
-          size: icon.size,
-        }
-      : undefined;
 
     const backgroundToCreate = background
       ? {
@@ -198,67 +215,62 @@ export const createService = async (
         }
       : undefined;
 
-    const service = await prisma.service.create({
+    const blog = await prisma.blog.create({
       data: {
+        ...rest,
+        categories: {
+          connect: categories.map((id) => ({
+            id,
+          })),
+        },
         translations: { create: translationsToCreate },
-        icon: {
-          create: iconToCreate,
-        },
-        background: {
-          create: backgroundToCreate,
-        },
+        ...(backgroundToCreate
+          ? { background: { create: backgroundToCreate } }
+          : {}),
       },
     });
 
-    logInfo("Service created successfully", {
+    logInfo("Blog created successfully", {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       path: req.path,
-      event: "service_created",
+      event: "blog_created",
     });
 
     return res.status(201).json({
-      data: service,
+      data: blog,
     });
   } catch (error) {
-    logCatchyError("create_services_exception", error, {
+    logCatchyError("create_blogs_exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_create_services_exception",
+      event: "admin_create_blogs_exception",
     });
     next(error);
   }
 };
 
-export const updateService = async (
+export const updateBlog = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params;
+    const { slug } = req.params;
 
-    const { translations, background, icon } = req.body as UpdateServiceDTO;
+    const { translations, background, categories, ...rest } =
+      req.body as UpdateBlogDTO;
 
-    logInfo("Service update attempt", {
+    logInfo("Blog update attempt", {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       path: req.path,
-      event: "service_update_attempt",
+      event: "blog_update_attempt",
     });
 
     const translationsToCreate = Prisma.validator<
-      Prisma.ServiceTranslationCreateWithoutServiceInput[]
+      Prisma.BlogTranslationCreateWithoutBlogInput[]
     >()(createTranslations(translations) as any);
-
-    const iconToCreate = icon
-      ? {
-          path: icon.path,
-          name: icon.name,
-          size: icon.size,
-        }
-      : undefined;
-
     const backgroundToCreate = background
       ? {
           path: background.path,
@@ -267,70 +279,67 @@ export const updateService = async (
         }
       : undefined;
 
-    const findService = await prisma.service.findUnique({
+    const findBlog = await prisma.blog.findUnique({
       where: {
-        id,
+        slug,
       },
       include: {
-        icon: true,
         background: true,
       },
     });
 
-    if (!findService) {
-      logWarn("Service update failed: service not found", {
+    if (!findBlog) {
+      logWarn("Blog update failed: blog not found", {
         ip: (req as any).hashedIp,
         id: (req as any).userId,
         path: req.path,
 
-        event: "service_update_failed",
+        event: "blog_update_failed",
       });
-      return sendError(req, res, 404, "serviceNotFound");
+      return sendError(req, res, 404, "blogNotFound");
     }
 
-    const service = await prisma.service.update({
+    const blog = await prisma.blog.update({
       where: {
-        id,
+        slug,
       },
       data: {
+        ...rest,
+        categories: {
+          set: categories.map((id) => ({
+            id,
+          })),
+        },
         translations: {
           deleteMany: {},
           create: translationsToCreate,
         },
-        icon: iconToCreate
-          ? {
-              delete: findService.icon ? {} : undefined,
-              create: iconToCreate,
-            }
-          : findService.icon
-          ? { delete: {} }
-          : undefined,
         background: backgroundToCreate
           ? {
-              delete: findService.background ? {} : undefined,
+              delete: findBlog.background ? {} : undefined,
               create: backgroundToCreate,
             }
-          : findService.background
+          : findBlog.background
           ? { delete: {} }
           : undefined,
       },
     });
 
-    logInfo("Service updated successfully", {
+    logInfo("Blog updated successfully", {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       path: req.path,
-      event: "service_updated",
+      event: "blog_updated",
     });
 
     return res.json({
-      data: service,
+      data: blog,
     });
   } catch (error) {
-    logCatchyError("update_services_exception", error, {
+    logCatchyError("update_blogs_exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_update_services_exception",
+      event: "admin_update_blogs_exception",
     });
     next(error);
   }

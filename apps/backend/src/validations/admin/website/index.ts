@@ -4,4 +4,5 @@ export * from "./faq.validations";
 export * from "./introduce.validations";
 export * from "./service.validations";
 export * from "./contact.validations";
+export * from "./blog.validations";
 export * from "./news.validations";

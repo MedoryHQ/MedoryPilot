@@ -11,7 +11,7 @@ import {
 } from "@/utils";
 import { Prisma } from "@prisma/client";
 
-export const fetchNewses = async (
+export const fetchBlogs = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -19,27 +19,44 @@ export const fetchNewses = async (
   try {
     const { skip, take, orderBy, search } = getPaginationAndFilters(req);
 
-    const where = generateWhereInput<Prisma.NewsWhereInput>(search, {
+    const where = generateWhereInput<Prisma.BlogWhereInput>(search, {
+      "translations.some.title": "insensitive",
       "translations.some.content": "insensitive",
     });
 
-    const [newses, count] = await Promise.all([
-      prisma.news.findMany({
+    const [bloges, count] = await Promise.all([
+      prisma.blog.findMany({
         skip,
         take,
         orderBy,
         where,
         select: {
           background: true,
+          landingOrder: true,
           metaDescription: true,
           metaImage: true,
           metaKeywords: true,
           metaTitle: true,
-          order: true,
-          showInLanding: true,
           slug: true,
+          stars: true,
+          showInLanding: true,
+          categories: {
+            select: {
+              translations: {
+                select: {
+                  name: true,
+                  language: {
+                    select: {
+                      code: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
           translations: {
             select: {
+              title: true,
               content: true,
               language: {
                 select: {
@@ -50,21 +67,21 @@ export const fetchNewses = async (
           },
         },
       }),
-      prisma.news.count({ where }),
+      prisma.blog.count({ where }),
     ]);
 
-    return res.status(200).json({ data: newses, count });
+    return res.status(200).json({ data: bloges, count });
   } catch (error) {
-    logCatchyError("fetch_newses_exception", error, {
+    logCatchyError("fetch_bloges_exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "fetch_newses_exception",
+      event: "admin_fetch_bloges_exception",
     });
     next(error);
   }
 };
 
-export const fetchNews = async (
+export const fetchBlog = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -72,21 +89,37 @@ export const fetchNews = async (
   try {
     const { slug } = req.params;
 
-    const news = await prisma.news.findUnique({
+    const blog = await prisma.blog.findUnique({
       where: {
         slug,
       },
       select: {
         background: true,
+        landingOrder: true,
         metaDescription: true,
         metaImage: true,
         metaKeywords: true,
         metaTitle: true,
-        order: true,
-        showInLanding: true,
         slug: true,
+        stars: true,
+        showInLanding: true,
+        categories: {
+          select: {
+            translations: {
+              select: {
+                name: true,
+                language: {
+                  select: {
+                    code: true,
+                  },
+                },
+              },
+            },
+          },
+        },
         translations: {
           select: {
+            title: true,
             content: true,
             language: {
               select: {
@@ -98,23 +131,23 @@ export const fetchNews = async (
       },
     });
 
-    if (!news) {
-      logWarn("News fetch failed: news not found", {
+    if (!blog) {
+      logWarn("Blog fetch failed: blog not found", {
         ip: (req as any).hashedIp,
         id: (req as any).userId,
         path: req.path,
 
-        event: "news_fetch_failed",
+        event: "blog_fetch_failed",
       });
-      return sendError(req, res, 404, "newsNotFound");
+      return sendError(req, res, 404, "blogNotFound");
     }
 
-    return res.status(200).json({ data: news });
+    return res.status(200).json({ data: blog });
   } catch (error) {
-    logCatchyError("fetch_news_exception", error, {
+    logCatchyError("fetch_blog_exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "fetch_news_exception",
+      event: "admin_fetch_blog_exception",
     });
     next(error);
   }

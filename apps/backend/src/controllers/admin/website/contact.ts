@@ -146,7 +146,7 @@ export const createContact = async (
       event: "contact_created",
     });
 
-    return res.json({
+    return res.status(201).json({
       data: contact,
     });
   } catch (error) {
