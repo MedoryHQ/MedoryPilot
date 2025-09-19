@@ -5,3 +5,5 @@ export * from "./service";
 export * from "./contact";
 export * from "./news";
 export * from "./blog";
+export * from "./page-component";
+export * from "./social";

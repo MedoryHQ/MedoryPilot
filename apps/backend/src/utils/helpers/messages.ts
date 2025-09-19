@@ -88,6 +88,14 @@ export const errorMessages = {
     en: "Blog not found",
     ka: "ბლოგი ვერ მოიძებნა",
   },
+  pageNotFound: {
+    en: "Page not found",
+    ka: "გვერდი ვერ მოიძებნა",
+  },
+  socialNotFound: {
+    en: "Social not found",
+    ka: "Social ვერ მოიძებნა",
+  },
 
   // Messages
   smsVerificationSent: {
@@ -150,6 +158,14 @@ export const errorMessages = {
     en: "Blog deleted successfully",
     ka: "ბლოგი წარმატებით წაიშალა",
   },
+  pageDeleted: {
+    en: "Page deleted successfully",
+    ka: "გვერდი წარმატებით წაიშალა",
+  },
+  socialDeleted: {
+    en: "Social deleted successfully",
+    ka: "Social წარმატებით წაიშალა",
+  },
 
   // Validation errors
   invalidPhoneNumber: {
@@ -208,6 +224,10 @@ export const errorMessages = {
     en: "Invalid id",
     ka: "id არასწორია",
   },
+  invalidFooterId: {
+    en: "Invalid footer id",
+    ka: "Footer-ის id არასწორია",
+  },
   invalidCode: {
     en: "Invalid OTP code",
     ka: "OTP კოდი არასწორია",
@@ -255,6 +275,14 @@ export const errorMessages = {
   categoriesLength: {
     en: "Categories must be an array with at least 1 category",
     ka: "კატეგორიების მასივში უნდა იყოს მინიმუმ 1 კატეგორია",
+  },
+  invalidName: {
+    en: "Invalid Name",
+    ka: "არასწორი სახელი",
+  },
+  invalidUrl: {
+    en: "Invalid Url",
+    ka: "არასწორი ლინკი",
   },
 } as const;
 

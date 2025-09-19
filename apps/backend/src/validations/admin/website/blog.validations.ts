@@ -1,6 +1,7 @@
 import { prisma } from "@/config";
 import { isUuid } from "@/utils";
 import {
+  bodySlugValidation,
   generateMetaValidations,
   slugValidation,
   validateTranslations,
@@ -12,8 +13,8 @@ export const fetchBlogValidation = [slugValidation()];
 export const deleteBlogValidation = [slugValidation()];
 
 export const createBlogValidation = [
+  bodySlugValidation(),
   body("showInLanding").isBoolean().withMessage("invalidShowInLanding"),
-  body("slug").isString().withMessage("invalidSlug"),
   body("landingOrder").optional().isInt().withMessage("invalidOrder"),
   body("background")
     .optional({ nullable: true })

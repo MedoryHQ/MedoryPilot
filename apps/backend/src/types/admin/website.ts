@@ -87,3 +87,26 @@ export interface CreateBlogDTO {
 }
 
 export type UpdateBlogDTO = CreateBlogDTO;
+
+export interface CreatePageComponentDTO {
+  slug: string;
+  footerOrder?: number;
+  footerId?: string;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  metaKeywords?: string | null;
+  metaImage?: string | null;
+
+  translations: Translations;
+}
+
+export type UpdatePageComponentDTO = CreatePageComponentDTO;
+
+export interface CreateSocialDTO {
+  name: string;
+  url: string;
+  icon?: File | null;
+  footerId?: string;
+}
+
+export type UpdateSocialDTO = CreateSocialDTO;

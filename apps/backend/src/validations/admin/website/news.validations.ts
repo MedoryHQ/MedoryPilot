@@ -1,4 +1,5 @@
 import {
+  bodySlugValidation,
   generateMetaValidations,
   slugValidation,
   validateTranslations,
@@ -10,8 +11,8 @@ export const fetchNewsValidation = [slugValidation()];
 export const deleteNewsValidation = [slugValidation()];
 
 export const createNewsValidation = [
+  bodySlugValidation(),
   body("showInLanding").isBoolean().withMessage("invalidShowInLanding"),
-  body("slug").isString().withMessage("invalidSlug"),
   body("order").optional().isInt().withMessage("invalidOrder"),
   body("background")
     .optional({ nullable: true })

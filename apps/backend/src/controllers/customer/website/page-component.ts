@@ -1,15 +1,15 @@
 import { prisma } from "@/config";
-import { NextFunction, Response, Request } from "express";
 import {
   generateWhereInput,
   getPaginationAndFilters,
-  sendError,
   logCustomerCatchyError as logCatchyError,
   logCustomerWarn as logWarn,
+  sendError,
 } from "@/utils";
+import { NextFunction, Response, Request } from "express";
 import { Prisma } from "@prisma/client";
 
-export const fetchNewses = async (
+export const fetchPageComponents = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -17,28 +17,28 @@ export const fetchNewses = async (
   try {
     const { skip, take, orderBy, search } = getPaginationAndFilters(req);
 
-    const where = generateWhereInput<Prisma.NewsWhereInput>(search, {
+    const where = generateWhereInput<Prisma.PageComponentWhereInput>(search, {
+      "translations.some.name": "insensitive",
       "translations.some.content": "insensitive",
     });
 
-    const [newses, count] = await Promise.all([
-      prisma.news.findMany({
+    const [pageComponents, count] = await Promise.all([
+      prisma.pageComponent.findMany({
         skip,
         take,
         orderBy,
         where,
         select: {
-          background: true,
+          footerOrder: true,
           metaDescription: true,
           metaImage: true,
           metaKeywords: true,
           metaTitle: true,
-          order: true,
-          showInLanding: true,
           slug: true,
           translations: {
             select: {
               content: true,
+              name: true,
               language: {
                 select: {
                   code: true,
@@ -48,21 +48,21 @@ export const fetchNewses = async (
           },
         },
       }),
-      prisma.news.count({ where }),
+      prisma.pageComponent.count({ where }),
     ]);
 
-    return res.status(200).json({ data: newses, count });
+    return res.status(200).json({ data: pageComponents, count });
   } catch (error) {
-    logCatchyError("fetch_newses_exception", error, {
+    logCatchyError("fetch_pageComponents_exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "fetch_newses_exception",
+      event: "admin_fetch_pageComponents_exception",
     });
     next(error);
   }
 };
 
-export const fetchNews = async (
+export const fetchPageComponent = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -70,22 +70,21 @@ export const fetchNews = async (
   try {
     const { slug } = req.params;
 
-    const news = await prisma.news.findUnique({
+    const pageComponent = await prisma.pageComponent.findUnique({
       where: {
         slug,
       },
       select: {
-        background: true,
+        footerOrder: true,
         metaDescription: true,
         metaImage: true,
         metaKeywords: true,
         metaTitle: true,
-        order: true,
-        showInLanding: true,
         slug: true,
         translations: {
           select: {
             content: true,
+            name: true,
             language: {
               select: {
                 code: true,
@@ -96,23 +95,23 @@ export const fetchNews = async (
       },
     });
 
-    if (!news) {
-      logWarn("News fetch failed: news not found", {
+    if (!pageComponent) {
+      logWarn("PageComponent fetch failed: pageComponent not found", {
         ip: (req as any).hashedIp,
         id: (req as any).userId,
         path: req.path,
 
-        event: "news_fetch_failed",
+        event: "pageComponent_fetch_failed",
       });
-      return sendError(req, res, 404, "newsNotFound");
+      return sendError(req, res, 404, "pageNotFound");
     }
 
-    return res.status(200).json({ data: news });
+    return res.status(200).json({ data: pageComponent });
   } catch (error) {
-    logCatchyError("fetch_news_exception", error, {
+    logCatchyError("fetch_pageComponent_exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "fetch_news_exception",
+      event: "admin_fetch_pageComponent_exception",
     });
     next(error);
   }
