@@ -1,6 +1,5 @@
 import { prisma } from "@/config";
 import {
-  generateWhereInput,
   getPaginationAndFilters,
   getResponseMessage,
   sendError,
@@ -11,7 +10,7 @@ import {
   logAdminInfo as logInfo,
   logAdminWarn as logWarn,
 } from "@/utils";
-import { CreateSocialDTO } from "@/types/admin";
+import { CreateSocialDTO, UpdateSocialDTO } from "@/types/admin";
 
 export const fetchSocials = async (
   req: Request,
@@ -189,6 +188,89 @@ export const createSocial = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_create_socials_exception",
+    });
+    next(error);
+  }
+};
+
+export const updateSocial = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    const { icon, ...rest } = req.body as UpdateSocialDTO;
+
+    logInfo("Social update attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "social_update_attempt",
+    });
+
+    const iconToCreate = icon
+      ? {
+          path: icon.path,
+          name: icon.name,
+          size: icon.size,
+        }
+      : undefined;
+
+    const findSocial = await prisma.social.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        icon: true,
+      },
+    });
+
+    if (!findSocial) {
+      logWarn("Social update failed: social not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "social_update_failed",
+      });
+      return sendError(req, res, 404, "socialNotFound");
+    }
+
+    const social = await prisma.social.update({
+      where: {
+        id,
+      },
+      data: {
+        ...rest,
+
+        icon: iconToCreate
+          ? {
+              delete: findSocial.icon ? {} : undefined,
+              create: iconToCreate,
+            }
+          : findSocial.icon
+          ? { delete: {} }
+          : undefined,
+      },
+    });
+
+    logInfo("Social updated successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "social_updated",
+    });
+
+    return res.json({
+      data: social,
+    });
+  } catch (error) {
+    logCatchyError("update_socials_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_update_socials_exception",
     });
     next(error);
   }
