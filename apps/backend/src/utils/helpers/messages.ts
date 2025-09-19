@@ -88,6 +88,10 @@ export const errorMessages = {
     en: "Blog not found",
     ka: "ბლოგი ვერ მოიძებნა",
   },
+  pageNotFound: {
+    en: "Page not found",
+    ka: "გვერდი ვერ მოიძებნა",
+  },
 
   // Messages
   smsVerificationSent: {
@@ -149,6 +153,10 @@ export const errorMessages = {
   blogDeleted: {
     en: "Blog deleted successfully",
     ka: "ბლოგი წარმატებით წაიშალა",
+  },
+  pageDeleted: {
+    en: "Page deleted successfully",
+    ka: "გვერდი წარმატებით წაიშალა",
   },
 
   // Validation errors
