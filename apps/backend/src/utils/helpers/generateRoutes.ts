@@ -16,6 +16,7 @@ const adminRouteList = [
   { path: "/contact", router: AdminRoutes.adminContactRouter },
   { path: "/news", router: AdminRoutes.adminNewsRouter },
   { path: "/blog", router: AdminRoutes.adminBlogRouter },
+  { path: "/page-component", router: AdminRoutes.adminPageComponentRouter },
 ];
 
 const customerRouteList = [
