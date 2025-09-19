@@ -2,6 +2,7 @@ import { prisma } from "@/config";
 import {
   generateWhereInput,
   getPaginationAndFilters,
+  getResponseMessage,
   sendError,
 } from "@/utils";
 import { NextFunction, Response, Request } from "express";
@@ -99,6 +100,58 @@ export const fetchPageComponent = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_fetch_pageComponent_exception",
+    });
+    next(error);
+  }
+};
+
+export const deletePageComponent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { slug } = req.params;
+
+    logInfo("PageComponent delete attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "pageComponent_delete_attempt",
+    });
+
+    const pageComponent = await prisma.pageComponent.delete({
+      where: {
+        slug,
+      },
+    });
+
+    if (!pageComponent) {
+      logWarn("PageComponent delete failed: pageComponent not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "pageComponent_delete_failed",
+      });
+      return sendError(req, res, 404, "pageNotFound");
+    }
+
+    logInfo("PageComponent deleted successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "pageComponent_deleted",
+    });
+
+    return res.status(200).json({
+      message: getResponseMessage("pageDeleted"),
+    });
+  } catch (error) {
+    logCatchyError("delete_pageComponent_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_delete_pageComponent_exception",
     });
     next(error);
   }
