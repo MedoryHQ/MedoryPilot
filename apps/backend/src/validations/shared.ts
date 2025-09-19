@@ -201,3 +201,12 @@ export const slugValidation = () =>
     .isLength({ min: 1, max: 120 })
     .matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
     .withMessage("invalidSlug");
+
+export const bodySlugValidation = () =>
+  body("slug")
+    .isString()
+    .trim()
+    .toLowerCase()
+    .isLength({ min: 1, max: 120 })
+    .matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+    .withMessage("invalidSlug");
