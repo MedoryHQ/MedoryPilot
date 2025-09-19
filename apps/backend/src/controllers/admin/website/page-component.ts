@@ -13,7 +13,7 @@ import {
   logAdminWarn as logWarn,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
-import { CreatePageComponentDTO } from "@/types/admin";
+import { CreatePageComponentDTO, UpdatePageComponentDTO } from "@/types/admin";
 
 export const fetchPageComponents = async (
   req: Request,
@@ -209,6 +209,79 @@ export const createPageComponent = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_create_pageComponents_exception",
+    });
+    next(error);
+  }
+};
+
+export const updatePageComponent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { slug } = req.params;
+
+    const { translations, footerOrder, ...rest } =
+      req.body as UpdatePageComponentDTO;
+
+    logInfo("PageComponent update attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "pageComponent_update_attempt",
+    });
+
+    const translationsToCreate = Prisma.validator<
+      Prisma.PageComponentTranslationCreateWithoutPageComponentInput[]
+    >()(createTranslations(translations) as any);
+
+    const findPageComponent = await prisma.pageComponent.findUnique({
+      where: {
+        slug,
+      },
+    });
+
+    if (!findPageComponent) {
+      logWarn("PageComponent update failed: pageComponent not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "pageComponent_update_failed",
+      });
+      return sendError(req, res, 404, "pageNotFound");
+    }
+
+    const pageComponent = await prisma.pageComponent.update({
+      where: {
+        slug,
+      },
+      data: {
+        ...rest,
+        ...(footerOrder ? { footerOrder } : {}),
+        translations: {
+          deleteMany: {},
+          create: translationsToCreate,
+        },
+      },
+    });
+
+    logInfo("PageComponent updated successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "pageComponent_updated",
+    });
+
+    return res.json({
+      data: pageComponent,
+    });
+  } catch (error) {
+    logCatchyError("update_pageComponents_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_update_pageComponents_exception",
     });
     next(error);
   }
