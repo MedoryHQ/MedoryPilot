@@ -6,6 +6,7 @@ import {
   createPageComponentValidation,
   deletePageComponentValidation,
   fetchPageComponentValidation,
+  updatePageComponentValidation,
 } from "@/validations/admin";
 import { validationHandler } from "@/middlewares/global/validationHandler";
 
@@ -59,6 +60,20 @@ adminPageComponentRouter.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return pageComponentController.createPageComponent(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminPageComponentRouter.put(
+  "/:slug",
+  isAdminVerified,
+  updatePageComponentValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return pageComponentController.updatePageComponent(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }
