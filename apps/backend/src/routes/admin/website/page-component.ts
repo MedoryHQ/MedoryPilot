@@ -22,7 +22,7 @@ adminPageComponentRouter.get(
 adminPageComponentRouter.get(
   "/:slug",
   isAdminVerified,
-  fetchPageComponentValidation
+  fetchPageComponentValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
     try {

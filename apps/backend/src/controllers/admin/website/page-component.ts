@@ -1,5 +1,9 @@
 import { prisma } from "@/config";
-import { generateWhereInput, getPaginationAndFilters } from "@/utils";
+import {
+  generateWhereInput,
+  getPaginationAndFilters,
+  sendError,
+} from "@/utils";
 import { NextFunction, Response, Request } from "express";
 import {
   logAdminError as logCatchyError,
@@ -48,6 +52,53 @@ export const fetchPageComponents = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_fetch_pageComponents_exception",
+    });
+    next(error);
+  }
+};
+
+export const fetchPageComponent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { slug } = req.params;
+
+    const pageComponent = await prisma.pageComponent.findUnique({
+      where: {
+        slug,
+      },
+      include: {
+        translations: {
+          include: {
+            language: {
+              select: {
+                code: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!pageComponent) {
+      logWarn("PageComponent fetch failed: pageComponent not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "pageComponent_fetch_failed",
+      });
+      return sendError(req, res, 404, "pageNotFound");
+    }
+
+    return res.status(200).json({ data: pageComponent });
+  } catch (error) {
+    logCatchyError("fetch_pageComponent_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_fetch_pageComponent_exception",
     });
     next(error);
   }
