@@ -3,6 +3,7 @@ import { GLOBAL_ERROR_MESSAGE } from "@/utils";
 import * as SocialController from "@/controllers/admin/website/social";
 import { isAdminVerified } from "@/middlewares/admin";
 import {
+  createSocialValidation,
   deleteSocialValidation,
   fetchSocialValidation,
 } from "@/validations/admin";
@@ -44,6 +45,20 @@ adminSocialRouter.delete(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return SocialController.deleteSocial(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminSocialRouter.post(
+  "/",
+  isAdminVerified,
+  createSocialValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return SocialController.createSocial(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }
