@@ -11,7 +11,7 @@ import {
   logAdminInfo as logInfo,
   logAdminWarn as logWarn,
 } from "@/utils";
-import { Prisma } from "@prisma/client";
+import { CreateSocialDTO } from "@/types/admin";
 
 export const fetchSocials = async (
   req: Request,
@@ -130,6 +130,65 @@ export const deleteSocial = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_delete_social_exception",
+    });
+    next(error);
+  }
+};
+
+export const createSocial = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { icon, footerId, ...rest } = req.body as CreateSocialDTO;
+
+    logInfo("Social create attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "social_create_attempt",
+    });
+
+    const iconToCreate = icon
+      ? {
+          path: icon.path,
+          name: icon.name,
+          size: icon.size,
+        }
+      : undefined;
+
+    const social = await prisma.social.create({
+      data: {
+        ...(footerId
+          ? {
+              footer: {
+                connect: { id: footerId },
+              },
+            }
+          : {}),
+        icon: {
+          create: iconToCreate,
+        },
+        ...rest,
+      },
+    });
+
+    logInfo("Social created successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "social_created",
+    });
+
+    return res.status(201).json({
+      data: social,
+    });
+  } catch (error) {
+    logCatchyError("create_socials_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_create_socials_exception",
     });
     next(error);
   }
