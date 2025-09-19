@@ -1,7 +1,10 @@
 import { prisma } from "@/config";
-import { generateWhereInput, getPaginationAndFilters } from "@/utils";
 import { NextFunction, Response, Request } from "express";
-import { logCustomerCatchyError as logCatchyError } from "@/utils";
+import {
+  generateWhereInput,
+  getPaginationAndFilters,
+  logCustomerCatchyError as logCatchyError,
+} from "@/utils";
 import { Prisma } from "@prisma/client";
 
 export const fetchFAQs = async (
