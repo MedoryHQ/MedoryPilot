@@ -216,6 +216,10 @@ export const errorMessages = {
     en: "Invalid id",
     ka: "id არასწორია",
   },
+  invalidFooterId: {
+    en: "Invalid footer id",
+    ka: "Footer-ის id არასწორია",
+  },
   invalidCode: {
     en: "Invalid OTP code",
     ka: "OTP კოდი არასწორია",

@@ -91,7 +91,7 @@ export type UpdateBlogDTO = CreateBlogDTO;
 export interface CreatePageComponentDTO {
   slug: string;
   footerOrder?: number;
-
+  footerId?: string;
   metaTitle?: string | null;
   metaDescription?: string | null;
   metaKeywords?: string | null;

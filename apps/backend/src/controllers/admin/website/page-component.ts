@@ -1,5 +1,6 @@
 import { prisma } from "@/config";
 import {
+  createTranslations,
   generateWhereInput,
   getPaginationAndFilters,
   getResponseMessage,
@@ -12,6 +13,7 @@ import {
   logAdminWarn as logWarn,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
+import { CreatePageComponentDTO } from "@/types/admin";
 
 export const fetchPageComponents = async (
   req: Request,
@@ -152,6 +154,61 @@ export const deletePageComponent = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_delete_pageComponent_exception",
+    });
+    next(error);
+  }
+};
+
+export const createPageComponent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { translations, footerOrder, footerId, ...rest } =
+      req.body as CreatePageComponentDTO;
+
+    logInfo("PageComponent create attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "pageComponent_create_attempt",
+    });
+
+    const translationsToCreate = Prisma.validator<
+      Prisma.PageComponentTranslationCreateWithoutPageComponentInput[]
+    >()(createTranslations(translations) as any);
+
+    const pageComponent = await prisma.pageComponent.create({
+      data: {
+        ...rest,
+        ...(footerOrder ? { footerOrder } : {}),
+        ...(footerId
+          ? {
+              footer: {
+                connect: { id: footerId },
+              },
+            }
+          : {}),
+        translations: { create: translationsToCreate },
+      },
+    });
+
+    logInfo("PageComponent created successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "pageComponent_created",
+    });
+
+    return res.status(201).json({
+      data: pageComponent,
+    });
+  } catch (error) {
+    logCatchyError("create_pageComponents_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_create_pageComponents_exception",
     });
     next(error);
   }

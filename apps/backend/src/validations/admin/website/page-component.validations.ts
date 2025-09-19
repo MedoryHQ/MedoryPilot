@@ -12,6 +12,7 @@ export const deletePageComponentValidation = [slugValidation()];
 
 export const createPageComponentValidation = [
   bodySlugValidation(),
+  body("footerId").optional().isUUID().withMessage("invalidFooterId"),
   body("footerOrder").optional().isInt().withMessage("invalidOrder"),
   body("translations")
     .isObject()
