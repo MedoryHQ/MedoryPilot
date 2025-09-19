@@ -6,6 +6,7 @@ import {
   createSocialValidation,
   deleteSocialValidation,
   fetchSocialValidation,
+  updateSocialValidation,
 } from "@/validations/admin";
 import { validationHandler } from "@/middlewares/global/validationHandler";
 
@@ -59,6 +60,20 @@ adminSocialRouter.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return SocialController.createSocial(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminSocialRouter.put(
+  "/:id",
+  isAdminVerified,
+  updateSocialValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return SocialController.updateSocial(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }
