@@ -28,6 +28,7 @@ const customerRouteList = [
   { path: "/contact", router: CustomerRoutes.contactRouter },
   { path: "/news", router: CustomerRoutes.newsRouter },
   { path: "/blog", router: CustomerRoutes.blogRouter },
+  { path: "/page-component", router: CustomerRoutes.pageComponentRouter },
 ];
 
 export const generateRoutes = (app: Express) => {
