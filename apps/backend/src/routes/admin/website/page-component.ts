@@ -1,6 +1,6 @@
 import { NextFunction, Router, Request, Response } from "express";
 import { GLOBAL_ERROR_MESSAGE } from "@/utils";
-import * as pageComponentController from "@/controllers/admin/website/pageComponent";
+import * as pageComponentController from "@/controllers/admin/website/page-component";
 import { isAdminVerified } from "@/middlewares/admin";
 
 export const adminPageComponentRouter = Router();
