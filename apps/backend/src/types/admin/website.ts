@@ -101,3 +101,12 @@ export interface CreatePageComponentDTO {
 }
 
 export type UpdatePageComponentDTO = CreatePageComponentDTO;
+
+export interface CreateSocialDTO {
+  name: string;
+  url: string;
+  icon?: File | null;
+  footerId?: string;
+}
+
+export type UpdateSocialDTO = CreateSocialDTO;

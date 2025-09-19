@@ -92,6 +92,10 @@ export const errorMessages = {
     en: "Page not found",
     ka: "გვერდი ვერ მოიძებნა",
   },
+  socialNotFound: {
+    en: "Social not found",
+    ka: "Social ვერ მოიძებნა",
+  },
 
   // Messages
   smsVerificationSent: {
@@ -157,6 +161,10 @@ export const errorMessages = {
   pageDeleted: {
     en: "Page deleted successfully",
     ka: "გვერდი წარმატებით წაიშალა",
+  },
+  socialDeleted: {
+    en: "Social deleted successfully",
+    ka: "Social წარმატებით წაიშალა",
   },
 
   // Validation errors
@@ -267,6 +275,14 @@ export const errorMessages = {
   categoriesLength: {
     en: "Categories must be an array with at least 1 category",
     ka: "კატეგორიების მასივში უნდა იყოს მინიმუმ 1 კატეგორია",
+  },
+  invalidName: {
+    en: "Invalid Name",
+    ka: "არასწორი სახელი",
+  },
+  invalidUrl: {
+    en: "Invalid Url",
+    ka: "არასწორი ლინკი",
   },
 } as const;
 

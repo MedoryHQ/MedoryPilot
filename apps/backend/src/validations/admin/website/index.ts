@@ -7,3 +7,4 @@ export * from "./contact.validations";
 export * from "./blog.validations";
 export * from "./news.validations";
 export * from "./page-component.validations";
+export * from "./social.validations";
