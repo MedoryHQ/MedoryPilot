@@ -174,6 +174,10 @@ export const errorMessages = {
     en: "Footer deleted successfully",
     ka: "Footer წარმატებით წაიშალა",
   },
+  footerAlreadyExists: {
+    en: "Footer already exists",
+    ka: "Footer უკვე არსებობს",
+  },
 
   // Validation errors
   invalidPhoneNumber: {

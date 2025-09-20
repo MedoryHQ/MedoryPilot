@@ -7,6 +7,7 @@ import {
   logAdminWarn as logWarn,
   sendError,
 } from "@/utils";
+import { CreateFooterDTO } from "@/types/admin";
 
 export const fetchFooter = async (
   req: Request,
@@ -93,6 +94,68 @@ export const deleteFooter = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_delete_footer_exception",
+    });
+    next(error);
+  }
+};
+
+export const createFooter = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { pages, socials, ...rest } = req.body as CreateFooterDTO;
+
+    logInfo("Footer create attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "footer_create_attempt",
+    });
+
+    const footerExistance = await prisma.footer.count();
+    if (footerExistance) {
+      logWarn("Footer create failed: footer already exist", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+        event: "footer_create_failed",
+      });
+      return sendError(req, res, 400, "footerAlreadyExists");
+    }
+
+    const footer = await prisma.footer.create({
+      data: {
+        ...rest,
+        socials: {
+          connect: socials.map((id) => ({
+            id,
+          })),
+        },
+        pages: {
+          connect: pages.map((id) => ({
+            id,
+          })),
+        },
+      },
+    });
+
+    logInfo("Footer created successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "footer_created",
+    });
+
+    return res.status(201).json({
+      data: footer,
+    });
+  } catch (error) {
+    logCatchyError("create_footers_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_create_footers_exception",
     });
     next(error);
   }
