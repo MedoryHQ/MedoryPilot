@@ -210,3 +210,70 @@ export const bodySlugValidation = () =>
     .isLength({ min: 1, max: 120 })
     .matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
     .withMessage("invalidSlug");
+
+export const relationArrayValidation = (
+  field: string,
+  modelName: keyof typeof prisma,
+  {
+    min = 1,
+    max,
+  }: {
+    min?: number;
+    max?: number;
+  } = {}
+) => {
+  return body(field)
+    .isArray({ min })
+    .withMessage(
+      JSON.stringify({
+        en: `${field} must be an array with at least ${min} item(s)`,
+        ka: `${field} უნდა იყოს მასივი მინიმუმ ${min} ელემენტით`,
+      })
+    )
+    .custom(async (ids: string[]) => {
+      if (!Array.isArray(ids)) {
+        throw new Error(
+          JSON.stringify({
+            en: `${field} must be an array`,
+            ka: `${field} უნდა იყოს მასივი`,
+          })
+        );
+      }
+
+      if (max && ids.length > max) {
+        throw new Error(
+          JSON.stringify({
+            en: `${field} must not contain more than ${max} items`,
+            ka: `${field} უნდა შეიცავდეს მაქსიმუმ ${max} ელემენტს`,
+          })
+        );
+      }
+
+      const invalid = ids.filter((id) => !isUuid(id));
+      if (invalid.length > 0) {
+        throw new Error(
+          JSON.stringify({
+            en: `Invalid ${field} IDs: ${invalid.join(", ")}`,
+            ka: `არასწორი ${field} ID: ${invalid.join(", ")}`,
+          })
+        );
+      }
+
+      const delegate = prisma[modelName] as any;
+
+      const count = await delegate.count({
+        where: { id: { in: ids } },
+      });
+
+      if (count !== ids.length) {
+        throw new Error(
+          JSON.stringify({
+            en: `Some ${field} do not exist`,
+            ka: `ზოგიერთი ${field} არ არსებობს`,
+          })
+        );
+      }
+
+      return true;
+    });
+};
