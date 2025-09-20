@@ -32,6 +32,7 @@ const customerRouteList = [
   { path: "/blog", router: CustomerRoutes.blogRouter },
   { path: "/page-component", router: CustomerRoutes.pageComponentRouter },
   { path: "/social", router: CustomerRoutes.socialRouter },
+  { path: "/footer", router: CustomerRoutes.footerRouter },
 ];
 
 export const generateRoutes = (app: Express) => {
