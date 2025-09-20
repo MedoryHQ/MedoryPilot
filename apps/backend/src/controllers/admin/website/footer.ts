@@ -7,7 +7,7 @@ import {
   logAdminWarn as logWarn,
   sendError,
 } from "@/utils";
-import { CreateFooterDTO } from "@/types/admin";
+import { CreateFooterDTO, UpdateFooterDTO } from "@/types/admin";
 
 export const fetchFooter = async (
   req: Request,
@@ -156,6 +156,79 @@ export const createFooter = async (
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_create_footers_exception",
+    });
+    next(error);
+  }
+};
+
+export const updateFooter = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    const { pages, socials, ...rest } = req.body as UpdateFooterDTO;
+
+    logInfo("Footer update attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "footer_update_attempt",
+    });
+
+    const findFooter = await prisma.footer.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!findFooter) {
+      logWarn("Footer update failed: footer not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "footer_update_failed",
+      });
+      return sendError(req, res, 404, "footerNotFound");
+    }
+
+    const footer = await prisma.footer.update({
+      where: {
+        id,
+      },
+      data: {
+        ...rest,
+        pages: {
+          set: pages.map((id) => ({
+            id,
+          })),
+        },
+        socials: {
+          set: socials.map((id) => ({
+            id,
+          })),
+        },
+      },
+    });
+
+    logInfo("Footer updated successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "footer_updated",
+    });
+
+    return res.json({
+      data: footer,
+    });
+  } catch (error) {
+    logCatchyError("update_footers_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_update_footers_exception",
     });
     next(error);
   }
