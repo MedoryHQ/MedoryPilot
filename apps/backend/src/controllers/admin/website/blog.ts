@@ -241,10 +241,10 @@ export const createBlog = async (
       data: blog,
     });
   } catch (error) {
-    logCatchyError("create_blogs_exception", error, {
+    logCatchyError("Create blog exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_create_blogs_exception",
+      event: "admin_create_blog_exception",
     });
     next(error);
   }
@@ -336,10 +336,10 @@ export const updateBlog = async (
       data: blog,
     });
   } catch (error) {
-    logCatchyError("update_blogs_exception", error, {
+    logCatchyError("Update blog exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_update_blogs_exception",
+      event: "admin_update_blog_exception",
     });
     next(error);
   }

@@ -210,10 +210,10 @@ export const createNews = async (
       data: news,
     });
   } catch (error) {
-    logCatchyError("create_newses_exception", error, {
+    logCatchyError("Create news exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_create_newses_exception",
+      event: "admin_create_news_exception",
     });
     next(error);
   }
@@ -301,10 +301,10 @@ export const updateNews = async (
       data: news,
     });
   } catch (error) {
-    logCatchyError("update_newses_exception", error, {
+    logCatchyError("Update news exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_update_newses_exception",
+      event: "admin_update_news_exception",
     });
     next(error);
   }

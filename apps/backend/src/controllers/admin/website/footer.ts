@@ -18,6 +18,9 @@ export const fetchFooter = async (
     const footer = await prisma.footer.findFirst({
       include: {
         pages: {
+          orderBy: {
+            footerOrder: "asc",
+          },
           include: {
             translations: {
               include: {
@@ -152,10 +155,10 @@ export const createFooter = async (
       data: footer,
     });
   } catch (error) {
-    logCatchyError("create_footers_exception", error, {
+    logCatchyError("Create footer exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_create_footers_exception",
+      event: "admin_create_footer_exception",
     });
     next(error);
   }
@@ -225,10 +228,10 @@ export const updateFooter = async (
       data: footer,
     });
   } catch (error) {
-    logCatchyError("update_footers_exception", error, {
+    logCatchyError("Update footer exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_update_footers_exception",
+      event: "admin_update_footer_exception",
     });
     next(error);
   }

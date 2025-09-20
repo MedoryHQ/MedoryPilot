@@ -198,10 +198,10 @@ export const createFAQ = async (
       data: FAQ,
     });
   } catch (error) {
-    logCatchyError("create_FAQs_exception", error, {
+    logCatchyError("Create FAQ exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_create_FAQs_exception",
+      event: "admin_create_FAQ_exception",
     });
     next(error);
   }
@@ -269,10 +269,10 @@ export const updateFAQ = async (
       data: FAQ,
     });
   } catch (error) {
-    logCatchyError("update_FAQs_exception", error, {
+    logCatchyError("Update FAQ exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_update_FAQs_exception",
+      event: "admin_update_FAQ_exception",
     });
     next(error);
   }

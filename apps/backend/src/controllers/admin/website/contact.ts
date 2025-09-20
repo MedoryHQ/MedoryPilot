@@ -150,10 +150,10 @@ export const createContact = async (
       data: contact,
     });
   } catch (error) {
-    logCatchyError("create_contacts_exception", error, {
+    logCatchyError("Create contact exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_create_contacts_exception",
+      event: "admin_create_contact_exception",
     });
     next(error);
   }
@@ -239,10 +239,10 @@ export const updateContact = async (
       data: contact,
     });
   } catch (error) {
-    logCatchyError("update_contacts_exception", error, {
+    logCatchyError("Update contact exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_update_contacts_exception",
+      event: "admin_update_contact_exception",
     });
     next(error);
   }
