@@ -1,13 +1,11 @@
 import { prisma } from "@/config";
+import { NextFunction, Response, Request } from "express";
 import {
   createTranslations,
   generateWhereInput,
   getPaginationAndFilters,
   getResponseMessage,
   sendError,
-} from "@/utils";
-import { NextFunction, Response, Request } from "express";
-import {
   logAdminError as logCatchyError,
   logAdminInfo as logInfo,
   logAdminWarn as logWarn,
@@ -195,10 +193,10 @@ export const createIntroduce = async (
       data: introduce,
     });
   } catch (error) {
-    logCatchyError("create_introduces_exception", error, {
+    logCatchyError("Create introduce exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_create_introduces_exception",
+      event: "admin_create_introduce_exception",
     });
     next(error);
   }
@@ -265,10 +263,10 @@ export const updateIntroduce = async (
       data: introduce,
     });
   } catch (error) {
-    logCatchyError("update_introduces_exception", error, {
+    logCatchyError("Update introduce exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_update_introduces_exception",
+      event: "admin_update_introduce_exception",
     });
     next(error);
   }

@@ -1,11 +1,9 @@
 import { prisma } from "@/config";
+import { NextFunction, Response, Request } from "express";
 import {
   getPaginationAndFilters,
   getResponseMessage,
   sendError,
-} from "@/utils";
-import { NextFunction, Response, Request } from "express";
-import {
   logAdminError as logCatchyError,
   logAdminInfo as logInfo,
   logAdminWarn as logWarn,
@@ -184,10 +182,10 @@ export const createSocial = async (
       data: social,
     });
   } catch (error) {
-    logCatchyError("create_socials_exception", error, {
+    logCatchyError("Create social exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_create_socials_exception",
+      event: "admin_create_social_exception",
     });
     next(error);
   }
@@ -267,10 +265,10 @@ export const updateSocial = async (
       data: social,
     });
   } catch (error) {
-    logCatchyError("update_socials_exception", error, {
+    logCatchyError("Update social exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_update_socials_exception",
+      event: "admin_update_social_exception",
     });
     next(error);
   }

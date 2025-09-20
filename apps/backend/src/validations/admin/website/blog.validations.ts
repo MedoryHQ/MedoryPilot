@@ -1,8 +1,7 @@
-import { prisma } from "@/config";
-import { isUuid } from "@/utils";
 import {
   bodySlugValidation,
   generateMetaValidations,
+  relationArrayValidation,
   slugValidation,
   validateTranslations,
 } from "@/validations/shared";
@@ -28,37 +27,7 @@ export const createBlogValidation = [
         { name: "title", required: true },
       ])
     ),
-
-  body("categories")
-    .isArray({ min: 1 })
-    .withMessage("categoriesLength")
-    .custom(async (categories: string[]) => {
-      const invalid = categories.filter((c) => !isUuid(c));
-      if (invalid.length > 0) {
-        throw new Error(
-          JSON.stringify({
-            en: `Invalid category IDs: ${invalid.join(", ")}`,
-            ka: `არასწორი კატეგორიის ID: ${invalid.join(", ")}`,
-          })
-        );
-      }
-
-      const categoriesCount = await prisma.category.count({
-        where: { id: { in: categories } },
-      });
-
-      if (categoriesCount !== categories.length) {
-        throw new Error(
-          JSON.stringify({
-            en: "Some categories do not exist",
-            ka: "ზოგიერთი კატეგორია არ არსებობს",
-          })
-        );
-      }
-
-      return true;
-    }),
-
+  relationArrayValidation("categories", "category", { min: 1 }),
   ...generateMetaValidations(),
 ];
 

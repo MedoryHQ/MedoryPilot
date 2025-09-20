@@ -1,13 +1,11 @@
 import { prisma } from "@/config";
+import { NextFunction, Response, Request } from "express";
 import {
   createTranslations,
   generateWhereInput,
   getPaginationAndFilters,
   getResponseMessage,
   sendError,
-} from "@/utils";
-import { NextFunction, Response, Request } from "express";
-import {
   logAdminError as logCatchyError,
   logAdminInfo as logInfo,
   logAdminWarn as logWarn,
@@ -211,10 +209,10 @@ export const createHeader = async (
       data: header,
     });
   } catch (error) {
-    logCatchyError("create_headers_exception", error, {
+    logCatchyError("Create header exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_create_headers_exception",
+      event: "admin_create_header_exception",
     });
     next(error);
   }
@@ -300,10 +298,10 @@ export const updateHeader = async (
       data: header,
     });
   } catch (error) {
-    logCatchyError("update_headers_exception", error, {
+    logCatchyError("Update header exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_update_headers_exception",
+      event: "admin_update_header_exception",
     });
     next(error);
   }

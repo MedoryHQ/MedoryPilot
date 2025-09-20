@@ -1,11 +1,9 @@
 import { prisma } from "@/config";
+import { NextFunction, Response, Request } from "express";
 import {
   getPaginationAndFilters,
   getResponseMessage,
   sendError,
-} from "@/utils";
-import { NextFunction, Response, Request } from "express";
-import {
   logAdminError as logCatchyError,
   logAdminWarn as logWarn,
   logAdminInfo as logInfo,
@@ -207,10 +205,10 @@ export const createTariff = async (
 
     return res.status(201).json({ data: tariff });
   } catch (error) {
-    logCatchyError("create_tariffs_exception", error, {
+    logCatchyError("Create tariff exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_create_tariffs_exception",
+      event: "admin_create_tariff_exception",
     });
     next(error);
   }
@@ -270,10 +268,10 @@ export const updateTariff = async (
       data: tariff,
     });
   } catch (error) {
-    logCatchyError("update_tariffs_exception", error, {
+    logCatchyError("Update tariff exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_update_tariffs_exception",
+      event: "admin_update_tariff_exception",
     });
     next(error);
   }

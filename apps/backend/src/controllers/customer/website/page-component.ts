@@ -20,6 +20,7 @@ export const fetchPageComponents = async (
     const where = generateWhereInput<Prisma.PageComponentWhereInput>(search, {
       "translations.some.name": "insensitive",
       "translations.some.content": "insensitive",
+      slug: "insensitive",
     });
 
     const [pageComponents, count] = await Promise.all([

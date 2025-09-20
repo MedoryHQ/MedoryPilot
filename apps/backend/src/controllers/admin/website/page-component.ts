@@ -1,13 +1,11 @@
 import { prisma } from "@/config";
+import { NextFunction, Response, Request } from "express";
 import {
   createTranslations,
   generateWhereInput,
   getPaginationAndFilters,
   getResponseMessage,
   sendError,
-} from "@/utils";
-import { NextFunction, Response, Request } from "express";
-import {
   logAdminError as logCatchyError,
   logAdminInfo as logInfo,
   logAdminWarn as logWarn,
@@ -26,6 +24,7 @@ export const fetchPageComponents = async (
     const where = generateWhereInput<Prisma.PageComponentWhereInput>(search, {
       "translations.some.name": "insensitive",
       "translations.some.content": "insensitive",
+      slug: "insensitive",
     });
 
     const [pageComponents, count] = await Promise.all([
@@ -205,10 +204,10 @@ export const createPageComponent = async (
       data: pageComponent,
     });
   } catch (error) {
-    logCatchyError("create_pageComponents_exception", error, {
+    logCatchyError("Create pageComponent exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_create_pageComponents_exception",
+      event: "admin_create_pageComponent_exception",
     });
     next(error);
   }
@@ -222,7 +221,7 @@ export const updatePageComponent = async (
   try {
     const { slug } = req.params;
 
-    const { translations, footerOrder, ...rest } =
+    const { translations, footerOrder, footerId, ...rest } =
       req.body as UpdatePageComponentDTO;
 
     logInfo("PageComponent update attempt", {
@@ -259,6 +258,11 @@ export const updatePageComponent = async (
       },
       data: {
         ...rest,
+        ...(footerId !== undefined
+          ? footerId
+            ? { footer: { connect: { id: footerId } } }
+            : { footer: { disconnect: true } }
+          : {}),
         ...(footerOrder ? { footerOrder } : {}),
         translations: {
           deleteMany: {},
@@ -278,10 +282,10 @@ export const updatePageComponent = async (
       data: pageComponent,
     });
   } catch (error) {
-    logCatchyError("update_pageComponents_exception", error, {
+    logCatchyError("Update pageComponent exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_update_pageComponents_exception",
+      event: "admin_update_pageComponent_exception",
     });
     next(error);
   }

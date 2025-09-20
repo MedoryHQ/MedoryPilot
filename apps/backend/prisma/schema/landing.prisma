@@ -30,7 +30,7 @@ model News {
   background    File?
   translations  NewsTranslation[]
   showInLanding Boolean           @default(false)
-  order         Int?
+  order         Int               @default(autoincrement())
 
   metaTitle       String?
   metaDescription String?

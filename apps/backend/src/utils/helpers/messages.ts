@@ -96,6 +96,10 @@ export const errorMessages = {
     en: "Social not found",
     ka: "Social ვერ მოიძებნა",
   },
+  footerNotFound: {
+    en: "Footer not found",
+    ka: "Footer ვერ მოიძებნა",
+  },
 
   // Messages
   smsVerificationSent: {
@@ -165,6 +169,14 @@ export const errorMessages = {
   socialDeleted: {
     en: "Social deleted successfully",
     ka: "Social წარმატებით წაიშალა",
+  },
+  footerDeleted: {
+    en: "Footer deleted successfully",
+    ka: "Footer წარმატებით წაიშალა",
+  },
+  footerAlreadyExists: {
+    en: "Footer already exists",
+    ka: "Footer უკვე არსებობს",
   },
 
   // Validation errors
@@ -283,6 +295,10 @@ export const errorMessages = {
   invalidUrl: {
     en: "Invalid Url",
     ka: "არასწორი ლინკი",
+  },
+  invalidPhone: {
+    en: "Invalid Phone",
+    ka: "არასწორი ტელეფონის ნომერი",
   },
 } as const;
 

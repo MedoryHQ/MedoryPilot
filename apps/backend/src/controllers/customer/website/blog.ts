@@ -20,6 +20,7 @@ export const fetchBlogs = async (
     const where = generateWhereInput<Prisma.BlogWhereInput>(search, {
       "translations.some.title": "insensitive",
       "translations.some.content": "insensitive",
+      slug: "insensitive",
     });
 
     const [bloges, count] = await Promise.all([

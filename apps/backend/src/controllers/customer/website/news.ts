@@ -19,6 +19,7 @@ export const fetchNewses = async (
 
     const where = generateWhereInput<Prisma.NewsWhereInput>(search, {
       "translations.some.content": "insensitive",
+      slug: "insensitive",
     });
 
     const [newses, count] = await Promise.all([
