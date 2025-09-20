@@ -110,3 +110,12 @@ export interface CreateSocialDTO {
 }
 
 export type UpdateSocialDTO = CreateSocialDTO;
+
+export interface CreateFooterDTO {
+  phone?: string;
+  email?: string;
+  socials: string[];
+  pages: string[];
+}
+
+export type UpdateFooterDTO = CreateFooterDTO;
