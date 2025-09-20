@@ -1,11 +1,9 @@
 import { prisma } from "@/config";
+import { NextFunction, Response, Request } from "express";
 import {
   getPaginationAndFilters,
   getResponseMessage,
   sendError,
-} from "@/utils";
-import { NextFunction, Response, Request } from "express";
-import {
   logAdminError as logCatchyError,
   logAdminWarn as logWarn,
   logAdminInfo as logInfo,

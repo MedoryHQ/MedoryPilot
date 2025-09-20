@@ -1,13 +1,11 @@
 import { prisma } from "@/config";
+import { NextFunction, Response, Request } from "express";
 import {
   createTranslations,
   generateWhereInput,
   getPaginationAndFilters,
   getResponseMessage,
   sendError,
-} from "@/utils";
-import { NextFunction, Response, Request } from "express";
-import {
   logAdminError as logCatchyError,
   logAdminInfo as logInfo,
   logAdminWarn as logWarn,
@@ -25,6 +23,7 @@ export const fetchNewses = async (
 
     const where = generateWhereInput<Prisma.NewsWhereInput>(search, {
       "translations.some.content": "insensitive",
+      slug: "insensitive",
     });
 
     const [newses, count] = await Promise.all([
