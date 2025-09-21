@@ -17,7 +17,6 @@ export const generateWhereInput = <T>(
     const field = relations.pop();
 
     if (relations.length > 0 && field) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let nestedObject: any = {
         [field]: { contains: search, mode: "insensitive" },
       };
@@ -42,7 +41,6 @@ export const generateWhereInput = <T>(
       const field = relations.pop();
 
       if (relations.length > 0 && field) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let nestedObject: any = {
           [field]: value,
         };

@@ -2,13 +2,14 @@ import { prisma } from "@/config";
 import { NextFunction, Response, Request } from "express";
 import {
   createTranslations,
-  generateWhereInput,
   getPaginationAndFilters,
   getResponseMessage,
   sendError,
   logAdminError as logCatchyError,
   logAdminInfo as logInfo,
   logAdminWarn as logWarn,
+  parseQueryParams,
+  parseBooleanQuery,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
 import { CreateBlogDTO, UpdateBlogDTO } from "@/types/admin";
@@ -20,12 +21,64 @@ export const fetchBlogs = async (
 ) => {
   try {
     const { skip, take, orderBy, search } = getPaginationAndFilters(req);
+    const filters = parseQueryParams(req, ["categories", "starredUsers"]);
 
-    const where = generateWhereInput<Prisma.BlogWhereInput>(search, {
-      "translations.some.title": "insensitive",
-      "translations.some.content": "insensitive",
-      slug: "insensitive",
-    });
+    const { categories, starredUsers } = filters;
+
+    const { showIsLanding } = req.query as { showIsLanding: string };
+    const isLanding = parseBooleanQuery(showIsLanding);
+
+    const where: Prisma.BlogWhereInput = {
+      AND: [
+        search
+          ? {
+              OR: [
+                { slug: { contains: search, mode: "insensitive" } },
+                {
+                  translations: {
+                    some: {
+                      title: { contains: search, mode: "insensitive" },
+                    },
+                  },
+                },
+                {
+                  translations: {
+                    some: {
+                      content: {
+                        contains: search,
+                        mode: "insensitive",
+                      },
+                    },
+                  },
+                },
+              ],
+            }
+          : {},
+        categories
+          ? {
+              categories: {
+                some: {
+                  id: { in: categories },
+                },
+              },
+            }
+          : {},
+        starredUsers
+          ? {
+              starredUsers: {
+                some: {
+                  id: { in: starredUsers },
+                },
+              },
+            }
+          : {},
+        typeof isLanding === "boolean"
+          ? {
+              showInLanding: isLanding,
+            }
+          : {},
+      ],
+    };
 
     const [bloges, count] = await Promise.all([
       prisma.blog.findMany({
