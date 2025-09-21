@@ -1,6 +1,9 @@
 import request from "supertest";
 import express from "express";
 import cookieParser from "cookie-parser";
+import { prisma } from "@/config";
+import { authMatchers } from "@/tests/helpers/authMatchers";
+import { adminFAQRouter } from "@/routes/admin/website/FAQ";
 
 jest.mock("@/config", () => ({
   prisma: {
@@ -83,9 +86,6 @@ jest.mock("@/utils", () => {
   };
 });
 
-import { prisma } from "@/config";
-import { authMatchers } from "@/tests/helpers/authMatchers";
-import { adminFAQRouter } from "@/routes/admin/website/FAQ";
 expect.extend(authMatchers);
 
 const app = express();
