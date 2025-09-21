@@ -273,4 +273,32 @@ describe("Admin Service routes — /admin/service", () => {
       expect(res.body).toHaveProperty("errors");
     });
   });
+
+  describe("DELETE /admin/service/:id", () => {
+    it("deletes service successfully", async () => {
+      (prisma.service.delete as jest.Mock).mockResolvedValueOnce(mockService);
+
+      const res = await request(app).delete(`/admin/service/${mockService.id}`);
+
+      expect(res).toHaveStatus(200);
+      expect(res.body).toHaveProperty("message");
+      expect(prisma.service.delete).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: mockService.id } })
+      );
+    });
+
+    it("handles delete DB error (500)", async () => {
+      (prisma.service.delete as jest.Mock).mockRejectedValueOnce(
+        new Error("DB err")
+      );
+      const res = await request(app).delete(`/admin/service/${mockService.id}`);
+      expect(res).toHaveStatus(500);
+    });
+
+    it("returns 400 for invalid UUID", async () => {
+      const res = await request(app).delete("/admin/service/not-uuid");
+      expect(res).toHaveStatus(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
