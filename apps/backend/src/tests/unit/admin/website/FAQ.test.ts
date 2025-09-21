@@ -257,4 +257,33 @@ describe("Admin FAQ routes — /admin/faq", () => {
       expect(res.body).toHaveProperty("errors");
     });
   });
+
+  describe("DELETE /admin/faq/:id", () => {
+    it("deletes FAQ successfully", async () => {
+      (prisma.fAQ.delete as jest.Mock).mockResolvedValueOnce(mockFAQ);
+
+      const res = await request(app).delete(`/admin/faq/${mockFAQ.id}`);
+
+      expect(res).toHaveStatus(200);
+      expect(res.body).toHaveProperty("message");
+      expect(prisma.fAQ.delete).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: mockFAQ.id } })
+      );
+    });
+
+    it("handles delete DB error (500)", async () => {
+      (prisma.fAQ.delete as jest.Mock).mockRejectedValueOnce(
+        new Error("DB err")
+      );
+
+      const res = await request(app).delete(`/admin/faq/${mockFAQ.id}`);
+      expect(res).toHaveStatus(500);
+    });
+
+    it("returns 400 for invalid UUID", async () => {
+      const res = await request(app).delete("/admin/faq/not-uuid");
+      expect(res).toHaveStatus(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
