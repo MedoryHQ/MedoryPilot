@@ -25,8 +25,8 @@ export const fetchBlogs = async (
 
     const { categories, starredUsers } = filters;
 
-    const { showIsLanding } = req.query as { showIsLanding: string };
-    const isLanding = parseBooleanQuery(showIsLanding);
+    const { showInLanding } = req.query as { showInLanding: string };
+    const isLanding = parseBooleanQuery(showInLanding);
 
     const where: Prisma.BlogWhereInput = {
       AND: [

@@ -6,6 +6,8 @@ import {
   sendError,
   logCustomerCatchyError as logCatchyError,
   logCustomerWarn as logWarn,
+  parseQueryParams,
+  parseBooleanQuery,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
 
@@ -17,11 +19,55 @@ export const fetchBlogs = async (
   try {
     const { skip, take, orderBy, search } = getPaginationAndFilters(req);
 
-    const where = generateWhereInput<Prisma.BlogWhereInput>(search, {
-      "translations.some.title": "insensitive",
-      "translations.some.content": "insensitive",
-      slug: "insensitive",
-    });
+    const filters = parseQueryParams(req, ["categories"]);
+
+    const { categories } = filters;
+
+    const { showInLanding } = req.query as { showInLanding: "true" | "false" };
+    const isLanding = parseBooleanQuery(showInLanding);
+
+    const where: Prisma.BlogWhereInput = {
+      AND: [
+        search
+          ? {
+              OR: [
+                { slug: { contains: search, mode: "insensitive" } },
+                {
+                  translations: {
+                    some: {
+                      title: { contains: search, mode: "insensitive" },
+                    },
+                  },
+                },
+                {
+                  translations: {
+                    some: {
+                      content: {
+                        contains: search,
+                        mode: "insensitive",
+                      },
+                    },
+                  },
+                },
+              ],
+            }
+          : {},
+        categories
+          ? {
+              categories: {
+                some: {
+                  id: { in: categories },
+                },
+              },
+            }
+          : {},
+        typeof isLanding === "boolean"
+          ? {
+              showInLanding: isLanding,
+            }
+          : {},
+      ],
+    };
 
     const [bloges, count] = await Promise.all([
       prisma.blog.findMany({
