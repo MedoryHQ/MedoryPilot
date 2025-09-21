@@ -1,6 +1,6 @@
 import { NextFunction, Router, Request, Response } from "express";
 import { GLOBAL_ERROR_MESSAGE } from "@/utils";
-import * as FAQController from "@/controllers/admin/website/FAQ";
+import * as FAQController from "@/controllers/customer/website/FAQ";
 
 export const FAQRouter = Router();
 
