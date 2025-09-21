@@ -171,4 +171,36 @@ describe("Admin FAQ routes — /admin/faq", () => {
       expect(res.body).toHaveProperty("errors");
     });
   });
+
+  describe("POST /admin/faq", () => {
+    it("creates FAQ successfully", async () => {
+      const createPayload = {
+        order: 5,
+        translations: {
+          en: { question: "New?", answer: "Yes." },
+          ka: { question: "სიახლე?", answer: "დიახ." },
+        },
+      };
+
+      (prisma.fAQ.create as jest.Mock).mockResolvedValueOnce({
+        ...mockFAQ,
+        order: createPayload.order,
+      });
+
+      const res = await request(app).post("/admin/faq").send(createPayload);
+
+      expect(res).toHaveStatus(201);
+      expect(res.body.data).toBeDefined();
+      expect(prisma.fAQ.create).toHaveBeenCalled();
+    });
+
+    it("returns 400 when translations missing or invalid", async () => {
+      const res = await request(app)
+        .post("/admin/faq")
+        .send({ translations: {} });
+      console.log(res.body, res.status, res.body.error, res.body.errors);
+      expect(res).toHaveStatus(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
