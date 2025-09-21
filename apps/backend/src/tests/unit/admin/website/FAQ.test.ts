@@ -140,4 +140,35 @@ describe("Admin FAQ routes — /admin/faq", () => {
       expect(res).toHaveStatus(500);
     });
   });
+
+  describe("GET /admin/faq/:id", () => {
+    it("returns single FAQ when found", async () => {
+      (prisma.fAQ.findUnique as jest.Mock).mockResolvedValueOnce(mockFAQ);
+
+      const res = await request(app).get(`/admin/faq/${mockFAQ.id}`);
+
+      expect(res).toHaveStatus(200);
+      expect(res.body.data).toBeDefined();
+      expect(res.body.data.id).toEqual(mockFAQ.id);
+      expect(prisma.fAQ.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: mockFAQ.id },
+        })
+      );
+    });
+
+    it("returns 404 when FAQ not found", async () => {
+      (prisma.fAQ.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app).get(`/admin/faq/${mockFAQ.id}`);
+      expect(res).toHaveStatus(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid UUID", async () => {
+      const res = await request(app).get("/admin/faq/invalid-uuid");
+      expect(res).toHaveStatus(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
