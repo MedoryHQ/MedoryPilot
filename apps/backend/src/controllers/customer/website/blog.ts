@@ -6,6 +6,8 @@ import {
   sendError,
   logCustomerCatchyError as logCatchyError,
   logCustomerWarn as logWarn,
+  parseQueryParams,
+  parseBooleanQuery,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
 
@@ -17,13 +19,41 @@ export const fetchBlogs = async (
   try {
     const { skip, take, orderBy, search } = getPaginationAndFilters(req);
 
-    const where = generateWhereInput<Prisma.BlogWhereInput>(search, {
-      "translations.some.title": "insensitive",
-      "translations.some.content": "insensitive",
-      slug: "insensitive",
-    });
+    const filters = parseQueryParams(req, ["categories"]);
 
-    const [bloges, count] = await Promise.all([
+    const { categories } = filters;
+
+    const { showIsLanding } = req.query as { showIsLanding: "true" | "false" };
+    const isLanding = parseBooleanQuery(showIsLanding);
+
+    const where = generateWhereInput<Prisma.BlogWhereInput>(
+      search,
+      {
+        "translations.some.title": "insensitive",
+        "translations.some.content": "insensitive",
+        slug: "insensitive",
+      },
+      {
+        AND: [
+          categories
+            ? {
+                categories: {
+                  some: {
+                    id: { in: categories },
+                  },
+                },
+              }
+            : {},
+          typeof isLanding === "boolean"
+            ? {
+                showInLanding: isLanding,
+              }
+            : {},
+        ],
+      }
+    );
+
+    const [blogs, count] = await Promise.all([
       prisma.blog.findMany({
         skip,
         take,
@@ -69,12 +99,12 @@ export const fetchBlogs = async (
       prisma.blog.count({ where }),
     ]);
 
-    return res.status(200).json({ data: bloges, count });
+    return res.status(200).json({ data: blogs, count });
   } catch (error) {
-    logCatchyError("fetch_bloges_exception", error, {
+    logCatchyError("fetch_blogs_exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_fetch_bloges_exception",
+      event: "admin_fetch_blogs_exception",
     });
     next(error);
   }

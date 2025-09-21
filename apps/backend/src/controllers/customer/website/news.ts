@@ -6,6 +6,7 @@ import {
   sendError,
   logCustomerCatchyError as logCatchyError,
   logCustomerWarn as logWarn,
+  parseBooleanQuery,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
 
@@ -17,10 +18,25 @@ export const fetchNewses = async (
   try {
     const { skip, take, orderBy, search } = getPaginationAndFilters(req);
 
-    const where = generateWhereInput<Prisma.NewsWhereInput>(search, {
-      "translations.some.content": "insensitive",
-      slug: "insensitive",
-    });
+    const { showInLanding } = req.query as { showInLanding: string };
+    const isLanding = parseBooleanQuery(showInLanding);
+
+    const where = generateWhereInput<Prisma.NewsWhereInput>(
+      search,
+      {
+        "translations.some.content": "insensitive",
+        slug: "insensitive",
+      },
+      {
+        AND: [
+          typeof isLanding === "boolean"
+            ? {
+                showInLanding: isLanding,
+              }
+            : {},
+        ],
+      }
+    );
 
     const [newses, count] = await Promise.all([
       prisma.news.findMany({

@@ -123,7 +123,7 @@ afterAll(async () => {
   } catch {}
 });
 
-describe("Customer auth routes — /auth", () => {
+describe("Admin auth routes — /auth", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });

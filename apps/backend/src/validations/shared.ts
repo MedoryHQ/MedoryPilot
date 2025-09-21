@@ -10,6 +10,18 @@ export const validateTranslations = (
     required?: boolean;
   }[]
 ) => {
+  if (!translations || typeof translations !== "object") {
+    throw new Error(
+      JSON.stringify([
+        {
+          ka: "აუციელებელია ერთი თარგმანი მაინც",
+          en: "At least one translation is required",
+          field: "translations",
+        },
+      ])
+    );
+  }
+
   const errors: { ka: string; en: string; field: string }[] = [];
   const languageKeys = Object.keys(translations);
 
@@ -19,7 +31,21 @@ export const validateTranslations = (
       en: "At least one translation is required",
       field: "translations",
     });
-    return errors;
+  } else {
+    if (!languageKeys.includes("en")) {
+      errors.push({
+        ka: "აუციელებელია 'en' თარგმანი",
+        en: "The 'en' translation is required",
+        field: "translations",
+      });
+    }
+    if (!languageKeys.includes("ka")) {
+      errors.push({
+        ka: "აუციელებელია 'ka' თარგმანი",
+        en: "The 'ka' translation is required",
+        field: "translations",
+      });
+    }
   }
 
   languageKeys.forEach((language) => {
@@ -42,7 +68,11 @@ export const validateTranslations = (
     });
   });
 
-  return errors;
+  if (errors.length > 0) {
+    throw new Error(JSON.stringify(errors));
+  }
+
+  return true;
 };
 
 export const generateMetaValidations = () => {

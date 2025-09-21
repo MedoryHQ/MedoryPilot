@@ -2,13 +2,15 @@ import { prisma } from "@/config";
 import { NextFunction, Response, Request } from "express";
 import {
   createTranslations,
-  generateWhereInput,
   getPaginationAndFilters,
   getResponseMessage,
   sendError,
   logAdminError as logCatchyError,
   logAdminInfo as logInfo,
   logAdminWarn as logWarn,
+  parseQueryParams,
+  parseBooleanQuery,
+  generateWhereInput,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
 import { CreateBlogDTO, UpdateBlogDTO } from "@/types/admin";
@@ -20,14 +22,50 @@ export const fetchBlogs = async (
 ) => {
   try {
     const { skip, take, orderBy, search } = getPaginationAndFilters(req);
+    const filters = parseQueryParams(req, ["categories", "starredUsers"]);
 
-    const where = generateWhereInput<Prisma.BlogWhereInput>(search, {
-      "translations.some.title": "insensitive",
-      "translations.some.content": "insensitive",
-      slug: "insensitive",
-    });
+    const { categories, starredUsers } = filters;
 
-    const [bloges, count] = await Promise.all([
+    const { showIsLanding } = req.query as { showIsLanding: string };
+    const isLanding = parseBooleanQuery(showIsLanding);
+
+    const where = generateWhereInput<Prisma.BlogWhereInput>(
+      search,
+      {
+        "translations.some.title": "insensitive",
+        "translations.some.content": "insensitive",
+        slug: "insensitive",
+      },
+      {
+        AND: [
+          categories
+            ? {
+                categories: {
+                  some: {
+                    id: { in: categories },
+                  },
+                },
+              }
+            : {},
+          starredUsers
+            ? {
+                starredUsers: {
+                  some: {
+                    id: { in: starredUsers },
+                  },
+                },
+              }
+            : {},
+          typeof isLanding === "boolean"
+            ? {
+                showInLanding: isLanding,
+              }
+            : {},
+        ],
+      }
+    );
+
+    const [blogs, count] = await Promise.all([
       prisma.blog.findMany({
         skip,
         take,
@@ -62,12 +100,12 @@ export const fetchBlogs = async (
       prisma.blog.count({ where }),
     ]);
 
-    return res.status(200).json({ data: bloges, count });
+    return res.status(200).json({ data: blogs, count });
   } catch (error) {
-    logCatchyError("fetch_bloges_exception", error, {
+    logCatchyError("fetch_blogs_exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_fetch_bloges_exception",
+      event: "admin_fetch_blogs_exception",
     });
     next(error);
   }
