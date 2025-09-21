@@ -218,4 +218,59 @@ describe("Admin Social routes — /admin/social", () => {
       expect(res.body).toHaveProperty("errors");
     });
   });
+
+  describe("PUT /admin/social/:id", () => {
+    it("updates social successfully", async () => {
+      const updatePayload = {
+        url: "https://updated.com",
+        name: "updated",
+        icon: { path: "/ni.png", name: "ni.png", size: 10 },
+      };
+
+      (prisma.social.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockSocial,
+        icon: null,
+      });
+      (prisma.social.update as jest.Mock).mockResolvedValueOnce({
+        ...mockSocial,
+        ...updatePayload,
+      });
+
+      const res = await request(app)
+        .put(`/admin/social/${mockSocial.id}`)
+        .send(updatePayload);
+
+      expect(res).toHaveStatus(200);
+      expect(res.body.data).toBeDefined();
+      expect(prisma.social.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: mockSocial.id },
+          include: { icon: true },
+        })
+      );
+      expect(prisma.social.update).toHaveBeenCalled();
+    });
+
+    it("returns 404 when updating non-existing social", async () => {
+      (prisma.social.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .put(`/admin/social/${mockSocial.id}`)
+        .send({
+          url: "https://x",
+          name: "x",
+        });
+
+      expect(res).toHaveStatus(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid body", async () => {
+      const res = await request(app)
+        .put(`/admin/social/${mockSocial.id}`)
+        .send({ url: "", name: "" });
+      expect(res).toHaveStatus(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
