@@ -182,4 +182,36 @@ describe("Admin Service routes — /admin/service", () => {
       expect(res.body).toHaveProperty("errors");
     });
   });
+
+  describe("POST /admin/service", () => {
+    it("creates service successfully", async () => {
+      const createPayload = {
+        translations: {
+          en: { title: "New", description: "desc" },
+          ka: { title: "ახალი", description: "მოკლე" },
+        },
+        icon: { path: "/p.png", name: "p.png", size: 123 },
+        background: null,
+      };
+
+      (prisma.service.create as jest.Mock).mockResolvedValueOnce({
+        ...mockService,
+        translations: createPayload.translations,
+      });
+
+      const res = await request(app).post("/admin/service").send(createPayload);
+
+      expect(res).toHaveStatus(201);
+      expect(res.body.data).toBeDefined();
+      expect(prisma.service.create).toHaveBeenCalled();
+    });
+
+    it("returns 400 when translations missing or invalid", async () => {
+      const res = await request(app)
+        .post("/admin/service")
+        .send({ translations: {} });
+      expect(res).toHaveStatus(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
