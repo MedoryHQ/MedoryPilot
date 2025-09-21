@@ -130,4 +130,35 @@ describe("Admin Social routes — /admin/social", () => {
       expect(res).toHaveStatus(500);
     });
   });
+
+  describe("GET /admin/social/:id", () => {
+    it("returns single social when found", async () => {
+      (prisma.social.findUnique as jest.Mock).mockResolvedValueOnce(mockSocial);
+
+      const res = await request(app).get(`/admin/social/${mockSocial.id}`);
+
+      expect(res).toHaveStatus(200);
+      expect(res.body.data).toBeDefined();
+      expect(res.body.data.id).toEqual(mockSocial.id);
+      expect(prisma.social.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: mockSocial.id },
+          include: { icon: true },
+        })
+      );
+    });
+
+    it("returns 404 when social not found", async () => {
+      (prisma.social.findUnique as jest.Mock).mockResolvedValueOnce(null);
+      const res = await request(app).get(`/admin/social/${mockSocial.id}`);
+      expect(res).toHaveStatus(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid UUID", async () => {
+      const res = await request(app).get("/admin/social/invalid-uuid");
+      expect(res).toHaveStatus(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
