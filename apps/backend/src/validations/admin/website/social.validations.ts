@@ -12,7 +12,7 @@ export const createSocialValidation = [
     .optional({ nullable: true })
     .isObject()
     .withMessage("invalidIcon"),
-  body("footerId").isUUID().withMessage("invalidFooterId"),
+  body("footerId").optional().isUUID().withMessage("invalidFooterId"),
 ];
 
 export const updateSocialValidation = [
