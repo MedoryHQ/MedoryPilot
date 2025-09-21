@@ -273,4 +273,32 @@ describe("Admin Social routes — /admin/social", () => {
       expect(res.body).toHaveProperty("errors");
     });
   });
+
+  describe("DELETE /admin/social/:id", () => {
+    it("deletes social successfully", async () => {
+      (prisma.social.delete as jest.Mock).mockResolvedValueOnce(mockSocial);
+
+      const res = await request(app).delete(`/admin/social/${mockSocial.id}`);
+
+      expect(res).toHaveStatus(200);
+      expect(res.body).toHaveProperty("message");
+      expect(prisma.social.delete).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: mockSocial.id } })
+      );
+    });
+
+    it("handles delete DB error (500)", async () => {
+      (prisma.social.delete as jest.Mock).mockRejectedValueOnce(
+        new Error("DB err")
+      );
+      const res = await request(app).delete(`/admin/social/${mockSocial.id}`);
+      expect(res).toHaveStatus(500);
+    });
+
+    it("returns 400 for invalid UUID", async () => {
+      const res = await request(app).delete("/admin/social/not-uuid");
+      expect(res).toHaveStatus(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
