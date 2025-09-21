@@ -214,4 +214,63 @@ describe("Admin Service routes — /admin/service", () => {
       expect(res.body).toHaveProperty("errors");
     });
   });
+
+  describe("PUT /admin/service/:id", () => {
+    it("updates service successfully", async () => {
+      const updatePayload = {
+        translations: {
+          en: { title: "Up", description: "d" },
+          ka: { title: "განახლება", description: "dka" },
+        },
+        icon: { path: "/i.png", name: "i.png", size: 50 },
+        background: null,
+      };
+
+      (prisma.service.findUnique as jest.Mock).mockResolvedValueOnce(
+        mockService
+      );
+      (prisma.service.update as jest.Mock).mockResolvedValueOnce({
+        ...mockService,
+        translations: updatePayload.translations,
+      });
+
+      const res = await request(app)
+        .put(`/admin/service/${mockService.id}`)
+        .send(updatePayload);
+
+      expect(res).toHaveStatus(200);
+      expect(res.body.data).toBeDefined();
+      expect(prisma.service.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: mockService.id },
+          include: { icon: true, background: true },
+        })
+      );
+      expect(prisma.service.update).toHaveBeenCalled();
+    });
+
+    it("returns 404 when updating non-existing service", async () => {
+      (prisma.service.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .put(`/admin/service/${mockService.id}`)
+        .send({
+          translations: {
+            en: { title: "t", description: "d" },
+            ka: { title: "t", description: "d" },
+          },
+        });
+
+      expect(res).toHaveStatus(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid body", async () => {
+      const res = await request(app)
+        .put(`/admin/service/${mockService.id}`)
+        .send({ translations: {} });
+      expect(res).toHaveStatus(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
