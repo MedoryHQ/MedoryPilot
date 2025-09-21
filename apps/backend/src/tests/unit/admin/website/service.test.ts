@@ -152,4 +152,34 @@ describe("Admin Service routes — /admin/service", () => {
       expect(res).toHaveStatus(500);
     });
   });
+
+  describe("GET /admin/service/:id", () => {
+    it("returns single service when found", async () => {
+      (prisma.service.findUnique as jest.Mock).mockResolvedValueOnce(
+        mockService
+      );
+
+      const res = await request(app).get(`/admin/service/${mockService.id}`);
+
+      expect(res).toHaveStatus(200);
+      expect(res.body.data).toBeDefined();
+      expect(res.body.data.id).toEqual(mockService.id);
+      expect(prisma.service.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: mockService.id } })
+      );
+    });
+
+    it("returns 404 when not found", async () => {
+      (prisma.service.findUnique as jest.Mock).mockResolvedValueOnce(null);
+      const res = await request(app).get(`/admin/service/${mockService.id}`);
+      expect(res).toHaveStatus(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid UUID", async () => {
+      const res = await request(app).get("/admin/service/invalid-uuid");
+      expect(res).toHaveStatus(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
