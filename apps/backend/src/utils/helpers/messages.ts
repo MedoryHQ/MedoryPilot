@@ -94,7 +94,7 @@ export const errorMessages = {
   },
   socialNotFound: {
     en: "Social not found",
-    ka: "Social ვერ მოიძებნა",
+    ka: "სოციალური ქსელი ვერ მოიძებნა",
   },
   footerNotFound: {
     en: "Footer not found",
@@ -168,7 +168,7 @@ export const errorMessages = {
   },
   socialDeleted: {
     en: "Social deleted successfully",
-    ka: "Social წარმატებით წაიშალა",
+    ka: "სოციალური ქსელი წარმატებით წაიშალა",
   },
   footerDeleted: {
     en: "Footer deleted successfully",
