@@ -198,7 +198,61 @@ describe("Admin FAQ routes — /admin/faq", () => {
       const res = await request(app)
         .post("/admin/faq")
         .send({ translations: {} });
-      console.log(res.body, res.status, res.body.error, res.body.errors);
+
+      expect(res).toHaveStatus(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
+
+  describe("PUT /admin/faq/:id", () => {
+    it("updates FAQ successfully", async () => {
+      const updatePayload = {
+        order: 3,
+        translations: {
+          en: { question: "Updated?", answer: "OK." },
+          ka: { question: "განახლდა?", answer: "OK." },
+        },
+      };
+
+      (prisma.fAQ.findUnique as jest.Mock).mockResolvedValueOnce(mockFAQ);
+      (prisma.fAQ.update as jest.Mock).mockResolvedValueOnce({
+        ...mockFAQ,
+        order: updatePayload.order,
+      });
+
+      const res = await request(app)
+        .put(`/admin/faq/${mockFAQ.id}`)
+        .send(updatePayload);
+
+      expect(res).toHaveStatus(200);
+      expect(res.body.data).toBeDefined();
+      expect(prisma.fAQ.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: mockFAQ.id } })
+      );
+      expect(prisma.fAQ.update).toHaveBeenCalled();
+    });
+
+    it("returns 404 when updating non-existing FAQ", async () => {
+      (prisma.fAQ.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .put(`/admin/faq/${mockFAQ.id}`)
+        .send({
+          order: 2,
+          translations: {
+            en: { question: "q", answer: "a" },
+            ka: { question: "კ", answer: "პ" },
+          },
+        });
+
+      expect(res).toHaveStatus(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid body", async () => {
+      const res = await request(app)
+        .put(`/admin/faq/${mockFAQ.id}`)
+        .send({ translations: {} });
       expect(res).toHaveStatus(400);
       expect(res.body).toHaveProperty("errors");
     });
