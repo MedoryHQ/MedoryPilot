@@ -1,0 +1,102 @@
+import request from "supertest";
+import express from "express";
+import cookieParser from "cookie-parser";
+
+jest.mock("@/config", () => ({
+  prisma: {
+    header: { count: jest.fn() },
+    introduce: { count: jest.fn() },
+    news: { count: jest.fn() },
+    service: { count: jest.fn() },
+    fAQ: { count: jest.fn() },
+    blog: { count: jest.fn() },
+    category: { count: jest.fn() },
+    contact: { count: jest.fn() },
+    footer: { count: jest.fn() },
+    social: { count: jest.fn() },
+    pageComponent: { count: jest.fn() },
+    tariff: { count: jest.fn() },
+    tariffHistory: { count: jest.fn() },
+    $disconnect: jest.fn(),
+  },
+}));
+
+jest.mock("@/middlewares/admin", () => ({
+  isAdminVerified: (req: any, res: any, next: any) => next(),
+}));
+
+jest.mock("@/utils", () => ({
+  logAdminError: jest.fn(),
+  GLOBAL_ERROR_MESSAGE: "GLOBAL_ERROR",
+}));
+
+import { prisma } from "@/config";
+import { adminOverviewRouter } from "@/routes/admin/website/overview";
+
+const app = express();
+app.use(express.json());
+app.use(cookieParser());
+app.use("/admin/overview", adminOverviewRouter);
+
+afterAll(async () => {
+  try {
+    await prisma.$disconnect();
+  } catch {}
+});
+
+describe("Admin Overview routes — /admin/overview", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe("GET /admin/overview", () => {
+    it("returns overview counts successfully", async () => {
+      (prisma.header.count as jest.Mock).mockResolvedValueOnce(5);
+      (prisma.introduce.count as jest.Mock).mockResolvedValueOnce(1);
+      (prisma.news.count as jest.Mock).mockResolvedValueOnce(10);
+      (prisma.service.count as jest.Mock).mockResolvedValueOnce(7);
+      (prisma.fAQ.count as jest.Mock).mockResolvedValueOnce(3);
+      (prisma.blog.count as jest.Mock).mockResolvedValueOnce(4);
+      (prisma.category.count as jest.Mock).mockResolvedValueOnce(2);
+      (prisma.contact.count as jest.Mock).mockResolvedValueOnce(8);
+      (prisma.footer.count as jest.Mock).mockResolvedValueOnce(1);
+      (prisma.social.count as jest.Mock).mockResolvedValueOnce(6);
+      (prisma.pageComponent.count as jest.Mock).mockResolvedValueOnce(9);
+      (prisma.tariff.count as jest.Mock).mockResolvedValueOnce(3);
+      (prisma.tariffHistory.count as jest.Mock).mockResolvedValueOnce(2);
+
+      const res = await request(app).get("/admin/overview");
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toEqual({
+        headers: 5,
+        introduce: 1,
+        newses: 10,
+        services: 7,
+        faqs: 3,
+        blogs: 4,
+        categories: 2,
+        contacts: 8,
+        footers: 1,
+        socials: 6,
+        pages: 9,
+        tariffs: 5, // 3 + 2
+      });
+
+      expect(prisma.header.count).toHaveBeenCalled();
+      expect(prisma.tariff.count).toHaveBeenCalled();
+      expect(prisma.tariffHistory.count).toHaveBeenCalled();
+    });
+
+    it("handles DB errors gracefully", async () => {
+      (prisma.header.count as jest.Mock).mockRejectedValueOnce(
+        new Error("DB error")
+      );
+
+      const res = await request(app).get("/admin/overview");
+
+      expect(res.status).toBe(500);
+      expect(require("@/utils").logAdminError).toHaveBeenCalled();
+    });
+  });
+});
