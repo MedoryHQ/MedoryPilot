@@ -282,4 +282,55 @@ describe("Admin Tariff routes — /admin/tariff", () => {
       expect(res.body).toHaveProperty("errors");
     });
   });
+
+  describe("DELETE /admin/tariff/:id", () => {
+    it("deletes active tariff when type is 'active'", async () => {
+      (prisma.tariff.delete as jest.Mock).mockResolvedValueOnce(mockTariff);
+
+      const res = await request(app)
+        .delete(`/admin/tariff/${mockTariff.id}`)
+        .send({ type: "active" });
+
+      expect(res).toHaveStatus(200);
+      expect(res.body).toHaveProperty("message");
+      expect(prisma.tariff.delete).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: mockTariff.id } })
+      );
+    });
+
+    it("deletes history tariff when type is 'history'", async () => {
+      (prisma.tariffHistory.delete as jest.Mock).mockResolvedValueOnce(
+        mockTariffHistory
+      );
+
+      const res = await request(app)
+        .delete(`/admin/tariff/${mockTariffHistory.id}`)
+        .send({ type: "history" });
+
+      expect(res).toHaveStatus(200);
+      expect(res.body).toHaveProperty("message");
+      expect(prisma.tariffHistory.delete).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: mockTariffHistory.id } })
+      );
+    });
+
+    it("returns 404 when deletion target not found", async () => {
+      (prisma.tariff.delete as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .delete(`/admin/tariff/${mockTariff.id}`)
+        .send({ type: "active" });
+
+      expect(res).toHaveStatus(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid id", async () => {
+      const res = await request(app)
+        .delete("/admin/tariff/INVALID_ID!!")
+        .send({ type: "active" });
+      expect(res).toHaveStatus(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
