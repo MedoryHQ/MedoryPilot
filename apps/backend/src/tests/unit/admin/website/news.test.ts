@@ -184,4 +184,46 @@ describe("Admin News routes — /admin/news", () => {
       expect(res).toHaveStatus(400);
     });
   });
+
+  describe("PUT /admin/news/:slug", () => {
+    const updatePayload = {
+      showInLanding: false,
+      slug: "new-slug",
+      translations: {
+        en: { content: "Updated content" },
+        ka: { content: "განახლებული" },
+      },
+    };
+
+    it("updates news successfully", async () => {
+      (prisma.news.findUnique as jest.Mock).mockResolvedValueOnce(mockNews);
+      (prisma.news.update as jest.Mock).mockResolvedValueOnce({
+        ...mockNews,
+        ...updatePayload,
+      });
+
+      const res = await request(app)
+        .put(`/admin/news/${mockNews.slug}`)
+        .send(updatePayload);
+
+      expect(res).toHaveStatus(200);
+      expect(res.body.data.showInLanding).toBe(false);
+      expect(prisma.news.update).toHaveBeenCalled();
+    });
+
+    it("returns 404 if news not found", async () => {
+      (prisma.news.findUnique as jest.Mock).mockResolvedValueOnce(null);
+      const res = await request(app)
+        .put(`/admin/news/${mockNews.slug}`)
+        .send(updatePayload);
+      expect(res).toHaveStatus(404);
+    });
+
+    it("returns 400 for invalid body", async () => {
+      const res = await request(app)
+        .put(`/admin/news/${mockNews.slug}`)
+        .send({ slug: "" });
+      expect(res).toHaveStatus(400);
+    });
+  });
 });
