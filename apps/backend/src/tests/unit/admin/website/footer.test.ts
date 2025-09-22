@@ -143,7 +143,6 @@ describe("Admin Footer routes — /admin/footer", () => {
       (prisma.footer.create as jest.Mock).mockResolvedValueOnce(mockFooter);
 
       const res = await request(app).post("/admin/footer").send(payload);
-      console.log(res.status, res.body, res.body.error, res.body.errors);
 
       expect(res.status).toBe(201);
       expect(res.body.data).toEqual(mockFooter);
@@ -155,7 +154,6 @@ describe("Admin Footer routes — /admin/footer", () => {
 
       const res = await request(app).post("/admin/footer").send(payload);
 
-      console.log(res.status, res.body, res.body.error, res.body.errors);
       expect(res.status).toBe(400);
       expect(res.body.error).toEqual(
         require("@/utils").errorMessages.footerAlreadyExists
@@ -178,7 +176,6 @@ describe("Admin Footer routes — /admin/footer", () => {
       const res = await request(app)
         .put(`/admin/footer/${mockFooter.id}`)
         .send(updatePayload);
-      console.log(res.status, res.body, res.body.error, res.body.errors);
 
       expect(res.status).toBe(200);
       expect(res.body.data).toEqual(mockFooter);
@@ -191,7 +188,6 @@ describe("Admin Footer routes — /admin/footer", () => {
       const res = await request(app)
         .put(`/admin/footer/${mockFooter.id}`)
         .send(updatePayload);
-      console.log(res.status, res.body, res.body.error, res.body.errors);
 
       expect(res.status).toBe(404);
       expect(res.body.error).toEqual(
