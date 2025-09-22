@@ -199,4 +199,35 @@ describe("Admin Footer routes — /admin/footer", () => {
       );
     });
   });
+
+  describe("DELETE /admin/footer/:id", () => {
+    it("deletes footer successfully", async () => {
+      (prisma.footer.delete as jest.Mock).mockResolvedValueOnce(mockFooter);
+
+      const res = await request(app).delete(`/admin/footer/${mockFooter.id}`);
+
+      expect(res.status).toBe(200);
+    });
+
+    it("returns 404 if footer not found", async () => {
+      (prisma.footer.delete as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app).delete(`/admin/footer/${mockFooter.id}`);
+
+      expect(res.status).toBe(404);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.footerNotFound
+      );
+    });
+
+    it("handles DB error (500)", async () => {
+      (prisma.footer.delete as jest.Mock).mockRejectedValueOnce(
+        new Error("DB")
+      );
+
+      const res = await request(app).delete(`/admin/footer/${mockFooter.id}`);
+
+      expect(res.status).toBe(500);
+    });
+  });
 });
