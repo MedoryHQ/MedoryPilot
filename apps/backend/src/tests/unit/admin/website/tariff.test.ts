@@ -145,4 +145,57 @@ describe("Admin Tariff routes — /admin/tariff", () => {
       expect(res).toHaveStatus(500);
     });
   });
+
+  describe("GET /admin/tariff/:id (fetchTariff)", () => {
+    it("fetches active tariff when type is 'active'", async () => {
+      (prisma.tariff.findUnique as jest.Mock).mockResolvedValueOnce(mockTariff);
+
+      const res = await request(app)
+        .get(`/admin/tariff/${mockTariff.id}`)
+        .send({ type: "active" });
+
+      expect(res).toHaveStatus(200);
+      expect(res.body.data).toBeDefined();
+      expect(res.body.type).toBe("active");
+      expect(prisma.tariff.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: mockTariff.id } })
+      );
+    });
+
+    it("fetches history tariff when type is 'history'", async () => {
+      (prisma.tariffHistory.findUnique as jest.Mock).mockResolvedValueOnce(
+        mockTariffHistory
+      );
+
+      const res = await request(app)
+        .get(`/admin/tariff/${mockTariffHistory.id}`)
+        .send({ type: "history" });
+
+      expect(res).toHaveStatus(200);
+      expect(res.body.data).toBeDefined();
+      expect(res.body.type).toBe("history");
+      expect(prisma.tariffHistory.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: mockTariffHistory.id } })
+      );
+    });
+
+    it("returns 404 when tariff not found", async () => {
+      (prisma.tariff.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .get(`/admin/tariff/${mockTariff.id}`)
+        .send({ type: "active" });
+
+      expect(res).toHaveStatus(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid id (UUID)", async () => {
+      const res = await request(app)
+        .get("/admin/tariff/invalid-id")
+        .send({ type: "active" });
+      expect(res).toHaveStatus(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
