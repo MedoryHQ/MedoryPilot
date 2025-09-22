@@ -1,6 +1,10 @@
 import { prisma } from "@/config";
 import { NextFunction, Response, Request } from "express";
-import { logCustomerCatchyError as logCatchyError } from "@/utils";
+import {
+  logCustomerCatchyError as logCatchyError,
+  logCustomerWarn as logWarn,
+  sendError,
+} from "@/utils";
 
 export const fetchIntroduce = async (
   req: Request,
@@ -23,6 +27,17 @@ export const fetchIntroduce = async (
         },
       },
     });
+
+    if (!introduce) {
+      logWarn("Introduce fetch failed: introduce not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "introduce_fetch_failed",
+      });
+      return sendError(req, res, 404, "introduceNotFound");
+    }
 
     return res.status(200).json({ data: introduce });
   } catch (error) {
