@@ -152,4 +152,36 @@ describe("Admin News routes — /admin/news", () => {
       expect(res).toHaveStatus(400);
     });
   });
+
+  describe("POST /admin/news", () => {
+    const createPayload = {
+      slug: "new-news",
+      showInLanding: true,
+      order: 2,
+      translations: {
+        en: { content: "English content" },
+        ka: { content: "ქართული ტექსტი" },
+      },
+    };
+
+    it("creates news successfully", async () => {
+      (prisma.news.create as jest.Mock).mockResolvedValueOnce({
+        ...mockNews,
+        ...createPayload,
+      });
+
+      const res = await request(app).post("/admin/news").send(createPayload);
+
+      expect(res).toHaveStatus(201);
+      expect(res.body.data.slug).toBe("new-news");
+      expect(prisma.news.create).toHaveBeenCalled();
+    });
+
+    it("returns 400 for invalid body", async () => {
+      const res = await request(app)
+        .post("/admin/news")
+        .send({ slug: "", translations: {} });
+      expect(res).toHaveStatus(400);
+    });
+  });
 });
