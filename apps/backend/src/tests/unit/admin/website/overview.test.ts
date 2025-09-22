@@ -80,7 +80,7 @@ describe("Admin Overview routes — /admin/overview", () => {
         footers: 1,
         socials: 6,
         pages: 9,
-        tariffs: 5, // 3 + 2
+        tariffs: 5,
       });
 
       expect(prisma.header.count).toHaveBeenCalled();

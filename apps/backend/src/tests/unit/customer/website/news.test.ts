@@ -77,7 +77,7 @@ afterAll(async () => {
   } catch {}
 });
 
-describe.skip("Customer news routes — /news", () => {
+describe("Customer news routes — /news", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });

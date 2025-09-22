@@ -72,7 +72,7 @@ afterAll(async () => {
   } catch {}
 });
 
-describe.skip("Customer social routes — /social", () => {
+describe("Customer social routes — /social", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
