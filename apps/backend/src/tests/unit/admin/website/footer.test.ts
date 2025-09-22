@@ -129,4 +129,37 @@ describe("Admin Footer routes — /admin/footer", () => {
       expect(res.status).toBe(500);
     });
   });
+
+  describe("POST /admin/footer", () => {
+    const payload = {
+      phone: "+995555555555",
+      email: "email.test@gmail.com",
+      socials: [],
+      pages: [],
+    };
+
+    it("creates footer successfully", async () => {
+      (prisma.footer.count as jest.Mock).mockResolvedValueOnce(0);
+      (prisma.footer.create as jest.Mock).mockResolvedValueOnce(mockFooter);
+
+      const res = await request(app).post("/admin/footer").send(payload);
+      console.log(res.status, res.body, res.body.error, res.body.errors);
+
+      expect(res.status).toBe(201);
+      expect(res.body.data).toEqual(mockFooter);
+      expect(prisma.footer.create).toHaveBeenCalled();
+    });
+
+    it("returns 400 if footer already exists", async () => {
+      (prisma.footer.count as jest.Mock).mockResolvedValueOnce(1);
+
+      const res = await request(app).post("/admin/footer").send(payload);
+
+      console.log(res.status, res.body, res.body.error, res.body.errors);
+      expect(res.status).toBe(400);
+      expect(res.body.error).toEqual(
+        require("@/utils").errorMessages.footerAlreadyExists
+      );
+    });
+  });
 });
