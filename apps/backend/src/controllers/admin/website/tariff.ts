@@ -21,28 +21,17 @@ export const fetchTariffs = async (
   next: NextFunction
 ) => {
   try {
-    const { skip, take, orderBy } = getPaginationAndFilters(req);
-
-    const [currentTariff, tariffs, tariffCount, historyCount] =
-      await Promise.all([
-        prisma.tariff.findFirst(),
-        prisma.tariff.findMany({
-          skip,
-          take: take - 1,
-          orderBy,
-        }),
-        prisma.tariff.count(),
-        prisma.tariffHistory.count(),
-      ]);
+    const [currentTariff, tariffCount, historyCount] = await Promise.all([
+      prisma.tariff.findFirst(),
+      prisma.tariff.count(),
+      prisma.tariffHistory.count(),
+    ]);
 
     return res.status(200).json({
       data: {
         currentTariff,
-        tariffs,
       },
       count: {
-        tariffs: tariffCount,
-        tariffHistory: historyCount,
         total: tariffCount + historyCount,
       },
     });
