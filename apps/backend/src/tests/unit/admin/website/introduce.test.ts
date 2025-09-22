@@ -145,4 +145,36 @@ describe("Admin Introduce routes — /admin/introduce", () => {
       expect(res).toHaveStatus(500);
     });
   });
+
+  describe("POST /admin/introduce", () => {
+    const validPayload = {
+      translations: {
+        en: { headline: "Hello", description: "English desc" },
+        ka: { headline: "გამარჯობა", description: "ქართული აღწერა" },
+      },
+    };
+
+    it("creates introduce successfully", async () => {
+      (prisma.introduce.create as jest.Mock).mockResolvedValueOnce(
+        mockIntroduce
+      );
+
+      const res = await request(app)
+        .post("/admin/introduce")
+        .send(validPayload);
+
+      expect(res).toHaveStatus(201);
+      expect(res.body.data).toBeDefined();
+      expect(prisma.introduce.create).toHaveBeenCalled();
+    });
+
+    it("returns 400 when translations missing or invalid", async () => {
+      const res = await request(app)
+        .post("/admin/introduce")
+        .send({ translations: {} });
+
+      expect(res).toHaveStatus(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
