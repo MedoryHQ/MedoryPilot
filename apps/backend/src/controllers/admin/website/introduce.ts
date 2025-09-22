@@ -64,12 +64,7 @@ export const fetchIntroduce = async (
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params;
-
-    const introduce = await prisma.introduce.findUnique({
-      where: {
-        id,
-      },
+    const introduce = await prisma.introduce.findFirst({
       include: {
         translations: {
           include: {
