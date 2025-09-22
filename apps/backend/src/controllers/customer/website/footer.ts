@@ -1,6 +1,10 @@
 import { prisma } from "@/config";
 import { NextFunction, Response, Request } from "express";
-import { logCustomerCatchyError as logCatchyError } from "@/utils";
+import {
+  logCustomerCatchyError as logCatchyError,
+  logCustomerWarn as logWarn,
+  sendError,
+} from "@/utils";
 
 export const fetchFooter = async (
   req: Request,
@@ -40,7 +44,16 @@ export const fetchFooter = async (
         },
       },
     });
+    if (!footer) {
+      logWarn("Footer fetch failed: footer not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
 
+        event: "footer_fetch_failed",
+      });
+      return sendError(req, res, 404, "footerNotFound");
+    }
     return res.status(200).json({ data: footer });
   } catch (error) {
     logCatchyError("fetch_footer_exception", error, {
