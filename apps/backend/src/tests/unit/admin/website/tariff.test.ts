@@ -245,4 +245,41 @@ describe("Admin Tariff routes — /admin/tariff", () => {
       expect(res).toHaveStatus(400);
     });
   });
+
+  describe("PUT /admin/tariff/:id", () => {
+    it("updates tariff successfully", async () => {
+      (prisma.tariff.findUnique as jest.Mock).mockResolvedValueOnce(mockTariff);
+      (prisma.tariff.update as jest.Mock).mockResolvedValueOnce({
+        ...mockTariff,
+        price: 150,
+      });
+
+      const res = await request(app)
+        .put(`/admin/tariff/${mockTariff.id}`)
+        .send({ price: 150 });
+
+      expect(res).toHaveStatus(200);
+      expect(res.body.data.price).toBe(150);
+      expect(prisma.tariff.update).toHaveBeenCalled();
+    });
+
+    it("returns 404 when tariff not found", async () => {
+      (prisma.tariff.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .put(`/admin/tariff/${mockTariff.id}`)
+        .send({ price: 100 });
+
+      expect(res).toHaveStatus(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid body", async () => {
+      const res = await request(app)
+        .put(`/admin/tariff/${mockTariff.id}`)
+        .send({ price: "not-a-number" });
+      expect(res).toHaveStatus(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
