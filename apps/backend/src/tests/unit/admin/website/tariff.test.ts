@@ -198,4 +198,51 @@ describe("Admin Tariff routes — /admin/tariff", () => {
       expect(res.body).toHaveProperty("errors");
     });
   });
+
+  describe("POST /admin/tariff", () => {
+    it("creates tariff successfully when no current tariff exists", async () => {
+      (prisma.tariff.findFirst as jest.Mock).mockResolvedValueOnce(null);
+      (prisma.tariff.create as jest.Mock).mockResolvedValueOnce({
+        ...mockTariff,
+        price: 120,
+      });
+
+      const res = await request(app).post("/admin/tariff").send({ price: 120 });
+
+      expect(res).toHaveStatus(201);
+      expect(res.body.data).toBeDefined();
+      expect(res.body.data.price).toBe(120);
+      expect(prisma.tariff.create).toHaveBeenCalled();
+    });
+
+    it("creates tariff and moves previous current to history when current exists", async () => {
+      const existing = {
+        ...mockTariff,
+        price: 50,
+        createdAt: new Date("2023-01-01"),
+      };
+      (prisma.tariff.findFirst as jest.Mock).mockResolvedValueOnce(existing);
+
+      const newTariff = { ...mockTariff, id: "new-id", price: 200 };
+      (prisma.tariff.create as jest.Mock).mockResolvedValueOnce(newTariff);
+      (prisma.tariffHistory.create as jest.Mock).mockResolvedValueOnce({
+        ...mockTariffHistory,
+      });
+      (prisma.tariff.delete as jest.Mock).mockResolvedValueOnce(existing);
+
+      const res = await request(app).post("/admin/tariff").send({ price: 200 });
+
+      expect(res).toHaveStatus(201);
+      expect(res.body.data).toBeDefined();
+      expect(prisma.tariffHistory.create).toHaveBeenCalled();
+      expect(prisma.tariff.delete).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: existing.id } })
+      );
+    });
+
+    it("returns 400 for invalid body", async () => {
+      const res = await request(app).post("/admin/tariff").send({});
+      expect(res).toHaveStatus(400);
+    });
+  });
 });
