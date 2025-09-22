@@ -3,19 +3,23 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import { prisma } from "@/config";
 import { authMatchers } from "@/tests/helpers/authMatchers";
-import { socialRouter } from "@/routes/customer/website/social";
+import { footerRouter } from "@/routes/customer/website/footer";
 
 jest.mock("@/config", () => ({
   prisma: {
-    social: {
-      findMany: jest.fn(),
-      count: jest.fn(),
+    footer: {
+      findFirst: jest.fn(),
     },
     $disconnect: jest.fn(),
   },
   getEnvVariable: jest.fn(() => {
     return "test";
   }),
+}));
+
+jest.mock("@sendgrid/mail", () => ({
+  setApiKey: jest.fn(),
+  send: jest.fn(),
 }));
 
 jest.mock("@/middlewares/global/validationHandler", () => {
@@ -35,6 +39,11 @@ jest.mock("@/utils", () => {
   const actual = jest.requireActual("@/utils");
   return {
     ...actual,
+    logCustomerWarn: jest.fn(),
+    logCustomerCatchyError: jest.fn(),
+    sendError: jest.fn((req, res, status, key) =>
+      res.status(status).json({ error: key })
+    ),
     generateWhereInput: jest.fn((search: any, fields: any) => ({})),
     getPaginationAndFilters: jest.fn((req: any) => {
       const page = Number(req.query.page) || 1;
@@ -46,8 +55,6 @@ jest.mock("@/utils", () => {
         search: req.query.search,
       };
     }),
-
-    logCustomerCatchyError: jest.fn(),
   };
 });
 
@@ -56,14 +63,16 @@ expect.extend(authMatchers);
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-app.use("/social", socialRouter);
+app.use("/footer", footerRouter);
 
-const mockSocial = {
-  id: "33333333-3333-3333-3333-333333333333",
-  url: "https://example.com",
-  name: "example",
-  icon: null,
-  footerId: "44444444-4444-4444-4444-444444444444",
+const mockFooter = {
+  id: "11111111-1111-1111-1111-111111111111",
+  phone: "+995555555555",
+  email: "email.test@gmail.com",
+  pages: [],
+  socials: [],
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
 };
 
 afterAll(async () => {
@@ -72,31 +81,37 @@ afterAll(async () => {
   } catch {}
 });
 
-describe("Customer social routes — /social", () => {
+describe("Customer footer routes — /footer", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe("GET /social", () => {
-    it("returns list of socials with count", async () => {
-      (prisma.social.findMany as jest.Mock).mockResolvedValueOnce([mockSocial]);
-      (prisma.social.count as jest.Mock).mockResolvedValueOnce(1);
+  describe("GET /footer", () => {
+    it("returns the footer when found", async () => {
+      (prisma.footer.findFirst as jest.Mock).mockResolvedValueOnce(mockFooter);
 
-      const res = await request(app).get("/social");
+      const res = await request(app).get("/footer");
 
       expect(res).toHaveStatus(200);
-      expect(res.body).toHaveProperty("data");
-      expect(res.body.data).toHaveLength(1);
-      expect(res.body.count).toEqual(1);
-      expect(prisma.social.findMany).toHaveBeenCalled();
-      expect(prisma.social.count).toHaveBeenCalled();
+      expect(res.body.data).toBeDefined();
+      expect(prisma.footer.findFirst).toHaveBeenCalled();
+    });
+
+    it("returns 404 when footer not found", async () => {
+      (prisma.footer.findFirst as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app).get("/footer");
+
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error", "footerNotFound");
     });
 
     it("handles DB error gracefully", async () => {
-      (prisma.social.findMany as jest.Mock).mockRejectedValueOnce(
-        new Error("DB error")
+      (prisma.footer.findFirst as jest.Mock).mockRejectedValueOnce(
+        new Error("DB")
       );
-      const res = await request(app).get("/social");
+
+      const res = await request(app).get("/footer");
       expect(res).toHaveStatus(500);
     });
   });

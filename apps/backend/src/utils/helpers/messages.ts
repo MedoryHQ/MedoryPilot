@@ -62,7 +62,7 @@ export const errorMessages = {
   },
   tariffNotFound: {
     en: "Tariff not found",
-    ka: "Tariff ვერ მოიძებნა",
+    ka: "ტარიფი ვერ მოიძებნა",
   },
   faqNotFound: {
     en: "FAQ not found",
@@ -136,7 +136,7 @@ export const errorMessages = {
   },
   tariffDeleted: {
     en: "Tariff deleted successfully",
-    ka: "Tariff წარმატებით წაიშალა",
+    ka: "ტარიფი წარმატებით წაიშალა",
   },
   FAQDeleted: {
     en: "FAQ deleted successfully",

@@ -3,13 +3,14 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import { prisma } from "@/config";
 import { authMatchers } from "@/tests/helpers/authMatchers";
-import { socialRouter } from "@/routes/customer/website/social";
+import { newsRouter } from "@/routes/customer/website/news";
 
 jest.mock("@/config", () => ({
   prisma: {
-    social: {
+    news: {
       findMany: jest.fn(),
       count: jest.fn(),
+      findUnique: jest.fn(),
     },
     $disconnect: jest.fn(),
   },
@@ -56,14 +57,18 @@ expect.extend(authMatchers);
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-app.use("/social", socialRouter);
+app.use("/news", newsRouter);
 
-const mockSocial = {
-  id: "33333333-3333-3333-3333-333333333333",
-  url: "https://example.com",
-  name: "example",
-  icon: null,
-  footerId: "44444444-4444-4444-4444-444444444444",
+const mockNews = {
+  id: "11111111-1111-1111-1111-111111111111",
+  slug: "test-news",
+  order: 1,
+  showInLanding: true,
+  background: null,
+  translations: [
+    { content: "Hello", language: { code: "en" } },
+    { content: "გამარჯობა", language: { code: "ka" } },
+  ],
 };
 
 afterAll(async () => {
@@ -72,32 +77,58 @@ afterAll(async () => {
   } catch {}
 });
 
-describe("Customer social routes — /social", () => {
+describe("Customer news routes — /news", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe("GET /social", () => {
-    it("returns list of socials with count", async () => {
-      (prisma.social.findMany as jest.Mock).mockResolvedValueOnce([mockSocial]);
-      (prisma.social.count as jest.Mock).mockResolvedValueOnce(1);
+  describe("GET /news", () => {
+    it("returns list of newses with count", async () => {
+      (prisma.news.findMany as jest.Mock).mockResolvedValueOnce([mockNews]);
+      (prisma.news.count as jest.Mock).mockResolvedValueOnce(1);
 
-      const res = await request(app).get("/social");
+      const res = await request(app).get("/news");
 
       expect(res).toHaveStatus(200);
       expect(res.body).toHaveProperty("data");
       expect(res.body.data).toHaveLength(1);
       expect(res.body.count).toEqual(1);
-      expect(prisma.social.findMany).toHaveBeenCalled();
-      expect(prisma.social.count).toHaveBeenCalled();
+      expect(prisma.news.findMany).toHaveBeenCalled();
+      expect(prisma.news.count).toHaveBeenCalled();
     });
 
     it("handles DB error gracefully", async () => {
-      (prisma.social.findMany as jest.Mock).mockRejectedValueOnce(
+      (prisma.news.findMany as jest.Mock).mockRejectedValueOnce(
         new Error("DB error")
       );
-      const res = await request(app).get("/social");
+      const res = await request(app).get("/news");
       expect(res).toHaveStatus(500);
+    });
+  });
+
+  describe("GET /admin/news/:slug", () => {
+    it("returns single news when found", async () => {
+      (prisma.news.findUnique as jest.Mock).mockResolvedValueOnce(mockNews);
+
+      const res = await request(app).get(`/news/${mockNews.slug}`);
+
+      expect(res).toHaveStatus(200);
+      expect(res.body.data.slug).toBe(mockNews.slug);
+      expect(prisma.news.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { slug: mockNews.slug } })
+      );
+    });
+
+    it("returns 404 when not found", async () => {
+      (prisma.news.findUnique as jest.Mock).mockResolvedValueOnce(null);
+      const res = await request(app).get(`/news/${mockNews.slug}`);
+      expect(res).toHaveStatus(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid slug", async () => {
+      const res = await request(app).get("/news/INVALID SLUG");
+      expect(res).toHaveStatus(400);
     });
   });
 });
