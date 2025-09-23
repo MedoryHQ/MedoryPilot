@@ -108,4 +108,38 @@ describe("Customer pageComponent routes — /page-component", () => {
       expect(res).toHaveStatus(500);
     });
   });
+
+  describe("GET /admin/page-component/:slug", () => {
+    it("returns single pageComponent when found", async () => {
+      (prisma.pageComponent.findUnique as jest.Mock).mockResolvedValueOnce(
+        mockPageComponent
+      );
+
+      const res = await request(app).get(
+        `/page-component/${mockPageComponent.slug}`
+      );
+
+      expect(res).toHaveStatus(200);
+      expect(res.body.data.slug).toBe(mockPageComponent.slug);
+      expect(prisma.pageComponent.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { slug: mockPageComponent.slug } })
+      );
+    });
+
+    it("returns 404 when not found", async () => {
+      (prisma.pageComponent.findUnique as jest.Mock).mockResolvedValueOnce(
+        null
+      );
+      const res = await request(app).get(
+        `/page-component/${mockPageComponent.slug}`
+      );
+      expect(res).toHaveStatus(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid slug", async () => {
+      const res = await request(app).get("/page-component/INVALID SLUG");
+      expect(res).toHaveStatus(400);
+    });
+  });
 });
