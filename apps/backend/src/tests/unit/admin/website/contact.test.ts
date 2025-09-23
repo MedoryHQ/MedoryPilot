@@ -174,4 +174,24 @@ describe("Admin Contact API — /contact", () => {
       expect(res.status).toBe(500);
     });
   });
+
+  describe("POST /contact", () => {
+    it("creates a contact successfully", async () => {
+      (prisma.contact.create as jest.Mock).mockResolvedValueOnce(mockContact);
+
+      const res = await request(app)
+        .post("/contact")
+        .send({
+          location: "Tbilisi",
+          translations: {
+            en: { title: "Hello", description: "World" },
+            ka: { title: "გამარჯობა", description: "მსოფლიო" },
+          },
+        });
+
+      expect(res.status).toBe(201);
+      expect(res.body.data).toHaveProperty("id", mockContact.id);
+      expect(prisma.contact.create).toHaveBeenCalled();
+    });
+  });
 });
