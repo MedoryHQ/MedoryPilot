@@ -231,4 +231,46 @@ describe("Admin Header API — /header", () => {
       expect(res.status).toBe(500);
     });
   });
+
+  describe("PUT /header/:id", () => {
+    it("updates header successfully", async () => {
+      (prisma.header.findUnique as jest.Mock).mockResolvedValueOnce(mockHeader);
+      (prisma.header.update as jest.Mock).mockResolvedValueOnce({
+        ...mockHeader,
+        active: false,
+      });
+
+      const res = await request(app)
+        .put(`/header/${mockHeader.id}`)
+        .send(updatePayload);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveProperty("active", false);
+      expect(prisma.header.update).toHaveBeenCalled();
+    });
+
+    it("returns 404 when header not found", async () => {
+      (prisma.header.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .put(`/header/${mockHeader.id}`)
+        .send(updatePayload);
+
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("handles DB error", async () => {
+      (prisma.header.findUnique as jest.Mock).mockResolvedValueOnce(mockHeader);
+      (prisma.header.update as jest.Mock).mockRejectedValueOnce(
+        new Error("DB error")
+      );
+
+      const res = await request(app)
+        .put(`/header/${mockHeader.id}`)
+        .send(updatePayload);
+
+      expect(res.status).toBe(500);
+    });
+  });
 });
