@@ -139,4 +139,39 @@ describe("Admin Contact API — /contact", () => {
       expect(res.status).toBe(500);
     });
   });
+
+  describe("DELETE /contact", () => {
+    it("deletes contact when found", async () => {
+      (prisma.contact.deleteMany as jest.Mock).mockResolvedValueOnce({
+        count: 1,
+      });
+
+      const res = await request(app).delete("/contact");
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty("message");
+      expect(prisma.contact.deleteMany).toHaveBeenCalled();
+    });
+
+    it("returns 404 when nothing deleted", async () => {
+      (prisma.contact.deleteMany as jest.Mock).mockResolvedValueOnce({
+        count: 0,
+      });
+
+      const res = await request(app).delete("/contact");
+
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("handles DB error", async () => {
+      (prisma.contact.deleteMany as jest.Mock).mockRejectedValueOnce(
+        new Error("DB error")
+      );
+
+      const res = await request(app).delete("/contact");
+
+      expect(res.status).toBe(500);
+    });
+  });
 });
