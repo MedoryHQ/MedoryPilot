@@ -216,4 +216,22 @@ describe("Admin PageComponent routes — /admin/page-component", () => {
       expect(res).toHaveStatus(404);
     });
   });
+
+  describe("DELETE /:slug", () => {
+    it("deletes a pageComponent", async () => {
+      (prisma.pageComponent.delete as jest.Mock).mockResolvedValueOnce(
+        mockPageComponent
+      );
+      const res = await request(app).delete(
+        `/admin/page-component/${mockPageComponent.slug}`
+      );
+      expect(res).toHaveStatus(200);
+    });
+
+    it("returns 404 if not found", async () => {
+      (prisma.pageComponent.delete as jest.Mock).mockResolvedValueOnce(null);
+      const res = await request(app).delete("/admin/page-component/missing");
+      expect(res).toHaveStatus(404);
+    });
+  });
 });
