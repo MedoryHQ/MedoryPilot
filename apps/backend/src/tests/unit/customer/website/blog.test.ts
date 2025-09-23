@@ -111,4 +111,30 @@ describe("Customer blog routes — /blog", () => {
       expect(res).toHaveStatus(500);
     });
   });
+
+  describe("GET /admin/blog/:slug", () => {
+    it("returns single blog when found", async () => {
+      (prisma.blog.findUnique as jest.Mock).mockResolvedValueOnce(mockBlog);
+
+      const res = await request(app).get(`/blog/${mockBlog.slug}`);
+
+      expect(res).toHaveStatus(200);
+      expect(res.body.data.slug).toBe(mockBlog.slug);
+      expect(prisma.blog.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { slug: mockBlog.slug } })
+      );
+    });
+
+    it("returns 404 when not found", async () => {
+      (prisma.blog.findUnique as jest.Mock).mockResolvedValueOnce(null);
+      const res = await request(app).get(`/blog/${mockBlog.slug}`);
+      expect(res).toHaveStatus(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid slug", async () => {
+      const res = await request(app).get("/blog/INVALID SLUG");
+      expect(res).toHaveStatus(400);
+    });
+  });
 });
