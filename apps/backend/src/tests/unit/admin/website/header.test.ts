@@ -178,4 +178,35 @@ describe("Admin Header API — /header", () => {
       expect(res.status).toBe(500);
     });
   });
+
+  describe("DELETE /header/:id", () => {
+    it("deletes header successfully", async () => {
+      (prisma.header.delete as jest.Mock).mockResolvedValueOnce(mockHeader);
+
+      const res = await request(app).delete(`/header/${mockHeader.id}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty("message");
+      expect(prisma.header.delete).toHaveBeenCalled();
+    });
+
+    it("returns 404 when not found", async () => {
+      (prisma.header.delete as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app).delete(`/header/${mockHeader.id}`);
+
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("handles DB error", async () => {
+      (prisma.header.delete as jest.Mock).mockRejectedValueOnce(
+        new Error("DB error")
+      );
+
+      const res = await request(app).delete(`/header/${mockHeader.id}`);
+
+      expect(res.status).toBe(500);
+    });
+  });
 });
