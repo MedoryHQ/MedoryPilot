@@ -178,4 +178,42 @@ describe("Admin PageComponent routes — /admin/page-component", () => {
       expect(res).toHaveStatus(400);
     });
   });
+
+  describe("PUT /:slug", () => {
+    it("updates a pageComponent", async () => {
+      (prisma.pageComponent.findUnique as jest.Mock).mockResolvedValueOnce(
+        mockPageComponent
+      );
+      (prisma.pageComponent.update as jest.Mock).mockResolvedValueOnce(
+        mockPageComponent
+      );
+      const res = await request(app)
+        .put(`/admin/page-component/${mockPageComponent.slug}`)
+        .send({
+          slug: "test-component",
+          translations: {
+            en: { name: "Updated", content: "Content" },
+            ka: { name: "განახლებული", content: "კონტენტი" },
+          },
+        });
+      expect(res).toHaveStatus(200);
+      expect(res.body.data.slug).toBe("test-component");
+    });
+
+    it("returns 404 if not found", async () => {
+      (prisma.pageComponent.findUnique as jest.Mock).mockResolvedValueOnce(
+        null
+      );
+      const res = await request(app)
+        .put(`/admin/page-component/missing`)
+        .send({
+          slug: "missing",
+          translations: {
+            en: { name: "Updated", content: "Content" },
+            ka: { name: "განახლებული", content: "კონტენტი" },
+          },
+        });
+      expect(res).toHaveStatus(404);
+    });
+  });
 });
