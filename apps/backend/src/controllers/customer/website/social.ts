@@ -11,16 +11,19 @@ export const fetchSocials = async (
   try {
     const { skip, take, orderBy } = getPaginationAndFilters(req);
 
-    const socials = await prisma.social.findMany({
-      skip,
-      take,
-      orderBy,
-      select: {
-        icon: true,
-      },
-    });
+    const [socials, count] = await Promise.all([
+      prisma.social.findMany({
+        skip,
+        take,
+        orderBy,
+        select: {
+          icon: true,
+        },
+      }),
+      prisma.social.count(),
+    ]);
 
-    return res.status(200).json({ data: socials });
+    return res.status(200).json({ data: socials, count });
   } catch (error) {
     logCatchyError("Fetch socials exception", error, {
       ip: (req as any).hashedIp,

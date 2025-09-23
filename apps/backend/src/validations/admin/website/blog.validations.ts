@@ -27,7 +27,7 @@ export const createBlogValidation = [
         { name: "title", required: true },
       ])
     ),
-  relationArrayValidation("categories", "category", { min: 1 }),
+  relationArrayValidation("categories", "category", { min: 1, optional: true }),
   ...generateMetaValidations(),
 ];
 
