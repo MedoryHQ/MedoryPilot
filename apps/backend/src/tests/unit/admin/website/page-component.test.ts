@@ -131,4 +131,25 @@ describe("Admin PageComponent routes — /admin/page-component", () => {
       expect(res).toHaveStatus(500);
     });
   });
+
+  describe("GET /:slug", () => {
+    it("returns a pageComponent when found", async () => {
+      (prisma.pageComponent.findUnique as jest.Mock).mockResolvedValueOnce(
+        mockPageComponent
+      );
+      const res = await request(app).get(
+        `/admin/page-component/${mockPageComponent.slug}`
+      );
+      expect(res).toHaveStatus(200);
+      expect(res.body.data.slug).toBe(mockPageComponent.slug);
+    });
+
+    it("returns 404 when not found", async () => {
+      (prisma.pageComponent.findUnique as jest.Mock).mockResolvedValueOnce(
+        null
+      );
+      const res = await request(app).get("/admin/page-component/missing");
+      expect(res).toHaveStatus(404);
+    });
+  });
 });
