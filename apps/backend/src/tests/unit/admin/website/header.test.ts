@@ -209,4 +209,26 @@ describe("Admin Header API — /header", () => {
       expect(res.status).toBe(500);
     });
   });
+
+  describe("POST /header", () => {
+    it("creates header successfully", async () => {
+      (prisma.header.create as jest.Mock).mockResolvedValueOnce(mockHeader);
+
+      const res = await request(app).post("/header").send(createPayload);
+
+      expect(res.status).toBe(201);
+      expect(res.body.data).toHaveProperty("id", mockHeader.id);
+      expect(prisma.header.create).toHaveBeenCalled();
+    });
+
+    it("handles DB error", async () => {
+      (prisma.header.create as jest.Mock).mockRejectedValueOnce(
+        new Error("DB error")
+      );
+
+      const res = await request(app).post("/header").send(createPayload);
+
+      expect(res.status).toBe(500);
+    });
+  });
 });
