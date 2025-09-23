@@ -194,4 +194,35 @@ describe("Admin Contact API — /contact", () => {
       expect(prisma.contact.create).toHaveBeenCalled();
     });
   });
+
+  describe("PUT /contact/:id", () => {
+    it("updates a contact successfully", async () => {
+      (prisma.contact.findUnique as jest.Mock).mockResolvedValueOnce(
+        mockContact
+      );
+      (prisma.contact.update as jest.Mock).mockResolvedValueOnce({
+        ...mockContact,
+        location: "Updated",
+      });
+
+      const res = await request(app)
+        .put(`/contact/${mockContact.id}`)
+        .send(updatePayload);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveProperty("location", "Updated");
+      expect(prisma.contact.update).toHaveBeenCalled();
+    });
+
+    it("returns 404 when contact not found", async () => {
+      (prisma.contact.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .put(`/contact/${mockContact.id}`)
+        .send(updatePayload);
+
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+  });
 });
