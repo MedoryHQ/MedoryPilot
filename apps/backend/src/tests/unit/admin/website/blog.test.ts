@@ -226,4 +226,29 @@ describe("Admin Blog routes — /admin/blogs", () => {
       expect(res).toHaveStatus(400);
     });
   });
+
+  describe("DELETE /admin/blogs/:slug", () => {
+    it("deletes blog successfully", async () => {
+      (prisma.blog.delete as jest.Mock).mockResolvedValueOnce(mockBlog);
+
+      const res = await request(app).delete(`/admin/blogs/${mockBlog.slug}`);
+
+      expect(res).toHaveStatus(200);
+      expect(res.body).toHaveProperty("message");
+      expect(prisma.blog.delete).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { slug: mockBlog.slug } })
+      );
+    });
+
+    it("handles DB error gracefully", async () => {
+      (prisma.blog.delete as jest.Mock).mockRejectedValueOnce(new Error("DB"));
+      const res = await request(app).delete(`/admin/blogs/${mockBlog.slug}`);
+      expect(res).toHaveStatus(500);
+    });
+
+    it("returns 400 for invalid slug", async () => {
+      const res = await request(app).delete("/admin/blogs/INVALID SLUG!!");
+      expect(res).toHaveStatus(400);
+    });
+  });
 });
