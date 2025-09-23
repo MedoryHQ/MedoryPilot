@@ -1,6 +1,10 @@
 import { prisma } from "@/config";
 import { NextFunction, Response, Request } from "express";
-import { logCustomerCatchyError as logCatchyError } from "@/utils";
+import {
+  logCustomerCatchyError as logCatchyError,
+  logCustomerWarn as logWarn,
+  sendError,
+} from "@/utils";
 
 export const fetchHeader = async (
   req: Request,
@@ -29,7 +33,16 @@ export const fetchHeader = async (
         },
       },
     });
+    if (!header) {
+      logWarn("Header fetch failed: header not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
 
+        event: "header_fetch_failed",
+      });
+      return sendError(req, res, 404, "headerNotFound");
+    }
     return res.status(200).json({ data: header });
   } catch (error) {
     logCatchyError("fetch_header_exception", error, {
