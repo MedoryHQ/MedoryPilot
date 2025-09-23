@@ -152,4 +152,30 @@ describe("Admin PageComponent routes — /admin/page-component", () => {
       expect(res).toHaveStatus(404);
     });
   });
+
+  describe("POST /", () => {
+    it("creates a pageComponent", async () => {
+      (prisma.pageComponent.create as jest.Mock).mockResolvedValueOnce(
+        mockPageComponent
+      );
+      const res = await request(app)
+        .post("/admin/page-component")
+        .send({
+          slug: "test-component",
+          translations: {
+            en: { name: "Test", content: "Content" },
+            ka: { name: "ტესტი", content: "კონტენტი" },
+          },
+        });
+      expect(res).toHaveStatus(201);
+      expect(res.body.data.slug).toBe("test-component");
+    });
+
+    it("returns 400 for invalid slug", async () => {
+      const res = await request(app)
+        .post("/admin/page-component")
+        .send({ slug: "INVALID SLUG" });
+      expect(res).toHaveStatus(400);
+    });
+  });
 });
