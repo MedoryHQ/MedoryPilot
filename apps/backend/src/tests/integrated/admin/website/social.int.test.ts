@@ -284,4 +284,32 @@ describe("Admin Social (integration-style) — /social", () => {
       expect(res.body).toHaveProperty("errors");
     });
   });
+
+  describe("DELETE /social/:id", () => {
+    it("deletes social successfully", async () => {
+      (prisma.social.delete as jest.Mock).mockResolvedValueOnce(mockSocial);
+
+      const res = await request(app).delete(`/social/${mockSocial.id}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty("message");
+      expect(prisma.social.delete).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: mockSocial.id } })
+      );
+    });
+
+    it("handles delete DB error (500)", async () => {
+      (prisma.social.delete as jest.Mock).mockRejectedValueOnce(
+        new Error("DB err")
+      );
+      const res = await request(app).delete(`/social/${mockSocial.id}`);
+      expect(res.status).toBe(500);
+    });
+
+    it("returns 400 for invalid UUID", async () => {
+      const res = await request(app).delete("/social/not-uuid");
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
