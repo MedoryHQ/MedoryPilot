@@ -196,4 +196,27 @@ describe("Admin Service (integration-style) — /service", () => {
       expect(res.body).toHaveProperty("error");
     });
   });
+
+  describe("POST /service", () => {
+    it("creates service successfully", async () => {
+      (prisma.service.create as jest.Mock).mockResolvedValueOnce({
+        ...mockService,
+        translations: createPayload.translations,
+      });
+
+      const res = await request(app).post("/service").send(createPayload);
+
+      expect(res.status).toBe(201);
+      expect(res.body.data).toBeDefined();
+      expect(prisma.service.create).toHaveBeenCalled();
+    });
+
+    it("returns 400 when translations missing or invalid", async () => {
+      const res = await request(app)
+        .post("/service")
+        .send({ translations: {} });
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
