@@ -278,4 +278,32 @@ describe("Admin Service (integration-style) — /service", () => {
       expect(res.body).toHaveProperty("errors");
     });
   });
+
+  describe("DELETE /service/:id", () => {
+    it("deletes service successfully", async () => {
+      (prisma.service.delete as jest.Mock).mockResolvedValueOnce(mockService);
+
+      const res = await request(app).delete(`/service/${mockService.id}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty("message");
+      expect(prisma.service.delete).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: mockService.id } })
+      );
+    });
+
+    it("handles delete DB error (500)", async () => {
+      (prisma.service.delete as jest.Mock).mockRejectedValueOnce(
+        new Error("DB err")
+      );
+      const res = await request(app).delete(`/service/${mockService.id}`);
+      expect(res.status).toBe(500);
+    });
+
+    it("returns 400 for invalid UUID", async () => {
+      const res = await request(app).delete("/service/not-uuid");
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
