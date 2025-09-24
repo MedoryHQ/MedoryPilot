@@ -166,4 +166,34 @@ describe("Admin Service (integration-style) — /service", () => {
       expect(res.body.count).toBe(0);
     });
   });
+
+  describe("GET /service/:id", () => {
+    it("returns single service when found", async () => {
+      (prisma.service.findUnique as jest.Mock).mockResolvedValueOnce(
+        mockService
+      );
+
+      const res = await request(app).get(`/service/${mockService.id}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toBeDefined();
+      expect(res.body.data.id).toEqual(mockService.id);
+      expect(prisma.service.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: mockService.id } })
+      );
+    });
+
+    it("returns 404 when not found", async () => {
+      (prisma.service.findUnique as jest.Mock).mockResolvedValueOnce(null);
+      const res = await request(app).get(`/service/${mockService.id}`);
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid UUID", async () => {
+      const res = await request(app).get("/service/invalid-uuid");
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+  });
 });
