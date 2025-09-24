@@ -168,4 +168,31 @@ describe("Admin FAQ (integration-style) — /faq", () => {
       expect(res.status).toBe(400);
     });
   });
+
+  describe("PUT /faq/:id", () => {
+    it("updates a FAQ", async () => {
+      (prisma.fAQ.findUnique as jest.Mock).mockResolvedValueOnce(mockFAQ);
+      (prisma.fAQ.update as jest.Mock).mockResolvedValueOnce({
+        ...mockFAQ,
+        order: 2,
+      });
+
+      const res = await request(app)
+        .put(`/faq/${mockFAQ.id}`)
+        .send(createFAQPayload);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveProperty("order", 2);
+    });
+
+    it("returns 404 if FAQ not found", async () => {
+      (prisma.fAQ.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .put(`/faq/${mockFAQ.id}`)
+        .send(createFAQPayload);
+
+      expect(res.status).toBe(404);
+    });
+  });
 });
