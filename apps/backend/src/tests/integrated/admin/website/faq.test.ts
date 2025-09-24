@@ -149,4 +149,23 @@ describe("Admin FAQ (integration-style) — /faq", () => {
       expect(res.body).toHaveProperty("error");
     });
   });
+
+  describe("POST /faq", () => {
+    it("creates a new FAQ", async () => {
+      (prisma.fAQ.create as jest.Mock).mockResolvedValueOnce(mockFAQ);
+
+      const res = await request(app).post("/faq").send(createFAQPayload);
+
+      expect(res.status).toBe(201);
+      expect(res.body.data).toHaveProperty("id", mockFAQ.id);
+    });
+
+    it("returns 400 if translations missing", async () => {
+      const res = await request(app).post("/faq").send({
+        order: 1,
+      });
+
+      expect(res.status).toBe(400);
+    });
+  });
 });
