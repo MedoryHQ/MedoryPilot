@@ -175,4 +175,61 @@ describe("Admin Social (integration-style) — /social", () => {
       expect(res.body).toHaveProperty("error");
     });
   });
+
+  describe("POST /social", () => {
+    it("creates social successfully without footer", async () => {
+      const createPayload = {
+        url: "https://site.com",
+        name: "site",
+        icon: { path: "/i.png", name: "i.png", size: 12 },
+      };
+
+      (prisma.social.create as jest.Mock).mockResolvedValueOnce({
+        ...mockSocial,
+        ...createPayload,
+      });
+
+      const res = await request(app).post("/social").send(createPayload);
+
+      expect(res.status).toBe(201);
+      expect(res.body.data).toBeDefined();
+      expect(prisma.social.create).toHaveBeenCalled();
+    });
+
+    it("creates social successfully with footerId connection", async () => {
+      const createPayload = {
+        url: "https://site.com",
+        name: "site",
+        footerId: mockSocial.footerId,
+      };
+
+      (prisma.social.create as jest.Mock).mockResolvedValueOnce({
+        ...mockSocial,
+        ...createPayload,
+      });
+
+      const res = await request(app).post("/social").send(createPayload);
+
+      expect(res.status).toBe(201);
+      expect(res.body.data).toBeDefined();
+      expect(prisma.social.create).toHaveBeenCalled();
+
+      const callArg = (prisma.social.create as jest.Mock).mock.calls[0][0];
+      expect(callArg).toHaveProperty("data");
+      if (createPayload.footerId) {
+        expect(callArg.data).toHaveProperty("footer");
+        expect(callArg.data.footer).toEqual(
+          expect.objectContaining({ connect: { id: createPayload.footerId } })
+        );
+      }
+    });
+
+    it("returns 400 when required fields missing or invalid", async () => {
+      const res = await request(app)
+        .post("/social")
+        .send({ url: "", name: "", footerId: "not-uuid" });
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
