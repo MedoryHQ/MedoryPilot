@@ -195,4 +195,21 @@ describe("Admin FAQ (integration-style) — /faq", () => {
       expect(res.status).toBe(404);
     });
   });
+
+  describe("DELETE /faq/:id", () => {
+    it("deletes a FAQ", async () => {
+      (prisma.fAQ.delete as jest.Mock).mockResolvedValueOnce(mockFAQ);
+
+      const res = await request(app).delete(`/faq/${mockFAQ.id}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty("message");
+    });
+
+    it("returns 404 for invalid UUID", async () => {
+      const res = await request(app).delete("/admin/faq/not-uuid");
+
+      expect(res.status).toBe(404);
+    });
+  });
 });
