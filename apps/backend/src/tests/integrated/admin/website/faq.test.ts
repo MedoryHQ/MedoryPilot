@@ -129,4 +129,24 @@ describe("Admin FAQ (integration-style) — /faq", () => {
       expect(res.body.count).toBe(0);
     });
   });
+
+  describe("GET /faq/:id", () => {
+    it("returns a FAQ by id", async () => {
+      (prisma.fAQ.findUnique as jest.Mock).mockResolvedValueOnce(mockFAQ);
+
+      const res = await request(app).get(`/faq/${mockFAQ.id}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveProperty("id", mockFAQ.id);
+    });
+
+    it("returns 404 if FAQ not found", async () => {
+      (prisma.fAQ.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app).get(`/faq/${mockFAQ.id}`);
+
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+  });
 });
