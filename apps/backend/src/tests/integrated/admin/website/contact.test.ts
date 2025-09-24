@@ -159,4 +159,50 @@ describe("Admin Contact (integration-style) — /contact", () => {
       expect(res.body).toHaveProperty("errors");
     });
   });
+
+  describe("PUT /contact/:id", () => {
+    it("updates a contact", async () => {
+      (prisma.contact.findUnique as jest.Mock).mockResolvedValueOnce(
+        mockContact
+      );
+      (prisma.contact.update as jest.Mock).mockResolvedValueOnce({
+        ...mockContact,
+        location: "Updated",
+      });
+
+      const res = await request(app)
+        .put(`/contact/${mockContact.id}`)
+        .send({
+          location: "Updated",
+          translations: {
+            en: { title: "Bye", description: "World" },
+            ka: { title: "ნახვამდის", description: "მსოფლიო" },
+          },
+        });
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveProperty("location", "Updated");
+      expect(prisma.contact.update).toHaveBeenCalledTimes(1);
+    });
+
+    it("returns 404 if contact not found", async () => {
+      (prisma.contact.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .put(`/contact/${mockContact.id}`)
+        .send(updatePayload);
+
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error", errorMessages.contactNotFound);
+    });
+
+    it("returns 400 for invalid UUID id", async () => {
+      const res = await request(app)
+        .put("/contact/not-a-uuid")
+        .send(updatePayload);
+
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
