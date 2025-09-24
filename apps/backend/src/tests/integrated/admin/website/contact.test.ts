@@ -130,4 +130,33 @@ describe("Admin Contact (integration-style) — /contact", () => {
       expect(res.body).toHaveProperty("error", errorMessages.contactNotFound);
     });
   });
+
+  describe("POST /contact", () => {
+    it("creates a new contact", async () => {
+      (prisma.contact.create as jest.Mock).mockResolvedValueOnce(mockContact);
+
+      const res = await request(app)
+        .post("/contact")
+        .send({
+          location: "Tbilisi",
+          translations: {
+            en: { title: "Hello", description: "World" },
+            ka: { title: "გამარჯობა", description: "მსოფლიო" },
+          },
+        });
+
+      expect(res.status).toBe(201);
+      expect(res.body.data).toHaveProperty("id", mockContact.id);
+      expect(prisma.contact.create).toHaveBeenCalledTimes(1);
+    });
+
+    it("fails with 400 if translations missing", async () => {
+      const res = await request(app).post("/contact").send({
+        location: "No Translations",
+      });
+
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
