@@ -205,4 +205,28 @@ describe("Admin Contact (integration-style) — /contact", () => {
       expect(res.body).toHaveProperty("errors");
     });
   });
+
+  describe("DELETE /contact", () => {
+    it("deletes contact if found", async () => {
+      (prisma.contact.deleteMany as jest.Mock).mockResolvedValueOnce({
+        count: 1,
+      });
+
+      const res = await request(app).delete("/contact");
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty("message");
+    });
+
+    it("returns 404 if nothing deleted", async () => {
+      (prisma.contact.deleteMany as jest.Mock).mockResolvedValueOnce({
+        count: 0,
+      });
+
+      const res = await request(app).delete("/contact");
+
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error", errorMessages.contactNotFound);
+    });
+  });
 });
