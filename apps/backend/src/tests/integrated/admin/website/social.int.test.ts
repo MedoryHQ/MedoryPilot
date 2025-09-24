@@ -232,4 +232,56 @@ describe("Admin Social (integration-style) — /social", () => {
       expect(res.body).toHaveProperty("errors");
     });
   });
+
+  describe("PUT /social/:id", () => {
+    it("updates social successfully", async () => {
+      const updatePayload = {
+        url: "https://updated.com",
+        name: "updated",
+        icon: { path: "/ni.png", name: "ni.png", size: 10 },
+      };
+
+      (prisma.social.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockSocial,
+        icon: null,
+      });
+      (prisma.social.update as jest.Mock).mockResolvedValueOnce({
+        ...mockSocial,
+        ...updatePayload,
+      });
+
+      const res = await request(app)
+        .put(`/social/${mockSocial.id}`)
+        .send(updatePayload);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toBeDefined();
+      expect(prisma.social.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: mockSocial.id },
+          include: { icon: true },
+        })
+      );
+      expect(prisma.social.update).toHaveBeenCalled();
+    });
+
+    it("returns 404 when updating non-existing social", async () => {
+      (prisma.social.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .put(`/social/${mockSocial.id}`)
+        .send({ url: "https://x", name: "x" });
+
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid body", async () => {
+      const res = await request(app)
+        .put(`/social/${mockSocial.id}`)
+        .send({ url: "", name: "" });
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
