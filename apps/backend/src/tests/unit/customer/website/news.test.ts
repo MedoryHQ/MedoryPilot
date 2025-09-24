@@ -37,6 +37,7 @@ jest.mock("@/utils", () => {
   return {
     ...actual,
     generateWhereInput: jest.fn((search: any, fields: any) => ({})),
+    parseBooleanQuery: jest.fn(),
     getPaginationAndFilters: jest.fn((req: any) => {
       const page = Number(req.query.page) || 1;
       const take = Number(req.query.take) || 10;
@@ -47,8 +48,11 @@ jest.mock("@/utils", () => {
         search: req.query.search,
       };
     }),
-
+    sendError: jest.fn((req, res, status, key) =>
+      res.status(status).json({ error: key })
+    ),
     logCustomerCatchyError: jest.fn(),
+    logCustomerWarn: jest.fn(),
   };
 });
 
