@@ -181,4 +181,31 @@ describe("Admin News (integration-style) — /admin/news", () => {
       expect(res.status).toBe(500);
     });
   });
+
+  describe("GET /admin/news/:slug", () => {
+    it("returns single news when found", async () => {
+      (prisma.news.findUnique as jest.Mock).mockResolvedValueOnce(mockNews);
+
+      const res = await request(app).get(`/admin/news/${mockNews.slug}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveProperty("slug", mockNews.slug);
+      expect(prisma.news.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { slug: mockNews.slug } })
+      );
+    });
+
+    it("returns 404 when not found", async () => {
+      (prisma.news.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app).get(`/admin/news/${mockNews.slug}`);
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 404 for invalid slug", async () => {
+      const res = await request(app).get("/admin/news/INVALID SLUG!!");
+      expect(res.status).toBe(404);
+    });
+  });
 });
