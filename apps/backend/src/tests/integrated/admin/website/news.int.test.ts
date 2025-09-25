@@ -359,4 +359,37 @@ describe("Admin News (integration-style) — /admin/news", () => {
       expect(res.status).toBe(500);
     });
   });
+
+  describe("DELETE /admin/news/:slug", () => {
+    it("deletes news successfully", async () => {
+      (prisma.news.delete as jest.Mock).mockResolvedValueOnce(mockNews);
+
+      const res = await request(app).delete(`/admin/news/${mockNews.slug}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty("message");
+      expect(prisma.news.delete).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { slug: mockNews.slug } })
+      );
+    });
+
+    it("returns 404 if delete target not found (controller-level handling)", async () => {
+      (prisma.news.delete as jest.Mock).mockResolvedValueOnce(null);
+      const res = await request(app).delete(`/admin/news/${mockNews.slug}`);
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("handles delete DB error (500)", async () => {
+      (prisma.news.delete as jest.Mock).mockRejectedValueOnce(new Error("DB"));
+      const res = await request(app).delete(`/admin/news/${mockNews.slug}`);
+      expect(res.status).toBe(500);
+    });
+
+    it("returns 400 for invalid slug", async () => {
+      const res = await request(app).delete("/admin/news/INVALID SLUG!!");
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
