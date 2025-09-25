@@ -267,4 +267,94 @@ describe("Admin PageComponent (integration-style) — /admin/page-component", ()
       expect(res.status).toBe(500);
     });
   });
+
+  describe("PUT /admin/page-component/:slug", () => {
+    const updatePayload = {
+      slug: "updated-component",
+      translations: {
+        en: { name: "Updated", content: "Updated content" },
+        ka: { name: "განახლებული", content: "განახლებული ტექსტი" },
+      },
+    };
+
+    it("updates page component and disconnects footer when footerId is explicitly null", async () => {
+      (prisma.pageComponent.findUnique as jest.Mock).mockResolvedValueOnce(
+        mockPageComponent
+      );
+      (prisma.pageComponent.update as jest.Mock).mockResolvedValueOnce({
+        ...mockPageComponent,
+        ...updatePayload,
+        footerId: null,
+      });
+
+      const res = await request(app)
+        .put(`/admin/page-component/${mockPageComponent.slug}`)
+        .send(updatePayload);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toBeDefined();
+      expect(prisma.pageComponent.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { slug: mockPageComponent.slug } })
+      );
+    });
+
+    it("updates page component and connects footer when footerId provided", async () => {
+      const newFooterId = "dddddddd-dddd-dddd-dddd-dddddddddddd";
+      const payload = { ...updatePayload, footerId: newFooterId };
+
+      (prisma.pageComponent.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockPageComponent,
+        footerId: null,
+      });
+      (prisma.pageComponent.update as jest.Mock).mockResolvedValueOnce({
+        ...mockPageComponent,
+        ...payload,
+        footerId: newFooterId,
+      });
+
+      const res = await request(app)
+        .put(`/admin/page-component/${mockPageComponent.slug}`)
+        .send(payload);
+
+      expect(res.status).toBe(200);
+      const updateCall = (prisma.pageComponent.update as jest.Mock).mock
+        .calls[0][0];
+      expect(updateCall.data.footer).toEqual(
+        expect.objectContaining({ connect: { id: newFooterId } })
+      );
+    });
+
+    it("returns 404 when trying to update non-existing component", async () => {
+      (prisma.pageComponent.findUnique as jest.Mock).mockResolvedValueOnce(
+        null
+      );
+      const res = await request(app)
+        .put(`/admin/page-component/${mockPageComponent.slug}`)
+        .send(updatePayload);
+
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 on invalid body", async () => {
+      const res = await request(app)
+        .put(`/admin/page-component/${mockPageComponent.slug}`)
+        .send({ slug: "" });
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+
+    it("handles DB update error (500)", async () => {
+      (prisma.pageComponent.findUnique as jest.Mock).mockResolvedValueOnce(
+        mockPageComponent
+      );
+      (prisma.pageComponent.update as jest.Mock).mockRejectedValueOnce(
+        new Error("DB update error")
+      );
+      const res = await request(app)
+        .put(`/admin/page-component/${mockPageComponent.slug}`)
+        .send(updatePayload);
+      expect(res.status).toBe(500);
+    });
+  });
 });
