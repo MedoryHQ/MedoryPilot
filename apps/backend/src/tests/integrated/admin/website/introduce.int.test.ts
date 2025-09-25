@@ -256,4 +256,44 @@ describe("Admin Introduce (integration-style) — /introduce", () => {
       expect(res.status).toBe(500);
     });
   });
+
+  describe("DELETE /introduce/:id", () => {
+    it("deletes introduce successfully", async () => {
+      (prisma.introduce.delete as jest.Mock).mockResolvedValueOnce(
+        mockIntroduce
+      );
+
+      const res = await request(app).delete(`/introduce/${mockIntroduce.id}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty("message");
+      expect(prisma.introduce.delete).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: mockIntroduce.id } })
+      );
+    });
+
+    it("returns 404 when delete target not found", async () => {
+      (prisma.introduce.delete as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app).delete(`/introduce/${mockIntroduce.id}`);
+
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid id (UUID)", async () => {
+      const res = await request(app).delete("/introduce/INVALID_ID!!");
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+
+    it("handles DB delete error (500)", async () => {
+      (prisma.introduce.delete as jest.Mock).mockRejectedValueOnce(
+        new Error("DB")
+      );
+
+      const res = await request(app).delete(`/introduce/${mockIntroduce.id}`);
+      expect(res.status).toBe(500);
+    });
+  });
 });
