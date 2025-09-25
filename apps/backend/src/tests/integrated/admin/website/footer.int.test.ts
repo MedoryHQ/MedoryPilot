@@ -267,4 +267,40 @@ describe("Admin Footer (integration-style) — /admin/footer", () => {
       expect(res.status).toBe(500);
     });
   });
+
+  describe("DELETE /admin/footer/:id", () => {
+    it("deletes footer successfully", async () => {
+      (prisma.footer.delete as jest.Mock).mockResolvedValueOnce(mockFooter);
+
+      const res = await request(app).delete(`/admin/footer/${mockFooter.id}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty("message");
+      expect(prisma.footer.delete).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: mockFooter.id } })
+      );
+    });
+
+    it("returns 404 when footer not found", async () => {
+      (prisma.footer.delete as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app).delete(`/admin/footer/${mockFooter.id}`);
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("handles DB delete error (500)", async () => {
+      (prisma.footer.delete as jest.Mock).mockRejectedValueOnce(
+        new Error("DB delete")
+      );
+      const res = await request(app).delete(`/admin/footer/${mockFooter.id}`);
+      expect(res.status).toBe(500);
+    });
+
+    it("returns 400 for invalid UUID id", async () => {
+      const res = await request(app).delete("/admin/footer/invalid-id");
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
