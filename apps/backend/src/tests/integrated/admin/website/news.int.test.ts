@@ -275,4 +275,88 @@ describe("Admin News (integration-style) — /admin/news", () => {
       expect(res.status).toBe(500);
     });
   });
+
+  describe("PUT /admin/news/:slug", () => {
+    const updatePayload = {
+      showInLanding: false,
+      slug: "updated-news",
+      translations: {
+        en: { content: "Updated content" },
+        ka: { content: "განახლებული" },
+      },
+    };
+
+    it("updates news successfully and deletes existing background when new payload has no background", async () => {
+      (prisma.news.findUnique as jest.Mock).mockResolvedValueOnce(mockNews);
+      (prisma.news.update as jest.Mock).mockResolvedValueOnce({
+        ...mockNews,
+        ...updatePayload,
+        background: null,
+      });
+
+      const res = await request(app)
+        .put(`/admin/news/${mockNews.slug}`)
+        .send(updatePayload);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveProperty("slug", updatePayload.slug);
+      const updateCall = (prisma.news.update as jest.Mock).mock.calls[0][0];
+      expect(updateCall).toHaveProperty("where");
+      expect(updateCall).toHaveProperty("data");
+      expect(updateCall.data).toHaveProperty("background");
+      expect(updateCall.data.background).toEqual(
+        expect.objectContaining({ delete: {} })
+      );
+    });
+
+    it("updates news and replaces background when new background provided", async () => {
+      const newBg = { path: "/new.png", name: "new.png", size: 55 };
+      const payloadWithBg = { ...updatePayload, background: newBg };
+
+      (prisma.news.findUnique as jest.Mock).mockResolvedValueOnce(mockNews);
+      (prisma.news.update as jest.Mock).mockResolvedValueOnce({
+        ...mockNews,
+        ...payloadWithBg,
+        background: { id: "newBg", ...newBg },
+      });
+
+      const res = await request(app)
+        .put(`/admin/news/${mockNews.slug}`)
+        .send(payloadWithBg);
+
+      expect(res.status).toBe(200);
+      const updateCall = (prisma.news.update as jest.Mock).mock.calls[0][0];
+      expect(updateCall.data.background).toHaveProperty("delete");
+      expect(updateCall.data.background).toHaveProperty("create");
+      expect(updateCall.data.background.create).toMatchObject(newBg);
+    });
+
+    it("returns 404 if news not found", async () => {
+      (prisma.news.findUnique as jest.Mock).mockResolvedValueOnce(null);
+      const res = await request(app)
+        .put(`/admin/news/${mockNews.slug}`)
+        .send(updatePayload);
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid body", async () => {
+      const res = await request(app)
+        .put(`/admin/news/${mockNews.slug}`)
+        .send({ slug: "" });
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+
+    it("returns 500 when DB update fails", async () => {
+      (prisma.news.findUnique as jest.Mock).mockResolvedValueOnce(mockNews);
+      (prisma.news.update as jest.Mock).mockRejectedValueOnce(
+        new Error("DB update err")
+      );
+      const res = await request(app)
+        .put(`/admin/news/${mockNews.slug}`)
+        .send(updatePayload);
+      expect(res.status).toBe(500);
+    });
+  });
 });
