@@ -205,4 +205,66 @@ describe("Admin Footer (integration-style) — /admin/footer", () => {
       expect(res.body).toHaveProperty("errors");
     });
   });
+
+  describe("PUT /admin/footer/:id", () => {
+    const updatePayload = {
+      phone: "+995 555 999 999",
+      email: "updated@test.com",
+      socials: [],
+      pages: [],
+    };
+
+    it("updates a footer successfully", async () => {
+      (prisma.footer.findUnique as jest.Mock).mockResolvedValueOnce(mockFooter);
+      (prisma.footer.update as jest.Mock).mockResolvedValueOnce({
+        ...mockFooter,
+        ...updatePayload,
+      });
+
+      const res = await request(app)
+        .put(`/admin/footer/${mockFooter.id}`)
+        .send(updatePayload);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toBeDefined();
+      expect(prisma.footer.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: mockFooter.id } })
+      );
+      expect(prisma.footer.update).toHaveBeenCalled();
+
+      const updateArg = (prisma.footer.update as jest.Mock).mock.calls[0][0];
+      expect(updateArg).toHaveProperty("data");
+    });
+
+    it("returns 404 when footer not found", async () => {
+      (prisma.footer.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .put(`/admin/footer/${mockFooter.id}`)
+        .send(updatePayload);
+
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid UUID id", async () => {
+      const res = await request(app)
+        .put("/admin/footer/not-uuid")
+        .send(updatePayload);
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+
+    it("handles DB update error (500)", async () => {
+      (prisma.footer.findUnique as jest.Mock).mockResolvedValueOnce(mockFooter);
+      (prisma.footer.update as jest.Mock).mockRejectedValueOnce(
+        new Error("DB update")
+      );
+
+      const res = await request(app)
+        .put(`/admin/footer/${mockFooter.id}`)
+        .send(updatePayload);
+      expect(res.status).toBe(500);
+    });
+  });
 });
