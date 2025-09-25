@@ -194,4 +194,49 @@ describe("Admin Blog (integration-style) — /admin/blogs", () => {
       expect(res.body).toHaveProperty("errors");
     });
   });
+
+  describe("PUT /admin/blogs/:slug", () => {
+    const updatePayload = {
+      showInLanding: false,
+      slug: "updated-blog",
+      translations: {
+        en: { title: "Updated title", content: "Updated content" },
+        ka: { title: "განახლებული სათაური", content: "განახლებული ტექსტი" },
+      },
+      categories: [],
+    };
+
+    it("updates blog successfully", async () => {
+      (prisma.blog.findUnique as jest.Mock).mockResolvedValueOnce(mockBlog);
+      (prisma.blog.update as jest.Mock).mockResolvedValueOnce({
+        ...mockBlog,
+        ...updatePayload,
+      });
+
+      const res = await request(app)
+        .put(`/admin/blogs/${mockBlog.slug}`)
+        .send(updatePayload);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveProperty("slug", updatePayload.slug);
+      expect(prisma.blog.update).toHaveBeenCalled();
+    });
+
+    it("returns 404 if blog not found", async () => {
+      (prisma.blog.findUnique as jest.Mock).mockResolvedValueOnce(null);
+      const res = await request(app)
+        .put(`/admin/blogs/${mockBlog.slug}`)
+        .send(updatePayload);
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid body", async () => {
+      const res = await request(app)
+        .put(`/admin/blogs/${mockBlog.slug}`)
+        .send({ slug: "" });
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
