@@ -155,4 +155,41 @@ describe("Admin PageComponent (integration-style) — /admin/page-component", ()
       expect(res.status).toBe(500);
     });
   });
+
+  describe("GET /admin/page-component/:slug", () => {
+    it("returns single page component when found", async () => {
+      (prisma.pageComponent.findUnique as jest.Mock).mockResolvedValueOnce(
+        mockPageComponent
+      );
+
+      const res = await request(app).get(
+        `/admin/page-component/${mockPageComponent.slug}`
+      );
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveProperty("slug", mockPageComponent.slug);
+      expect(prisma.pageComponent.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { slug: mockPageComponent.slug } })
+      );
+    });
+
+    it("returns 404 when not found", async () => {
+      (prisma.pageComponent.findUnique as jest.Mock).mockResolvedValueOnce(
+        null
+      );
+
+      const res = await request(app).get(
+        `/admin/page-component/${mockPageComponent.slug}`
+      );
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 494 for invalid slug", async () => {
+      const res = await request(app).get(
+        "/admin/page-component/INVALID SLUG!!"
+      );
+      expect(res.status).toBe(404);
+    });
+  });
 });
