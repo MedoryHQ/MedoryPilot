@@ -160,4 +160,38 @@ describe("Admin Blog (integration-style) — /admin/blogs", () => {
       expect(res.status).toBe(404);
     });
   });
+
+  describe("POST /admin/blogs", () => {
+    const createPayload = {
+      slug: "new-blog",
+      showInLanding: true,
+      landingOrder: 2,
+      translations: {
+        en: { title: "English Title", content: "English content" },
+        ka: { title: "ქართული სათაური", content: "ქართული ტექსტი" },
+      },
+      categories: [],
+    };
+
+    it("creates blog successfully", async () => {
+      (prisma.blog.create as jest.Mock).mockResolvedValueOnce({
+        ...mockBlog,
+        ...createPayload,
+      });
+
+      const res = await request(app).post("/admin/blogs").send(createPayload);
+
+      expect(res.status).toBe(201);
+      expect(res.body.data).toHaveProperty("slug", createPayload.slug);
+      expect(prisma.blog.create).toHaveBeenCalled();
+    });
+
+    it("returns 400 for invalid body", async () => {
+      const res = await request(app)
+        .post("/admin/blogs")
+        .send({ slug: "", translations: {} });
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
