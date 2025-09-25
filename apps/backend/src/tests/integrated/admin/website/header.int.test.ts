@@ -274,4 +274,42 @@ describe("Admin Header (integration-style) — /admin/header", () => {
       expect(res.status).toBe(500);
     });
   });
+
+  describe("DELETE /admin/header/:id", () => {
+    it("deletes header successfully", async () => {
+      (prisma.header.delete as jest.Mock).mockResolvedValueOnce(mockHeader);
+
+      const res = await request(app).delete(`/admin/header/${mockHeader.id}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty("message");
+      expect(prisma.header.delete).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: mockHeader.id } })
+      );
+    });
+
+    it("returns 404 when header not found", async () => {
+      (prisma.header.delete as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app).delete(`/admin/header/${mockHeader.id}`);
+
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("handles DB delete error (500)", async () => {
+      (prisma.header.delete as jest.Mock).mockRejectedValueOnce(
+        new Error("DB delete")
+      );
+
+      const res = await request(app).delete(`/admin/header/${mockHeader.id}`);
+      expect(res.status).toBe(500);
+    });
+
+    it("returns 400 for invalid UUID id", async () => {
+      const res = await request(app).delete("/admin/header/invalid-id");
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
