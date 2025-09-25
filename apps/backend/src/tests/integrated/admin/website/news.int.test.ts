@@ -208,4 +208,71 @@ describe("Admin News (integration-style) — /admin/news", () => {
       expect(res.status).toBe(404);
     });
   });
+
+  describe("POST /admin/news", () => {
+    const createPayload = {
+      slug: "new-news",
+      showInLanding: true,
+      order: 2,
+      translations: {
+        en: { content: "English content" },
+        ka: { content: "ქართული ტექსტი" },
+      },
+    };
+
+    it("creates news successfully (without background)", async () => {
+      (prisma.news.create as jest.Mock).mockResolvedValueOnce({
+        ...mockNews,
+        ...createPayload,
+        background: null,
+      });
+
+      const res = await request(app).post("/admin/news").send(createPayload);
+      expect(res.status).toBe(201);
+      expect(res.body.data).toHaveProperty("slug", createPayload.slug);
+      expect(prisma.news.create).toHaveBeenCalled();
+    });
+
+    it("creates news with background when provided", async () => {
+      const payloadWithBg = {
+        ...createPayload,
+        background: { path: "/bg.png", name: "bg.png", size: 100 },
+      };
+
+      (prisma.news.create as jest.Mock).mockResolvedValueOnce({
+        ...mockNews,
+        ...payloadWithBg,
+      });
+
+      const res = await request(app).post("/admin/news").send(payloadWithBg);
+      expect(res.status).toBe(201);
+      expect(prisma.news.create).toHaveBeenCalled();
+      const createCall = (prisma.news.create as jest.Mock).mock.calls[0][0];
+      expect(createCall).toHaveProperty("data");
+      expect(createCall.data).toHaveProperty("translations");
+      expect(createCall.data).toHaveProperty("background");
+      expect(createCall.data.background).toHaveProperty("create");
+      expect(createCall.data.background.create).toMatchObject({
+        path: "/bg.png",
+        name: "bg.png",
+        size: 100,
+      });
+    });
+
+    it("returns 400 for invalid body", async () => {
+      const res = await request(app)
+        .post("/admin/news")
+        .send({ slug: "", translations: {} });
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+
+    it("returns 500 when DB create fails", async () => {
+      (prisma.news.create as jest.Mock).mockRejectedValueOnce(
+        new Error("DB create err")
+      );
+      const res = await request(app).post("/admin/news").send(createPayload);
+      expect(res.status).toBe(500);
+    });
+  });
 });
