@@ -186,4 +186,74 @@ describe("Admin Introduce (integration-style) — /introduce", () => {
       expect(res.status).toBe(500);
     });
   });
+
+  describe("PUT /introduce/:id", () => {
+    const updatePayload = {
+      translations: {
+        en: { headline: "Updated", description: "Updated en" },
+        ka: { headline: "განახლებულია", description: "Updated ka" },
+      },
+    };
+
+    it("updates introduce successfully", async () => {
+      (prisma.introduce.findUnique as jest.Mock).mockResolvedValueOnce(
+        mockIntroduce
+      );
+      (prisma.introduce.update as jest.Mock).mockResolvedValueOnce({
+        ...mockIntroduce,
+        translations: updatePayload.translations,
+      });
+
+      const res = await request(app)
+        .put(`/introduce/${mockIntroduce.id}`)
+        .send(updatePayload);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toBeDefined();
+      expect(prisma.introduce.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: mockIntroduce.id } })
+      );
+      expect(prisma.introduce.update).toHaveBeenCalledTimes(1);
+
+      const updateArg = (prisma.introduce.update as jest.Mock).mock.calls[0][0];
+      expect(updateArg).toHaveProperty("where");
+      expect(updateArg).toHaveProperty("data");
+      expect(updateArg.where).toEqual({ id: mockIntroduce.id });
+    });
+
+    it("returns 404 if introduce not found", async () => {
+      (prisma.introduce.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .put(`/introduce/${mockIntroduce.id}`)
+        .send(updatePayload);
+
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid body", async () => {
+      const res = await request(app)
+        .put(`/introduce/${mockIntroduce.id}`)
+        .send({ translations: {} });
+
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+
+    it("handles DB update error (500)", async () => {
+      (prisma.introduce.findUnique as jest.Mock).mockResolvedValueOnce(
+        mockIntroduce
+      );
+      (prisma.introduce.update as jest.Mock).mockRejectedValueOnce(
+        new Error("DB update")
+      );
+
+      const res = await request(app)
+        .put(`/introduce/${mockIntroduce.id}`)
+        .send(updatePayload);
+
+      expect(res.status).toBe(500);
+    });
+  });
 });
