@@ -215,4 +215,63 @@ describe("Admin Header (integration-style) — /admin/header", () => {
       expect(res.status).toBe(500);
     });
   });
+
+  describe("PUT /admin/header/:id", () => {
+    it("updates header successfully", async () => {
+      (prisma.header.findUnique as jest.Mock).mockResolvedValueOnce(mockHeader);
+      (prisma.header.update as jest.Mock).mockResolvedValueOnce({
+        ...mockHeader,
+        active: false,
+      });
+
+      const res = await request(app)
+        .put(`/admin/header/${mockHeader.id}`)
+        .send(updatePayload);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveProperty("active", false);
+      expect(prisma.header.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: mockHeader.id },
+          include: { logo: true },
+        })
+      );
+      expect(prisma.header.update).toHaveBeenCalledTimes(1);
+
+      const updateArg = (prisma.header.update as jest.Mock).mock.calls[0][0];
+      expect(updateArg).toHaveProperty("where");
+      expect(updateArg).toHaveProperty("data");
+    });
+
+    it("returns 404 when header not found", async () => {
+      (prisma.header.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .put(`/admin/header/${mockHeader.id}`)
+        .send(updatePayload);
+
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid UUID id", async () => {
+      const res = await request(app)
+        .put("/admin/header/not-a-uuid")
+        .send(updatePayload);
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+
+    it("handles DB update error (500)", async () => {
+      (prisma.header.findUnique as jest.Mock).mockResolvedValueOnce(mockHeader);
+      (prisma.header.update as jest.Mock).mockRejectedValueOnce(
+        new Error("DB update")
+      );
+
+      const res = await request(app)
+        .put(`/admin/header/${mockHeader.id}`)
+        .send(updatePayload);
+      expect(res.status).toBe(500);
+    });
+  });
 });
