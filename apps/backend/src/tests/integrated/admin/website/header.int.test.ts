@@ -180,4 +180,39 @@ describe("Admin Header (integration-style) — /admin/header", () => {
       expect(res.status).toBe(500);
     });
   });
+
+  describe("POST /admin/header", () => {
+    it("creates header successfully", async () => {
+      (prisma.header.create as jest.Mock).mockResolvedValueOnce(mockHeader);
+
+      const res = await request(app).post("/admin/header").send(createPayload);
+
+      expect(res.status).toBe(201);
+      expect(res.body.data).toHaveProperty("id", mockHeader.id);
+      expect(prisma.header.create).toHaveBeenCalledTimes(1);
+
+      const callArg = (prisma.header.create as jest.Mock).mock.calls[0][0];
+      expect(callArg).toHaveProperty("data");
+      expect(callArg.data).toHaveProperty("active");
+      expect(callArg.data).toHaveProperty("translations");
+    });
+
+    it("returns 400 when translations missing or invalid", async () => {
+      const res = await request(app)
+        .post("/admin/header")
+        .send({ translations: {} });
+
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+
+    it("handles DB create error (500)", async () => {
+      (prisma.header.create as jest.Mock).mockRejectedValueOnce(
+        new Error("DB create")
+      );
+
+      const res = await request(app).post("/admin/header").send(createPayload);
+      expect(res.status).toBe(500);
+    });
+  });
 });
