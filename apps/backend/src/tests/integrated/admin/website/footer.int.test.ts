@@ -152,4 +152,57 @@ describe("Admin Footer (integration-style) — /admin/footer", () => {
       expect(res.status).toBe(500);
     });
   });
+
+  describe("POST /admin/footer", () => {
+    const payload = {
+      phone: "+995 555 000 000",
+      email: "contact@test.com",
+      socials: [],
+      pages: [],
+    };
+
+    it("creates a footer when none exists", async () => {
+      (prisma.footer.count as jest.Mock).mockResolvedValueOnce(0);
+      (prisma.footer.create as jest.Mock).mockResolvedValueOnce({
+        ...mockFooter,
+        ...payload,
+      });
+
+      const res = await request(app).post("/admin/footer").send(payload);
+
+      expect(res.status).toBe(201);
+      expect(res.body.data).toBeDefined();
+      expect(prisma.footer.count).toHaveBeenCalled();
+      expect(prisma.footer.create).toHaveBeenCalled();
+
+      const createArg = (prisma.footer.create as jest.Mock).mock.calls[0][0];
+      expect(createArg).toHaveProperty("data");
+    });
+
+    it("returns 400 when footer already exists", async () => {
+      (prisma.footer.count as jest.Mock).mockResolvedValueOnce(1);
+
+      const res = await request(app).post("/admin/footer").send(payload);
+
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("handles DB create error (500)", async () => {
+      (prisma.footer.count as jest.Mock).mockResolvedValueOnce(0);
+      (prisma.footer.create as jest.Mock).mockRejectedValueOnce(
+        new Error("DB create")
+      );
+
+      const res = await request(app).post("/admin/footer").send(payload);
+      expect(res.status).toBe(500);
+    });
+
+    it("returns 400 for invalid body (bad social id)", async () => {
+      const bad = { ...payload, socials: ["not-a-uuid"] };
+      const res = await request(app).post("/admin/footer").send(bad);
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
