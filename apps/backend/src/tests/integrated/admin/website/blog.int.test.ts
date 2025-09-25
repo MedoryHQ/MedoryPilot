@@ -239,4 +239,30 @@ describe("Admin Blog (integration-style) — /admin/blogs", () => {
       expect(res.body).toHaveProperty("errors");
     });
   });
+
+  describe("DELETE /admin/blogs/:slug", () => {
+    it("deletes blog successfully", async () => {
+      (prisma.blog.delete as jest.Mock).mockResolvedValueOnce(mockBlog);
+
+      const res = await request(app).delete(`/admin/blogs/${mockBlog.slug}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty("message");
+      expect(prisma.blog.delete).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { slug: mockBlog.slug } })
+      );
+    });
+
+    it("handles DB error gracefully", async () => {
+      (prisma.blog.delete as jest.Mock).mockRejectedValueOnce(new Error("DB"));
+      const res = await request(app).delete(`/admin/blogs/${mockBlog.slug}`);
+      expect(res.status).toBe(500);
+    });
+
+    it("returns 400 for invalid slug", async () => {
+      const res = await request(app).delete("/admin/blogs/INVALID SLUG!!");
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
