@@ -357,4 +357,49 @@ describe("Admin PageComponent (integration-style) — /admin/page-component", ()
       expect(res.status).toBe(500);
     });
   });
+
+  describe("DELETE /admin/page-component/:slug", () => {
+    it("deletes page component successfully", async () => {
+      (prisma.pageComponent.delete as jest.Mock).mockResolvedValueOnce(
+        mockPageComponent
+      );
+
+      const res = await request(app).delete(
+        `/admin/page-component/${mockPageComponent.slug}`
+      );
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty("message");
+      expect(prisma.pageComponent.delete).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { slug: mockPageComponent.slug } })
+      );
+    });
+
+    it("returns 404 when delete target not found", async () => {
+      (prisma.pageComponent.delete as jest.Mock).mockResolvedValueOnce(null);
+      const res = await request(app).delete(
+        `/admin/page-component/${mockPageComponent.slug}`
+      );
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("handles DB delete error (500)", async () => {
+      (prisma.pageComponent.delete as jest.Mock).mockRejectedValueOnce(
+        new Error("DB delete error")
+      );
+      const res = await request(app).delete(
+        `/admin/page-component/${mockPageComponent.slug}`
+      );
+      expect(res.status).toBe(500);
+    });
+
+    it("returns 400 for invalid slug", async () => {
+      const res = await request(app).delete(
+        "/admin/page-component/INVALID SLUG!!"
+      );
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
