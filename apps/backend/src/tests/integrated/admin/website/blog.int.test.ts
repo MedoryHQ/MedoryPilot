@@ -133,4 +133,31 @@ describe("Admin Blog (integration-style) — /admin/blogs", () => {
       expect(res.status).toBe(500);
     });
   });
+
+  describe("GET /admin/blogs/:slug", () => {
+    it("returns single blog when found", async () => {
+      (prisma.blog.findUnique as jest.Mock).mockResolvedValueOnce(mockBlog);
+
+      const res = await request(app).get(`/admin/blogs/${mockBlog.slug}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveProperty("slug", mockBlog.slug);
+      expect(prisma.blog.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { slug: mockBlog.slug } })
+      );
+    });
+
+    it("returns 404 when blog not found", async () => {
+      (prisma.blog.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app).get(`/admin/blogs/${mockBlog.slug}`);
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 404 for invalid slug", async () => {
+      const res = await request(app).get("/admin/blogs/INVALID SLUG!!");
+      expect(res.status).toBe(404);
+    });
+  });
 });
