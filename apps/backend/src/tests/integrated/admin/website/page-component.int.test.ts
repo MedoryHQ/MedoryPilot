@@ -192,4 +192,79 @@ describe("Admin PageComponent (integration-style) — /admin/page-component", ()
       expect(res.status).toBe(404);
     });
   });
+
+  describe("POST /admin/page-component", () => {
+    const createPayload = {
+      slug: "new-page-component",
+      footerId: "cccccccc-cccc-cccc-cccc-cccccccccccc",
+      footerOrder: 1,
+      translations: {
+        en: { name: "Block", content: "Content" },
+        ka: { name: "ბლოკი", content: "ვერძი" },
+      },
+    };
+
+    it("creates new page component (with footer connect)", async () => {
+      (prisma.pageComponent.create as jest.Mock).mockResolvedValueOnce({
+        ...mockPageComponent,
+        slug: createPayload.slug,
+        footerId: createPayload.footerId,
+      });
+
+      const res = await request(app)
+        .post("/admin/page-component")
+        .send(createPayload);
+      expect(res.status).toBe(201);
+      expect(res.body.data).toHaveProperty("slug", createPayload.slug);
+      expect(prisma.pageComponent.create).toHaveBeenCalled();
+
+      const createCall = (prisma.pageComponent.create as jest.Mock).mock
+        .calls[0][0];
+      expect(createCall).toHaveProperty("data");
+      expect(createCall.data).toHaveProperty("translations");
+      expect(createCall.data).toHaveProperty("footer");
+      expect(createCall.data.footer).toEqual(
+        expect.objectContaining({ connect: { id: createPayload.footerId } })
+      );
+    });
+
+    it("creates new page component without footer", async () => {
+      const payload = { ...createPayload };
+      delete (payload as any).footerId;
+
+      (prisma.pageComponent.create as jest.Mock).mockResolvedValueOnce({
+        ...mockPageComponent,
+        slug: payload.slug,
+        footerId: null,
+      });
+
+      const res = await request(app)
+        .post("/admin/page-component")
+        .send(payload);
+      expect(res.status).toBe(201);
+      expect(res.body.data).toBeDefined();
+      expect(prisma.pageComponent.create).toHaveBeenCalled();
+      const createCall = (prisma.pageComponent.create as jest.Mock).mock
+        .calls[0][0];
+      expect(createCall.data).not.toHaveProperty("footer.connect");
+    });
+
+    it("returns 400 when translations invalid/missing", async () => {
+      const res = await request(app)
+        .post("/admin/page-component")
+        .send({ slug: "x", translations: {} });
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+
+    it("handles DB create error (500)", async () => {
+      (prisma.pageComponent.create as jest.Mock).mockRejectedValueOnce(
+        new Error("DB create err")
+      );
+      const res = await request(app)
+        .post("/admin/page-component")
+        .send(createPayload);
+      expect(res.status).toBe(500);
+    });
+  });
 });
