@@ -143,4 +143,47 @@ describe("Admin Introduce (integration-style) — /introduce", () => {
       expect(res.status).toBe(500);
     });
   });
+
+  describe("POST /introduce", () => {
+    const validPayload = {
+      translations: {
+        en: { headline: "Hello", description: "English desc" },
+        ka: { headline: "გამარჯობა", description: "ქართული აღწერა" },
+      },
+    };
+
+    it("creates introduce successfully", async () => {
+      (prisma.introduce.create as jest.Mock).mockResolvedValueOnce(
+        mockIntroduce
+      );
+
+      const res = await request(app).post("/introduce").send(validPayload);
+
+      expect(res.status).toBe(201);
+      expect(res.body.data).toBeDefined();
+      expect(prisma.introduce.create).toHaveBeenCalledTimes(1);
+
+      const callArg = (prisma.introduce.create as jest.Mock).mock.calls[0][0];
+      expect(callArg).toHaveProperty("data");
+      expect(callArg.data).toHaveProperty("translations");
+    });
+
+    it("returns 400 when translations missing or invalid", async () => {
+      const res = await request(app)
+        .post("/introduce")
+        .send({ translations: {} });
+
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+
+    it("handles DB create error (500)", async () => {
+      (prisma.introduce.create as jest.Mock).mockRejectedValueOnce(
+        new Error("DB create")
+      );
+
+      const res = await request(app).post("/introduce").send(validPayload);
+      expect(res.status).toBe(500);
+    });
+  });
 });
