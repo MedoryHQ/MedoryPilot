@@ -111,10 +111,10 @@
  *       properties:
  *         headline:
  *           type: string
- *           example: "Welcome to our platform"
+ *           example: "Headline of Medory"
  *         description:
  *           type: string
- *           example: "We provide innovative solutions."
+ *           example: "Description of Medory"
  *         language:
  *           type: object
  *           properties:
@@ -131,10 +131,10 @@
  *           example:
  *             en:
  *               headline: "Welcome"
- *               description: "We are glad to have you here."
+ *               description: "Welcome."
  *             ka:
  *               headline: "კეთილი იყოს თქვენი მობრძანება"
- *               description: "ჩვენ მოხარულნი ვართ, რომ აქ ხართ."
+ *               description: "კეთილი იყოს თქვენი მობრძანება."
  *
  *     UpdateIntroduceInput:
  *       allOf:

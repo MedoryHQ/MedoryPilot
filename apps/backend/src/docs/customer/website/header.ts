@@ -46,7 +46,7 @@
  *       properties:
  *         name:
  *           type: string
- *           example: "Company Name"
+ *           example: "Medory"
  *         position:
  *           type: string
  *           example: "CEO"

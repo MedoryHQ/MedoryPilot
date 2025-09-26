@@ -168,7 +168,7 @@
  *       properties:
  *         name:
  *           type: string
- *           example: "Company Name"
+ *           example: "Medory"
  *         position:
  *           type: string
  *           example: "CEO"
@@ -217,7 +217,7 @@
  *           description: Map of language code to translation object. At least 'en' and 'ka' translations are required by validation.
  *           example:
  *             en:
- *               name: "Company Name"
+ *               name: "Medory"
  *               position: "CEO"
  *               headline: "Welcome"
  *               description: "Short description"
