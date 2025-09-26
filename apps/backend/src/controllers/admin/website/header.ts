@@ -2,8 +2,6 @@ import { prisma } from "@/config";
 import { NextFunction, Response, Request } from "express";
 import {
   createTranslations,
-  generateWhereInput,
-  getPaginationAndFilters,
   getResponseMessage,
   sendError,
   logAdminError as logCatchyError,
