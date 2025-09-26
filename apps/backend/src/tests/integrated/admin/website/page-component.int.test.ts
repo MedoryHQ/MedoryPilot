@@ -185,7 +185,7 @@ describe("Admin PageComponent (integration-style) — /admin/page-component", ()
       expect(res.body).toHaveProperty("error");
     });
 
-    it("returns 494 for invalid slug", async () => {
+    it("returns 404 for invalid slug", async () => {
       const res = await request(app).get(
         "/admin/page-component/INVALID SLUG!!"
       );

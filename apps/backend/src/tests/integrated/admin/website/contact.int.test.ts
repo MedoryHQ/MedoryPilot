@@ -140,6 +140,7 @@ describe("Admin Contact (integration-style) — /contact", () => {
         .post("/contact")
         .send({
           location: "Tbilisi",
+          background: null,
           translations: {
             en: { title: "Hello", description: "World" },
             ka: { title: "გამარჯობა", description: "მსოფლიო" },
