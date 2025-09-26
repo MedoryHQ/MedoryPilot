@@ -1,14 +1,7 @@
 import request from "supertest";
 import express from "express";
 import cookieParser from "cookie-parser";
-import { adminContactRouter } from "@/routes/admin/website/contact";
-import { prisma } from "@/config";
 import { errorMessages } from "@/utils";
-
-const app = express();
-app.use(express.json());
-app.use(cookieParser());
-app.use("/contact", adminContactRouter);
 
 jest.mock("@/config", () => ({
   prisma: {
@@ -77,6 +70,14 @@ jest.mock("@/utils", () => {
     logAdminWarn: jest.fn(),
   };
 });
+
+import { adminContactRouter } from "@/routes/admin/website/contact";
+import { prisma } from "@/config";
+
+const app = express();
+app.use(express.json());
+app.use(cookieParser());
+app.use("/contact", adminContactRouter);
 
 const mockContact = {
   id: "11111111-1111-1111-1111-111111111111",

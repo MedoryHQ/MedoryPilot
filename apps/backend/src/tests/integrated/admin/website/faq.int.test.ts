@@ -1,13 +1,6 @@
 import request from "supertest";
 import express from "express";
 import cookieParser from "cookie-parser";
-import { prisma } from "@/config";
-import { adminFAQRouter } from "@/routes/admin/website/FAQ";
-
-const app = express();
-app.use(express.json());
-app.use(cookieParser());
-app.use("/faq", adminFAQRouter);
 
 jest.mock("@/config", () => ({
   prisma: {
@@ -77,6 +70,14 @@ jest.mock("@/utils", () => {
     logAdminWarn: jest.fn(),
   };
 });
+
+import { prisma } from "@/config";
+import { adminFAQRouter } from "@/routes/admin/website/FAQ";
+
+const app = express();
+app.use(express.json());
+app.use(cookieParser());
+app.use("/faq", adminFAQRouter);
 
 const mockFAQ = {
   id: "11111111-1111-1111-1111-111111111111",
