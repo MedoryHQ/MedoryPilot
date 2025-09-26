@@ -1,13 +1,6 @@
 import request from "supertest";
 import express from "express";
 import cookieParser from "cookie-parser";
-import { prisma } from "@/config";
-import { adminServiceRouter } from "@/routes/admin/website/service";
-
-const app = express();
-app.use(express.json());
-app.use(cookieParser());
-app.use("/service", adminServiceRouter);
 
 jest.mock("@/config", () => ({
   prisma: {
@@ -97,6 +90,14 @@ jest.mock("@/utils", () => {
     logAdminWarn: jest.fn(),
   };
 });
+
+import { prisma } from "@/config";
+import { adminServiceRouter } from "@/routes/admin/website/service";
+
+const app = express();
+app.use(express.json());
+app.use(cookieParser());
+app.use("/service", adminServiceRouter);
 
 const mockService = {
   id: "22222222-2222-2222-2222-222222222222",

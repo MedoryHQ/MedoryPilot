@@ -1,13 +1,6 @@
 import request from "supertest";
 import express from "express";
 import cookieParser from "cookie-parser";
-import { adminSocialRouter } from "@/routes/admin/website/social";
-import { prisma } from "@/config";
-
-const app = express();
-app.use(express.json());
-app.use(cookieParser());
-app.use("/social", adminSocialRouter);
 
 jest.mock("@/config", () => ({
   prisma: {
@@ -91,6 +84,14 @@ jest.mock("@/utils", () => {
     errorMessages,
   };
 });
+
+import { adminSocialRouter } from "@/routes/admin/website/social";
+import { prisma } from "@/config";
+
+const app = express();
+app.use(express.json());
+app.use(cookieParser());
+app.use("/social", adminSocialRouter);
 
 const mockSocial = {
   id: "33333333-3333-3333-3333-333333333333",

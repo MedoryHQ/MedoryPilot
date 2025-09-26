@@ -1,8 +1,6 @@
 import request from "supertest";
 import express from "express";
 import cookieParser from "cookie-parser";
-import { prisma } from "@/config";
-import { adminHeaderRouter } from "@/routes/admin/website/header";
 
 jest.mock("@/config", () => ({
   prisma: {
@@ -73,6 +71,9 @@ jest.mock("@/utils", () => {
     errorMessages,
   };
 });
+
+import { prisma } from "@/config";
+import { adminHeaderRouter } from "@/routes/admin/website/header";
 
 const app = express();
 app.use(express.json());

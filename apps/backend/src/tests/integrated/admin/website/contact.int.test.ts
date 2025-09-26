@@ -1,14 +1,7 @@
 import request from "supertest";
 import express from "express";
 import cookieParser from "cookie-parser";
-import { adminContactRouter } from "@/routes/admin/website/contact";
-import { prisma } from "@/config";
 import { errorMessages } from "@/utils";
-
-const app = express();
-app.use(express.json());
-app.use(cookieParser());
-app.use("/contact", adminContactRouter);
 
 jest.mock("@/config", () => ({
   prisma: {
@@ -78,6 +71,14 @@ jest.mock("@/utils", () => {
   };
 });
 
+import { adminContactRouter } from "@/routes/admin/website/contact";
+import { prisma } from "@/config";
+
+const app = express();
+app.use(express.json());
+app.use(cookieParser());
+app.use("/contact", adminContactRouter);
+
 const mockContact = {
   id: "11111111-1111-1111-1111-111111111111",
   location: "Tbilisi, Georgia",
@@ -139,6 +140,7 @@ describe("Admin Contact (integration-style) — /contact", () => {
         .post("/contact")
         .send({
           location: "Tbilisi",
+          background: null,
           translations: {
             en: { title: "Hello", description: "World" },
             ka: { title: "გამარჯობა", description: "მსოფლიო" },
