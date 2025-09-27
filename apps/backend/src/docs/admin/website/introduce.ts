@@ -111,10 +111,10 @@
  *       properties:
  *         headline:
  *           type: string
- *           example: "Headline of Medory"
+ *           example: "headline"
  *         description:
  *           type: string
- *           example: "Description of Medory"
+ *           example: "Description"
  *         language:
  *           type: object
  *           properties:
@@ -130,11 +130,11 @@
  *           description: Translations for multiple languages
  *           example:
  *             en:
- *               headline: "Welcome"
+ *               headline: "description"
  *               description: "Welcome."
  *             ka:
- *               headline: "კეთილი იყოს თქვენი მობრძანება"
- *               description: "კეთილი იყოს თქვენი მობრძანება."
+ *               headline: "სათაური"
+ *               description: "აღწერა."
  *
  *     UpdateIntroduceInput:
  *       allOf:

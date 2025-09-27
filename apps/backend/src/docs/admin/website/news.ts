@@ -80,7 +80,7 @@
  *         required: true
  *         schema:
  *           type: string
- *           example: "new-year-announcement"
+ *           example: "slug"
  *     responses:
  *       200:
  *         description: News item returned
@@ -104,7 +104,7 @@
  *         required: true
  *         schema:
  *           type: string
- *           example: "new-year-announcement"
+ *           example: "slug"
  *     requestBody:
  *       required: true
  *       content:
@@ -134,7 +134,7 @@
  *         required: true
  *         schema:
  *           type: string
- *           example: "new-year-announcement"
+ *           example: "slug"
  *     responses:
  *       200:
  *         description: News deleted successfully
