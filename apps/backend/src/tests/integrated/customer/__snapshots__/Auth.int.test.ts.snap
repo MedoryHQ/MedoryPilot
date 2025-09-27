@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Customer auth (integration-style) — /auth/* POST /auth/password-reset matches snapshot on successful password reset 1`] = `
+{
+  "body": {
+    "message": "passwordChanged",
+    "user": {
+      "firstName": "John",
+      "fullName": "John Doe",
+      "id": "u-1",
+      "isVerified": true,
+      "lastName": "Doe",
+      "passwordHash": "<hash>",
+      "phoneNumber": "+995555555555",
+      "smsCode": null,
+    },
+  },
+  "status": 200,
+}
+`;

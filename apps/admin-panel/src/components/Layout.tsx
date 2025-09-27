@@ -68,7 +68,6 @@ const CustomLayout: React.FC<LayoutProps> = ({ children, route }) => {
     return () => {
       mounted = false;
     };
-    //
   }, [location.pathname]);
 
   useEffect(() => {
