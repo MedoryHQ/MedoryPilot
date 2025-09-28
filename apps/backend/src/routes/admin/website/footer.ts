@@ -1,7 +1,7 @@
 import { NextFunction, Router, Request, Response } from "express";
 import { GLOBAL_ERROR_MESSAGE } from "@/utils";
 import * as footerController from "@/controllers/admin/website/footer";
-import { isAdminVerified } from "@/middlewares/admin";
+import { adminAuthenticate } from "@/middlewares/admin";
 import {
   createFooterValidation,
   deleteFooterValidation,
@@ -13,7 +13,7 @@ export const adminFooterRouter = Router();
 
 adminFooterRouter.get(
   "/",
-  isAdminVerified,
+  adminAuthenticate,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return footerController.fetchFooter(req, res, next);
@@ -25,7 +25,7 @@ adminFooterRouter.get(
 
 adminFooterRouter.delete(
   "/:id",
-  isAdminVerified,
+  adminAuthenticate,
   deleteFooterValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -39,7 +39,7 @@ adminFooterRouter.delete(
 
 adminFooterRouter.post(
   "/",
-  isAdminVerified,
+  adminAuthenticate,
   createFooterValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -53,7 +53,7 @@ adminFooterRouter.post(
 
 adminFooterRouter.put(
   "/:id",
-  isAdminVerified,
+  adminAuthenticate,
   updateFooterValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {

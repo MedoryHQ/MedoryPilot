@@ -76,10 +76,10 @@ export const isAdminVerified = (
   next: NextFunction
 ) => {
   try {
-    const token = req.cookies.accessToken;
+    const stageToken = req.cookies.admin_verify_stage;
 
-    if (!token) {
-      logWarn("Admin verification failed: token missing", {
+    if (!stageToken) {
+      logWarn("Admin verification failed: code expired", {
         ip: (req as any).hashedId,
         id: (req as any).userId,
         event: "admin_verification_failed",
@@ -88,19 +88,20 @@ export const isAdminVerified = (
     }
 
     const decoded = jwt.verify(
-      token,
-      getEnvVariable("ADMIN_JWT_ACCESS_SECRET")
-    ) as { id: string; email?: string };
+      stageToken,
+      getEnvVariable("STAGE_JWT_SECRET")
+    ) as { id: string; remember?: boolean };
 
     (req as any).userId = decoded.id;
+    (req as any).remember = decoded.remember ?? false;
 
     next();
   } catch (error) {
-    logCatchyError("Access token verification failed", error, {
+    logCatchyError("refreshToken verification failed", error, {
       ip: (req as any).hashedIp,
-      event: "access_token_failed",
+      event: "refresh_token_failed",
     });
-    return sendError(req, res, 401, "invalidAccessToken");
+    return sendError(req, res, 401, "invalidRefreshToken");
   }
 };
 

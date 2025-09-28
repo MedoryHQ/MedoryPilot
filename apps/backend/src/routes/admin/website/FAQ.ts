@@ -1,7 +1,7 @@
 import { NextFunction, Router, Request, Response } from "express";
 import { GLOBAL_ERROR_MESSAGE } from "@/utils";
 import * as FAQController from "@/controllers/admin/website/FAQ";
-import { isAdminVerified } from "@/middlewares/admin";
+import { adminAuthenticate } from "@/middlewares/admin";
 import {
   createFAQValidation,
   deleteFAQValidation,
@@ -14,7 +14,7 @@ export const adminFAQRouter = Router();
 
 adminFAQRouter.get(
   "/",
-  isAdminVerified,
+  adminAuthenticate,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return FAQController.fetchFAQs(req, res, next);
@@ -26,7 +26,7 @@ adminFAQRouter.get(
 
 adminFAQRouter.get(
   "/:id",
-  isAdminVerified,
+  adminAuthenticate,
   fetchFAQValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -40,7 +40,7 @@ adminFAQRouter.get(
 
 adminFAQRouter.delete(
   "/:id",
-  isAdminVerified,
+  adminAuthenticate,
   deleteFAQValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -54,7 +54,7 @@ adminFAQRouter.delete(
 
 adminFAQRouter.post(
   "/",
-  isAdminVerified,
+  adminAuthenticate,
   createFAQValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -68,7 +68,7 @@ adminFAQRouter.post(
 
 adminFAQRouter.put(
   "/:id",
-  isAdminVerified,
+  adminAuthenticate,
   updateFAQValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {

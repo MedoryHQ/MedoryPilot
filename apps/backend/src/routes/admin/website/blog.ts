@@ -1,7 +1,7 @@
 import { NextFunction, Router, Request, Response } from "express";
 import { GLOBAL_ERROR_MESSAGE } from "@/utils";
 import * as blogController from "@/controllers/admin/website/blog";
-import { isAdminVerified } from "@/middlewares/admin";
+import { adminAuthenticate } from "@/middlewares/admin";
 import {
   createBlogValidation,
   deleteBlogValidation,
@@ -14,7 +14,7 @@ export const adminBlogRouter = Router();
 
 adminBlogRouter.get(
   "/",
-  isAdminVerified,
+  adminAuthenticate,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return blogController.fetchBlogs(req, res, next);
@@ -26,7 +26,7 @@ adminBlogRouter.get(
 
 adminBlogRouter.get(
   "/:slug",
-  isAdminVerified,
+  adminAuthenticate,
   fetchBlogValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -40,7 +40,7 @@ adminBlogRouter.get(
 
 adminBlogRouter.delete(
   "/:slug",
-  isAdminVerified,
+  adminAuthenticate,
   deleteBlogValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -54,7 +54,7 @@ adminBlogRouter.delete(
 
 adminBlogRouter.post(
   "/",
-  isAdminVerified,
+  adminAuthenticate,
   createBlogValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -68,7 +68,7 @@ adminBlogRouter.post(
 
 adminBlogRouter.put(
   "/:slug",
-  isAdminVerified,
+  adminAuthenticate,
   updateBlogValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
