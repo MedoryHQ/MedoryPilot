@@ -530,6 +530,17 @@ button,
   height: 80px !important;
 }
 
+.overviewStatsSwiper,
+.overviewStatsSwiper .swiper-wrapper {
+  display: flex;
+  margin: 0;
+  touch-action: none;
+}
+
+.overviewStatsSwiper .swiper-slide {
+  max-width: min-content;
+}
+
 .premium-button {
   position: relative;
   overflow: hidden;

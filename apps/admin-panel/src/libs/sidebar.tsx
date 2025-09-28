@@ -73,10 +73,10 @@ export const useMenuItems = (): SidebarItem[] => {
       label: t("menu.website"),
       children: [
         {
-          key: "landing-home",
-          href: "landing/home",
+          key: "landing-overview",
+          href: "landing/overview",
           icon: <Home className="h-4 w-4" />,
-          label: t("menu.home")
+          label: t("menu.overview")
         },
         // {
         //   key: "landing-services",

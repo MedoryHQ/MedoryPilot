@@ -206,7 +206,11 @@ export const ka = {
       pages: "გვერდები",
       pagesDescription: "სტატიკური გვერდების კომპონენტების მართვა",
       tariffs: "ტარიფები",
-      tariffsDescription: "ფასების და ტარიფების ისტორიის მართვა"
+      tariffsDescription: "ფასების და ტარიფების ისტორიის მართვა",
+      actionsTitle: "კონტენტის მენეჯმენტი",
+      overviewTitle: "საიტის მენეჯმენტი",
+      overviewDescription:
+        "მართე შენი საიტის კონტენტი, გვერდები და კომპონენტები"
     }
   }
 };

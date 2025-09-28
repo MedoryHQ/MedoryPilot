@@ -204,7 +204,10 @@ export const en = {
       pages: "Pages",
       pagesDescription: "Manage static page components",
       tariffs: "Tariffs",
-      tariffsDescription: "Manage pricing and tariff history"
+      tariffsDescription: "Manage pricing and tariff history",
+      actionsTitle: "Content Management",
+      overviewTitle: "Website Management",
+      overviewDescription: "Manage your website content, pages, and components"
     }
   }
 };
