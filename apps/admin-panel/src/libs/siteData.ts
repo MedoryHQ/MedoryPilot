@@ -118,6 +118,93 @@ export const platformServices = [
   }
 ];
 
+export const overviewQuickActions = (t: (key: string) => string) => [
+  {
+    key: "headers",
+    label: t("overview.headers"),
+    description: t("overview.headersDescription"),
+    icon: Layout,
+    color: "bg-blue-500"
+  },
+  {
+    key: "introduce",
+    label: t("overview.introduce"),
+    description: t("overview.introduceDescription"),
+    icon: User,
+    color: "bg-teal-500"
+  },
+  {
+    key: "newses",
+    label: t("overview.news"),
+    description: t("overview.newsDescription"),
+    icon: Newspaper,
+    color: "bg-orange-500"
+  },
+  {
+    key: "services",
+    label: t("overview.services"),
+    description: t("overview.servicesDescription"),
+    icon: Settings,
+    color: "bg-green-500"
+  },
+  {
+    key: "faqs",
+    label: t("overview.faqs"),
+    description: t("overview.faqsDescription"),
+    icon: HelpCircle,
+    color: "bg-indigo-500"
+  },
+  {
+    key: "blogs",
+    label: t("overview.blogs"),
+    description: t("overview.blogsDescription"),
+    icon: FileText,
+    color: "bg-purple-500"
+  },
+  {
+    key: "categories",
+    label: t("overview.categories"),
+    description: t("overview.categoriesDescription"),
+    icon: Layers,
+    color: "bg-amber-500"
+  },
+  {
+    key: "contacts",
+    label: t("overview.contacts"),
+    description: t("overview.contactsDescription"),
+    icon: Phone,
+    color: "bg-teal-500"
+  },
+  {
+    key: "footers",
+    label: t("overview.footer"),
+    description: t("overview.footerDescription"),
+    icon: Copy,
+    color: "bg-slate-500"
+  },
+  {
+    key: "socials",
+    label: t("overview.socials"),
+    description: t("overview.socialsDescription"),
+    icon: Share2,
+    color: "bg-pink-500"
+  },
+  {
+    key: "pages",
+    label: t("overview.pages"),
+    description: t("overview.pagesDescription"),
+    icon: Globe,
+    color: "bg-cyan-500"
+  },
+  {
+    key: "tariffs",
+    label: t("overview.tariffs"),
+    description: t("overview.tariffsDescription"),
+    icon: Package,
+    color: "bg-rose-500"
+  }
+];
+
 export const overviewStatsConfig = [
   { key: "headers", label: "overview.headers", icon: Layout },
   { key: "introduce", label: "overview.introduce", icon: User },
@@ -127,7 +214,7 @@ export const overviewStatsConfig = [
   { key: "blogs", label: "overview.blogs", icon: FileText },
   { key: "categories", label: "overview.categories", icon: Layers },
   { key: "contacts", label: "overview.contacts", icon: Phone },
-  { key: "footers", label: "overview.footers", icon: Copy },
+  { key: "footers", label: "overview.footer", icon: Copy },
   { key: "socials", label: "overview.socials", icon: Share2 },
   { key: "pages", label: "overview.pages", icon: Globe },
   { key: "tariffs", label: "overview.tariffs", icon: Package }

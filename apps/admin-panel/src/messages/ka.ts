@@ -95,7 +95,7 @@ export const ka = {
       documents: "დოკუმენტები",
       messages: "შეტყობინებები",
       website: "ვებ საიტი",
-      home: "მთავარი",
+      overview: "მიმოხილვა",
       services: "სერვისები",
       menu: "მენიუ",
       news: "სიახლეები",
@@ -181,6 +181,32 @@ export const ka = {
         "გთხოვთ გადაამოწმოთ თქვენი შეყვანილი მონაცემები და სცადოთ ხელახლა.",
       networkError: "ქსელის შეცდომა. გთხოვთ გადაამოწმოთ კავშირი.",
       permissionDenied: "წვდომა უარყოფილია. გთხოვთ დაუკავშირდეთ ადმინისტრატორს."
+    },
+    overview: {
+      headers: "ჰედერები",
+      headersDescription: "ვებსაიტის ჰედერის და ნავიგაციის კონფიგურაცია",
+      introduce: "შესავალი",
+      introduceDescription: "ვებსაიტის შესავალი: სათაური და აღწერა",
+      news: "სიახლეები",
+      newsDescription: "სიახლეების შექმნა და მართვა",
+      services: "სერვისები",
+      servicesDescription: "სერვისების დამატება და მართვა",
+      faqs: "ხშირად დასმული კითხვები",
+      faqsDescription: "ხშირად დასმული კითხვების განახლება და მართვა",
+      blogs: "ბლოგები",
+      blogsDescription: "ბლოგების წერა და მართვა",
+      categories: "კატეგორიები",
+      categoriesDescription: "ბლოგებისა და კონტენტის კატეგორიების მართვა",
+      contacts: "საკონტაქტო ინფორმაცია",
+      contactsDescription: "საკონტაქტო ინფორმაციის განახლება",
+      footer: "footer",
+      footerDescription: "ვებსაიტის footer-ის კონფიგურაცია და ბმულები",
+      socials: "სოციალური ქსელები",
+      socialsDescription: "სოციალური ქსელების ბმულებისა და იკონების მართვა",
+      pages: "გვერდები",
+      pagesDescription: "სტატიკური გვერდების კომპონენტების მართვა",
+      tariffs: "ტარიფები",
+      tariffsDescription: "ფასების და ტარიფების ისტორიის მართვა"
     }
   }
 };

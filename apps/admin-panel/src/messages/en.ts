@@ -94,7 +94,7 @@ export const en = {
       documents: "Documents",
       messages: "Messages",
       website: "Website",
-      home: "Home",
+      overview: "Overview",
       search: "Search",
       notFound: "Not Found",
       services: "Services",
@@ -178,6 +178,33 @@ export const en = {
       validationError: "Please check your input and try again.",
       networkError: "Network error. Please check your connection.",
       permissionDenied: "Permission denied. Please contact your administrator."
+    },
+
+    overview: {
+      headers: "Headers",
+      headersDescription: "Configure website headers and navigation",
+      introduce: "Introduce",
+      introduceDescription: "Site introduction headline and description",
+      news: "News",
+      newsDescription: "Create and manage news articles",
+      services: "Services",
+      servicesDescription: "Add and manage service offerings",
+      faqs: "FAQs",
+      faqsDescription: "Manage frequently asked questions",
+      blogs: "Blogs",
+      blogsDescription: "Write and manage blog posts",
+      categories: "Categories",
+      categoriesDescription: "Manage blog and content categories",
+      contacts: "Contact Info",
+      contactsDescription: "Update contact information",
+      footer: "Footer",
+      footerDescription: "Configure website footer and links",
+      socials: "Socials",
+      socialsDescription: "Manage social media links and icons",
+      pages: "Pages",
+      pagesDescription: "Manage static page components",
+      tariffs: "Tariffs",
+      tariffsDescription: "Manage pricing and tariff history"
     }
   }
 };
