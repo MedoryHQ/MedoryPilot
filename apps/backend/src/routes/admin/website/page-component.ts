@@ -1,7 +1,7 @@
 import { NextFunction, Router, Request, Response } from "express";
 import { GLOBAL_ERROR_MESSAGE } from "@/utils";
 import * as pageComponentController from "@/controllers/admin/website/page-component";
-import { isAdminVerified } from "@/middlewares/admin";
+import { adminAuthenticate } from "@/middlewares/admin";
 import {
   createPageComponentValidation,
   deletePageComponentValidation,
@@ -14,7 +14,7 @@ export const adminPageComponentRouter = Router();
 
 adminPageComponentRouter.get(
   "/",
-  isAdminVerified,
+  adminAuthenticate,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return pageComponentController.fetchPageComponents(req, res, next);
@@ -26,7 +26,7 @@ adminPageComponentRouter.get(
 
 adminPageComponentRouter.get(
   "/:slug",
-  isAdminVerified,
+  adminAuthenticate,
   fetchPageComponentValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -40,7 +40,7 @@ adminPageComponentRouter.get(
 
 adminPageComponentRouter.delete(
   "/:slug",
-  isAdminVerified,
+  adminAuthenticate,
   deletePageComponentValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -54,7 +54,7 @@ adminPageComponentRouter.delete(
 
 adminPageComponentRouter.post(
   "/",
-  isAdminVerified,
+  adminAuthenticate,
   createPageComponentValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -68,7 +68,7 @@ adminPageComponentRouter.post(
 
 adminPageComponentRouter.put(
   "/:slug",
-  isAdminVerified,
+  adminAuthenticate,
   updatePageComponentValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {

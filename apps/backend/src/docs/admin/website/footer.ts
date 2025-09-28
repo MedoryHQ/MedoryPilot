@@ -123,11 +123,11 @@
  *       properties:
  *         phone:
  *           type: string
- *           example: "+1 555 123 4567"
+ *           example: "phone"
  *         email:
  *           type: string
  *           format: email
- *           example: "info@example.com"
+ *           example: "email"
  *         socials:
  *           type: array
  *           items:

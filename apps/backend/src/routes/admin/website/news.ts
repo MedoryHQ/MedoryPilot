@@ -1,7 +1,7 @@
 import { NextFunction, Router, Request, Response } from "express";
 import { GLOBAL_ERROR_MESSAGE } from "@/utils";
 import * as newsController from "@/controllers/admin/website/news";
-import { isAdminVerified } from "@/middlewares/admin";
+import { adminAuthenticate } from "@/middlewares/admin";
 import {
   createNewsValidation,
   deleteNewsValidation,
@@ -14,7 +14,7 @@ export const adminNewsRouter = Router();
 
 adminNewsRouter.get(
   "/",
-  isAdminVerified,
+  adminAuthenticate,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return newsController.fetchNewses(req, res, next);
@@ -26,7 +26,7 @@ adminNewsRouter.get(
 
 adminNewsRouter.get(
   "/:slug",
-  isAdminVerified,
+  adminAuthenticate,
   fetchNewsValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -40,7 +40,7 @@ adminNewsRouter.get(
 
 adminNewsRouter.delete(
   "/:slug",
-  isAdminVerified,
+  adminAuthenticate,
   deleteNewsValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -54,7 +54,7 @@ adminNewsRouter.delete(
 
 adminNewsRouter.post(
   "/",
-  isAdminVerified,
+  adminAuthenticate,
   createNewsValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -68,7 +68,7 @@ adminNewsRouter.post(
 
 adminNewsRouter.put(
   "/:slug",
-  isAdminVerified,
+  adminAuthenticate,
   updateNewsValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {

@@ -19,10 +19,10 @@
  *             properties:
  *               email:
  *                 type: string
- *                 example: admin@example.com
+ *                 example: email
  *               password:
  *                 type: string
- *                 example: "password123"
+ *                 example: "password"
  *               remember:
  *                 type: boolean
  *                 description: Whether to remember admin for extended session

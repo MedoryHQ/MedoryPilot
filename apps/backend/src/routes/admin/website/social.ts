@@ -1,7 +1,7 @@
 import { NextFunction, Router, Request, Response } from "express";
 import { GLOBAL_ERROR_MESSAGE } from "@/utils";
 import * as SocialController from "@/controllers/admin/website/social";
-import { isAdminVerified } from "@/middlewares/admin";
+import { adminAuthenticate } from "@/middlewares/admin";
 import {
   createSocialValidation,
   deleteSocialValidation,
@@ -14,7 +14,7 @@ export const adminSocialRouter = Router();
 
 adminSocialRouter.get(
   "/",
-  isAdminVerified,
+  adminAuthenticate,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return SocialController.fetchSocials(req, res, next);
@@ -26,7 +26,7 @@ adminSocialRouter.get(
 
 adminSocialRouter.get(
   "/:id",
-  isAdminVerified,
+  adminAuthenticate,
   fetchSocialValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -40,7 +40,7 @@ adminSocialRouter.get(
 
 adminSocialRouter.delete(
   "/:id",
-  isAdminVerified,
+  adminAuthenticate,
   deleteSocialValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -54,7 +54,7 @@ adminSocialRouter.delete(
 
 adminSocialRouter.post(
   "/",
-  isAdminVerified,
+  adminAuthenticate,
   createSocialValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -68,7 +68,7 @@ adminSocialRouter.post(
 
 adminSocialRouter.put(
   "/:id",
-  isAdminVerified,
+  adminAuthenticate,
   updateSocialValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {

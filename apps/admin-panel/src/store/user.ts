@@ -32,7 +32,7 @@ export const useAuthStore = create(
       };
     },
     {
-      name: "portfolio-auth-store"
+      name: "medory-auth-store"
     }
   )
 );

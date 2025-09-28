@@ -1,7 +1,7 @@
 import { NextFunction, Router, Request, Response } from "express";
 import { GLOBAL_ERROR_MESSAGE } from "@/utils";
 import * as headerController from "@/controllers/admin/website/header";
-import { isAdminVerified } from "@/middlewares/admin";
+import { adminAuthenticate } from "@/middlewares/admin";
 import { validationHandler } from "@/middlewares/global/validationHandler";
 import {
   createHeaderValidation,
@@ -13,7 +13,7 @@ export const adminHeaderRouter = Router();
 
 adminHeaderRouter.get(
   "/",
-  isAdminVerified,
+  adminAuthenticate,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return headerController.fetchHeader(req, res, next);
@@ -25,7 +25,7 @@ adminHeaderRouter.get(
 
 adminHeaderRouter.delete(
   "/:id",
-  isAdminVerified,
+  adminAuthenticate,
   deleteHeaderValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -39,7 +39,7 @@ adminHeaderRouter.delete(
 
 adminHeaderRouter.post(
   "/",
-  isAdminVerified,
+  adminAuthenticate,
   createHeaderValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -53,7 +53,7 @@ adminHeaderRouter.post(
 
 adminHeaderRouter.put(
   "/:id",
-  isAdminVerified,
+  adminAuthenticate,
   updateHeaderValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {

@@ -61,11 +61,11 @@
  *                 type: object
  *                 example:
  *                   en:
- *                     question: "What is X?"
- *                     answer: "X is..."
+ *                     question: "Question?"
+ *                     answer: "Answer."
  *                   ka:
- *                     question: "What is X? (ka)"
- *                     answer: "X is... (ka)"
+ *                     question: "Question? (ka)"
+ *                     answer: "Answer (ka)"
  *             required:
  *               - translations
  *     responses:
@@ -140,11 +140,11 @@
  *                 type: object
  *                 example:
  *                   en:
- *                     question: "Updated question?"
- *                     answer: "Updated answer."
+ *                     question: "Question?"
+ *                     answer: "Answer."
  *                   ka:
- *                     question: "Updated question? (ka)"
- *                     answer: "Updated answer. (ka)"
+ *                     question: "Question? (ka)"
+ *                     answer: "Answer (ka)"
  *             required:
  *               - translations
  *     responses:
@@ -224,10 +224,10 @@
  *       properties:
  *         question:
  *           type: string
- *           example: "What is your return policy?"
+ *           example: "Question?"
  *         answer:
  *           type: string
- *           example: "You can return within 30 days."
+ *           example: "Answer."
  *         language:
  *           $ref: '#/components/schemas/LanguageCode'
  *

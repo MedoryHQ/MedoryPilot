@@ -1,7 +1,7 @@
 import { NextFunction, Router, Request, Response } from "express";
 import { GLOBAL_ERROR_MESSAGE } from "@/utils";
 import * as ServiceController from "@/controllers/admin/website/service";
-import { isAdminVerified } from "@/middlewares/admin";
+import { adminAuthenticate } from "@/middlewares/admin";
 import {
   createServiceValidation,
   deleteServiceValidation,
@@ -14,7 +14,7 @@ export const adminServiceRouter = Router();
 
 adminServiceRouter.get(
   "/",
-  isAdminVerified,
+  adminAuthenticate,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return ServiceController.fetchServices(req, res, next);
@@ -26,7 +26,7 @@ adminServiceRouter.get(
 
 adminServiceRouter.get(
   "/:id",
-  isAdminVerified,
+  adminAuthenticate,
   fetchServiceValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -40,7 +40,7 @@ adminServiceRouter.get(
 
 adminServiceRouter.delete(
   "/:id",
-  isAdminVerified,
+  adminAuthenticate,
   deleteServiceValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -54,7 +54,7 @@ adminServiceRouter.delete(
 
 adminServiceRouter.post(
   "/",
-  isAdminVerified,
+  adminAuthenticate,
   createServiceValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -68,7 +68,7 @@ adminServiceRouter.post(
 
 adminServiceRouter.put(
   "/:id",
-  isAdminVerified,
+  adminAuthenticate,
   updateServiceValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {

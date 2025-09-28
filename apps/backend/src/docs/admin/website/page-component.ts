@@ -229,11 +229,11 @@
  *           type: object
  *           example:
  *             en:
- *               name: "About Us"
- *               content: "This is the about us page content"
+ *               name: "name"
+ *               content: "content"
  *             ka:
- *               name: "ჩვენს შესახებ"
- *               content: "ეს არის ჩვენს შესახებ გვერდის კონტენტი"
+ *               name: "სახელი"
+ *               content: "კონტენტი"
  *         metaTitle:
  *           type: string
  *           example: "metaTitle"

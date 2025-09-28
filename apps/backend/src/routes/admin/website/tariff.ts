@@ -1,7 +1,7 @@
 import { NextFunction, Router, Request, Response } from "express";
 import { GLOBAL_ERROR_MESSAGE } from "@/utils";
 import * as tariffController from "@/controllers/admin/website/tariff";
-import { isAdminVerified } from "@/middlewares/admin";
+import { adminAuthenticate } from "@/middlewares/admin";
 import { validationHandler } from "@/middlewares/global/validationHandler";
 import {
   createTariffValidation,
@@ -14,7 +14,7 @@ export const adminTariffRouter = Router();
 
 adminTariffRouter.get(
   "/",
-  isAdminVerified,
+  adminAuthenticate,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return tariffController.fetchTariffs(req, res, next);
@@ -26,7 +26,7 @@ adminTariffRouter.get(
 
 adminTariffRouter.get(
   "/:id",
-  isAdminVerified,
+  adminAuthenticate,
   fetchTariffValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -40,7 +40,7 @@ adminTariffRouter.get(
 
 adminTariffRouter.delete(
   "/:id",
-  isAdminVerified,
+  adminAuthenticate,
   deleteTariffValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -54,7 +54,7 @@ adminTariffRouter.delete(
 
 adminTariffRouter.post(
   "/",
-  isAdminVerified,
+  adminAuthenticate,
   createTariffValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -68,7 +68,7 @@ adminTariffRouter.post(
 
 adminTariffRouter.put(
   "/:id",
-  isAdminVerified,
+  adminAuthenticate,
   updateTariffValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {

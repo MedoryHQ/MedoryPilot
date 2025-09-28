@@ -168,16 +168,16 @@
  *       properties:
  *         name:
  *           type: string
- *           example: "Medory"
+ *           example: "name"
  *         position:
  *           type: string
- *           example: "CEO"
+ *           example: "position"
  *         headline:
  *           type: string
- *           example: "Welcome to our site"
+ *           example: "headline"
  *         description:
  *           type: string
- *           example: "Short description text"
+ *           example: "description"
  *         language:
  *           type: object
  *           properties:
@@ -215,17 +215,6 @@
  *         translations:
  *           type: object
  *           description: Map of language code to translation object. At least 'en' and 'ka' translations are required by validation.
- *           example:
- *             en:
- *               name: "Medory"
- *               position: "CEO"
- *               headline: "Welcome"
- *               description: "Short description"
- *             ka:
- *               name: "Sample"
- *               position: "Position"
- *               headline: "Headline"
- *               description: "Description"
  *
  *     UpdateHeaderRequest:
  *       allOf:

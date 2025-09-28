@@ -1,7 +1,7 @@
 import { NextFunction, Router, Request, Response } from "express";
 import { GLOBAL_ERROR_MESSAGE } from "@/utils";
 import * as IntroduceController from "@/controllers/admin/website/introduce";
-import { isAdminVerified } from "@/middlewares/admin";
+import { adminAuthenticate } from "@/middlewares/admin";
 import {
   createIntroduceValidation,
   deleteIntroduceValidation,
@@ -14,7 +14,7 @@ export const adminIntroduceRouter = Router();
 
 adminIntroduceRouter.get(
   "/",
-  isAdminVerified,
+  adminAuthenticate,
   fetchIntroduceValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -28,7 +28,7 @@ adminIntroduceRouter.get(
 
 adminIntroduceRouter.delete(
   "/:id",
-  isAdminVerified,
+  adminAuthenticate,
   deleteIntroduceValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -42,7 +42,7 @@ adminIntroduceRouter.delete(
 
 adminIntroduceRouter.post(
   "/",
-  isAdminVerified,
+  adminAuthenticate,
   createIntroduceValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -56,7 +56,7 @@ adminIntroduceRouter.post(
 
 adminIntroduceRouter.put(
   "/:id",
-  isAdminVerified,
+  adminAuthenticate,
   updateIntroduceValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
