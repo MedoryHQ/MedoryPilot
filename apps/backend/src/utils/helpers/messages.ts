@@ -12,6 +12,10 @@ export const errorMessages = {
     en: "Access denied. Invalid refresh token.",
     ka: "წვდომა უარყოფილია. არასწორი refresh ტოკენი.",
   },
+  invalidAccessToken: {
+    en: "Access denied. Invalid access token.",
+    ka: "წვდომა უარყოფილია. არასწორი access ტოკენი.",
+  },
   jwtSecretNotProvided: {
     en: "JWT secrets not provided.",
     ka: "JWT secret-ების მოწოდება აუცილებელია.",
