@@ -5,7 +5,17 @@ import {
   BarChart3,
   MessageCircle,
   FileText,
-  Globe
+  Globe,
+  HelpCircle,
+  Newspaper,
+  Settings,
+  Phone,
+  Share2,
+  Layout,
+  User,
+  Layers,
+  Copy,
+  Package
 } from "lucide-react";
 
 type SubNavigationItem = {
@@ -106,4 +116,19 @@ export const platformServices = [
     title: "global.websiteTitle",
     desc: "global.websiteDescription"
   }
+];
+
+export const overviewStatsConfig = [
+  { key: "headers", label: "overview.headers", icon: Layout },
+  { key: "introduce", label: "overview.introduce", icon: User },
+  { key: "newses", label: "overview.news", icon: Newspaper },
+  { key: "services", label: "overview.services", icon: Settings },
+  { key: "faqs", label: "overview.faqs", icon: HelpCircle },
+  { key: "blogs", label: "overview.blogs", icon: FileText },
+  { key: "categories", label: "overview.categories", icon: Layers },
+  { key: "contacts", label: "overview.contacts", icon: Phone },
+  { key: "footers", label: "overview.footers", icon: Copy },
+  { key: "socials", label: "overview.socials", icon: Share2 },
+  { key: "pages", label: "overview.pages", icon: Globe },
+  { key: "tariffs", label: "overview.tariffs", icon: Package }
 ];
