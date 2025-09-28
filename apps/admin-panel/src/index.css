@@ -530,15 +530,41 @@ button,
   height: 80px !important;
 }
 
-.overviewStatsSwiper,
-.overviewStatsSwiper .swiper-wrapper {
-  display: flex;
-  margin: 0;
-  touch-action: none;
+.stats-slider-container {
+  position: relative;
 }
 
-.overviewStatsSwiper .swiper-slide {
-  max-width: min-content;
+.stats-slider-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.3s ease;
+}
+
+.stats-slider-scrollbar:hover {
+  scrollbar-color: rgba(var(--primary) / 0.3) transparent;
+}
+
+.stats-slider-scrollbar::-webkit-scrollbar {
+  height: 6px;
+}
+
+.stats-slider-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 3px;
+}
+
+.stats-slider-scrollbar::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+
+.stats-slider-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: rgba(var(--primary) / 0.3);
+}
+
+.stats-slider-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--primary) / 0.5);
 }
 
 .premium-button {
