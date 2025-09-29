@@ -39,6 +39,13 @@ export const ka = {
       newPasswordTitle: "ახალი პაროლის შექმნა",
       newPasswordSubtitle: "აირჩიეთ ძლიერი პაროლი თქვენი ანგარიშისთვის"
     },
+    notFound: {
+      resourceOfGiven: "გვერდი მითითებული მისამართზე",
+      pageNotFound: "ვერ მოიძებნა",
+      cannotBeFound: "ვერ მოიძებნა",
+      navigateBack: "უკან დაბრუნება"
+    },
+
     pages: {
       dashboard: "Dashboard"
     },
@@ -199,7 +206,7 @@ export const ka = {
       categoriesDescription: "ბლოგებისა და კონტენტის კატეგორიების მართვა",
       contacts: "საკონტაქტო ინფორმაცია",
       contactsDescription: "საკონტაქტო ინფორმაციის განახლება",
-      footer: "footer",
+      footer: "Footer",
       footerDescription: "ვებსაიტის footer-ის კონფიგურაცია და ბმულები",
       socials: "სოციალური ქსელები",
       socialsDescription: "სოციალური ქსელების ბმულებისა და იკონების მართვა",
@@ -210,7 +217,9 @@ export const ka = {
       actionsTitle: "კონტენტის მენეჯმენტი",
       overviewTitle: "საიტის მენეჯმენტი",
       overviewDescription:
-        "მართე შენი საიტის კონტენტი, გვერდები და კომპონენტები"
+        "მართე შენი საიტის კონტენტი, გვერდები და კომპონენტები",
+      active: "აქტიური",
+      publishedItems: "გამოქვეყნებული ნივთები"
     }
   }
 };

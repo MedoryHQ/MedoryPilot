@@ -38,6 +38,12 @@ export const en = {
       websiteDescription:
         "Manage website content and information for your practice"
     },
+    notFound: {
+      resourceOfGiven: "Resource of given path",
+      pageNotFound: "Page Not Found",
+      cannotBeFound: "cannot be found",
+      navigateBack: "Navigate Back"
+    },
     pages: {
       dashboard: "Dashboard"
     },
@@ -207,7 +213,9 @@ export const en = {
       tariffsDescription: "Manage pricing and tariff history",
       actionsTitle: "Content Management",
       overviewTitle: "Website Management",
-      overviewDescription: "Manage your website content, pages, and components"
+      overviewDescription: "Manage your website content, pages, and components",
+      active: "Active",
+      publishedItems: "Published Items"
     }
   }
 };

@@ -19,7 +19,7 @@
   --sidebar-bg: var(--sidebar-bg-light);
   --site-frame-bg: var(--site-frame-bg-light);
 
-  --background: #ffffff;
+  --background: #f8fafc;
   --foreground: #0f172a;
   --content-bg: #ffffff;
   --content-text: #0a0a0a;
@@ -73,6 +73,7 @@
   --sidebar-accent: var(--accent);
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: #19529d;
+  --stats-border: #19529d;
   --sidebar-ring: var(--accent);
   --sidebar-hover: rgba(255, 255, 255, 0.1);
   --sidebar-active: rgba(255, 255, 255, 0.15);
@@ -155,6 +156,7 @@
   --sidebar-active: #0b69a726;
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: #0f1629;
+  --stats-border: #3b82f6;
   --sidebar-ring: var(--accent);
 
   --auth-form-bg: #0f172a;
@@ -535,13 +537,11 @@ button,
 }
 
 .stats-slider-scrollbar {
+  padding-top: 10px;
+  padding-bottom: 30px;
   scrollbar-width: thin;
-  scrollbar-color: transparent transparent;
-  transition: scrollbar-color 0.3s ease;
-}
-
-.stats-slider-scrollbar:hover {
-  scrollbar-color: rgba(var(--primary) / 0.3) transparent;
+  scrollbar-color: var(--stats-border) transparent;
+  transition: scrollbar-color 0.3s;
 }
 
 .stats-slider-scrollbar::-webkit-scrollbar {
@@ -554,17 +554,20 @@ button,
 }
 
 .stats-slider-scrollbar::-webkit-scrollbar-thumb {
-  background: transparent;
+  background: var(--stats-border);
   border-radius: 3px;
-  transition: background 0.3s ease;
+  transition: background 0.3s;
 }
 
-.stats-slider-scrollbar:hover::-webkit-scrollbar-thumb {
-  background: rgba(var(--primary) / 0.3);
+.stats-card-hover {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.stats-slider-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(var(--primary) / 0.5);
+.stats-card-hover:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow:
+    0 20px 25px -5px #0000001a,
+    0 8px 10px -6px #0000001a;
 }
 
 .premium-button {
@@ -872,6 +875,21 @@ button,
 @media (max-width: 768px) {
   .sidebar-root .mobile-toggle {
     display: none !important;
+  }
+  .stats-slider-scrollbar {
+    padding-top: 7px;
+    padding-bottom: 14px;
+  }
+
+  .stats-card-hover:active {
+    transition: transform 0.1s;
+    transform: scale(0.98);
+  }
+
+  .stats-card-hover:hover {
+    box-shadow:
+      0 10px 12px -3px #0000001a,
+      0 4px 5px -3px #0000001a;
   }
 
   .sidebar-root {
