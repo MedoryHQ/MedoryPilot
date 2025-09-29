@@ -101,7 +101,7 @@ const CustomLayout: React.FC<LayoutProps> = ({ children, route }) => {
   }, [route, isLoggedIn, checking, location.pathname, navigate]);
 
   return (
-    <div className="flex min-h-screen w-full">
+    <div className="flex min-h-screen w-full grow">
       <main className="!text-foreground relative mb-[68px] flex max-w-full flex-1 md:mb-0">
         {isLoggedIn ? (
           <>

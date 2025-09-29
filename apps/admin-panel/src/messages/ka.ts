@@ -39,6 +39,13 @@ export const ka = {
       newPasswordTitle: "ახალი პაროლის შექმნა",
       newPasswordSubtitle: "აირჩიეთ ძლიერი პაროლი თქვენი ანგარიშისთვის"
     },
+    notFound: {
+      resourceOfGiven: "გვერდი მითითებული მისამართზე",
+      pageNotFound: "ვერ მოიძებნა",
+      cannotBeFound: "ვერ მოიძებნა",
+      navigateBack: "უკან დაბრუნება"
+    },
+
     pages: {
       dashboard: "Dashboard"
     },

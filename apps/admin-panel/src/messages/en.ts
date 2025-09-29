@@ -38,6 +38,12 @@ export const en = {
       websiteDescription:
         "Manage website content and information for your practice"
     },
+    notFound: {
+      resourceOfGiven: "Resource of given path",
+      pageNotFound: "Page Not Found",
+      cannotBeFound: "cannot be found",
+      navigateBack: "Navigate Back"
+    },
     pages: {
       dashboard: "Dashboard"
     },
