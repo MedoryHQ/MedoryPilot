@@ -73,6 +73,7 @@
   --sidebar-accent: var(--accent);
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: #19529d;
+  --stats-border: #19529d;
   --sidebar-ring: var(--accent);
   --sidebar-hover: rgba(255, 255, 255, 0.1);
   --sidebar-active: rgba(255, 255, 255, 0.15);
@@ -155,6 +156,7 @@
   --sidebar-active: #0b69a726;
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: #0f1629;
+  --stats-border: #3b82f6;
   --sidebar-ring: var(--accent);
 
   --auth-form-bg: #0f172a;
@@ -536,12 +538,8 @@ button,
 
 .stats-slider-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: transparent transparent;
-  transition: scrollbar-color 0.3s ease;
-}
-
-.stats-slider-scrollbar:hover {
-  scrollbar-color: rgba(var(--primary) / 0.3) transparent;
+  scrollbar-color: var(--stats-border) transparent;
+  transition: scrollbar-color 0.3s;
 }
 
 .stats-slider-scrollbar::-webkit-scrollbar {
@@ -554,17 +552,9 @@ button,
 }
 
 .stats-slider-scrollbar::-webkit-scrollbar-thumb {
-  background: transparent;
+  background: var(--stats-border);
   border-radius: 3px;
-  transition: background 0.3s ease;
-}
-
-.stats-slider-scrollbar:hover::-webkit-scrollbar-thumb {
-  background: rgba(var(--primary) / 0.3);
-}
-
-.stats-slider-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(var(--primary) / 0.5);
+  transition: background 0.3s;
 }
 
 .stats-card-hover {
