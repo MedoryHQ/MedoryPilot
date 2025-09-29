@@ -22,8 +22,6 @@ import {
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-const GAP = 16;
-
 const Overview: React.FC = () => {
   const { data, isFetching } = useGetOverview();
   const { t } = useTranslation();
@@ -60,7 +58,6 @@ const Overview: React.FC = () => {
 
   return (
     <motion.div
-      className="space-y-8"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
@@ -76,13 +73,13 @@ const Overview: React.FC = () => {
         </div>
       </div>
 
-      <div className="group stats-slider-container relative">
+      <div className="group stats-slider-container relative my-[40px]">
         <div className="mb-6 flex items-center justify-between">
           <div className="hidden items-center gap-2 md:flex">
             <Button
               variant="outline"
               size="sm"
-              aria-label={t("overview.prev")}
+              aria-label={toUpperCase(t("overview.prev"))}
               className="h-9 w-9 rounded-full shadow-sm transition-all hover:shadow-md"
               onClick={scrollLeft}
             >
@@ -91,7 +88,7 @@ const Overview: React.FC = () => {
             <Button
               variant="outline"
               size="sm"
-              aria-label={t("overview.next")}
+              aria-label={toUpperCase(t("overview.next"))}
               className="h-9 w-9 rounded-full shadow-sm transition-all hover:shadow-md"
               onClick={scrollRight}
             >
@@ -102,90 +99,68 @@ const Overview: React.FC = () => {
 
         <div
           ref={scrollContainerRef}
-          className="stats-slider-scrollbar flex max-w-[100vw] gap-[16px] overflow-x-auto px-1 pb-4"
+          className="stats-slider-scrollbar flex gap-5 overflow-x-auto px-1 pb-4"
           style={{
             scrollSnapType: "x mandatory",
             WebkitOverflowScrolling: "touch"
           }}
         >
-          {(isFetching ? overviewStatsConfig : overviewStatsConfig).map(
-            (stat, index) => {
-              const Icon = stat.icon;
-              const count =
-                overviewData[stat.key as keyof OverviewResponse["data"]] ?? 0;
+          {overviewStatsConfig.map((stat, index) => {
+            const Icon = stat.icon;
+            const count =
+              overviewData[stat.key as keyof OverviewResponse["data"]] ?? 0;
 
-              return (
-                <motion.div
-                  key={stat.key}
-                  initial={{ opacity: 0, x: 30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{
-                    duration: 0.4,
-                    delay: index * 0.06,
-                    ease: [0.16, 1, 0.3, 1]
-                  }}
-                  className="flex-shrink-0"
-                  style={{
-                    scrollSnapAlign: "start",
-                    minWidth: 160,
-                    maxWidth: 400,
-                    width: "min-content"
-                  }}
+            return (
+              <motion.div
+                key={stat.key}
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{
+                  duration: 0.4,
+                  delay: index * 0.1,
+                  ease: [0.16, 1, 0.3, 1]
+                }}
+                className="flex-shrink-0"
+                style={{ scrollSnapAlign: "start" }}
+              >
+                <Card
+                  onClick={() => navigate(`/landing/${stat.key}`)}
+                  className="stats-card-hover border-border/50 bg-card/80 w-[260px] min-w-[260px] cursor-pointer border backdrop-blur-sm"
                 >
-                  {isFetching ? (
-                    <Card className="transition-shadow hover:shadow-md">
-                      <CardContent className="p-6">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <Skeleton className="h-10 w-10 rounded-lg p-2" />
-                            <div className="w-40">
-                              <Skeleton className="mb-2 h-5 w-full" />
-                              <Skeleton className="h-4 w-24" />
-                            </div>
-                          </div>
-                          <Skeleton className="h-8 w-16 rounded-md" />
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ) : (
-                    <Card
-                      className="stats-card-hover border-border/50 bg-card/80 cursor-pointer border backdrop-blur-sm transition-shadow hover:shadow-md"
-                      onClick={() => navigate(`/${stat.key}`)}
-                    >
-                      <CardContent className="p-6">
-                        <div className="space-y-4">
-                          {/* Icon and Badge Row */}
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="bg-primary/10 rounded-2xl p-3">
-                                <div className="text-primary">
-                                  <Icon className="h-5 w-5" />
-                                </div>
-                              </div>
-                              <div>
-                                <div className="text-foreground text-3xl leading-none font-bold">
-                                  {count}
-                                </div>
-                                <div className="text-foreground text-base font-medium">
-                                  {t(stat.label)}
-                                </div>
-                                <div className="text-muted-foreground text-sm">
-                                  {t("overview.publishedItems")}
-                                </div>
-                              </div>
-                            </div>
-                            <Badge variant="default">
-                              {toUpperCase(t("overview.active"))}
-                            </Badge>
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="bg-primary/10 rounded-2xl p-3">
+                          <div className="text-primary">
+                            <Icon className="h-5 w-5" />
                           </div>
                         </div>
-                      </CardContent>
-                    </Card>
-                  )}
-                </motion.div>
-              );
-            }
-          )}
+                        <Badge
+                          variant="default"
+                          className="rounded-full px-2 py-1 text-xs font-medium"
+                        >
+                          {toUpperCase(t("overview.active"))}
+                        </Badge>
+                      </div>
+
+                      {/* Content */}
+                      <div className="space-y-2">
+                        <div className="text-foreground text-3xl leading-none font-bold">
+                          {count}
+                        </div>
+                        <div className="text-foreground text-base font-medium">
+                          {toUpperCase(t(stat.label))}
+                        </div>
+                        <div className="text-muted-foreground text-sm">
+                          {toUpperCase(t("overview.publishedItems"))}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
 
@@ -230,7 +205,7 @@ const Overview: React.FC = () => {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3, delay: 0.2 + idx * 0.04 }}
                       className="group cursor-pointer"
-                      onClick={() => navigate(`/${action.key}`)}
+                      onClick={() => navigate(`/landing/${action.key}`)}
                     >
                       <div className="border-border hover:border-primary/20 bg-card rounded-lg border p-6 transition-all duration-200 hover:shadow-md">
                         <div className="flex items-start gap-4">

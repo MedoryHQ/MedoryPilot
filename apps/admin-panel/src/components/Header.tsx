@@ -52,7 +52,7 @@ export const Header: React.FC = () => {
         }}
       >
         <motion.header
-          className="bg-card border-border sticky top-0 z-30 flex h-16 items-center border-b px-4 backdrop-blur-sm md:px-6 lg:px-8"
+          className="bg-background border-border sticky top-0 z-30 flex h-16 items-center border-b px-4 backdrop-blur-sm md:px-6 lg:px-8"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}

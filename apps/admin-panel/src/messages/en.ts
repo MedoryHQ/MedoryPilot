@@ -207,7 +207,9 @@ export const en = {
       tariffsDescription: "Manage pricing and tariff history",
       actionsTitle: "Content Management",
       overviewTitle: "Website Management",
-      overviewDescription: "Manage your website content, pages, and components"
+      overviewDescription: "Manage your website content, pages, and components",
+      active: "Active",
+      publishedItems: "Published Items"
     }
   }
 };

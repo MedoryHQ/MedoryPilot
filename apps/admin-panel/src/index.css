@@ -19,7 +19,7 @@
   --sidebar-bg: var(--sidebar-bg-light);
   --site-frame-bg: var(--site-frame-bg-light);
 
-  --background: #ffffff;
+  --background: #f8fafc;
   --foreground: #0f172a;
   --content-bg: #ffffff;
   --content-text: #0a0a0a;
@@ -567,6 +567,17 @@ button,
   background: rgba(var(--primary) / 0.5);
 }
 
+.stats-card-hover {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stats-card-hover:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow:
+    0 20px 25px -5px #0000001a,
+    0 8px 10px -6px #0000001a;
+}
+
 .premium-button {
   position: relative;
   overflow: hidden;
@@ -872,6 +883,11 @@ button,
 @media (max-width: 768px) {
   .sidebar-root .mobile-toggle {
     display: none !important;
+  }
+
+  .stats-card-hover:active {
+    transition: transform 0.1s;
+    transform: scale(0.98);
   }
 
   .sidebar-root {
