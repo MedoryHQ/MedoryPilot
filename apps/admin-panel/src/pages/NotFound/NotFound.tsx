@@ -19,7 +19,7 @@ export const NotFound = () => {
         <h2 className="text-[20px] md:text-[26px]">
           {toUpperCase(t("notFound.pageNotFound"))}
         </h2>
-        <p className="text-center">
+        <p className="overflow-hidden text-center">
           {toUpperCase(t("notFound.resourceOfGiven"))}: {location.pathname}{" "}
           {toUpperCase(t("notFound.cannotBeFound"))}
         </p>
