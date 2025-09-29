@@ -537,6 +537,8 @@ button,
 }
 
 .stats-slider-scrollbar {
+  padding-top: 10px;
+  padding-bottom: 30px;
   scrollbar-width: thin;
   scrollbar-color: var(--stats-border) transparent;
   transition: scrollbar-color 0.3s;
@@ -873,6 +875,10 @@ button,
 @media (max-width: 768px) {
   .sidebar-root .mobile-toggle {
     display: none !important;
+  }
+  .stats-slider-scrollbar {
+    padding-top: 7px;
+    padding-bottom: 14px;
   }
 
   .stats-card-hover:active {
