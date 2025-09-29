@@ -199,7 +199,7 @@ export const ka = {
       categoriesDescription: "ბლოგებისა და კონტენტის კატეგორიების მართვა",
       contacts: "საკონტაქტო ინფორმაცია",
       contactsDescription: "საკონტაქტო ინფორმაციის განახლება",
-      footer: "footer",
+      footer: "Footer",
       footerDescription: "ვებსაიტის footer-ის კონფიგურაცია და ბმულები",
       socials: "სოციალური ქსელები",
       socialsDescription: "სოციალური ქსელების ბმულებისა და იკონების მართვა",
