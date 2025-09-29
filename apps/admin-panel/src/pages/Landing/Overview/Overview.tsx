@@ -60,9 +60,9 @@ const Overview: React.FC = () => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.2 }}
     >
-      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+      <div className="mt-10 flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <div>
           <h1 className="text-foreground text-2xl font-semibold">
             {toUpperCase(t("overview.overviewTitle"))}
@@ -73,7 +73,7 @@ const Overview: React.FC = () => {
         </div>
       </div>
 
-      <div className="group stats-slider-container relative my-[40px]">
+      <div className="group stats-slider-container relative my-[26px] md:my-[40px]">
         <div className="mb-6 flex items-center justify-between">
           <div className="hidden items-center gap-2 md:flex">
             <Button
@@ -125,14 +125,14 @@ const Overview: React.FC = () => {
               >
                 <Card
                   onClick={() => navigate(`/landing/${stat.key}`)}
-                  className="stats-card-hover border-border/50 bg-card/80 w-[260px] min-w-[260px] cursor-pointer border backdrop-blur-sm"
+                  className="stats-card-hover border-border/50 bg-card/80 w-[140px] min-w-[140px] cursor-pointer border backdrop-blur-sm md:w-[260px] md:min-w-[260px]"
                 >
-                  <CardContent className="p-6">
+                  <CardContent className="p-4 !pb-4 md:p-6 md:!pb-6">
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
-                        <div className="bg-primary/10 rounded-2xl p-3">
+                        <div className="bg-primary/10 rounded-2xl p-2 md:p-3">
                           <div className="text-primary">
-                            <Icon className="h-5 w-5" />
+                            <Icon className="h-4 w-4 md:h-5 md:w-5" />
                           </div>
                         </div>
                         <Badge
@@ -143,15 +143,14 @@ const Overview: React.FC = () => {
                         </Badge>
                       </div>
 
-                      {/* Content */}
                       <div className="space-y-2">
-                        <div className="text-foreground text-3xl leading-none font-bold">
+                        <div className="text-foreground text-[20px] leading-none font-bold md:text-3xl">
                           {count}
                         </div>
-                        <div className="text-foreground text-base font-medium">
+                        <div className="text-foreground text-[14px] leading-[100%] font-medium md:text-base">
                           {toUpperCase(t(stat.label))}
                         </div>
-                        <div className="text-muted-foreground text-sm">
+                        <div className="text-muted-foreground hidden text-sm md:block">
                           {toUpperCase(t("overview.publishedItems"))}
                         </div>
                       </div>
@@ -180,7 +179,7 @@ const Overview: React.FC = () => {
                     key={i}
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: 0.2 + i * 0.04 }}
+                    transition={{ duration: 0.2, delay: 0.2 + i * 0.04 }}
                   >
                     <div className="border-border hover:border-primary/20 bg-card rounded-lg border p-6 transition-all duration-200 hover:shadow-md">
                       <div className="flex items-start gap-4">
@@ -203,7 +202,7 @@ const Overview: React.FC = () => {
                       key={action.key}
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3, delay: 0.2 + idx * 0.04 }}
+                      transition={{ duration: 0.2, delay: 0.2 + idx * 0.04 }}
                       className="group cursor-pointer"
                       onClick={() => navigate(`/landing/${action.key}`)}
                     >

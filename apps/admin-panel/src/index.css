@@ -880,6 +880,12 @@ button,
     transform: scale(0.98);
   }
 
+  .stats-card-hover:hover {
+    box-shadow:
+      0 10px 12px -3px #0000001a,
+      0 4px 5px -3px #0000001a;
+  }
+
   .sidebar-root {
     width: var(--sidebar-collapsed) !important;
   }
