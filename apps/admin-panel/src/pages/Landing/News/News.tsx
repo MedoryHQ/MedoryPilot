@@ -4,7 +4,7 @@ const News = () => {
 
 export const NewsNavigationRoute = {
   element: <News />,
-  path: "/landing/news"
+  path: "/landing/newses"
 };
 
 export default News;
