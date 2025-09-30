@@ -43,3 +43,4 @@ export * from "./aspect-ratio";
 export * from "./carousel";
 export * from "./chart";
 export * from "./command";
+export * from "./context-menu";
