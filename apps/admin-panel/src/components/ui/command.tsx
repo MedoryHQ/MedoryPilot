@@ -13,12 +13,13 @@ import {
   DialogTitle
 } from "./dialog";
 
-function Command({
-  className,
-  ...props
-}: React.ComponentProps<typeof CommandPrimitive>) {
+const Command = React.forwardRef<
+  React.ElementRef<typeof CommandPrimitive>,
+  React.ComponentProps<typeof CommandPrimitive>
+>(({ className, ...props }, ref) => {
   return (
     <CommandPrimitive
+      ref={ref}
       data-slot="command"
       className={cn(
         "bg-popover text-popover-foreground flex h-full w-full flex-col overflow-hidden rounded-md",
@@ -27,7 +28,7 @@ function Command({
       {...props}
     />
   );
-}
+});
 
 function CommandDialog({
   title = "Command Palette",

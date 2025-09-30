@@ -23,7 +23,7 @@ export function KPICard({
   sparklineData = [],
   className = ""
 }: KPICardProps) {
-  const isPositive = trend === "up" || (delta && delta > 0);
+  const isPositive = delta !== undefined ? delta > 0 : trend === "up";
 
   return (
     <motion.div
