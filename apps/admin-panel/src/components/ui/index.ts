@@ -39,3 +39,4 @@ export * from "./toast";
 export * from "./toaster";
 export * from "./input";
 export * from "./input-otp";
+export * from "./aspect-ratio";
