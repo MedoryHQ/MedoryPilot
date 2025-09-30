@@ -36,7 +36,9 @@ export const en = {
         "Exchange medical documents, examination sheets, and analysis reports securely",
       websiteTitle: "Doctor CMS",
       websiteDescription:
-        "Manage website content and information for your practice"
+        "Manage website content and information for your practice",
+      nextSlide: "Next slide",
+      previousSlide: "Previous slide"
     },
     notFound: {
       resourceOfGiven: "Resource of given path",

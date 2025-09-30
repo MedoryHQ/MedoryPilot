@@ -37,7 +37,9 @@ export const ka = {
       resetTitle: "შეიყვანეთ კოდი",
       resetSubtitle: "შეიყვანეთ ელ-ფოსტაზე მიღებული კოდი",
       newPasswordTitle: "ახალი პაროლის შექმნა",
-      newPasswordSubtitle: "აირჩიეთ ძლიერი პაროლი თქვენი ანგარიშისთვის"
+      newPasswordSubtitle: "აირჩიეთ ძლიერი პაროლი თქვენი ანგარიშისთვის",
+      nextSlide: "შემდეგი სლაიდი",
+      previousSlide: "წინა სლაიდი"
     },
     notFound: {
       resourceOfGiven: "გვერდი მითითებული მისამართზე",

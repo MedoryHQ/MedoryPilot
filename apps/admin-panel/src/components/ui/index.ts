@@ -40,3 +40,4 @@ export * from "./toaster";
 export * from "./input";
 export * from "./input-otp";
 export * from "./aspect-ratio";
+export * from "./carousel";
