@@ -234,6 +234,27 @@ export const en = {
       overviewDescription: "Manage your website content, pages, and components",
       active: "Active",
       publishedItems: "Published Items"
+    },
+    headers: {
+      management: "Headers Management",
+      managementDescription: "Manage website headers and navigation elements",
+      addHeader: "Add Header",
+      search: "Search headers...",
+      name: "Name",
+      position: "Position",
+      translations: "Translations",
+      status: "Status",
+      actions: "Actions",
+      noHeadersFound: "No headers found",
+      created: "Created",
+      active: "Active",
+      inactive: "Inactive",
+      edit: "Edit",
+      delete: "Delete",
+      areYouSure: "Are you sure?",
+      deleteDescription:
+        "This action cannot be undone. This will permanently delete the header and all its translations.",
+      cancel: "Cancel"
     }
   }
 };
