@@ -96,15 +96,15 @@ const Headers = () => {
 
       <Card className="border-border/50 shadow-sm">
         <CardContent className="p-6">
-          <div className="relative max-w-md">
+          <div className="relative">
             <Search className="text-muted-foreground absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 transform" />
             <Input
               placeholder={toUpperCase(t("headers.search"))}
               value={search}
               onChange={(e) => {
-                updateQueryParams({}, "", e.target.value, navigate);
+                updateQueryParams({}, null, e.target.value, navigate);
               }}
-              className="h-12 pl-12 text-base"
+              className="h-12 w-full pl-12 text-base"
             />
           </div>
         </CardContent>
