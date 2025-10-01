@@ -118,7 +118,17 @@ export const ka = {
       helpAndSupport: "დახმარება",
       "help-and-support": "დახმარება",
       landing: "ლენდინგი",
-      security: "უსაფრთხოება"
+      security: "უსაფრთხოება",
+      headers: "ჰედერები",
+      introduce: "შესავალი",
+      newses: "სიახლეები",
+      categories: "კატეგორიები",
+      footer: "Footer",
+      socials: "სოც. ქსელები",
+      tariffs: "ტარიფები",
+      pages: "გვერდის კომპონენტები",
+      contact: "საკონტაქტო ინფორმაცია",
+      faqs: "FAQs"
     },
     sidebar: {
       doctor: "DR",

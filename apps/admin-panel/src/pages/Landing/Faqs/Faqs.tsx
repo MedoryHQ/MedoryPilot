@@ -1,10 +1,10 @@
-const Headers = () => {
-  return <div>Headers</div>;
+const Faqs = () => {
+  return <div>Faqs</div>;
 };
 
-export const HeadersNavigationRoute = {
-  element: <Headers />,
-  path: "/landing/headers"
+export const FaqsNavigationRoute = {
+  element: <Faqs />,
+  path: "/landing/faqs"
 };
 
-export default Headers;
+export default Faqs;

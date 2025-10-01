@@ -116,7 +116,17 @@ export const en = {
       helpAndSupport: "Help & Support",
       "help-and-support": "Help & Support",
       landing: "Landing",
-      security: "Security"
+      security: "Security",
+      headers: "Headers",
+      introduce: "Introduce",
+      newses: "Newses",
+      categories: "Categories",
+      footer: "Footer",
+      socials: "Socials",
+      tariffs: "Tariffs",
+      pages: "Page components",
+      contact: "Contact Info",
+      faqs: "FAQs"
     },
     sidebar: {
       doctor: "DR",
