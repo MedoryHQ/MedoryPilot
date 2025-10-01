@@ -89,7 +89,13 @@ export const en = {
         invalidOTP: "Invalid OTP. Please try again.",
         passwordPattern:
           "Password must contain uppercase, lowercase, and number",
-        passwordMismatch: "Passwords do not match"
+        passwordMismatch: "Passwords do not match",
+        logoRequired: "Logo is required",
+        activeRequired: "Active status is required",
+        nameRequired: "Name is required",
+        positionRequired: "Position is required",
+        headlineRequired: "Headline is required",
+        descriptionRequired: "Description is required"
       }
     },
     menu: {

@@ -91,7 +91,13 @@ export const ka = {
         otpRequired: "OTP კოდი უნდა შედგებოდეს 4 ციფრისგან",
         invalidOTP: "არასწორი OTP კოდი, გთხოვთ სცადეთ თავიდან",
         passwordPattern: "პაროლი უნდა შეიცავდეს დიდ ასოს, პატარა ასოს და ციფრს",
-        passwordMismatch: "პაროლი არ დაემთხვა"
+        passwordMismatch: "პაროლი არ დაემთხვა",
+        logoRequired: "ლოგო აუცილებელია",
+        activeRequired: "აქტიურობის სტატუსი აუცილებელია",
+        nameRequired: "სახელი აუცილებელია",
+        positionRequired: "პოზიცია აუცილებელია",
+        headlineRequired: "სათაური აუცილებელია",
+        descriptionRequired: "აღწერა აუცილებელია"
       }
     },
     menu: {
