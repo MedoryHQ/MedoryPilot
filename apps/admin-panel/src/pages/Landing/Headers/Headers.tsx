@@ -11,7 +11,21 @@ import {
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import { motion } from "framer-motion";
-import { Card, CardContent, Badge, Button, Input } from "@/components/ui";
+import {
+  Card,
+  CardContent,
+  Badge,
+  Button,
+  Input,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from "@/components/ui";
 import { Plus, Search, Edit, Trash2, AlertCircle } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
@@ -26,6 +40,27 @@ const Headers = () => {
   const { filledSearchParams, search } = getPaginationFields(searchParams);
 
   const { data, isFetching, refetch } = useGetHeaders(filledSearchParams);
+  const { mutateAsync: deleteHeader } = useMutation({
+    mutationFn: async (id: string) => {
+      await axios.delete(`header/${id}`);
+    },
+    onSuccess: () => {
+      refetch();
+      toast.success(
+        toUpperCase(t("toast.success")),
+        toUpperCase(t("toast.deleteHeader"))
+      );
+    },
+    onError: (error: any) => {
+      setHookFormErrors(
+        error,
+        toast,
+        t,
+        i18n.language as "ka" | "en",
+        () => {}
+      );
+    }
+  });
 
   const enTranslation = getTranslatedObject(data?.data || [], "en");
 
@@ -183,6 +218,33 @@ const Headers = () => {
           </div>
         </CardContent>
       </Card>
+
+      <AlertDialog
+        open={deleteId !== null}
+        onOpenChange={(open) => !open && setDeleteId(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {toUpperCase(t("headers.areYouSure"))}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {toUpperCase(t("headers.deleteDescription"))}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>
+              {toUpperCase(t("headers.cancel"))}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteId && deleteHeader(deleteId)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {toUpperCase(t("headers.delete"))}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </motion.div>
   );
 };
