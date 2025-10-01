@@ -31,3 +31,22 @@ export interface HeaderTranslation {
   createdAt: string;
   updatedAt: string;
 }
+
+export type HeaderFormValues = {
+  logo: File | null;
+  active: boolean | null;
+  translations: {
+    en: {
+      name: string;
+      position: string;
+      headline: string;
+      description: string;
+    };
+    ka: {
+      name: string;
+      position: string;
+      headline: string;
+      description: string;
+    };
+  };
+};
