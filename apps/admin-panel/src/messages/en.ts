@@ -236,6 +236,7 @@ export const en = {
       publishedItems: "Published Items"
     },
     headers: {
+      header: "Header",
       management: "Headers Management",
       managementDescription: "Manage website headers and navigation elements",
       addHeader: "Add Header",

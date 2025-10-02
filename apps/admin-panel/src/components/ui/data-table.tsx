@@ -1,58 +1,30 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, Button, Input } from ".";
 import { Search, ChevronLeft, ChevronRight, AlertCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
-
-export interface Column<T> {
-  key: string;
-  label: string;
-  render?: (item: T) => React.ReactNode;
-  className?: string;
-  mobileLabel?: string;
-}
-
-export interface Action<T> {
-  label: string;
-  icon?: React.ReactNode;
-  onClick: (item: T) => void;
-  variant?: "default" | "outline" | "destructive" | "ghost";
-  className?: string;
-}
-
-interface DataTableProps<T> {
-  data: T[];
-  columns: Column<T>[];
-  actions?: Action<T>[];
-  searchable?: boolean;
-  searchPlaceholder?: string;
-  emptyMessage?: string;
-  keyExtractor: (item: T) => string;
-  onSearch?: (term: string) => void;
-  pagination?: {
-    enabled: boolean;
-    pageSize?: number;
-  };
-  mobileCardRender?: (item: T, actions?: Action<T>[]) => React.ReactNode;
-}
+import { getPaginationFields, toUpperCase, updateQueryParams } from "@/utils";
+import { DataTableProps } from "@/types/ui";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import Highlight from "react-highlight-words";
 
 export function DataTable<T>({
   data,
   columns,
   actions,
   searchable = true,
-  searchPlaceholder = "Search...",
   emptyMessage = "No data found",
   keyExtractor,
   onSearch,
   pagination,
   mobileCardRender
 }: DataTableProps<T>) {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchParams] = useSearchParams();
+  const { search } = getPaginationFields(searchParams);
+  const [searchTerm, setSearchTerm] = useState<string>(search || "");
   const [currentPage, setCurrentPage] = useState(1);
   const { t } = useTranslation();
-
+  const navigate = useNavigate();
   const pageSize = pagination?.pageSize || 10;
   const totalPages = pagination?.enabled
     ? Math.ceil(data.length / pageSize)
@@ -61,12 +33,6 @@ export function DataTable<T>({
   const paginatedData = pagination?.enabled
     ? data.slice((currentPage - 1) * pageSize, currentPage * pageSize)
     : data;
-
-  const handleSearchChange = (value: string) => {
-    setSearchTerm(value);
-    setCurrentPage(1);
-    onSearch?.(value);
-  };
 
   const defaultMobileCard = (item: T) => (
     <div className="space-y-3">
@@ -103,17 +69,23 @@ export function DataTable<T>({
 
   return (
     <div className="space-y-6">
-      {/* Search Bar */}
       {searchable && (
         <Card className="border-border/50 shadow-sm">
-          <CardContent className="p-6">
-            <div className="relative max-w-md">
+          <CardContent className="!p-3 md:!p-5">
+            <div className="relative">
               <Search className="text-muted-foreground absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 transform" />
               <Input
-                placeholder={searchPlaceholder}
+                placeholder={toUpperCase(t("headers.search"))}
                 value={searchTerm}
-                onChange={(e) => handleSearchChange(e.target.value)}
-                className="h-12 pl-12 text-base"
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    setCurrentPage(1);
+                    onSearch?.(searchTerm);
+                    updateQueryParams({}, null, searchTerm, navigate);
+                  }
+                }}
+                className="h-12 w-full pl-12 text-base"
               />
             </div>
           </CardContent>
@@ -168,9 +140,19 @@ export function DataTable<T>({
                           key={column.key}
                           className={`px-6 py-5 ${column.className || ""}`}
                         >
-                          {column.render
-                            ? column.render(item)
-                            : String((item as any)[column.key])}
+                          {column.render ? (
+                            column.render(item)
+                          ) : typeof (item as any)[column.key] === "string" &&
+                            searchTerm.trim() ? (
+                            <Highlight
+                              searchWords={[searchTerm.trim()]}
+                              autoEscape
+                              textToHighlight={(item as any)[column.key]}
+                              highlightClassName="bg-yellow-200"
+                            />
+                          ) : (
+                            String((item as any)[column.key])
+                          )}
                         </td>
                       ))}
                       {actions && actions.length > 0 && (

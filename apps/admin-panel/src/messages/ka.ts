@@ -240,6 +240,7 @@ export const ka = {
       publishedItems: "გამოქვეყნებული ნივთები"
     },
     headers: {
+      header: "Header",
       management: "Header-ების მართვა",
       managementDescription: "მართეთ ვებსაიტის Header-ები და ნავიგაცია",
       addHeader: "Header-ის დამატება",
