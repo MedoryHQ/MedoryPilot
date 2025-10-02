@@ -255,6 +255,15 @@ export const en = {
       deleteDescription:
         "This action cannot be undone. This will permanently delete the header and all its translations.",
       cancel: "Cancel"
+    },
+    dataTable: {
+      searchPlaceholder: "Search...",
+      emptyMessage: "No data found",
+      actions: "Actions",
+      previous: "Previous",
+      next: "Next",
+      page: "Page",
+      of: "of"
     }
   }
 };

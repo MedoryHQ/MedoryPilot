@@ -48,3 +48,4 @@ export * from "./hover-card";
 export * from "./menubar";
 export * from "./navigation-menu";
 export * from "./radio-group";
+export * from "./data-table";

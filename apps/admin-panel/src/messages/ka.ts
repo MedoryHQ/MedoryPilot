@@ -125,7 +125,7 @@ export const ka = {
       "help-and-support": "დახმარება",
       landing: "ლენდინგი",
       security: "უსაფრთხოება",
-      headers: "ჰედერები",
+      headers: "Header-ები",
       introduce: "შესავალი",
       newses: "სიახლეები",
       categories: "კატეგორიები",
@@ -240,16 +240,16 @@ export const ka = {
       publishedItems: "გამოქვეყნებული ნივთები"
     },
     headers: {
-      management: "ზედაწარწერების მართვა",
-      managementDescription: "მართეთ ვებსაიტის ზედაწარწერები და ნავიგაცია",
-      addHeader: "ზედაწარწერის დამატება",
+      management: "Header-ების მართვა",
+      managementDescription: "მართეთ ვებსაიტის Header-ები და ნავიგაცია",
+      addHeader: "Header-ის დამატება",
       search: "ძებნა...",
       name: "სახელი",
       position: "პოზიცია",
       translations: "თარგმანები",
       status: "სტატუსი",
       actions: "ქმედებები",
-      noHeadersFound: "ზედაწარწერები ვერ მოიძებნა",
+      noHeadersFound: "Header-ები ვერ მოიძებნა",
       created: "შექმნილი",
       active: "აქტიური",
       inactive: "არააქტიური",
@@ -257,8 +257,17 @@ export const ka = {
       delete: "წაშლა",
       areYouSure: "დარწმუნებული ხართ?",
       deleteDescription:
-        "ეს მოქმედება ვერ გაუქმდება. ეს სამუდამოდ წაშლის ზედაწარწერას და მის ყველა თარგმანს.",
+        "ეს მოქმედება ვერ გაუქმდება. ეს სამუდამოდ წაშლის Header-ებს და მათ ყველა თარგმანს.",
       cancel: "გაუქმება"
+    },
+    dataTable: {
+      searchPlaceholder: "ძიება...",
+      emptyMessage: "მონაცემები ვერ მოიძებნა",
+      actions: "ქმედებები",
+      previous: "წინა",
+      next: "შემდეგი",
+      page: "გვერდი",
+      of: "დან"
     }
   }
 };
