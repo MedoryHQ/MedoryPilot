@@ -89,7 +89,13 @@ export const en = {
         invalidOTP: "Invalid OTP. Please try again.",
         passwordPattern:
           "Password must contain uppercase, lowercase, and number",
-        passwordMismatch: "Passwords do not match"
+        passwordMismatch: "Passwords do not match",
+        logoRequired: "Logo is required",
+        activeRequired: "Active status is required",
+        nameRequired: "Name is required",
+        positionRequired: "Position is required",
+        headlineRequired: "Headline is required",
+        descriptionRequired: "Description is required"
       }
     },
     menu: {
@@ -116,7 +122,17 @@ export const en = {
       helpAndSupport: "Help & Support",
       "help-and-support": "Help & Support",
       landing: "Landing",
-      security: "Security"
+      security: "Security",
+      headers: "Headers",
+      introduce: "Introduce",
+      newses: "Newses",
+      categories: "Categories",
+      footer: "Footer",
+      socials: "Socials",
+      tariffs: "Tariffs",
+      pages: "Page components",
+      contact: "Contact Info",
+      faqs: "FAQs"
     },
     sidebar: {
       doctor: "DR",
@@ -218,6 +234,37 @@ export const en = {
       overviewDescription: "Manage your website content, pages, and components",
       active: "Active",
       publishedItems: "Published Items"
+    },
+    headers: {
+      header: "Header",
+      management: "Headers Management",
+      managementDescription: "Manage website headers and navigation elements",
+      addHeader: "Add Header",
+      search: "Search headers...",
+      name: "Name",
+      position: "Position",
+      translations: "Translations",
+      status: "Status",
+      actions: "Actions",
+      noHeadersFound: "No headers found",
+      created: "Created",
+      active: "Active",
+      inactive: "Inactive",
+      edit: "Edit",
+      delete: "Delete",
+      areYouSure: "Are you sure?",
+      deleteDescription:
+        "This action cannot be undone. This will permanently delete the header and all its translations.",
+      cancel: "Cancel"
+    },
+    dataTable: {
+      searchPlaceholder: "Search...",
+      emptyMessage: "No data found",
+      actions: "Actions",
+      previous: "Previous",
+      next: "Next",
+      page: "Page",
+      of: "of"
     }
   }
 };

@@ -6,6 +6,7 @@ import { validationHandler } from "@/middlewares/global/validationHandler";
 import {
   createHeaderValidation,
   deleteHeaderValidation,
+  fetchHeaderValidation,
   updateHeaderValidation,
 } from "@/validations/admin";
 
@@ -14,6 +15,19 @@ export const adminHeaderRouter = Router();
 adminHeaderRouter.get(
   "/",
   adminAuthenticate,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return headerController.fetchHeaders(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminHeaderRouter.get(
+  "/:id",
+  adminAuthenticate,
+  fetchHeaderValidation,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return headerController.fetchHeader(req, res, next);

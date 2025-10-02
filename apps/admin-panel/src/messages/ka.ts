@@ -91,7 +91,13 @@ export const ka = {
         otpRequired: "OTP კოდი უნდა შედგებოდეს 4 ციფრისგან",
         invalidOTP: "არასწორი OTP კოდი, გთხოვთ სცადეთ თავიდან",
         passwordPattern: "პაროლი უნდა შეიცავდეს დიდ ასოს, პატარა ასოს და ციფრს",
-        passwordMismatch: "პაროლი არ დაემთხვა"
+        passwordMismatch: "პაროლი არ დაემთხვა",
+        logoRequired: "ლოგო აუცილებელია",
+        activeRequired: "აქტიურობის სტატუსი აუცილებელია",
+        nameRequired: "სახელი აუცილებელია",
+        positionRequired: "პოზიცია აუცილებელია",
+        headlineRequired: "სათაური აუცილებელია",
+        descriptionRequired: "აღწერა აუცილებელია"
       }
     },
     menu: {
@@ -118,7 +124,17 @@ export const ka = {
       helpAndSupport: "დახმარება",
       "help-and-support": "დახმარება",
       landing: "ლენდინგი",
-      security: "უსაფრთხოება"
+      security: "უსაფრთხოება",
+      headers: "Header-ები",
+      introduce: "შესავალი",
+      newses: "სიახლეები",
+      categories: "კატეგორიები",
+      footer: "Footer",
+      socials: "სოც. ქსელები",
+      tariffs: "ტარიფები",
+      pages: "გვერდის კომპონენტები",
+      contact: "საკონტაქტო ინფორმაცია",
+      faqs: "FAQs"
     },
     sidebar: {
       doctor: "DR",
@@ -222,6 +238,37 @@ export const ka = {
         "მართე შენი საიტის კონტენტი, გვერდები და კომპონენტები",
       active: "აქტიური",
       publishedItems: "გამოქვეყნებული ნივთები"
+    },
+    headers: {
+      header: "Header",
+      management: "Header-ების მართვა",
+      managementDescription: "მართეთ ვებსაიტის Header-ები და ნავიგაცია",
+      addHeader: "Header-ის დამატება",
+      search: "ძებნა...",
+      name: "სახელი",
+      position: "პოზიცია",
+      translations: "თარგმანები",
+      status: "სტატუსი",
+      actions: "ქმედებები",
+      noHeadersFound: "Header-ები ვერ მოიძებნა",
+      created: "შექმნილი",
+      active: "აქტიური",
+      inactive: "არააქტიური",
+      edit: "რედაქტირება",
+      delete: "წაშლა",
+      areYouSure: "დარწმუნებული ხართ?",
+      deleteDescription:
+        "ეს მოქმედება ვერ გაუქმდება. ეს სამუდამოდ წაშლის Header-ებს და მათ ყველა თარგმანს.",
+      cancel: "გაუქმება"
+    },
+    dataTable: {
+      searchPlaceholder: "ძიება...",
+      emptyMessage: "მონაცემები ვერ მოიძებნა",
+      actions: "ქმედებები",
+      previous: "წინა",
+      next: "შემდეგი",
+      page: "გვერდი",
+      of: "დან"
     }
   }
 };
