@@ -1,68 +1,201 @@
-import axios from "@/api/axios";
-import { useToast } from "@/hooks";
 import { useGetHeaders } from "@/libs/queries";
 import {
+  getFileUrl,
   getPaginationFields,
   getTranslatedObject,
-  setHookFormErrors,
-  toUpperCase,
-  updateQueryParams
+  toUpperCase
 } from "@/utils";
 import { useTranslation } from "react-i18next";
-import { useMutation } from "react-query";
 import { motion } from "framer-motion";
-import {
-  Card,
-  CardContent,
-  Badge,
-  Button,
-  Input,
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle
-} from "@/components/ui";
-import { Plus, Search, Edit, Trash2, AlertCircle } from "lucide-react";
+import { Badge, Button, DataTable, DeleteDialog } from "@/components/ui";
+import { Plus, Edit, Trash2, ImageIcon } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
+import dayjs from "dayjs";
+import { Action, Column } from "@/types/ui";
+import { Header } from "@/types/website";
 
 const Headers = () => {
   const { t, i18n } = useTranslation();
-  const { toast } = useToast(t);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { filledSearchParams } = getPaginationFields(searchParams);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  const { filledSearchParams, search } = getPaginationFields(searchParams);
-
   const { data, isFetching, refetch } = useGetHeaders(filledSearchParams);
-  const { mutateAsync: deleteHeader } = useMutation({
-    mutationFn: async (id: string) => {
-      await axios.delete(`header/${id}`);
-    },
-    onSuccess: () => {
-      refetch();
-      toast.success(
-        toUpperCase(t("toast.success")),
-        toUpperCase(t("toast.deleteHeader"))
-      );
-    },
-    onError: (error: any) => {
-      setHookFormErrors(
-        error,
-        toast,
-        t,
-        i18n.language as "ka" | "en",
-        () => {}
-      );
-    }
-  });
 
-  const enTranslation = getTranslatedObject(data?.data || [], "en");
+  const columns: Column<Header>[] = [
+    {
+      key: "name",
+      label: toUpperCase(t("headers.header")),
+      render: (item) => {
+        const translation = getTranslatedObject(
+          item.translations,
+          i18n.language
+        );
+        return (
+          <div className="flex items-center gap-4">
+            <div className="border-border bg-muted/10 flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border">
+              {item.logo ? (
+                <img
+                  src={getFileUrl(item.logo.path)}
+                  alt={translation.name}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <ImageIcon className="text-muted-foreground h-6 w-6" />
+              )}
+            </div>
+            <div className="min-w-0">
+              <div className="text-foreground truncate font-medium">
+                {translation.name}
+              </div>
+              <div className="text-muted-foreground mt-1 text-sm">
+                {translation.headline}
+              </div>
+            </div>
+          </div>
+        );
+      },
+      mobileLabel: toUpperCase(t("headers.name"))
+    },
+    {
+      key: "position",
+      label: toUpperCase(t("headers.position")),
+      render: (item) => {
+        const translation = getTranslatedObject(
+          item.translations,
+          i18n.language
+        );
+        return <span className="text-foreground">{translation.position}</span>;
+      }
+    },
+    {
+      key: "translationsCount",
+      label: toUpperCase(t("headers.translations")),
+      className: "text-center",
+      render: (item) => (
+        <Badge variant="secondary" className="px-3 py-1">
+          {item.translations?.length}
+        </Badge>
+      )
+    },
+    {
+      key: "active",
+      label: toUpperCase(t("headers.status")),
+      className: "text-center",
+      render: (item) => (
+        <Badge
+          variant={item.active ? "default" : "outline"}
+          className="px-3 py-1"
+        >
+          {item.active
+            ? toUpperCase(t("headers.active"))
+            : toUpperCase(t("headers.inactive"))}
+        </Badge>
+      )
+    }
+  ];
+
+  const actions: Action<Header>[] = [
+    {
+      label: toUpperCase(t("headers.edit")),
+      icon: <Edit className="h-4 w-4" />,
+      onClick: (item) => navigate(`landing/headers/edit?id=${item.id}`),
+      variant: "outline"
+    },
+    {
+      label: toUpperCase(t("headers.delete")),
+      icon: <Trash2 className="h-4 w-4" />,
+      onClick: (item) => setDeleteId(item.id),
+      variant: "outline",
+      className: "hover:bg-destructive hover:text-destructive-foreground"
+    }
+  ];
+
+  const mobileCardRender = (item: Header, tableActions?: Action<Header>[]) => {
+    const translation = getTranslatedObject(item.translations, i18n.language);
+    return (
+      <div className="space-y-4">
+        <div className="flex items-start gap-3">
+          <div className="border-border bg-muted/10 flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border">
+            {item.logo ? (
+              <img
+                src={getFileUrl(item.logo.path)}
+                alt={translation.name}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <ImageIcon className="text-muted-foreground h-8 w-8" />
+            )}
+          </div>
+          <div className="min-w-0 flex-1">
+            <h3 className="text-foreground font-semibold">
+              {translation.name}
+            </h3>
+            <p className="text-muted-foreground mt-1 text-sm">
+              {translation.headline}
+            </p>
+          </div>
+        </div>
+
+        <div className="border-border grid grid-cols-2 gap-3 border-t pt-3">
+          <div>
+            <span className="text-muted-foreground text-sm">
+              {toUpperCase(t("headers.position"))}
+            </span>
+            <p className="mt-1 font-medium">{translation.position}</p>
+          </div>
+          <div>
+            <span className="text-muted-foreground text-sm">
+              {toUpperCase(t("headers.status"))}
+            </span>
+            <div className="mt-1">
+              <Badge variant={item.active ? "default" : "outline"}>
+                {item.active
+                  ? toUpperCase(t("headers.active"))
+                  : toUpperCase(t("headers.inactive"))}
+              </Badge>
+            </div>
+          </div>
+          <div>
+            <span className="text-muted-foreground text-sm">
+              {toUpperCase(t("headers.translations"))}
+            </span>
+            <div className="mt-1">
+              <Badge variant="secondary">{item.translations?.length}</Badge>
+            </div>
+          </div>
+          <div>
+            <span className="text-muted-foreground text-sm">
+              {toUpperCase(t("headers.created"))}
+            </span>
+            <p className="mt-1 text-sm">
+              {" "}
+              {dayjs(item.createdAt).format("MMMM D, YYYY")}
+            </p>
+          </div>
+        </div>
+
+        {tableActions && tableActions.length > 0 && (
+          <div className="border-border flex gap-2 border-t pt-3">
+            {tableActions.map((action, idx) => (
+              <Button
+                key={idx}
+                variant={action.variant || "outline"}
+                size="sm"
+                onClick={() => action.onClick(item)}
+                className={`flex-1 ${action.className || ""}`}
+              >
+                {action.icon}
+                <span className="ml-2">{action.label}</span>
+              </Button>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   if (isFetching) {
     return <div>Loading...</div>;
@@ -70,14 +203,14 @@ const Headers = () => {
 
   return (
     <motion.div
-      className="mx-auto max-w-7xl space-y-8"
+      className="mx-auto space-y-8"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
       <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center">
         <div>
-          <h1 className="text-foreground mb-2 text-3xl font-semibold">
+          <h1 className="text-foreground mb-2 text-[20px] font-semibold md:text-3xl">
             {toUpperCase(t("headers.management"))}
           </h1>
           <p className="text-muted-foreground">
@@ -87,164 +220,33 @@ const Headers = () => {
         <Button
           size="lg"
           className="flex items-center gap-2 shadow-md transition-all hover:shadow-lg"
-          onClick={() => navigate("/website/headers/create")}
+          onClick={() => navigate("/landing/headers/create")}
         >
           <Plus className="h-5 w-5" />
           {toUpperCase(t("headers.addHeader"))}
         </Button>
       </div>
 
-      <Card className="border-border/50 shadow-sm">
-        <CardContent className="p-6">
-          <div className="relative">
-            <Search className="text-muted-foreground absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 transform" />
-            <Input
-              placeholder={toUpperCase(t("headers.search"))}
-              value={search}
-              onChange={(e) => {
-                updateQueryParams({}, null, e.target.value, navigate);
-              }}
-              className="h-12 w-full pl-12 text-base"
-            />
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="border-border/50 shadow-sm">
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-muted/30 border-border border-b-2">
-                <tr>
-                  <th className="text-foreground px-6 py-5 text-left font-semibold">
-                    {toUpperCase(t("headers.name"))}
-                  </th>
-                  <th className="text-foreground px-6 py-5 text-left font-semibold">
-                    {toUpperCase(t("headers.position"))}
-                  </th>
-                  <th className="text-foreground px-6 py-5 text-center font-semibold">
-                    {toUpperCase(t("headers.translations"))}
-                  </th>
-                  <th className="text-foreground px-6 py-5 text-center font-semibold">
-                    {toUpperCase(t("headers.status"))}
-                  </th>
-                  <th className="text-foreground px-6 py-5 text-center font-semibold">
-                    {toUpperCase(t("headers.actions"))}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {data?.data.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={5}
-                      className="text-muted-foreground py-12 text-center"
-                    >
-                      <div className="flex flex-col items-center gap-3">
-                        <AlertCircle className="text-muted-foreground/50 h-12 w-12" />
-                        <p className="text-lg">
-                          {toUpperCase(t("headers.noHeadersFound"))}
-                        </p>
-                      </div>
-                    </td>
-                  </tr>
-                ) : (
-                  data?.data.map((header, index) => (
-                    <motion.tr
-                      key={header.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.2, delay: index * 0.05 }}
-                      className={`border-border/50 hover:bg-muted/20 border-b transition-colors ${index % 2 === 0 ? "bg-background" : "bg-muted/5"} `}
-                    >
-                      <td className="px-6 py-5">
-                        <div className="text-foreground font-medium">
-                          {enTranslation?.name || ""}
-                        </div>
-                        <div className="text-muted-foreground mt-1 text-sm">
-                          {toUpperCase(t("headers.created"))}:{" "}
-                          {header.createdAt}
-                        </div>
-                      </td>
-                      <td className="px-6 py-5">
-                        <span className="text-foreground">
-                          {enTranslation?.position || ""}
-                        </span>
-                      </td>
-                      <td className="px-6 py-5 text-center">
-                        <Badge variant="secondary" className="px-3 py-1">
-                          {header.translations.length}{" "}
-                        </Badge>
-                      </td>
-                      <td className="px-6 py-5 text-center">
-                        <Badge
-                          variant={header.active ? "default" : "outline"}
-                          className="px-3 py-1"
-                        >
-                          {header.active
-                            ? toUpperCase(t("headers.active"))
-                            : toUpperCase(t("headers.inactive"))}
-                        </Badge>
-                      </td>
-                      <td className="px-6 py-5">
-                        <div className="flex items-center justify-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() =>
-                              navigate(`/website/headers/edit?id=${header.id}`)
-                            }
-                            className="hover:bg-primary hover:text-primary-foreground transition-colors"
-                          >
-                            <Edit className="mr-2 h-4 w-4" />
-                            {toUpperCase(t("headers.edit"))}
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setDeleteId(header.id)}
-                            className="hover:bg-destructive hover:text-destructive-foreground transition-colors"
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            {toUpperCase(t("headers.delete"))}
-                          </Button>
-                        </div>
-                      </td>
-                    </motion.tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
-
-      <AlertDialog
+      <DataTable
+        data={data?.data || []}
+        columns={columns}
+        actions={actions}
+        searchable={true}
+        searchPlaceholder={toUpperCase(t("headers.search"))}
+        emptyMessage={toUpperCase(t("headers.noHeadersFound"))}
+        keyExtractor={(item) => item.id}
+        mobileCardRender={mobileCardRender}
+        pagination={{
+          enabled: false
+        }}
+      />
+      <DeleteDialog
         open={deleteId !== null}
         onOpenChange={(open) => !open && setDeleteId(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {toUpperCase(t("headers.areYouSure"))}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {toUpperCase(t("headers.deleteDescription"))}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>
-              {toUpperCase(t("headers.cancel"))}
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => deleteId && deleteHeader(deleteId)}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              {toUpperCase(t("headers.delete"))}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        endpoint="header"
+        itemId={deleteId}
+        onSuccess={() => refetch()}
+      />
     </motion.div>
   );
 };
