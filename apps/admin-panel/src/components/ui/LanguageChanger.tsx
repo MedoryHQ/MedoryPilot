@@ -4,15 +4,33 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from "./select";
+  SelectValue,
+  Badge,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from ".";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Languages } from "lucide-react";
+import { motion } from "framer-motion";
+import { toUpperCase } from "@/utils";
 
 interface LanguageChangerProps {
   className?: string;
 }
+
+interface LanguageTabSwitcherProps {
+  selectedLanguage: "en" | "ka";
+  onLanguageChange: (language: "en" | "ka") => void;
+  errors?: {
+    en?: number;
+    ka?: number;
+  };
+  disabled?: boolean;
+}
+
 export const LanguageChanger: React.FC<LanguageChangerProps> = ({
   className
 }) => {
@@ -103,6 +121,85 @@ export const MobileLanguageChanger: React.FC<LanguageChangerProps> = ({
           <SelectItem value="ka">ქარ</SelectItem>
         </SelectContent>
       </Select>
+    </div>
+  );
+};
+
+export const LanguageTabSwitcher: React.FC<LanguageTabSwitcherProps> = ({
+  selectedLanguage,
+  onLanguageChange,
+  errors,
+  disabled = false
+}) => {
+  const { t, i18n } = useTranslation();
+  const languages = [
+    { code: "en" as const, label: "English", flag: "🇬🇧" },
+    { code: "ka" as const, label: "ქართული", flag: "🇬🇪" }
+  ];
+
+  return (
+    <div className="bg-muted flex gap-2 rounded-lg p-1">
+      {languages.map((lang) => {
+        const hasErrors = errors && errors[lang.code] && errors[lang.code]! > 0;
+        const errorCount = errors?.[lang.code] || 0;
+        const isActive = selectedLanguage === lang.code;
+
+        const button = (
+          <button
+            key={lang.code}
+            type="button"
+            onClick={() => !disabled && onLanguageChange(lang.code)}
+            disabled={disabled}
+            className={`relative flex items-center gap-2 rounded-md px-6 py-2.5 font-medium transition-all ${
+              isActive
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            } ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"} ${hasErrors && isActive ? "ring-destructive ring-offset-muted ring-2 ring-offset-2" : ""} `}
+          >
+            <span className="text-lg">{lang.flag}</span>
+            <span>{lang.label}</span>
+
+            {hasErrors && !isActive && (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="absolute -top-1 -right-1"
+              >
+                <Badge
+                  variant="destructive"
+                  className="flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-xs"
+                >
+                  {errorCount}
+                </Badge>
+              </motion.div>
+            )}
+          </button>
+        );
+
+        if (hasErrors && !isActive) {
+          return (
+            <TooltipProvider key={lang.code}>
+              <Tooltip>
+                <TooltipTrigger asChild>{button}</TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p className="text-sm">
+                    {toUpperCase(
+                      t("ui.languageErrorTooltip", {
+                        count: errorCount,
+                        error: t(errorCount === 1 ? "ui.error" : "ui.errors"),
+                        language: lang.label,
+                        context: i18n.language === "en" ? "in" : "-ში"
+                      })
+                    )}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          );
+        }
+
+        return button;
+      })}
     </div>
   );
 };

@@ -272,7 +272,12 @@ export const ka = {
       metadata: "მეტა მონაცემები",
       created: "შეიქმნა",
       updated: "განახლდა",
-      author: "ავტორი"
+      author: "ავტორი",
+      english: "ინგლისური",
+      georgian: "ქართული",
+      error: "შეცდომა",
+      errors: "შეცდომები",
+      languageErrorTooltip: "{{count}} {{error}} {{language}}-ში"
     }
   }
 };

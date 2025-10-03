@@ -269,7 +269,12 @@ export const en = {
       metadata: "Metadata",
       created: "Created",
       updated: "Updated",
-      author: "Author"
+      author: "Author",
+      english: "English",
+      georgian: "Georgian",
+      error: "error",
+      errors: "errors",
+      languageErrorTooltip: "{{count}} {{error}} in {{language}}"
     }
   }
 };
