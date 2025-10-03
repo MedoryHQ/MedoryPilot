@@ -50,3 +50,4 @@ export * from "./navigation-menu";
 export * from "./radio-group";
 export * from "./data-table";
 export * from "./status-toggle";
+export * from "./language-tabs";
