@@ -301,6 +301,24 @@ export const ka = {
       deleteTitle: "წაიშალოს {{itemType}}?",
       deleteItemDescription:
         'დარწმუნებული ხართ რომ გსურთ "{{itemName}}"-ის წაშლა? ეს მოქმედება ვერ გაუქმდება.'
+    },
+    mediaUploader: {
+      uploadImage: "სურათის ატვირთვა",
+      uploadImageFile: "სურათის ატვირთვა",
+      dropOrBrowse: "ჩააგდეთ სურათი ან დააჭირეთ ბრაუზისთვის",
+      uploading: "იტვირთება...",
+      preview: "გადახედვა",
+      replace: "შეცვლა",
+      tryAgain: "სცადეთ ხელახლა",
+      invalidType: "გთხოვთ აირჩიოთ სურათის ფაილი",
+      maxSize: "მაქსიმალური ზომა",
+      max: "მაქს",
+      upload: "ატვირთვა",
+      limitWarning: "შეგიძლიათ ატვირთოთ მაქსიმუმ {{limit}} სურათი.",
+      readError: "ფაილის წაკითხვა ვერ მოხერხდა",
+      altText: "ალტ ტექსტი (ხელმისაწვდომობისთვის)",
+      altTextPlaceholder: "აღწერეთ სურათი ეკრანის მკითხველებისთვის",
+      altTextDescription: "მიუთითეთ სურათის მოკლე აღწერა ხელმისაწვდომობისთვის"
     }
   }
 };

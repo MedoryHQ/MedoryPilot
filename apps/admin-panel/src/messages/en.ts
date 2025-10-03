@@ -298,6 +298,25 @@ export const en = {
       deleteTitle: "Delete {{itemType}}?",
       deleteItemDescription:
         'Are you sure you want to delete "{{itemName}}"? This action cannot be undone.'
+    },
+    mediaUploader: {
+      uploadImage: "Upload Image",
+      uploadImageFile: "Upload image file",
+      dropOrBrowse: "Drop your image here or click to browse",
+      uploading: "Uploading...",
+      preview: "Preview",
+      replace: "Replace",
+      tryAgain: "Click to try again",
+      invalidType: "Please select an image file",
+      maxSize: "Max size",
+      max: "Max",
+      upload: "Upload",
+      limitWarning: "You can only upload up to {{limit}} images.",
+      readError: "Failed to read file",
+      altText: "Alt Text (for accessibility)",
+      altTextPlaceholder: "Describe the image for screen readers",
+      altTextDescription:
+        "Provide a brief description of the image for accessibility"
     }
   }
 };
