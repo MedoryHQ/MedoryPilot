@@ -288,6 +288,19 @@ export const ka = {
       close: "დახურვა",
       dangerZone: "საშიში ზონა",
       delete: "წაშლა"
+    },
+    confirmDialog: {
+      areYouSure: "დარწმუნებული ხართ?",
+      confirmAction: "მოქმედების დადასტურება",
+      confirmDescription: "დარწმუნებული ხართ რომ გსურთ გაგრძელება?",
+      delete: "წაშლა",
+      confirm: "დადასტურება",
+      cancel: "გაუქმება",
+      deleteDescription:
+        "ეს მოქმედება ვერ გაუქმდება. ეს სამუდამოდ წაშლის ელემენტს.",
+      deleteTitle: "წაიშალოს {{itemType}}?",
+      deleteItemDescription:
+        'დარწმუნებული ხართ რომ გსურთ "{{itemName}}"-ის წაშლა? ეს მოქმედება ვერ გაუქმდება.'
     }
   }
 };

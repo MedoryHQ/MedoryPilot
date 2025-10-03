@@ -285,6 +285,19 @@ export const en = {
       close: "Close",
       dangerZone: "Danger Zone",
       delete: "Delete"
+    },
+    confirmDialog: {
+      areYouSure: "Are you sure?",
+      confirmAction: "Confirm Action",
+      confirmDescription: "Are you sure you want to continue?",
+      delete: "Delete",
+      confirm: "Confirm",
+      cancel: "Cancel",
+      deleteDescription:
+        "This action cannot be undone. This will permanently delete the item.",
+      deleteTitle: "Delete {{itemType}}?",
+      deleteItemDescription:
+        'Are you sure you want to delete "{{itemName}}"? This action cannot be undone.'
     }
   }
 };
