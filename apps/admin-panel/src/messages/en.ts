@@ -203,7 +203,6 @@ export const en = {
       networkError: "Network error. Please check your connection.",
       permissionDenied: "Permission denied. Please contact your administrator."
     },
-
     overview: {
       headers: "Headers",
       headersDescription: "Configure website headers and navigation",
@@ -265,6 +264,59 @@ export const en = {
       next: "Next",
       page: "Page",
       of: "of"
+    },
+    ui: {
+      metadata: "Metadata",
+      created: "Created",
+      updated: "Updated",
+      author: "Author",
+      english: "English",
+      georgian: "Georgian",
+      error: "error",
+      errors: "errors",
+      languageErrorTooltip: "{{count}} {{error}} in {{language}}"
+    },
+    formActions: {
+      requiredFields: "All fields marked with * are required",
+      saving: "Saving...",
+      create: "Create",
+      saveChanges: "Save Changes",
+      cancel: "Cancel",
+      close: "Close",
+      dangerZone: "Danger Zone",
+      delete: "Delete"
+    },
+    confirmDialog: {
+      areYouSure: "Are you sure?",
+      confirmAction: "Confirm Action",
+      confirmDescription: "Are you sure you want to continue?",
+      delete: "Delete",
+      confirm: "Confirm",
+      cancel: "Cancel",
+      deleteDescription:
+        "This action cannot be undone. This will permanently delete the item.",
+      deleteTitle: "Delete {{itemType}}?",
+      deleteItemDescription:
+        'Are you sure you want to delete "{{itemName}}"? This action cannot be undone.'
+    },
+    mediaUploader: {
+      uploadImage: "Upload Image",
+      uploadImageFile: "Upload image file",
+      dropOrBrowse: "Drop your image here or click to browse",
+      uploading: "Uploading...",
+      preview: "Preview",
+      replace: "Replace",
+      tryAgain: "Click to try again",
+      invalidType: "Please select an image file",
+      maxSize: "Max size",
+      max: "Max",
+      upload: "Upload",
+      limitWarning: "You can only upload up to {{limit}} images.",
+      readError: "Failed to read file",
+      altText: "Alt Text (for accessibility)",
+      altTextPlaceholder: "Describe the image for screen readers",
+      altTextDescription:
+        "Provide a brief description of the image for accessibility"
     }
   }
 };

@@ -47,7 +47,6 @@ export const ka = {
       cannotBeFound: "ვერ მოიძებნა",
       navigateBack: "უკან დაბრუნება"
     },
-
     pages: {
       dashboard: "Dashboard"
     },
@@ -155,7 +154,6 @@ export const ka = {
       noResults: "შედეგი ვერ მოიძებნა",
       seeAllResults: "ყველა შედეგის ნახვა"
     },
-
     toast: {
       addedTitle: "{{item}} დამატებულია წარმატებით",
       addedDescription: "{{item}} დაემატა სისტემაში.",
@@ -269,6 +267,58 @@ export const ka = {
       next: "შემდეგი",
       page: "გვერდი",
       of: "დან"
+    },
+    ui: {
+      metadata: "მეტა მონაცემები",
+      created: "შეიქმნა",
+      updated: "განახლდა",
+      author: "ავტორი",
+      english: "ინგლისური",
+      georgian: "ქართული",
+      error: "შეცდომა",
+      errors: "შეცდომები",
+      languageErrorTooltip: "{{count}} {{error}} {{language}}-ში"
+    },
+    formActions: {
+      requiredFields: "ყველა ველი, რომელიც აღნიშნულია * სავალდებულოა",
+      saving: "მიმდინარეობს შენახვა...",
+      create: "შექმნა",
+      saveChanges: "ცვლილებების შენახვა",
+      cancel: "გაუქმება",
+      close: "დახურვა",
+      dangerZone: "საშიში ზონა",
+      delete: "წაშლა"
+    },
+    confirmDialog: {
+      areYouSure: "დარწმუნებული ხართ?",
+      confirmAction: "მოქმედების დადასტურება",
+      confirmDescription: "დარწმუნებული ხართ რომ გსურთ გაგრძელება?",
+      delete: "წაშლა",
+      confirm: "დადასტურება",
+      cancel: "გაუქმება",
+      deleteDescription:
+        "ეს მოქმედება ვერ გაუქმდება. ეს სამუდამოდ წაშლის ელემენტს.",
+      deleteTitle: "წაიშალოს {{itemType}}?",
+      deleteItemDescription:
+        'დარწმუნებული ხართ რომ გსურთ "{{itemName}}"-ის წაშლა? ეს მოქმედება ვერ გაუქმდება.'
+    },
+    mediaUploader: {
+      uploadImage: "სურათის ატვირთვა",
+      uploadImageFile: "სურათის ატვირთვა",
+      dropOrBrowse: "ჩააგდეთ სურათი ან დააჭირეთ ბრაუზისთვის",
+      uploading: "იტვირთება...",
+      preview: "გადახედვა",
+      replace: "შეცვლა",
+      tryAgain: "სცადეთ ხელახლა",
+      invalidType: "გთხოვთ აირჩიოთ სურათის ფაილი",
+      maxSize: "მაქსიმალური ზომა",
+      max: "მაქს",
+      upload: "ატვირთვა",
+      limitWarning: "შეგიძლიათ ატვირთოთ მაქსიმუმ {{limit}} სურათი.",
+      readError: "ფაილის წაკითხვა ვერ მოხერხდა",
+      altText: "ალტ ტექსტი (ხელმისაწვდომობისთვის)",
+      altTextPlaceholder: "აღწერეთ სურათი ეკრანის მკითხველებისთვის",
+      altTextDescription: "მიუთითეთ სურათის მოკლე აღწერა ხელმისაწვდომობისთვის"
     }
   }
 };
