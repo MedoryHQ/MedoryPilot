@@ -278,6 +278,16 @@ export const ka = {
       error: "შეცდომა",
       errors: "შეცდომები",
       languageErrorTooltip: "{{count}} {{error}} {{language}}-ში"
+    },
+    formActions: {
+      requiredFields: "ყველა ველი, რომელიც აღნიშნულია * სავალდებულოა",
+      saving: "მიმდინარეობს შენახვა...",
+      create: "შექმნა",
+      saveChanges: "ცვლილებების შენახვა",
+      cancel: "გაუქმება",
+      close: "დახურვა",
+      dangerZone: "საშიში ზონა",
+      delete: "წაშლა"
     }
   }
 };

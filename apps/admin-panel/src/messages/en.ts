@@ -275,6 +275,16 @@ export const en = {
       error: "error",
       errors: "errors",
       languageErrorTooltip: "{{count}} {{error}} in {{language}}"
+    },
+    formActions: {
+      requiredFields: "All fields marked with * are required",
+      saving: "Saving...",
+      create: "Create",
+      saveChanges: "Save Changes",
+      cancel: "Cancel",
+      close: "Close",
+      dangerZone: "Danger Zone",
+      delete: "Delete"
     }
   }
 };
