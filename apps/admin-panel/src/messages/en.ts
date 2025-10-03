@@ -203,7 +203,6 @@ export const en = {
       networkError: "Network error. Please check your connection.",
       permissionDenied: "Permission denied. Please contact your administrator."
     },
-
     overview: {
       headers: "Headers",
       headersDescription: "Configure website headers and navigation",
@@ -265,6 +264,12 @@ export const en = {
       next: "Next",
       page: "Page",
       of: "of"
+    },
+    ui: {
+      metadata: "Metadata",
+      created: "Created",
+      updated: "Updated",
+      author: "Author"
     }
   }
 };

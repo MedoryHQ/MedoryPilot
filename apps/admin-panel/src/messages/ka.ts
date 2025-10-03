@@ -47,7 +47,6 @@ export const ka = {
       cannotBeFound: "ვერ მოიძებნა",
       navigateBack: "უკან დაბრუნება"
     },
-
     pages: {
       dashboard: "Dashboard"
     },
@@ -155,7 +154,6 @@ export const ka = {
       noResults: "შედეგი ვერ მოიძებნა",
       seeAllResults: "ყველა შედეგის ნახვა"
     },
-
     toast: {
       addedTitle: "{{item}} დამატებულია წარმატებით",
       addedDescription: "{{item}} დაემატა სისტემაში.",
@@ -269,6 +267,12 @@ export const ka = {
       next: "შემდეგი",
       page: "გვერდი",
       of: "დან"
+    },
+    ui: {
+      metadata: "მეტა მონაცემები",
+      created: "შეიქმნა",
+      updated: "განახლდა",
+      author: "ავტორი"
     }
   }
 };
