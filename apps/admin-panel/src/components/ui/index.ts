@@ -49,7 +49,3 @@ export * from "./menubar";
 export * from "./navigation-menu";
 export * from "./radio-group";
 export * from "./data-table";
-export * from "./delete";
-export * from "./metadata-display";
-export * from "./form-actions";
-export * from "./action-bar";

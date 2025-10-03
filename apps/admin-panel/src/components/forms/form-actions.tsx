@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, CardContent, Button } from ".";
+import { Card, CardContent, Button } from "../ui";
 import { Save, Loader2, Trash2, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
