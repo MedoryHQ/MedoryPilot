@@ -1,3 +1,5 @@
+import { User } from "./user";
+
 export interface Language {
   id: string;
   name: string;
@@ -46,4 +48,14 @@ export type Stage =
 export interface LoginStage {
   stage: Stage;
   email: string;
+}
+
+export interface RefreshToken {
+  id: string;
+  user: User;
+  userId: string;
+  token: string;
+  expiresAt: string;
+  createdAt: string;
+  updatedAt: string;
 }
