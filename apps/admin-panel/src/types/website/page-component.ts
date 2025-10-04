@@ -1,4 +1,5 @@
 import { Language } from "../global";
+import { Footer } from "./footer";
 
 export interface PageComponentsResponse {
   data: PageComponent[];
@@ -13,7 +14,7 @@ export interface PageComponent {
   id: string;
   slug: string;
   footerOrder: number;
-  // footer: Footer;
+  footer: Footer;
   footerId: string;
   translations: PageComponentTranslation[];
   metaTitle: string | null;

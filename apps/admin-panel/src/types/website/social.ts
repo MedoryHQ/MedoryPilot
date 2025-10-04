@@ -1,4 +1,5 @@
 import { File } from "../global";
+import { Footer } from "./footer";
 
 export interface SocialsResponse {
   data: Social[];
@@ -15,7 +16,7 @@ export interface Social {
   name: string;
   url: string;
   footerId: string;
-  // footer: Footer;
+  footer: Footer;
   createdAt: string;
   updatedAt: string;
 }

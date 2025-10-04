@@ -7,3 +7,4 @@ export * from "./category";
 export * from "./blog";
 export * from "./page-component";
 export * from "./social";
+export * from "./footer";
