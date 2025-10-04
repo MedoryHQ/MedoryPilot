@@ -9,3 +9,4 @@ export * from "./page-component";
 export * from "./social";
 export * from "./footer";
 export * from "./faq";
+export * from "./contact";
