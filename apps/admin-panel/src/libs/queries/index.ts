@@ -7,3 +7,4 @@ export * from "./introduce";
 export * from "./footer";
 export * from "./news";
 export * from "./blog";
+export * from "./page-component";
