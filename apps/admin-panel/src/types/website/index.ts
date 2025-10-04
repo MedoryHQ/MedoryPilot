@@ -3,3 +3,5 @@ export * from "./header";
 export * from "./services";
 export * from "./introduce";
 export * from "./news";
+export * from "./category";
+export * from "./blog";
