@@ -5,3 +5,4 @@ export * from "./introduce";
 export * from "./news";
 export * from "./category";
 export * from "./blog";
+export * from "./page-component";
