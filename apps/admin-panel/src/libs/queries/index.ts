@@ -8,3 +8,4 @@ export * from "./footer";
 export * from "./news";
 export * from "./blog";
 export * from "./page-component";
+export * from "./social";
