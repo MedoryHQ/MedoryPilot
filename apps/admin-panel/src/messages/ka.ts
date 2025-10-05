@@ -319,6 +319,12 @@ export const ka = {
       altText: "ალტ ტექსტი (ხელმისაწვდომობისთვის)",
       altTextPlaceholder: "აღწერეთ სურათი ეკრანის მკითხველებისთვის",
       altTextDescription: "მიუთითეთ სურათის მოკლე აღწერა ხელმისაწვდომობისთვის"
+    },
+    introduce: {
+      errors: {
+        headlineRequired: "სათაური სავალდებულოა",
+        descriptionRequired: "აღწერა სავალდებულოა"
+      }
     }
   }
 };

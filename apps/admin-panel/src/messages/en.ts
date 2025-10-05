@@ -317,6 +317,12 @@ export const en = {
       altTextPlaceholder: "Describe the image for screen readers",
       altTextDescription:
         "Provide a brief description of the image for accessibility"
+    },
+    introduce: {
+      errors: {
+        headlineRequired: "Headline is required",
+        descriptionRequired: "Description is required"
+      }
     }
   }
 };
