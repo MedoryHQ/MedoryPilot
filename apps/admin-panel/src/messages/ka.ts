@@ -349,6 +349,14 @@ export const ka = {
         urlInvalid: "ბმული არასწორია",
         footerIdRequired: "Footer ID სავალდებულოა"
       }
+    },
+    pageComponent: {
+      errors: {
+        slugRequired: "სლაგი სავალდებულოა",
+        footerOrderRequired: "Footer-ის რიგი სავალდებულოა",
+        nameRequired: "სახელი სავალდებულოა",
+        contentRequired: "კონტენტი სავალდებულოა"
+      }
     }
   }
 };

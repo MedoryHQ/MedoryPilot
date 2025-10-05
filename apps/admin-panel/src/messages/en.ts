@@ -347,6 +347,14 @@ export const en = {
         urlInvalid: "URL is invalid",
         footerIdRequired: "Footer ID is required"
       }
+    },
+    pageComponent: {
+      errors: {
+        slugRequired: "Slug is required",
+        footerOrderRequired: "Footer order is required",
+        nameRequired: "Name is required",
+        contentRequired: "Content is required"
+      }
     }
   }
 };
