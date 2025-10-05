@@ -366,6 +366,14 @@ export const ka = {
         socialsRequired: "მინიმუმ ერთი სოციალური ბმული სავალდებულოა",
         pagesRequired: "მინიმუმ ერთი გვერდი სავალდებულოა"
       }
+    },
+    news: {
+      errors: {
+        backgroundRequired: "ფონი სავალდებულოა",
+        slugRequired: "სლაგი სავალდებულოა",
+        orderRequired: "რიგი სავალდებულოა",
+        contentRequired: "კონტენტი სავალდებულოა"
+      }
     }
   }
 };

@@ -364,6 +364,14 @@ export const en = {
         socialsRequired: "At least one social is required",
         pagesRequired: "At least one page is required"
       }
+    },
+    news: {
+      errors: {
+        backgroundRequired: "Background is required",
+        slugRequired: "Slug is required",
+        orderRequired: "Order is required",
+        contentRequired: "Content is required"
+      }
     }
   }
 };
