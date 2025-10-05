@@ -32,7 +32,7 @@ interface LanguageTabSwitcherProps {
 }
 
 export interface LocaleConfig {
-  code: string;
+  code: "en" | "ka";
   label: string;
   flag?: string;
 }
@@ -40,7 +40,7 @@ export interface LocaleConfig {
 export interface LocaleSwitcherProps {
   locales: LocaleConfig[];
   activeLocale: string;
-  onChange: (locale: string) => void;
+  onChange: (locale: "en" | "ka") => void;
   errors?: Record<string, number>;
   disabled?: boolean;
   variant?: "compact" | "inline";
