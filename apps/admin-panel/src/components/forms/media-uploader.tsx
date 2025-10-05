@@ -4,10 +4,14 @@ import { Button, Badge, Input, Label } from "../ui";
 import { ImageIcon, Upload, X, Loader2, AlertCircle, Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
+import axios from "@/api/axios";
+import { ADMIN_API_PATH, getFileUrl } from "@/utils";
 
 export interface MediaUploaderProps {
-  value?: string | null;
-  onChange: (value: string | null) => void;
+  value?: { name: string; path: string; size: number } | null;
+  onChange: (
+    value: { name: string; path: string; size: number } | null
+  ) => void;
   onAltTextChange?: (alt: string) => void;
   altText?: string;
   label?: string;
@@ -22,11 +26,13 @@ export interface MediaUploaderProps {
   multi?: boolean;
   imageLimit?: number;
   images?: { name: string; path: string; size: number }[];
-  setUploadedImages?: (images: any[]) => void;
+  setUploadedImages?: (
+    images: { name: string; path: string; size: number }[]
+  ) => void;
 }
 
 type UploadState = "empty" | "hover" | "uploading" | "error" | "preview";
-type UploadedImage = { name: string; url: string; size: number };
+type UploadedImage = { name: string; path: string; size: number };
 
 export const MediaUploader: React.FC<MediaUploaderProps> = ({
   value,
@@ -61,61 +67,55 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
 
   useEffect(() => {
     if (images && images.length && !fileList.length) {
-      setFileList(
-        images.map((image) => ({
-          name: image.name,
-          url: image.path,
-          size: image.size
-        }))
-      );
+      setFileList(images);
     }
   }, [images]);
 
-  const validateAndHandleFile = async (file: File, multiMode = false) => {
-    setError(null);
-    setUploadState("uploading");
+  const uploadFileToBackend = async (
+    file: File
+  ): Promise<UploadedImage | null> => {
+    const sizeMB = file.size / (1024 * 1024);
+    if (sizeMB > maxSizeMB) {
+      setError(toUpperCase(t("mediaUploader.maxSize", { maxSize: maxSizeMB })));
+      setUploadState("error");
+      return null;
+    }
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      setUploadState("uploading");
+      const res = await axios.post(
+        `${ADMIN_API_PATH}/upload/single`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" }
+        }
+      );
+      const data = res.data.data;
+      setUploadState("preview");
+      return { name: data.filename, path: data.path, size: data.size };
+    } catch (err) {
+      setError(toUpperCase(t("mediaUploader.uploadError")));
+      setUploadState("error");
+      return null;
+    }
+  };
+
+  const handleFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
     if (!file.type.startsWith("image/")) {
       setError(toUpperCase(t("mediaUploader.invalidType")));
       setUploadState("error");
       return;
     }
-    const sizeMB = file.size / (1024 * 1024);
-    if (sizeMB > maxSizeMB) {
-      setError(toUpperCase(t("mediaUploader.maxSize", { maxSize: maxSizeMB })));
-      setUploadState("error");
-      return;
+    const uploaded = await uploadFileToBackend(file);
+    if (uploaded) {
+      onChange(uploaded);
     }
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const result = reader.result as string;
-      if (multiMode) {
-        setFileList((prev) => [
-          ...prev,
-          { name: file.name, url: result, size: file.size }
-        ]);
-        setUploadedImages?.([
-          ...(fileList || []),
-          { name: file.name, url: result, size: file.size }
-        ]);
-      } else {
-        onChange(result);
-        setUploadState("preview");
-      }
-    };
-    reader.onerror = () => {
-      setError(toUpperCase(t("mediaUploader.readError")));
-      setUploadState("error");
-    };
-    reader.readAsDataURL(file);
   };
 
-  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) validateAndHandleFile(file);
-  };
-
-  const handleMultiInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMultiInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length + fileList.length > imageLimit) {
       setError(
@@ -123,7 +123,15 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
       );
       return;
     }
-    files.forEach((file) => validateAndHandleFile(file, true));
+    const uploadedImages: UploadedImage[] = [];
+    for (const file of files) {
+      if (!file.type.startsWith("image/")) continue;
+      const uploaded = await uploadFileToBackend(file);
+      if (uploaded) uploadedImages.push(uploaded);
+    }
+    const newList = [...fileList, ...uploadedImages].slice(0, imageLimit);
+    setFileList(newList);
+    setUploadedImages?.(newList);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -140,7 +148,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
     setUploadState(value ? "preview" : "empty");
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
     if (!disabled) {
@@ -152,10 +160,21 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
           );
           return;
         }
-        files.forEach((file) => validateAndHandleFile(file, true));
+        const uploadedImages: UploadedImage[] = [];
+        for (const file of files) {
+          if (!file.type.startsWith("image/")) continue;
+          const uploaded = await uploadFileToBackend(file);
+          if (uploaded) uploadedImages.push(uploaded);
+        }
+        const newList = [...fileList, ...uploadedImages].slice(0, imageLimit);
+        setFileList(newList);
+        setUploadedImages?.(newList);
       } else {
         const file = files[0];
-        if (file) validateAndHandleFile(file);
+        if (file && file.type.startsWith("image/")) {
+          const uploaded = await uploadFileToBackend(file);
+          if (uploaded) onChange(uploaded);
+        }
       }
     }
   };
@@ -180,8 +199,8 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
     fileInputRef.current?.click();
   };
 
-  const handlePreview = (imgUrl: string) => {
-    setPreviewImage(imgUrl);
+  const handlePreview = (imgPath: string) => {
+    setPreviewImage(imgPath);
     setPreviewOpen(true);
   };
 
@@ -238,7 +257,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
                     className={`border-border bg-muted/10 overflow-hidden rounded-xl border-2 ${previewHeight}`}
                   >
                     <img
-                      src={value}
+                      src={getFileUrl(value.path)}
                       alt={altText || toUpperCase(t("mediaUploader.preview"))}
                       className="h-full w-full object-contain"
                     />
@@ -377,10 +396,10 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
                 style={{ width: "120px", height: "120px" }}
               >
                 <img
-                  src={img.url}
+                  src={getFileUrl(img.path)}
                   alt={img.name}
                   className="h-full w-full object-cover"
-                  onClick={() => handlePreview(img.url)}
+                  onClick={() => handlePreview(img.path)}
                   style={{ cursor: "pointer" }}
                 />
                 <Button
@@ -402,7 +421,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
               onClick={() => setPreviewOpen(false)}
             >
               <img
-                src={previewImage}
+                src={getFileUrl(previewImage)}
                 alt={toUpperCase(t("mediaUploader.preview"))}
                 className="max-h-full max-w-full rounded-xl shadow-lg"
               />
