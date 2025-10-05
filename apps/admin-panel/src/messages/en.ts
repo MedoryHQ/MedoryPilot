@@ -382,6 +382,13 @@ export const en = {
         titleRequired: "Title is required",
         contentRequired: "Content is required"
       }
+    },
+    contact: {
+      errors: {
+        backgroundRequired: "Background is required",
+        titleRequired: "Title is required",
+        descriptionRequired: "Description is required"
+      }
     }
   }
 };

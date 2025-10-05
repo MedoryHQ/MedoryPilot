@@ -384,6 +384,13 @@ export const ka = {
         titleRequired: "სათაური სავალდებულოა",
         contentRequired: "კონტენტი სავალდებულოა"
       }
+    },
+    contact: {
+      errors: {
+        backgroundRequired: "ფონი სავალდებულოა",
+        titleRequired: "სათაური სავალდებულოა",
+        descriptionRequired: "აღწერა სავალდებულოა"
+      }
     }
   }
 };
