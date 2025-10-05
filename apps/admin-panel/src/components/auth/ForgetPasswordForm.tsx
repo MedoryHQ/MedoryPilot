@@ -14,7 +14,7 @@ import { Mail } from "lucide-react";
 import { cn } from "@/libs";
 import { useAuthStageStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { forgetPasswordSchema } from "@/validations/authSchema";
+import { forgetPasswordSchema } from "@/validations/authSchema.validation";
 
 const ForgetPasswordForm = ({
   setStage

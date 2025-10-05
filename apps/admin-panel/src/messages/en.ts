@@ -254,7 +254,35 @@ export const en = {
       areYouSure: "Are you sure?",
       deleteDescription:
         "This action cannot be undone. This will permanently delete the header and all its translations.",
-      cancel: "Cancel"
+      cancel: "Cancel",
+      form: {
+        createTitle: "Create Header",
+        editTitle: "Edit Header",
+        subtitle: "Configure your website header and navigation",
+        contentTranslations: "Content & Translations",
+        contentTranslationsDescription:
+          "Fill in header details for each language",
+        name: "Name",
+        namePlaceholder: "e.g., Main Navigation",
+        position: "Position",
+        positionPlaceholder: "e.g., Top Navigation",
+        headline: "Headline",
+        headlinePlaceholder: "e.g., Welcome to Our Clinic",
+        description: "Description",
+        descriptionPlaceholder: "Enter a brief description for this header...",
+        settings: "Settings",
+        status: "Status",
+        statusDescription: "Enable this header for website display",
+        active: "Active",
+        inactive: "Inactive",
+        logo: "Logo",
+        logoLabel: "Drop your logo here",
+        logoDescription: "or click to browse",
+        header: "Header",
+        createdSuccessfully: "Header created successfully",
+        updatedSuccessfully: "Header updated successfully",
+        deletedSuccessfully: "Header deleted successfully"
+      }
     },
     dataTable: {
       searchPlaceholder: "Search...",
@@ -317,6 +345,78 @@ export const en = {
       altTextPlaceholder: "Describe the image for screen readers",
       altTextDescription:
         "Provide a brief description of the image for accessibility"
+    },
+    introduce: {
+      errors: {
+        headlineRequired: "Headline is required",
+        descriptionRequired: "Description is required"
+      }
+    },
+    service: {
+      errors: {
+        iconRequired: "Icon is required",
+        backgroundRequired: "Background is required",
+        titleRequired: "Title is required",
+        descriptionRequired: "Description is required"
+      }
+    },
+    faq: {
+      errors: {
+        orderRequired: "Order is required",
+        questionRequired: "Question is required",
+        answerRequired: "Answer is required"
+      }
+    },
+    social: {
+      errors: {
+        iconRequired: "Icon is required",
+        nameRequired: "Name is required",
+        urlRequired: "URL is required",
+        urlInvalid: "URL is invalid",
+        footerIdRequired: "Footer ID is required"
+      }
+    },
+    pageComponent: {
+      errors: {
+        slugRequired: "Slug is required",
+        footerOrderRequired: "Footer order is required",
+        nameRequired: "Name is required",
+        contentRequired: "Content is required"
+      }
+    },
+    footer: {
+      errors: {
+        phoneRequired: "Phone is required",
+        emailRequired: "Email is required",
+        emailInvalid: "Email is invalid",
+        socialsRequired: "At least one social is required",
+        pagesRequired: "At least one page is required"
+      }
+    },
+    news: {
+      errors: {
+        backgroundRequired: "Background is required",
+        slugRequired: "Slug is required",
+        orderRequired: "Order is required",
+        contentRequired: "Content is required"
+      }
+    },
+    blog: {
+      errors: {
+        categoriesRequired: "At least one category is required",
+        backgroundRequired: "Background is required",
+        slugRequired: "Slug is required",
+        landingOrderRequired: "Landing order is required",
+        titleRequired: "Title is required",
+        contentRequired: "Content is required"
+      }
+    },
+    contact: {
+      errors: {
+        backgroundRequired: "Background is required",
+        titleRequired: "Title is required",
+        descriptionRequired: "Description is required"
+      }
     }
   }
 };

@@ -13,7 +13,7 @@ import {
 } from ".";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Languages } from "lucide-react";
+import { AlertCircle, Languages } from "lucide-react";
 import { motion } from "framer-motion";
 import { toUpperCase } from "@/utils";
 
@@ -29,6 +29,28 @@ interface LanguageTabSwitcherProps {
     ka?: number;
   };
   disabled?: boolean;
+}
+
+export interface LocaleConfig {
+  code: "en" | "ka";
+  label: string;
+  flag?: string;
+}
+
+export interface LocaleSwitcherProps {
+  locales: LocaleConfig[];
+  activeLocale: string;
+  onChange: (locale: "en" | "ka") => void;
+  errors?: Record<string, number>;
+  disabled?: boolean;
+  variant?: "compact" | "inline";
+  className?: string;
+}
+
+export interface ValidationBadgeProps {
+  count: number;
+  onClick?: () => void;
+  className?: string;
 }
 
 export const LanguageChanger: React.FC<LanguageChangerProps> = ({
@@ -150,11 +172,16 @@ export const LanguageTabSwitcher: React.FC<LanguageTabSwitcherProps> = ({
             type="button"
             onClick={() => !disabled && onLanguageChange(lang.code)}
             disabled={disabled}
-            className={`relative flex items-center gap-2 rounded-md px-6 py-2.5 font-medium transition-all ${
+            className={cn(
+              "relative flex items-center gap-2 rounded-md px-6 py-2.5 font-medium transition-all",
               isActive
                 ? "bg-background text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
-            } ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"} ${hasErrors && isActive ? "ring-destructive ring-offset-muted ring-2 ring-offset-2" : ""} `}
+                : "text-muted-foreground hover:text-foreground",
+              disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
+              hasErrors && isActive
+                ? "ring-destructive ring-offset-muted ring-2 ring-offset-2"
+                : ""
+            )}
           >
             <span className="text-lg">{lang.flag}</span>
             <span>{lang.label}</span>
@@ -201,5 +228,114 @@ export const LanguageTabSwitcher: React.FC<LanguageTabSwitcherProps> = ({
         return button;
       })}
     </div>
+  );
+};
+
+export const LocaleTabSwitcher: React.FC<LocaleSwitcherProps> = ({
+  locales,
+  activeLocale,
+  onChange,
+  errors = {},
+  disabled = false,
+  variant = "compact",
+  className = ""
+}) => {
+  const getErrorCount = (locale: string): number => errors[locale] || 0;
+  const hasErrors = (locale: string): boolean => getErrorCount(locale) > 0;
+  const isActive = (locale: string): boolean => activeLocale === locale;
+
+  const renderTab = (locale: LocaleConfig) => {
+    const errorCount = getErrorCount(locale.code);
+    const active = isActive(locale.code);
+    const hasError = hasErrors(locale.code);
+
+    const tabButton = (
+      <button
+        key={locale.code}
+        type="button"
+        onClick={() => !disabled && onChange(locale.code)}
+        disabled={disabled}
+        className={cn(
+          "relative flex items-center gap-2 rounded-md px-6 py-2.5 font-medium transition-all",
+          active
+            ? "bg-background text-foreground shadow-sm"
+            : "text-muted-foreground hover:text-foreground hover:bg-background/50",
+          disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
+          hasError && active
+            ? "ring-destructive ring-offset-muted ring-2 ring-offset-2"
+            : ""
+        )}
+      >
+        {locale.flag && <span className="text-lg">{locale.flag}</span>}
+        <span>{locale.label}</span>
+
+        {hasError && !active && (
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="absolute -top-1 -right-1"
+          >
+            <ValidationBadge count={errorCount} />
+          </motion.div>
+        )}
+
+        {hasError && active && (
+          <AlertCircle className="text-destructive h-4 w-4" />
+        )}
+      </button>
+    );
+
+    if (hasError && !active) {
+      return (
+        <TooltipProvider key={locale.code}>
+          <Tooltip>
+            <TooltipTrigger asChild>{tabButton}</TooltipTrigger>
+            <TooltipContent side="bottom">
+              <p className="text-sm">
+                {errorCount} {errorCount === 1 ? "error" : "errors"} in{" "}
+                {locale.label}
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    }
+
+    return tabButton;
+  };
+
+  if (variant === "inline") {
+    return (
+      <div className={cn("flex flex-wrap gap-3", className)}>
+        {locales.map(renderTab)}
+      </div>
+    );
+  }
+
+  return (
+    <div className={cn("bg-muted flex gap-2 rounded-lg p-1", className)}>
+      {locales.map(renderTab)}
+    </div>
+  );
+};
+
+export const ValidationBadge: React.FC<ValidationBadgeProps> = ({
+  count,
+  onClick,
+  className = ""
+}) => {
+  if (count === 0) return null;
+
+  return (
+    <Badge
+      variant="destructive"
+      className={cn(
+        "flex h-5 min-w-[20px] cursor-pointer items-center justify-center rounded-full px-1.5 text-xs transition-transform hover:scale-110",
+        className
+      )}
+      onClick={onClick}
+    >
+      {count}
+    </Badge>
   );
 };

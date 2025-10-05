@@ -257,7 +257,35 @@ export const ka = {
       areYouSure: "დარწმუნებული ხართ?",
       deleteDescription:
         "ეს მოქმედება ვერ გაუქმდება. ეს სამუდამოდ წაშლის Header-ებს და მათ ყველა თარგმანს.",
-      cancel: "გაუქმება"
+      cancel: "გაუქმება",
+      form: {
+        createTitle: "Header-ის შექმნა",
+        editTitle: "Header-ის რედაქტირება",
+        subtitle: "კონფიგურაცია ვებსაიტის Header-ისა და ნავიგაციისთვის",
+        contentTranslations: "კონტენტი და თარგმანები",
+        contentTranslationsDescription:
+          "შეავსეთ Header-ის დეტალები თითოეული ენისთვის",
+        name: "სახელი",
+        namePlaceholder: "მაგ., მთავარი ნავიგაცია",
+        position: "პოზიცია",
+        positionPlaceholder: "მაგ., ზედა ნავიგაცია",
+        headline: "სათაური",
+        headlinePlaceholder: "მაგ., კეთილი იყოს თქვენი მობრძანება",
+        description: "აღწერა",
+        descriptionPlaceholder: "შეიყვანეთ მოკლე აღწერა ამ Header-ისთვის...",
+        settings: "პარამეტრები",
+        status: "სტატუსი",
+        statusDescription: "ამ Header-ის ვებსაიტზე ჩვენება",
+        active: "აქტიური",
+        inactive: "არააქტიური",
+        logo: "ლოგო",
+        logoLabel: "ჩააგდეთ ლოგო აქ",
+        logoDescription: "ან დააჭირეთ არჩევისთვის",
+        header: "Header",
+        createdSuccessfully: "Header წარმატებით შეიქმნა",
+        updatedSuccessfully: "Header წარმატებით განახლდა",
+        deletedSuccessfully: "Header წარმატებით წაიშალა"
+      }
     },
     dataTable: {
       searchPlaceholder: "ძიება...",
@@ -319,6 +347,78 @@ export const ka = {
       altText: "ალტ ტექსტი (ხელმისაწვდომობისთვის)",
       altTextPlaceholder: "აღწერეთ სურათი ეკრანის მკითხველებისთვის",
       altTextDescription: "მიუთითეთ სურათის მოკლე აღწერა ხელმისაწვდომობისთვის"
+    },
+    introduce: {
+      errors: {
+        headlineRequired: "სათაური სავალდებულოა",
+        descriptionRequired: "აღწერა სავალდებულოა"
+      }
+    },
+    service: {
+      errors: {
+        iconRequired: "Icon სავალდებულოა",
+        backgroundRequired: "ფონი სავალდებულოა",
+        titleRequired: "სათაური სავალდებულოა",
+        descriptionRequired: "აღწერა სავალდებულოა"
+      }
+    },
+    faq: {
+      errors: {
+        orderRequired: "რიგი სავალდებულოა",
+        questionRequired: "კითხვა სავალდებულოა",
+        answerRequired: "პასუხი სავალდებულოა"
+      }
+    },
+    social: {
+      errors: {
+        iconRequired: "Icon სავალდებულოა",
+        nameRequired: "სახელი სავალდებულოა",
+        urlRequired: "ბმული სავალდებულოა",
+        urlInvalid: "ბმული არასწორია",
+        footerIdRequired: "Footer ID სავალდებულოა"
+      }
+    },
+    pageComponent: {
+      errors: {
+        slugRequired: "სლაგი სავალდებულოა",
+        footerOrderRequired: "Footer-ის რიგი სავალდებულოა",
+        nameRequired: "სახელი სავალდებულოა",
+        contentRequired: "კონტენტი სავალდებულოა"
+      }
+    },
+    footer: {
+      errors: {
+        phoneRequired: "ტელეფონი სავალდებულოა",
+        emailRequired: "ელ.ფოსტა სავალდებულოა",
+        emailInvalid: "ელ.ფოსტა არასწორია",
+        socialsRequired: "მინიმუმ ერთი სოციალური ბმული სავალდებულოა",
+        pagesRequired: "მინიმუმ ერთი გვერდი სავალდებულოა"
+      }
+    },
+    news: {
+      errors: {
+        backgroundRequired: "ფონი სავალდებულოა",
+        slugRequired: "სლაგი სავალდებულოა",
+        orderRequired: "რიგი სავალდებულოა",
+        contentRequired: "კონტენტი სავალდებულოა"
+      }
+    },
+    blog: {
+      errors: {
+        categoriesRequired: "მინიმუმ ერთი კატეგორია სავალდებულოა",
+        backgroundRequired: "ფონი სავალდებულოა",
+        slugRequired: "სლაგი სავალდებულოა",
+        landingOrderRequired: "ლენდინგის რიგი სავალდებულოა",
+        titleRequired: "სათაური სავალდებულოა",
+        contentRequired: "კონტენტი სავალდებულოა"
+      }
+    },
+    contact: {
+      errors: {
+        backgroundRequired: "ფონი სავალდებულოა",
+        titleRequired: "სათაური სავალდებულოა",
+        descriptionRequired: "აღწერა სავალდებულოა"
+      }
     }
   }
 };

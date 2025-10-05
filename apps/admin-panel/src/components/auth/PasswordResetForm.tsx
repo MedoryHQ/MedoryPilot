@@ -12,7 +12,7 @@ import { cn } from "@/libs";
 import {
   resetPasswordSchema,
   ResetPasswordValues
-} from "@/validations/authSchema";
+} from "@/validations/authSchema.validation";
 
 interface Props {
   email: string;

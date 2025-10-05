@@ -1,0 +1,364 @@
+import React, { useState } from "react";
+import { Button, StatusToggle, LocaleTabSwitcher } from "../ui";
+import { ArrowLeft } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { setHookFormErrors, toUpperCase } from "@/utils";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks";
+import { useMutation } from "react-query";
+import axios from "@/api/axios";
+import { useForm } from "react-hook-form";
+import {
+  HeaderFormValues,
+  headerSchema
+} from "@/validations/website/header.validation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useGetHeader } from "@/libs/queries";
+import {
+  ActionBar,
+  DeleteConfirmDialog,
+  FieldGroup,
+  FormSection,
+  FormShell,
+  MediaUploader,
+  MetadataDisplay,
+  TwoColumnLayout
+} from "../forms";
+import { Separator } from "@radix-ui/react-select";
+import { File as BackendFile } from "@/types/global";
+
+interface FormActionsProps {
+  mode: "create" | "edit" | "readonly";
+  id?: string;
+  isSubmitting?: boolean;
+  onCancel: () => void;
+  onDelete?: () => void;
+}
+
+export const HeaderFormActions: React.FC<FormActionsProps> = ({
+  mode,
+  id,
+  isSubmitting = false
+}) => {
+  const { t: rawT, i18n } = useTranslation();
+  const t = (key: string, lang?: "en" | "ka") =>
+    rawT(key, { lng: lang || i18n.language });
+
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [activeLocale, setActiveLocale] = useState<"en" | "ka">("en");
+
+  const navigate = useNavigate();
+  const { toast } = useToast(rawT);
+
+  const {
+    formState: { errors },
+    setValue,
+    watch,
+    setError,
+    handleSubmit,
+    trigger
+  } = useForm<HeaderFormValues>({
+    resolver: zodResolver(headerSchema(t, i18n.language as "en" | "ka")),
+    defaultValues: {
+      logo: null,
+      active: false,
+      translations: {
+        en: { name: "", position: "", headline: "", description: "" },
+        ka: { name: "", position: "", headline: "", description: "" }
+      }
+    }
+  });
+  const formValues = watch();
+
+  const enErrors = errors.translations?.en;
+  const kaErrors = errors.translations?.ka;
+  const errorCounts = {
+    en: enErrors ? Object.keys(enErrors).length : 0,
+    ka: kaErrors ? Object.keys(kaErrors).length : 0
+  };
+
+  const handleLocaleChange = async (locale: "en" | "ka") => {
+    await trigger(`translations.${activeLocale}`);
+    setActiveLocale(locale);
+  };
+
+  const headerQuery = useGetHeader(mode === "edit" ? id : null, setValue);
+
+  const { mutateAsync: createHeader } = useMutation({
+    mutationFn: async (values: HeaderFormValues) => {
+      await axios.post("/headers", values);
+    },
+    onSuccess: () => {
+      toast.success(
+        rawT("operation.successful"),
+        rawT("headers.createdSuccessfully")
+      );
+      navigate("/landing/headers");
+    },
+    onError: (error: any) => {
+      setHookFormErrors(
+        error,
+        toast,
+        rawT,
+        i18n.language as "ka" | "en",
+        setError
+      );
+    }
+  });
+
+  const { mutateAsync: editHeader } = useMutation({
+    mutationFn: async (values: HeaderFormValues) => {
+      await axios.put(`/headers/${id}`, values);
+    },
+    onSuccess: () => {
+      toast.success(
+        rawT("operation.successful"),
+        rawT("headers.updatedSuccessfully")
+      );
+      navigate("/landing/headers");
+    },
+    onError: (error: any) => {
+      setHookFormErrors(
+        error,
+        toast,
+        rawT,
+        i18n.language as "ka" | "en",
+        setError
+      );
+    }
+  });
+
+  const { mutateAsync: deleteHeader } = useMutation({
+    mutationFn: async () => {
+      if (!id) return;
+      await axios.delete(`/headers/${id}`);
+    },
+    onSuccess: () => {
+      toast.success(
+        rawT("operation.successful"),
+        rawT("headers.deletedSuccessfully")
+      );
+      navigate("/landing/headers");
+    },
+    onError: (error: any) => {
+      setHookFormErrors(
+        error,
+        toast,
+        rawT,
+        i18n.language as "ka" | "en",
+        setError
+      );
+    }
+  });
+
+  const onSubmit = handleSubmit(async (data) => {
+    if (mode === "create") {
+      await createHeader(data);
+    } else if (mode === "edit") {
+      await editHeader(data);
+    }
+  });
+
+  return (
+    <form onSubmit={onSubmit}>
+      <FormShell
+        title={toUpperCase(rawT(`headers.${mode}Title`))}
+        subtitle={toUpperCase(rawT("headers.subtitle"))}
+        headerActions={
+          <Button
+            variant="ghost"
+            size="lg"
+            onClick={() => navigate("/landing/headers")}
+            type="button"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+        }
+        actionBar={
+          <ActionBar
+            mode={mode}
+            isSubmitting={isSubmitting}
+            onCancel={() => navigate("/landing/headers")}
+            onDelete={
+              mode === "edit" ? () => setShowDeleteDialog(true) : undefined
+            }
+          />
+        }
+      >
+        <TwoColumnLayout
+          left={
+            <FormSection
+              title={toUpperCase(rawT("headers.contentTranslations"))}
+              description={toUpperCase(
+                rawT("headers.contentTranslationsDescription")
+              )}
+            >
+              <LocaleTabSwitcher
+                locales={[
+                  { code: "en", label: "English", flag: "🇬🇧" },
+                  { code: "ka", label: "ქართული", flag: "🇬🇪" }
+                ]}
+                activeLocale={activeLocale}
+                onChange={handleLocaleChange}
+                errors={errorCounts}
+              />
+
+              <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+                {activeLocale === "en" ? (
+                  <>
+                    <FieldGroup
+                      label={toUpperCase(rawT("headers.name"))}
+                      required
+                      value={formValues.translations.en.name}
+                      onChange={(v) => setValue("translations.en.name", v)}
+                      error={errors.translations?.en?.name?.message}
+                      placeholder={rawT("headers.namePlaceholder")}
+                    />
+
+                    <FieldGroup
+                      label={toUpperCase(rawT("headers.position"))}
+                      required
+                      value={formValues.translations.en.position}
+                      onChange={(v) => setValue("translations.en.position", v)}
+                      error={errors.translations?.en?.position?.message}
+                      placeholder={rawT("headers.positionPlaceholder")}
+                    />
+
+                    <FieldGroup
+                      label={toUpperCase(rawT("headers.headline"))}
+                      required
+                      value={formValues.translations.en.headline}
+                      onChange={(v) => setValue("translations.en.headline", v)}
+                      error={errors.translations?.en?.headline?.message}
+                      placeholder={rawT("headers.headlinePlaceholder")}
+                      className="md:col-span-2"
+                    />
+
+                    <FieldGroup
+                      label={toUpperCase(rawT("headers.description"))}
+                      type="textarea"
+                      required
+                      value={formValues.translations.en.description}
+                      onChange={(v) =>
+                        setValue("translations.en.description", v)
+                      }
+                      error={errors.translations?.en?.description?.message}
+                      placeholder={rawT("headers.descriptionPlaceholder")}
+                      rows={5}
+                      maxLength={500}
+                      className="md:col-span-2"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <FieldGroup
+                      label={toUpperCase(rawT("headers.name"))}
+                      required
+                      value={formValues.translations.ka.name}
+                      onChange={(v) => setValue("translations.ka.name", v)}
+                      error={errors.translations?.ka?.name?.message}
+                      placeholder={rawT("headers.namePlaceholder")}
+                    />
+
+                    <FieldGroup
+                      label={toUpperCase(rawT("headers.position"))}
+                      required
+                      value={formValues.translations.ka.position}
+                      onChange={(v) => setValue("translations.ka.position", v)}
+                      error={errors.translations?.ka?.position?.message}
+                      placeholder={rawT("headers.positionPlaceholder")}
+                    />
+
+                    <FieldGroup
+                      label={toUpperCase(rawT("headers.headline"))}
+                      required
+                      value={formValues.translations.ka.headline}
+                      onChange={(v) => setValue("translations.ka.headline", v)}
+                      error={errors.translations?.ka?.headline?.message}
+                      placeholder={rawT("headers.headlinePlaceholder")}
+                      className="md:col-span-2"
+                    />
+
+                    <FieldGroup
+                      label={toUpperCase(rawT("headers.description"))}
+                      type="textarea"
+                      required
+                      value={formValues.translations.ka.description}
+                      onChange={(v) =>
+                        setValue("translations.ka.description", v)
+                      }
+                      error={errors.translations?.ka?.description?.message}
+                      placeholder={rawT("headers.descriptionPlaceholder")}
+                      rows={5}
+                      maxLength={500}
+                      className="md:col-span-2"
+                    />
+                  </>
+                )}
+              </div>
+            </FormSection>
+          }
+          right={
+            <>
+              <FormSection title={toUpperCase(rawT("headers.settings"))}>
+                <StatusToggle
+                  label={toUpperCase(rawT("headers.status"))}
+                  description={toUpperCase(rawT("headers.statusDescription"))}
+                  value={formValues.active || false}
+                  onChange={(v) => setValue("active", v)}
+                  activeLabel={toUpperCase(rawT("headers.active"))}
+                  inactiveLabel={toUpperCase(rawT("headers.inactive"))}
+                />
+
+                {mode === "edit" && (
+                  <>
+                    <Separator className="my-6" />
+                    <MetadataDisplay
+                      createdAt={headerQuery.data?.data.createdAt || ""}
+                      updatedAt={headerQuery.data?.data.updatedAt || ""}
+                    />
+                  </>
+                )}
+              </FormSection>
+
+              <FormSection title={toUpperCase(rawT("headers.logo"))}>
+                <MediaUploader
+                  value={formValues.logo as BackendFile | null}
+                  onChange={(v) => setValue("logo", v as BackendFile | null)}
+                  label={toUpperCase(rawT("headers.logoLabel"))}
+                  description={toUpperCase(rawT("headers.logoDescription"))}
+                  maxSizeMB={5}
+                  acceptedFormats={["PNG", "JPG", "SVG", "WEBP"]}
+                  previewHeight="h-48"
+                  showAltInput
+                />
+              </FormSection>
+
+              <div className="hidden lg:block">
+                <ActionBar
+                  mode={mode}
+                  isSubmitting={isSubmitting}
+                  onCancel={() => navigate("/landing/headers")}
+                  onDelete={
+                    mode === "edit"
+                      ? () => setShowDeleteDialog(true)
+                      : undefined
+                  }
+                />
+              </div>
+            </>
+          }
+        />
+      </FormShell>
+
+      <DeleteConfirmDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        onConfirm={deleteHeader}
+        itemName={formValues.translations.en.name}
+        itemType={toUpperCase(rawT("headers.header"))}
+        isLoading={isSubmitting}
+      />
+    </form>
+  );
+};
