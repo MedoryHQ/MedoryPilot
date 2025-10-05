@@ -323,6 +323,14 @@ export const en = {
         headlineRequired: "Headline is required",
         descriptionRequired: "Description is required"
       }
+    },
+    service: {
+      errors: {
+        iconRequired: "Icon is required",
+        backgroundRequired: "Background is required",
+        titleRequired: "Title is required",
+        descriptionRequired: "Description is required"
+      }
     }
   }
 };

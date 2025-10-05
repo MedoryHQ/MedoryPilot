@@ -325,6 +325,14 @@ export const ka = {
         headlineRequired: "სათაური სავალდებულოა",
         descriptionRequired: "აღწერა სავალდებულოა"
       }
+    },
+    service: {
+      errors: {
+        iconRequired: "ხატულა სავალდებულოა",
+        backgroundRequired: "ფონი სავალდებულოა",
+        titleRequired: "სათაური სავალდებულოა",
+        descriptionRequired: "აღწერა სავალდებულოა"
+      }
     }
   }
 };
