@@ -7,13 +7,14 @@ import {
 } from "@/utils";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { Badge, Button, DataTable, DeleteDialog } from "@/components/ui";
+import { Badge, Button, DataTable } from "@/components/ui";
 import { Plus, Edit, Trash2, ImageIcon } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
 import dayjs from "dayjs";
 import { Action, Column } from "@/types/ui";
 import { Header } from "@/types/website";
+import { DeleteDialog } from "@/components/forms";
 
 const Headers = () => {
   const { t, i18n } = useTranslation();

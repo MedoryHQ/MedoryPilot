@@ -1,16 +1,20 @@
 import { z } from "zod";
 
+const BackendFileSchema = z.object({
+  id: z.string(),
+  path: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string()
+});
+
 export const headerSchema = (
   t: (key: string, lang?: "en" | "ka") => string,
   lang: "en" | "ka" = "en"
 ) =>
   z.object({
-    logo: z
-      .instanceof(File)
-      .nullable()
-      .refine((file) => file !== null, {
-        message: t("header.errors.logoRequired", lang)
-      }),
+    logo: BackendFileSchema.nullable().refine((file) => file !== null, {
+      message: t("header.errors.logoRequired", lang)
+    }),
     active: z
       .boolean()
       .nullable()

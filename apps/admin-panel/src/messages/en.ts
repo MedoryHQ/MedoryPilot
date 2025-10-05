@@ -254,7 +254,35 @@ export const en = {
       areYouSure: "Are you sure?",
       deleteDescription:
         "This action cannot be undone. This will permanently delete the header and all its translations.",
-      cancel: "Cancel"
+      cancel: "Cancel",
+      form: {
+        createTitle: "Create Header",
+        editTitle: "Edit Header",
+        subtitle: "Configure your website header and navigation",
+        contentTranslations: "Content & Translations",
+        contentTranslationsDescription:
+          "Fill in header details for each language",
+        name: "Name",
+        namePlaceholder: "e.g., Main Navigation",
+        position: "Position",
+        positionPlaceholder: "e.g., Top Navigation",
+        headline: "Headline",
+        headlinePlaceholder: "e.g., Welcome to Our Clinic",
+        description: "Description",
+        descriptionPlaceholder: "Enter a brief description for this header...",
+        settings: "Settings",
+        status: "Status",
+        statusDescription: "Enable this header for website display",
+        active: "Active",
+        inactive: "Inactive",
+        logo: "Logo",
+        logoLabel: "Drop your logo here",
+        logoDescription: "or click to browse",
+        header: "Header",
+        createdSuccessfully: "Header created successfully",
+        updatedSuccessfully: "Header updated successfully",
+        deletedSuccessfully: "Header deleted successfully"
+      }
     },
     dataTable: {
       searchPlaceholder: "Search...",

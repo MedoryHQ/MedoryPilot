@@ -257,7 +257,35 @@ export const ka = {
       areYouSure: "დარწმუნებული ხართ?",
       deleteDescription:
         "ეს მოქმედება ვერ გაუქმდება. ეს სამუდამოდ წაშლის Header-ებს და მათ ყველა თარგმანს.",
-      cancel: "გაუქმება"
+      cancel: "გაუქმება",
+      form: {
+        createTitle: "Header-ის შექმნა",
+        editTitle: "Header-ის რედაქტირება",
+        subtitle: "კონფიგურაცია ვებსაიტის Header-ისა და ნავიგაციისთვის",
+        contentTranslations: "კონტენტი და თარგმანები",
+        contentTranslationsDescription:
+          "შეავსეთ Header-ის დეტალები თითოეული ენისთვის",
+        name: "სახელი",
+        namePlaceholder: "მაგ., მთავარი ნავიგაცია",
+        position: "პოზიცია",
+        positionPlaceholder: "მაგ., ზედა ნავიგაცია",
+        headline: "სათაური",
+        headlinePlaceholder: "მაგ., კეთილი იყოს თქვენი მობრძანება",
+        description: "აღწერა",
+        descriptionPlaceholder: "შეიყვანეთ მოკლე აღწერა ამ Header-ისთვის...",
+        settings: "პარამეტრები",
+        status: "სტატუსი",
+        statusDescription: "ამ Header-ის ვებსაიტზე ჩვენება",
+        active: "აქტიური",
+        inactive: "არააქტიური",
+        logo: "ლოგო",
+        logoLabel: "ჩააგდეთ ლოგო აქ",
+        logoDescription: "ან დააჭირეთ არჩევისთვის",
+        header: "Header",
+        createdSuccessfully: "Header წარმატებით შეიქმნა",
+        updatedSuccessfully: "Header წარმატებით განახლდა",
+        deletedSuccessfully: "Header წარმატებით წაიშალა"
+      }
     },
     dataTable: {
       searchPlaceholder: "ძიება...",

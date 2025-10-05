@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { toUpperCase } from "@/utils";
-import { ThemeSwitcher, LanguageChanger, Search } from "./ui";
+import { ThemeSwitcher, LanguageChanger, Search } from "../ui";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useSidebarStore } from "@/store";
