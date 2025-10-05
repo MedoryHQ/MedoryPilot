@@ -372,6 +372,16 @@ export const en = {
         orderRequired: "Order is required",
         contentRequired: "Content is required"
       }
+    },
+    blog: {
+      errors: {
+        categoriesRequired: "At least one category is required",
+        backgroundRequired: "Background is required",
+        slugRequired: "Slug is required",
+        landingOrderRequired: "Landing order is required",
+        titleRequired: "Title is required",
+        contentRequired: "Content is required"
+      }
     }
   }
 };

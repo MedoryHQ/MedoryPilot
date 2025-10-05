@@ -374,6 +374,16 @@ export const ka = {
         orderRequired: "რიგი სავალდებულოა",
         contentRequired: "კონტენტი სავალდებულოა"
       }
+    },
+    blog: {
+      errors: {
+        categoriesRequired: "მინიმუმ ერთი კატეგორია სავალდებულოა",
+        backgroundRequired: "ფონი სავალდებულოა",
+        slugRequired: "სლაგი სავალდებულოა",
+        landingOrderRequired: "ლენდინგის რიგი სავალდებულოა",
+        titleRequired: "სათაური სავალდებულოა",
+        contentRequired: "კონტენტი სავალდებულოა"
+      }
     }
   }
 };
