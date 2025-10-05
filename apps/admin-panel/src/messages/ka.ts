@@ -357,6 +357,15 @@ export const ka = {
         nameRequired: "სახელი სავალდებულოა",
         contentRequired: "კონტენტი სავალდებულოა"
       }
+    },
+    footer: {
+      errors: {
+        phoneRequired: "ტელეფონი სავალდებულოა",
+        emailRequired: "ელ.ფოსტა სავალდებულოა",
+        emailInvalid: "ელ.ფოსტა არასწორია",
+        socialsRequired: "მინიმუმ ერთი სოციალური ბმული სავალდებულოა",
+        pagesRequired: "მინიმუმ ერთი გვერდი სავალდებულოა"
+      }
     }
   }
 };

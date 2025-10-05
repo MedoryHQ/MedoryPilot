@@ -355,6 +355,15 @@ export const en = {
         nameRequired: "Name is required",
         contentRequired: "Content is required"
       }
+    },
+    footer: {
+      errors: {
+        phoneRequired: "Phone is required",
+        emailRequired: "Email is required",
+        emailInvalid: "Email is invalid",
+        socialsRequired: "At least one social is required",
+        pagesRequired: "At least one page is required"
+      }
     }
   }
 };
