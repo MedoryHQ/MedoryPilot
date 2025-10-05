@@ -12,7 +12,7 @@ import { cn } from "@/libs";
 import { useNavigate } from "react-router-dom";
 import { useAuthStageStore, useAuthStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema } from "@/validations/authSchema";
+import { loginSchema } from "@/validations/authSchema.validation";
 
 const LoginForm = ({
   setStage

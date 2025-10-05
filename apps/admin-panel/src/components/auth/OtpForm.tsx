@@ -9,7 +9,7 @@ import { useToast } from "@/hooks";
 import { setHookFormErrors, toUpperCase } from "@/utils";
 import { useAuthStageStore } from "@/store";
 import { cn } from "@/libs";
-import { OtpFormValues, otpSchema } from "@/validations/authSchema";
+import { OtpFormValues, otpSchema } from "@/validations/authSchema.validation";
 
 interface OTPProps {
   email: string;

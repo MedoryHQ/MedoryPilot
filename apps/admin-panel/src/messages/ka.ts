@@ -333,6 +333,13 @@ export const ka = {
         titleRequired: "სათაური სავალდებულოა",
         descriptionRequired: "აღწერა სავალდებულოა"
       }
+    },
+    faq: {
+      errors: {
+        orderRequired: "რიგი სავალდებულოა",
+        questionRequired: "კითხვა სავალდებულოა",
+        answerRequired: "პასუხი სავალდებულოა"
+      }
     }
   }
 };

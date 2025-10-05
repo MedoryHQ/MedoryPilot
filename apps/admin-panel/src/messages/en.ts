@@ -331,6 +331,13 @@ export const en = {
         titleRequired: "Title is required",
         descriptionRequired: "Description is required"
       }
+    },
+    faq: {
+      errors: {
+        orderRequired: "Order is required",
+        questionRequired: "Question is required",
+        answerRequired: "Answer is required"
+      }
     }
   }
 };
