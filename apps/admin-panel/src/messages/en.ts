@@ -338,6 +338,15 @@ export const en = {
         questionRequired: "Question is required",
         answerRequired: "Answer is required"
       }
+    },
+    social: {
+      errors: {
+        iconRequired: "Icon is required",
+        nameRequired: "Name is required",
+        urlRequired: "URL is required",
+        urlInvalid: "URL is invalid",
+        footerIdRequired: "Footer ID is required"
+      }
     }
   }
 };

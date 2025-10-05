@@ -328,7 +328,7 @@ export const ka = {
     },
     service: {
       errors: {
-        iconRequired: "ხატულა სავალდებულოა",
+        iconRequired: "Icon სავალდებულოა",
         backgroundRequired: "ფონი სავალდებულოა",
         titleRequired: "სათაური სავალდებულოა",
         descriptionRequired: "აღწერა სავალდებულოა"
@@ -339,6 +339,15 @@ export const ka = {
         orderRequired: "რიგი სავალდებულოა",
         questionRequired: "კითხვა სავალდებულოა",
         answerRequired: "პასუხი სავალდებულოა"
+      }
+    },
+    social: {
+      errors: {
+        iconRequired: "Icon სავალდებულოა",
+        nameRequired: "სახელი სავალდებულოა",
+        urlRequired: "ბმული სავალდებულოა",
+        urlInvalid: "ბმული არასწორია",
+        footerIdRequired: "Footer ID სავალდებულოა"
       }
     }
   }
