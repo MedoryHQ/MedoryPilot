@@ -34,35 +34,6 @@ export const useGetHeader = (
     refetchOnReconnect: false,
     refetchInterval: false,
     refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    onSuccess(data: HeaderResponse) {
-      const { translations, active, logo } = data.data;
-
-      const enTranslation = translations?.find(
-        (translation) => translation.language.code === "en"
-      );
-      const kaTranslation = translations?.find(
-        (translation) => translation.language.code === "ka"
-      );
-
-      const formTranslations = {
-        en: {
-          description: enTranslation?.description || "",
-          headline: enTranslation?.headline || "",
-          position: enTranslation?.position || "",
-          name: enTranslation?.name || ""
-        },
-        ka: {
-          name: kaTranslation?.name || "",
-          position: kaTranslation?.position || "",
-          description: kaTranslation?.description || "",
-          headline: kaTranslation?.headline || ""
-        }
-      };
-
-      setValue("active", active);
-      setValue("logo", logo);
-      setValue("translations", formTranslations);
-    }
+    refetchOnWindowFocus: false
   });
 };

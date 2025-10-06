@@ -102,7 +102,7 @@ const Headers = () => {
     {
       label: toUpperCase(t("headers.edit")),
       icon: <Edit className="h-4 w-4" />,
-      onClick: (item) => navigate(`landing/headers/edit?id=${item.id}`),
+      onClick: (item) => navigate(`/landing/headers/edit?id=${item.id}`),
       variant: "outline"
     },
     {

@@ -25,7 +25,6 @@ import {
   TwoColumnLayout
 } from "../forms";
 import { Separator } from "@radix-ui/react-select";
-import { File as BackendFile } from "@/types/global";
 
 interface FormActionsProps {
   mode: "create" | "edit" | "readonly";
@@ -56,7 +55,8 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
     watch,
     setError,
     handleSubmit,
-    trigger
+    trigger,
+    reset
   } = useForm<HeaderFormValues>({
     resolver: zodResolver(headerSchema(t, i18n.language as "en" | "ka")),
     defaultValues: {
@@ -82,10 +82,51 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
     setActiveLocale(locale);
   };
 
-  const headerQuery = useGetHeader(
-    mode === "edit" ? (id as string) : null,
-    setValue
-  );
+  const headerQuery = useGetHeader(mode === "edit" ? (id as string) : null);
+
+  React.useEffect(() => {
+    if (!headerQuery?.data?.data) return;
+
+    const { translations, active, logo } = headerQuery.data.data;
+
+    const enTranslation = translations?.find(
+      (translation) => translation.language.code === "en"
+    );
+    const kaTranslation = translations?.find(
+      (translation) => translation.language.code === "ka"
+    );
+
+    const formTranslations = {
+      en: {
+        description: enTranslation?.description || "",
+        headline: enTranslation?.headline || "",
+        position: enTranslation?.position || "",
+        name: enTranslation?.name || ""
+      },
+      ka: {
+        name: kaTranslation?.name || "",
+        position: kaTranslation?.position || "",
+        description: kaTranslation?.description || "",
+        headline: kaTranslation?.headline || ""
+      }
+    };
+
+    // normalize logo to shape our schema accepts:
+    const formattedLogo = logo
+      ? {
+          path: (logo as any).path ?? (logo as any).url ?? "",
+          name: (logo as any).name ?? "",
+          size: (logo as any).size ?? undefined
+        }
+      : null;
+
+    // reset the whole form (atomic) -> avoids race issues
+    reset({
+      logo: formattedLogo,
+      active: !!active,
+      translations: formTranslations
+    });
+  }, [headerQuery.data, reset]);
 
   const { mutateAsync: createHeader } = useMutation({
     mutationFn: async (values: HeaderFormValues) => {
@@ -155,13 +196,14 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
   });
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log("Submitting data:", data);
     if (mode === "create") {
       await createHeader(data);
     } else if (mode === "edit") {
       await editHeader(data);
     }
   });
+
+  console.log(formValues.logo);
 
   return (
     <form onSubmit={onSubmit}>
@@ -186,7 +228,6 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
             onDelete={
               mode === "edit" ? () => setShowDeleteDialog(true) : undefined
             }
-            onSave={onSubmit}
           />
         }
       >
@@ -330,8 +371,8 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
 
               <FormSection title={toUpperCase(rawT("headers.form.logo"))}>
                 <MediaUploader
-                  value={formValues.logo as BackendFile | null}
-                  onChange={(v) => setValue("logo", v as BackendFile | null)}
+                  value={formValues.logo as any}
+                  onChange={(v) => setValue("logo", v)}
                   label={toUpperCase(rawT("headers.form.logoLabel"))}
                   description={toUpperCase(
                     rawT("headers.form.logoDescription")

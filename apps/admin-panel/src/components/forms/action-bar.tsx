@@ -8,7 +8,6 @@ export interface ActionBarProps {
   mode: "create" | "edit" | "readonly";
   isSubmitting?: boolean;
   isSaveDisabled?: boolean;
-  onSave?: () => void;
   onCancel: () => void;
   onDelete?: () => void;
   saveLabel?: string;
@@ -23,7 +22,6 @@ export const ActionBar: React.FC<ActionBarProps> = ({
   mode,
   isSubmitting = false,
   isSaveDisabled = false,
-  onSave,
   onCancel,
   onDelete,
   saveLabel,
@@ -70,10 +68,9 @@ export const ActionBar: React.FC<ActionBarProps> = ({
         )}
 
         <div className="flex flex-col gap-3">
-          {!isReadOnly && isCreate && (
+          {!isReadOnly && (isCreate || isEdit) && (
             <Button
               type="submit"
-              onClick={onSave}
               size="lg"
               disabled={isSubmitting || isSaveDisabled}
               className="w-full shadow-md transition-all hover:shadow-lg"
