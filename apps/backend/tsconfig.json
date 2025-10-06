@@ -4,12 +4,10 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "outDir": "./dist",
-    "ignoreDeprecations": "6.0",
-    "baseUrl": ".",
     "rootDir": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@errors/*": ["src/errors/*"]
+      "@/*": ["./src/*"],
+      "@errors/*": ["./src/errors/*"]
     },
     "target": "es2020",
     "module": "commonjs",

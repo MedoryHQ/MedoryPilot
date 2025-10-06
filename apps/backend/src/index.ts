@@ -47,12 +47,7 @@ app.use(
 
 app.use(express.static(__dirname + "/public"));
 
-const nodeEnv = getEnvVariable("NODE_ENV");
-
-const uploadsPath = path.join(
-  __dirname,
-  nodeEnv === "production" ? "../../uploads" : "../uploads"
-);
+const uploadsPath = path.resolve(process.cwd(), "uploads");
 
 if (!fs.existsSync(uploadsPath)) {
   fs.mkdirSync(uploadsPath, { recursive: true });
