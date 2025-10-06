@@ -82,7 +82,10 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
     setActiveLocale(locale);
   };
 
-  const headerQuery = useGetHeader(mode === "edit" ? id : null, setValue);
+  const headerQuery = useGetHeader(
+    mode === "edit" ? (id as string) : null,
+    setValue
+  );
 
   const { mutateAsync: createHeader } = useMutation({
     mutationFn: async (values: HeaderFormValues) => {
@@ -162,8 +165,8 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
   return (
     <form onSubmit={onSubmit}>
       <FormShell
-        title={toUpperCase(rawT(`headers.${mode}Title`))}
-        subtitle={toUpperCase(rawT("headers.subtitle"))}
+        title={toUpperCase(rawT(`headers.form.${mode}Title`))}
+        subtitle={toUpperCase(rawT("headers.form.subtitle"))}
         headerActions={
           <Button
             variant="ghost"
@@ -188,9 +191,9 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
         <TwoColumnLayout
           left={
             <FormSection
-              title={toUpperCase(rawT("headers.contentTranslations"))}
+              title={toUpperCase(rawT("headers.form.contentTranslations"))}
               description={toUpperCase(
-                rawT("headers.contentTranslationsDescription")
+                rawT("headers.form.contentTranslationsDescription")
               )}
             >
               <LocaleTabSwitcher
@@ -207,35 +210,35 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
                 {activeLocale === "en" ? (
                   <>
                     <FieldGroup
-                      label={toUpperCase(rawT("headers.name"))}
+                      label={toUpperCase(rawT("headers.form.name"))}
                       required
                       value={formValues.translations.en.name}
                       onChange={(v) => setValue("translations.en.name", v)}
                       error={errors.translations?.en?.name?.message}
-                      placeholder={rawT("headers.namePlaceholder")}
+                      placeholder={rawT("headers.form.namePlaceholder")}
                     />
 
                     <FieldGroup
-                      label={toUpperCase(rawT("headers.position"))}
+                      label={toUpperCase(rawT("headers.form.position"))}
                       required
                       value={formValues.translations.en.position}
                       onChange={(v) => setValue("translations.en.position", v)}
                       error={errors.translations?.en?.position?.message}
-                      placeholder={rawT("headers.positionPlaceholder")}
+                      placeholder={rawT("headers.form.positionPlaceholder")}
                     />
 
                     <FieldGroup
-                      label={toUpperCase(rawT("headers.headline"))}
+                      label={toUpperCase(rawT("headers.form.headline"))}
                       required
                       value={formValues.translations.en.headline}
                       onChange={(v) => setValue("translations.en.headline", v)}
                       error={errors.translations?.en?.headline?.message}
-                      placeholder={rawT("headers.headlinePlaceholder")}
+                      placeholder={rawT("headers.form.headlinePlaceholder")}
                       className="md:col-span-2"
                     />
 
                     <FieldGroup
-                      label={toUpperCase(rawT("headers.description"))}
+                      label={toUpperCase(rawT("headers.form.description"))}
                       type="textarea"
                       required
                       value={formValues.translations.en.description}
@@ -243,7 +246,7 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
                         setValue("translations.en.description", v)
                       }
                       error={errors.translations?.en?.description?.message}
-                      placeholder={rawT("headers.descriptionPlaceholder")}
+                      placeholder={rawT("headers.form.descriptionPlaceholder")}
                       rows={5}
                       maxLength={500}
                       className="md:col-span-2"
@@ -252,35 +255,35 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
                 ) : (
                   <>
                     <FieldGroup
-                      label={toUpperCase(rawT("headers.name"))}
+                      label={toUpperCase(rawT("headers.form.name"))}
                       required
                       value={formValues.translations.ka.name}
                       onChange={(v) => setValue("translations.ka.name", v)}
                       error={errors.translations?.ka?.name?.message}
-                      placeholder={rawT("headers.namePlaceholder")}
+                      placeholder={rawT("headers.form.namePlaceholder")}
                     />
 
                     <FieldGroup
-                      label={toUpperCase(rawT("headers.position"))}
+                      label={toUpperCase(rawT("headers.form.position"))}
                       required
                       value={formValues.translations.ka.position}
                       onChange={(v) => setValue("translations.ka.position", v)}
                       error={errors.translations?.ka?.position?.message}
-                      placeholder={rawT("headers.positionPlaceholder")}
+                      placeholder={rawT("headers.form.positionPlaceholder")}
                     />
 
                     <FieldGroup
-                      label={toUpperCase(rawT("headers.headline"))}
+                      label={toUpperCase(rawT("headers.form.headline"))}
                       required
                       value={formValues.translations.ka.headline}
                       onChange={(v) => setValue("translations.ka.headline", v)}
                       error={errors.translations?.ka?.headline?.message}
-                      placeholder={rawT("headers.headlinePlaceholder")}
+                      placeholder={rawT("headers.form.headlinePlaceholder")}
                       className="md:col-span-2"
                     />
 
                     <FieldGroup
-                      label={toUpperCase(rawT("headers.description"))}
+                      label={toUpperCase(rawT("headers.form.description"))}
                       type="textarea"
                       required
                       value={formValues.translations.ka.description}
@@ -288,7 +291,7 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
                         setValue("translations.ka.description", v)
                       }
                       error={errors.translations?.ka?.description?.message}
-                      placeholder={rawT("headers.descriptionPlaceholder")}
+                      placeholder={rawT("headers.form.descriptionPlaceholder")}
                       rows={5}
                       maxLength={500}
                       className="md:col-span-2"
@@ -300,14 +303,16 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
           }
           right={
             <>
-              <FormSection title={toUpperCase(rawT("headers.settings"))}>
+              <FormSection title={toUpperCase(rawT("headers.form.settings"))}>
                 <StatusToggle
-                  label={toUpperCase(rawT("headers.status"))}
-                  description={toUpperCase(rawT("headers.statusDescription"))}
+                  label={toUpperCase(rawT("headers.form.status"))}
+                  description={toUpperCase(
+                    rawT("headers.form.statusDescription")
+                  )}
                   value={formValues.active || false}
                   onChange={(v) => setValue("active", v)}
-                  activeLabel={toUpperCase(rawT("headers.active"))}
-                  inactiveLabel={toUpperCase(rawT("headers.inactive"))}
+                  activeLabel={toUpperCase(rawT("headers.form.active"))}
+                  inactiveLabel={toUpperCase(rawT("headers.form.inactive"))}
                 />
 
                 {mode === "edit" && (
@@ -321,12 +326,14 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
                 )}
               </FormSection>
 
-              <FormSection title={toUpperCase(rawT("headers.logo"))}>
+              <FormSection title={toUpperCase(rawT("headers.form.logo"))}>
                 <MediaUploader
                   value={formValues.logo as BackendFile | null}
                   onChange={(v) => setValue("logo", v as BackendFile | null)}
-                  label={toUpperCase(rawT("headers.logoLabel"))}
-                  description={toUpperCase(rawT("headers.logoDescription"))}
+                  label={toUpperCase(rawT("headers.form.logoLabel"))}
+                  description={toUpperCase(
+                    rawT("headers.form.logoDescription")
+                  )}
                   maxSizeMB={5}
                   acceptedFormats={["PNG", "JPG", "SVG", "WEBP"]}
                   previewHeight="h-48"
@@ -356,7 +363,7 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
         onOpenChange={setShowDeleteDialog}
         onConfirm={deleteHeader}
         itemName={formValues.translations.en.name}
-        itemType={toUpperCase(rawT("headers.header"))}
+        itemType={toUpperCase(rawT("headers.form.header"))}
         isLoading={isSubmitting}
       />
     </form>

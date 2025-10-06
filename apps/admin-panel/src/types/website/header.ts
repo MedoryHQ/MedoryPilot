@@ -33,7 +33,12 @@ export interface HeaderTranslation {
 }
 
 export type HeaderFormValues = {
-  logo: File | null;
+  logo: {
+    id: string;
+    path: string;
+    createdAt: string;
+    updatedAt: string;
+  } | null;
   active: boolean | null;
   translations: {
     en: {
