@@ -51,6 +51,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
   const [uploadState, setUploadState] = useState<UploadState>(
     value ? "preview" : "empty"
   );
+
   const [error, setError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [fileList, setFileList] = useState<UploadedImage[]>([]);
@@ -62,6 +63,20 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
       setFileList(images);
     }
   }, [images]);
+
+  useEffect(() => {
+    if (multi) return;
+    if (value && value.path) {
+      setUploadState("preview");
+      setError(null);
+      setPreviewImage(value.path);
+    } else {
+      setUploadState("empty");
+      setPreviewImage("");
+      setError(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }, [value, multi]);
 
   const uploadFileToBackend = async (
     file: File

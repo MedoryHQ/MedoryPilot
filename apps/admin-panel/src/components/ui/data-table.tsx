@@ -185,7 +185,7 @@ export function DataTable<T>({
       <div className="space-y-4 md:hidden">
         {paginatedData.length === 0 ? (
           <Card className="border-border/50 shadow-sm">
-            <CardContent className="p-8">
+            <CardContent className="p-4 md:p-8">
               <div className="flex flex-col items-center gap-3 text-center">
                 <AlertCircle className="text-muted-foreground/50 h-12 w-12" />
                 <p className="text-muted-foreground text-lg">{emptyMessage}</p>

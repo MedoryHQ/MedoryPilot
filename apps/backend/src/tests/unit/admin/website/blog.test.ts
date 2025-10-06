@@ -170,7 +170,6 @@ describe("Admin Blog routes — /admin/blogs", () => {
 
       const res = await request(app).post("/admin/blogs").send(createPayload);
 
-      console.log(res.status, res.body, res.body.error, res.body.errors);
       expect(res).toHaveStatus(201);
       expect(res.body.data.slug).toBe("new-blog");
       expect(prisma.blog.create).toHaveBeenCalled();

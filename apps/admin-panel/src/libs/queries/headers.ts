@@ -1,11 +1,6 @@
-import {
-  HeaderFormValues,
-  HeaderResponse,
-  HeadersResponse
-} from "@/types/website";
+import { HeaderResponse, HeadersResponse } from "@/types/website";
 import instance from "../../api/axios";
 import { useQuery } from "react-query";
-import { UseFormSetValue } from "react-hook-form";
 
 export const useGetHeaders = (search?: URLSearchParams) => {
   return useQuery<HeadersResponse, Error>({
@@ -20,20 +15,17 @@ export const useGetHeaders = (search?: URLSearchParams) => {
   });
 };
 
-export const useGetHeader = (
-  id: string | null,
-  setValue: UseFormSetValue<HeaderFormValues>
-) => {
+export const useGetHeader = (id: string | null) => {
   return useQuery<HeaderResponse, Error>({
-    queryKey: ["headers"],
+    queryKey: ["header", id],
     queryFn: async (): Promise<HeaderResponse> => {
       const { data } = await instance.get<HeaderResponse>(`/header/${id}`);
       return data;
     },
     enabled: !!id,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    refetchInterval: false,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false
+    refetchInterval: false
   });
 };

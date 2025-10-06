@@ -74,7 +74,6 @@ const Headers = () => {
     {
       key: "translationsCount",
       label: toUpperCase(t("headers.translations")),
-      className: "text-center",
       render: (item) => (
         <Badge variant="secondary" className="px-3 py-1">
           {item.translations?.length}
@@ -84,7 +83,6 @@ const Headers = () => {
     {
       key: "active",
       label: toUpperCase(t("headers.status")),
-      className: "text-center",
       render: (item) => (
         <Badge
           variant={item.active ? "default" : "outline"}
@@ -209,7 +207,7 @@ const Headers = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center">
+      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center md:gap-6">
         <div>
           <h1 className="text-foreground mb-2 text-[20px] font-semibold md:text-3xl">
             {toUpperCase(t("headers.management"))}

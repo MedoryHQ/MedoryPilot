@@ -12,7 +12,7 @@ export const AuthWrapper: React.FC<{ children: React.ReactNode }> = ({
   return (
     <div className="flex min-h-screen w-full">
       <div className="bg-auth-form-bg flex flex-1 flex-col">
-        <div className="flex items-center justify-between p-8">
+        <div className="flex items-center justify-between p-4 md:p-8">
           <div className="flex items-center gap-3">
             <img src={Logo} alt="Medory" className="h-8 w-8 rounded-[4px]" />
             <span className="text-auth-text-primary font-semibold">

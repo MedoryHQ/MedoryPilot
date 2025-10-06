@@ -42,7 +42,10 @@ export const TranslationsPanel = <T extends string = string>({
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
         transition={{ duration: 0.2 }}
-        className={cn("grid grid-cols-1 gap-6 md:grid-cols-2", className)}
+        className={cn(
+          "grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6",
+          className
+        )}
       >
         {children ||
           fields.map((field) => (

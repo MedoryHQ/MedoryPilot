@@ -111,7 +111,6 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
       }
     };
 
-    // normalize logo to shape our schema accepts:
     const formattedLogo = logo
       ? {
           path: (logo as any).path ?? (logo as any).url ?? "",
@@ -120,7 +119,6 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
         }
       : null;
 
-    // reset the whole form (atomic) -> avoids race issues
     reset({
       logo: formattedLogo,
       active: !!active,
@@ -134,8 +132,8 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
     },
     onSuccess: () => {
       toast.success(
-        rawT("operation.successful"),
-        rawT("headers.createdSuccessfully")
+        rawT("toast.operation.successful"),
+        rawT("headers.form.createdSuccessfully")
       );
       navigate("/landing/headers");
     },
@@ -156,8 +154,8 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
     },
     onSuccess: () => {
       toast.success(
-        rawT("operation.successful"),
-        rawT("headers.updatedSuccessfully")
+        rawT("toast.operation.successful"),
+        rawT("headers.form.updatedSuccessfully")
       );
       navigate("/landing/headers");
     },
@@ -179,8 +177,8 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
     },
     onSuccess: () => {
       toast.success(
-        rawT("operation.successful"),
-        rawT("headers.deletedSuccessfully")
+        rawT("toast.operation.successful"),
+        rawT("headers.form.deletedSuccessfully")
       );
       navigate("/landing/headers");
     },
@@ -202,8 +200,6 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
       await editHeader(data);
     }
   });
-
-  console.log(formValues.logo);
 
   return (
     <form onSubmit={onSubmit}>
@@ -249,7 +245,7 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
                 errors={errorCounts}
               />
 
-              <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
                 {activeLocale === "en" ? (
                   <>
                     <FieldGroup
