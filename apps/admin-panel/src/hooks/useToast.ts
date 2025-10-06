@@ -198,7 +198,7 @@ const createToastHelpers = (t?: (key: string) => string) => ({
       variant: "destructive"
     }),
 
-  saved: (item: string, description?: string) =>
+  saved: (description?: string) =>
     toast({
       title: t ? t("toast.saved") : "Saved Successfully",
       description:
@@ -209,7 +209,7 @@ const createToastHelpers = (t?: (key: string) => string) => ({
       variant: "success"
     }),
 
-  failed: (action: string, description?: string) =>
+  failed: (description?: string) =>
     toast({
       title: t ? t("toast.failed") : "Operation Failed",
       description:

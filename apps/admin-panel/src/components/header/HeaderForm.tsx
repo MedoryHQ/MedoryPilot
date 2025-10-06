@@ -131,10 +131,7 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
       await axios.post("/header", values);
     },
     onSuccess: () => {
-      toast.success(
-        rawT("toast.operation.successful"),
-        rawT("headers.form.createdSuccessfully")
-      );
+      toast.added("header");
       navigate("/landing/headers");
     },
     onError: (error: any) => {
@@ -153,10 +150,7 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
       await axios.put(`/header/${id}`, values);
     },
     onSuccess: () => {
-      toast.success(
-        rawT("toast.operation.successful"),
-        rawT("headers.form.updatedSuccessfully")
-      );
+      toast.updated("header");
       navigate("/landing/headers");
     },
     onError: (error: any) => {
@@ -176,10 +170,7 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
       await axios.delete(`/header/${id}`);
     },
     onSuccess: () => {
-      toast.success(
-        rawT("toast.operation.successful"),
-        rawT("headers.form.deletedSuccessfully")
-      );
+      toast.deleted("header");
       navigate("/landing/headers");
     },
     onError: (error: any) => {
@@ -210,10 +201,11 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
           <Button
             variant="ghost"
             size="lg"
+            className="group"
             onClick={() => navigate("/landing/headers")}
             type="button"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="h-5 w-5 transition-all duration-200 group-hover:text-white" />
           </Button>
         }
         actionBar={

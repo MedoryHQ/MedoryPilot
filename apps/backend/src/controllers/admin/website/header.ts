@@ -176,6 +176,15 @@ export const createHeader = async (
       event: "header_create_attempt",
     });
 
+    if (active) {
+      const activeHeader = await prisma.header.count({
+        where: { active: true },
+      });
+      if (activeHeader) {
+        return sendError(req, res, 400, "onlyOneActiveHeaderAllowed");
+      }
+    }
+
     const translationsToCreate = Prisma.validator<
       Prisma.HeaderTranslationCreateWithoutHeaderInput[]
     >()(createTranslations(translations) as any);
@@ -234,6 +243,15 @@ export const updateHeader = async (
       path: req.path,
       event: "header_update_attempt",
     });
+
+    if (active) {
+      const activeHeader = await prisma.header.count({
+        where: { active: true },
+      });
+      if (activeHeader) {
+        return sendError(req, res, 400, "onlyOneActiveHeaderAllowed");
+      }
+    }
 
     const translationsToCreate = Prisma.validator<
       Prisma.HeaderTranslationCreateWithoutHeaderInput[]

@@ -206,7 +206,7 @@ export const OtpForm = ({
             >
               {toUpperCase(
                 resendDisabled
-                  ? `${t("auth.otpForm.resendAvialible")} ${Math.floor(
+                  ? `${toUpperCase(t("auth.otpForm.resendAvialible"))} ${Math.floor(
                       timeLeft / 60
                     )}:${String(timeLeft % 60).padStart(2, "0")} ${t(
                       "auth.otpForm.inMin"

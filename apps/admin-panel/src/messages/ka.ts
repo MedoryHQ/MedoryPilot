@@ -127,7 +127,7 @@ export const ka = {
       tariffs: "ტარიფები",
       pages: "გვერდის კომპონენტები",
       contact: "საკონტაქტო ინფორმაცია",
-      faqs: "FAQs"
+      faqs: "ხშირად დასმული კითხვები"
     },
     sidebar: {
       doctor: "DR",
@@ -200,8 +200,8 @@ export const ka = {
       permissionDenied: "წვდომა უარყოფილია. გთხოვთ დაუკავშირდეთ ადმინისტრატორს."
     },
     overview: {
-      headers: "ჰედერები",
-      headersDescription: "ვებსაიტის ჰედერის და ნავიგაციის კონფიგურაცია",
+      headers: "Header-ები",
+      headersDescription: "ვებსაიტის Header-ის და ნავიგაციის კონფიგურაცია",
       introduce: "შესავალი",
       introduceDescription: "ვებსაიტის შესავალი: სათაური და აღწერა",
       news: "სიახლეები",
@@ -229,6 +229,7 @@ export const ka = {
       overviewDescription:
         "მართე შენი საიტის კონტენტი, გვერდები და კომპონენტები",
       active: "აქტიური",
+      inactive: "არააქტიური",
       publishedItems: "გამოქვეყნებული ნივთები"
     },
     headers: {

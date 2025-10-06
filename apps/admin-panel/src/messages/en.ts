@@ -226,6 +226,7 @@ export const en = {
       overviewTitle: "Website Management",
       overviewDescription: "Manage your website content, pages, and components",
       active: "Active",
+      inactive: "Inactive",
       publishedItems: "Published Items"
     },
     headers: {
