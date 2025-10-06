@@ -1,10 +1,9 @@
 import { z } from "zod";
 
 const BackendFileSchema = z.object({
-  id: z.string(),
+  name: z.string(),
   path: z.string(),
-  createdAt: z.string(),
-  updatedAt: z.string()
+  size: z.number()
 });
 
 export const headerSchema = (

@@ -34,10 +34,9 @@ export interface HeaderTranslation {
 
 export type HeaderFormValues = {
   logo: {
-    id: string;
+    name: string;
     path: string;
-    createdAt: string;
-    updatedAt: string;
+    size: number;
   } | null;
   active: boolean | null;
   translations: {
