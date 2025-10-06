@@ -2,6 +2,7 @@ import React from "react";
 import { Calendar, User, Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
+import dayjs from "dayjs";
 
 interface MetadataDisplayProps {
   createdAt?: string;
@@ -31,7 +32,9 @@ export const MetadataDisplay: React.FC<MetadataDisplayProps> = ({
                 {toUpperCase(t("ui.created"))}
               </span>
             </div>
-            <span className="text-right text-sm font-medium">{createdAt}</span>
+            <span className="text-right text-sm font-medium">
+              {dayjs(createdAt).format("MMMM D, YYYY HH:mm")}
+            </span>
           </div>
         )}
 
@@ -43,7 +46,9 @@ export const MetadataDisplay: React.FC<MetadataDisplayProps> = ({
                 {toUpperCase(t("ui.updated"))}
               </span>
             </div>
-            <span className="text-right text-sm font-medium">{updatedAt}</span>
+            <span className="text-right text-sm font-medium">
+              {dayjs(updatedAt).format("MMMM D, YYYY HH:mm")}
+            </span>
           </div>
         )}
 
@@ -55,7 +60,9 @@ export const MetadataDisplay: React.FC<MetadataDisplayProps> = ({
                 {toUpperCase(t("ui.author"))}
               </span>
             </div>
-            <span className="text-right text-sm font-medium">{createdBy}</span>
+            <span className="text-right text-sm font-medium">
+              {dayjs(createdBy).format("MMMM D, YYYY")}
+            </span>
           </div>
         )}
       </div>
