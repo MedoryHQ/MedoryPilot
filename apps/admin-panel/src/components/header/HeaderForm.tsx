@@ -336,8 +336,7 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
                   )}
                   maxSizeMB={5}
                   acceptedFormats={["PNG", "JPG", "SVG", "WEBP"]}
-                  previewHeight="h-48"
-                  showAltInput
+                  previewHeight="h-[248px]"
                 />
               </FormSection>
 

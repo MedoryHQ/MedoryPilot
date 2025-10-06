@@ -13,42 +13,42 @@ export const headerSchema = (
 ) =>
   z.object({
     logo: BackendFileSchema.nullable().refine((file) => file !== null, {
-      message: t("header.errors.logoRequired", lang)
+      message: t("headers.errors.logoRequired", lang)
     }),
     active: z
       .boolean()
       .nullable()
       .refine((val) => val !== null, {
-        message: t("header.errors.activeRequired", lang)
+        message: t("headers.errors.activeRequired", lang)
       }),
     translations: z.object({
       en: z.object({
         name: z
           .string()
-          .min(1, { message: t("header.errors.nameRequired", "en") }),
+          .min(1, { message: t("headers.errors.nameRequired", "en") }),
         position: z
           .string()
-          .min(1, { message: t("header.errors.positionRequired", "en") }),
+          .min(1, { message: t("headers.errors.positionRequired", "en") }),
         headline: z
           .string()
-          .min(1, { message: t("header.errors.headlineRequired", "en") }),
+          .min(1, { message: t("headers.errors.headlineRequired", "en") }),
         description: z
           .string()
-          .min(1, { message: t("header.errors.descriptionRequired", "en") })
+          .min(1, { message: t("headers.errors.descriptionRequired", "en") })
       }),
       ka: z.object({
         name: z
           .string()
-          .min(1, { message: t("header.errors.nameRequired", "ka") }),
+          .min(1, { message: t("headers.errors.nameRequired", "ka") }),
         position: z
           .string()
-          .min(1, { message: t("header.errors.positionRequired", "ka") }),
+          .min(1, { message: t("headers.errors.positionRequired", "ka") }),
         headline: z
           .string()
-          .min(1, { message: t("header.errors.headlineRequired", "ka") }),
+          .min(1, { message: t("headers.errors.headlineRequired", "ka") }),
         description: z
           .string()
-          .min(1, { message: t("header.errors.descriptionRequired", "ka") })
+          .min(1, { message: t("headers.errors.descriptionRequired", "ka") })
       })
     })
   });
