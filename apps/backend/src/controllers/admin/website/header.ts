@@ -283,7 +283,7 @@ export const updateHeader = async (
           : findHeader.logo
           ? { delete: {} }
           : undefined,
-        ...(active ? { active: true } : {}),
+        ...(typeof active === "boolean" ? { active } : {}),
       },
     });
 

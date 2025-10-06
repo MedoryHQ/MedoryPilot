@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button, Badge, Input, Label } from "../ui";
+import { Button, Badge } from "../ui";
 import { ImageIcon, Upload, X, Loader2, AlertCircle, Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
@@ -12,15 +12,11 @@ export interface MediaUploaderProps {
   onChange: (
     value: { name: string; path: string; size: number } | null
   ) => void;
-  onAltTextChange?: (alt: string) => void;
-  altText?: string;
   label?: string;
   description?: string;
   maxSizeMB?: number;
   acceptedFormats?: string[];
   previewHeight?: string;
-  showAltInput?: boolean;
-  cropAspectRatio?: number;
   disabled?: boolean;
   className?: string;
   multi?: boolean;
@@ -37,15 +33,11 @@ type UploadedImage = { name: string; path: string; size: number };
 export const MediaUploader: React.FC<MediaUploaderProps> = ({
   value,
   onChange,
-  onAltTextChange,
-  altText = "",
   label,
   description,
   maxSizeMB = 5,
   acceptedFormats = ["PNG", "JPG", "SVG", "WEBP"],
   previewHeight = "h-64",
-  showAltInput = true,
-  cropAspectRatio,
   disabled = false,
   className = "",
   multi = false,
@@ -91,7 +83,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
           headers: { "Content-Type": "multipart/form-data" }
         }
       );
-      const data = res.data.data;
+      const data = res.data.file;
       setUploadState("preview");
       return { name: data.filename, path: data.path, size: data.size };
     } catch (err) {
@@ -181,7 +173,6 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
 
   const removeImage = () => {
     onChange(null);
-    if (onAltTextChange) onAltTextChange("");
     setUploadState("empty");
     setError(null);
     if (fileInputRef.current) {
@@ -258,20 +249,9 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
                   >
                     <img
                       src={getFileUrl(value.path)}
-                      alt={altText || toUpperCase(t("mediaUploader.preview"))}
+                      alt={value.name}
                       className="h-full w-full object-contain"
                     />
-                    {cropAspectRatio && (
-                      <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/5">
-                        <div
-                          className="border-2 border-dashed border-white/50"
-                          style={{
-                            width: "80%",
-                            aspectRatio: cropAspectRatio
-                          }}
-                        />
-                      </div>
-                    )}
                   </div>
                   <div className="absolute top-3 right-3 flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
                     <Button
@@ -320,7 +300,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
                 >
                   <AlertCircle className="text-destructive h-12 w-12" />
                   <p className="text-destructive text-sm font-medium">
-                    {error}
+                    {toUpperCase(t("mediaUploader.uploadError"))}
                   </p>
                   <p className="text-muted-foreground text-xs">
                     {toUpperCase(t("mediaUploader.tryAgain"))}
@@ -342,7 +322,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
                       : "hover:border-primary hover:bg-primary/5"
                   } ${isDragging ? "border-primary bg-primary/10 scale-105" : "border-border"} ${previewHeight} `}
                 >
-                  <div className="bg-primary/10 flex h-16 w-16 items-center justify-center rounded-full">
+                  <div className="bg-primary/10 flex items-center justify-center rounded-full p-4">
                     {isDragging ? (
                       <Upload className="text-primary h-8 w-8 animate-bounce" />
                     ) : (
@@ -422,36 +402,12 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
             >
               <img
                 src={getFileUrl(previewImage)}
-                alt={toUpperCase(t("mediaUploader.preview"))}
+                alt={previewImage}
                 className="max-h-full max-w-full rounded-xl shadow-lg"
               />
             </div>
           )}
         </>
-      )}
-
-      {showAltInput && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="space-y-2"
-        >
-          <Label htmlFor="alt-text" className="text-sm font-medium">
-            {toUpperCase(t("mediaUploader.altText"))}
-          </Label>
-          <Input
-            id="alt-text"
-            type="text"
-            placeholder={toUpperCase(t("mediaUploader.altTextPlaceholder"))}
-            value={altText}
-            onChange={(e) => onAltTextChange?.(e.target.value)}
-            disabled={disabled || (!value && !multi)}
-            className="h-11"
-          />
-          <p className="text-muted-foreground text-xs">
-            {toUpperCase(t("mediaUploader.altTextDescription"))}
-          </p>
-        </motion.div>
       )}
     </div>
   );

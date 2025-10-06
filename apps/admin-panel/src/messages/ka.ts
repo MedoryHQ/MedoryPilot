@@ -90,13 +90,7 @@ export const ka = {
         otpRequired: "OTP კოდი უნდა შედგებოდეს 4 ციფრისგან",
         invalidOTP: "არასწორი OTP კოდი, გთხოვთ სცადეთ თავიდან",
         passwordPattern: "პაროლი უნდა შეიცავდეს დიდ ასოს, პატარა ასოს და ციფრს",
-        passwordMismatch: "პაროლი არ დაემთხვა",
-        logoRequired: "ლოგო აუცილებელია",
-        activeRequired: "აქტიურობის სტატუსი აუცილებელია",
-        nameRequired: "სახელი აუცილებელია",
-        positionRequired: "პოზიცია აუცილებელია",
-        headlineRequired: "სათაური აუცილებელია",
-        descriptionRequired: "აღწერა აუცილებელია"
+        passwordMismatch: "პაროლი არ დაემთხვა"
       }
     },
     menu: {
@@ -285,6 +279,14 @@ export const ka = {
         createdSuccessfully: "Header წარმატებით შეიქმნა",
         updatedSuccessfully: "Header წარმატებით განახლდა",
         deletedSuccessfully: "Header წარმატებით წაიშალა"
+      },
+      errors: {
+        logoRequired: "ლოგო აუცილებელია",
+        activeRequired: "აქტიურობის სტატუსი აუცილებელია",
+        nameRequired: "სახელი აუცილებელია",
+        positionRequired: "პოზიცია აუცილებელია",
+        headlineRequired: "სათაური აუცილებელია",
+        descriptionRequired: "აღწერა აუცილებელია"
       }
     },
     dataTable: {
@@ -346,7 +348,8 @@ export const ka = {
       readError: "ფაილის წაკითხვა ვერ მოხერხდა",
       altText: "ალტ ტექსტი (ხელმისაწვდომობისთვის)",
       altTextPlaceholder: "აღწერეთ სურათი ეკრანის მკითხველებისთვის",
-      altTextDescription: "მიუთითეთ სურათის მოკლე აღწერა ხელმისაწვდომობისთვის"
+      altTextDescription: "მიუთითეთ სურათის მოკლე აღწერა ხელმისაწვდომობისთვის",
+      uploadError: "სურათის ატვირთვა ვერ მოხერხდა. გთხოვთ სცადეთ თავიდან."
     },
     introduce: {
       errors: {

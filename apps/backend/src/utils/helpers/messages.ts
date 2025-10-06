@@ -104,6 +104,10 @@ export const errorMessages = {
     en: "Footer not found",
     ka: "Footer ვერ მოიძებნა",
   },
+  invalidImage: {
+    en: "Invalid Image",
+    ka: "არასწორი სურათი",
+  },
 
   // Messages
   smsVerificationSent: {
@@ -181,6 +185,10 @@ export const errorMessages = {
   footerAlreadyExists: {
     en: "Footer already exists",
     ka: "Footer უკვე არსებობს",
+  },
+  imageUploaded: {
+    en: "Image uploaded successfully",
+    ka: "სურათი წარმატებით აიტვირთა",
   },
 
   // Validation errors

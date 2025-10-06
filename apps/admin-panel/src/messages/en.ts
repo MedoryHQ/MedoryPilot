@@ -89,13 +89,7 @@ export const en = {
         invalidOTP: "Invalid OTP. Please try again.",
         passwordPattern:
           "Password must contain uppercase, lowercase, and number",
-        passwordMismatch: "Passwords do not match",
-        logoRequired: "Logo is required",
-        activeRequired: "Active status is required",
-        nameRequired: "Name is required",
-        positionRequired: "Position is required",
-        headlineRequired: "Headline is required",
-        descriptionRequired: "Description is required"
+        passwordMismatch: "Passwords do not match"
       }
     },
     menu: {
@@ -282,6 +276,14 @@ export const en = {
         createdSuccessfully: "Header created successfully",
         updatedSuccessfully: "Header updated successfully",
         deletedSuccessfully: "Header deleted successfully"
+      },
+      errors: {
+        logoRequired: "Logo is required",
+        activeRequired: "Active status is required",
+        nameRequired: "Name is required",
+        positionRequired: "Position is required",
+        headlineRequired: "Headline is required",
+        descriptionRequired: "Description is required"
       }
     },
     dataTable: {
@@ -344,7 +346,8 @@ export const en = {
       altText: "Alt Text (for accessibility)",
       altTextPlaceholder: "Describe the image for screen readers",
       altTextDescription:
-        "Provide a brief description of the image for accessibility"
+        "Provide a brief description of the image for accessibility",
+      uploadError: "Image upload failed. Please try again."
     },
     introduce: {
       errors: {
