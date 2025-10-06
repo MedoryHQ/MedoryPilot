@@ -256,7 +256,7 @@ export const LocaleTabSwitcher: React.FC<LocaleSwitcherProps> = ({
         onClick={() => !disabled && onChange(locale.code)}
         disabled={disabled}
         className={cn(
-          "relative flex items-center gap-2 rounded-md px-6 py-2.5 font-medium transition-all",
+          "relative flex w-full items-center gap-2 rounded-md px-6 py-2.5 font-medium transition-all",
           active
             ? "bg-background text-foreground shadow-sm"
             : "text-muted-foreground hover:text-foreground hover:bg-background/50",

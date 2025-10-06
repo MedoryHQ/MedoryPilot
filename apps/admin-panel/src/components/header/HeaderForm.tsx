@@ -89,7 +89,7 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
 
   const { mutateAsync: createHeader } = useMutation({
     mutationFn: async (values: HeaderFormValues) => {
-      await axios.post("/headers", values);
+      await axios.post("/header", values);
     },
     onSuccess: () => {
       toast.success(
@@ -111,7 +111,7 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
 
   const { mutateAsync: editHeader } = useMutation({
     mutationFn: async (values: HeaderFormValues) => {
-      await axios.put(`/headers/${id}`, values);
+      await axios.put(`/header/${id}`, values);
     },
     onSuccess: () => {
       toast.success(
@@ -134,7 +134,7 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
   const { mutateAsync: deleteHeader } = useMutation({
     mutationFn: async () => {
       if (!id) return;
-      await axios.delete(`/headers/${id}`);
+      await axios.delete(`/header/${id}`);
     },
     onSuccess: () => {
       toast.success(
@@ -155,6 +155,7 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
   });
 
   const onSubmit = handleSubmit(async (data) => {
+    console.log("Submitting data:", data);
     if (mode === "create") {
       await createHeader(data);
     } else if (mode === "edit") {
@@ -185,6 +186,7 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
             onDelete={
               mode === "edit" ? () => setShowDeleteDialog(true) : undefined
             }
+            onSave={onSubmit}
           />
         }
       >

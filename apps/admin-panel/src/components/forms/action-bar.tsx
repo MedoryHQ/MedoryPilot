@@ -70,12 +70,12 @@ export const ActionBar: React.FC<ActionBarProps> = ({
         )}
 
         <div className="flex flex-col gap-3">
-          {!isReadOnly && onSave && (
+          {!isReadOnly && isCreate && (
             <Button
               type="submit"
+              onClick={onSave}
               size="lg"
               disabled={isSubmitting || isSaveDisabled}
-              onClick={onSave}
               className="w-full shadow-md transition-all hover:shadow-lg"
             >
               {isSubmitting ? (
