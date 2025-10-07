@@ -278,6 +278,15 @@ export const en = {
         updatedSuccessfully: "Header updated successfully",
         deletedSuccessfully: "Header deleted successfully"
       },
+      filters: {
+        status: "Status",
+        all: "All",
+        active: "Active",
+        inactive: "Inactive",
+        clearAll: "Clear All",
+        hasImage: "Has Image",
+        noImage: "No Image"
+      },
       errors: {
         logoRequired: "Logo is required",
         activeRequired: "Active status is required",
@@ -294,7 +303,14 @@ export const en = {
       previous: "Previous",
       next: "Next",
       page: "Page",
-      of: "of"
+      of: "of",
+      search: "Search...",
+      filters: "Filters",
+      clearFilters: "Clear filters",
+      clearAll: "Clear all",
+      all: "All",
+      noItemsFound: "No items found",
+      pages: "Page {{page}} of {{totalPages}}"
     },
     ui: {
       metadata: "Metadata",
