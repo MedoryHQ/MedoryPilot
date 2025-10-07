@@ -31,13 +31,13 @@ export const FormShell: React.FC<FormShellProps> = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className={cn("mx-auto max-w-7xl space-y-8", className)}
+      className={cn("mx-auto space-y-8", className)}
     >
-      <div className="flex flex-col justify-between gap-6 md:flex-row md:items-start">
+      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start md:gap-6">
         <div className="flex-1">
           <div className="mb-2 flex items-center gap-4">
             {headerActions}
-            <h1 className="text-foreground text-3xl font-semibold">
+            <h1 className="text-foreground text-[20px] font-semibold md:text-3xl">
               {toUpperCase(t(title))}
             </h1>
           </div>
@@ -49,7 +49,7 @@ export const FormShell: React.FC<FormShellProps> = ({
         </div>
       </div>
       {children}
-      <div className="bg-background/95 border-border sticky bottom-0 z-10 -mx-4 border-t px-4 py-4 backdrop-blur-sm lg:hidden">
+      <div className="bg-background/95 border-border sticky bottom-[-78px] z-10 -mx-4 border-t px-4 py-4 backdrop-blur-sm lg:hidden">
         {actionBar}
       </div>
     </motion.div>
@@ -78,7 +78,7 @@ export const FormSection: React.FC<FormSectionProps> = ({
       className={cn("border-border/50 overflow-hidden shadow-sm", className)}
     >
       {(title || description) && (
-        <div className="border-border/50 bg-muted/20 border-b px-8 py-5">
+        <div className="border-border/50 bg-muted/20 border-b px-5 py-3 md:px-8 md:py-5">
           {title && (
             <h3 className="mb-1 text-xl font-semibold">
               {toUpperCase(t(title))}
@@ -91,7 +91,7 @@ export const FormSection: React.FC<FormSectionProps> = ({
           )}
         </div>
       )}
-      <div className={noPadding ? "" : "p-8"}>{children}</div>
+      <div className={noPadding ? "" : "p-4 md:p-8"}>{children}</div>
     </Card>
   );
 };
@@ -108,7 +108,7 @@ export const TwoColumnLayout: React.FC<TwoColumnLayoutProps> = ({
   className = ""
 }) => {
   return (
-    <div className={cn("grid grid-cols-1 gap-8 lg:grid-cols-3", className)}>
+    <div className={cn("grid grid-cols-1 gap-8 xl:grid-cols-3", className)}>
       <div className="space-y-8 lg:col-span-2">{left}</div>
       <div className="space-y-6">{right}</div>
     </div>

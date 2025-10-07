@@ -93,7 +93,7 @@ export const StatsCard: React.FC<StatsCardProps> = ({
             >
               <Card
                 onClick={() => navigate(`/landing/${stat.key}`)}
-                className="stats-card-hover border-border/50 bg-card/80 w-[140px] min-w-[140px] cursor-pointer border backdrop-blur-sm md:w-[260px] md:min-w-[260px]"
+                className="stats-card-hover border-border/50 bg-card/80 w-[170px] min-w-[170px] cursor-pointer border backdrop-blur-sm md:w-[260px] md:min-w-[260px]"
               >
                 <CardContent className="p-4 !pb-4 md:p-6 md:!pb-6">
                   <div className="space-y-4">
@@ -104,10 +104,12 @@ export const StatsCard: React.FC<StatsCardProps> = ({
                         </div>
                       </div>
                       <Badge
-                        variant="default"
+                        variant={count ? "default" : "secondary"}
                         className="rounded-full px-2 py-1 text-xs font-medium"
                       >
-                        {toUpperCase(t("overview.active"))}
+                        {toUpperCase(
+                          t(count ? "overview.active" : "overview.inactive")
+                        )}
                       </Badge>
                     </div>
 

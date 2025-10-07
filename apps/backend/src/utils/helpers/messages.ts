@@ -108,6 +108,10 @@ export const errorMessages = {
     en: "Invalid Image",
     ka: "არასწორი სურათი",
   },
+  onlyOneActiveHeaderAllowed: {
+    en: "Only one active header is allowed",
+    ka: "მხოლოდ ერთი აქტიური header არის დაშვებული",
+  },
 
   // Messages
   smsVerificationSent: {

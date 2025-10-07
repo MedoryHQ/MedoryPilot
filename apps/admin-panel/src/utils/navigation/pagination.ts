@@ -2,20 +2,10 @@ import { TableProps } from "antd";
 import { useNavigate } from "react-router-dom";
 import { URLSearchParams } from "url";
 
-interface PaginationFields {
-  page: number;
-  pageSize: number;
-  orderBy: string;
-  order: string;
-  search: string;
-  filledSearchParams: URLSearchParams;
-  filters: Record<string, string[] | null>;
-}
-
 export const getPaginationFields = (
   searchParams: URLSearchParams,
   extendedParams?: string | string[]
-): PaginationFields => {
+) => {
   const getParam = (key: string, defaultValue: string) =>
     searchParams.get(key) || defaultValue;
   const getNumericParam = (key: string, defaultValue: number) =>
@@ -26,16 +16,30 @@ export const getPaginationFields = (
   const orderBy = getParam("orderBy", "createdAt");
   const order = getParam("order", "desc");
   const search = getParam("search", "");
-  const filters = JSON.parse(getParam("filters", "{}"));
 
-  const filledSearchParams = new URLSearchParams({
-    page: page.toString(),
-    pageSize: pageSize.toString(),
-    orderBy,
-    order,
-    search,
-    filters: JSON.stringify(filters)
-  });
+  const rawFilters = searchParams.get("filters");
+  let filtersObj: Record<string, any> = {};
+  if (rawFilters) {
+    try {
+      filtersObj = JSON.parse(rawFilters);
+    } catch {
+      try {
+        filtersObj = JSON.parse(decodeURIComponent(rawFilters));
+      } catch {
+        filtersObj = {};
+      }
+    }
+  }
+
+  const filledSearchParams = new URLSearchParams();
+  filledSearchParams.set("page", page.toString());
+  filledSearchParams.set("pageSize", pageSize.toString());
+  if (orderBy) filledSearchParams.set("orderBy", orderBy);
+  if (order) filledSearchParams.set("order", order);
+  if (search) filledSearchParams.set("search", search);
+  if (rawFilters && Object.keys(filtersObj).length > 0) {
+    filledSearchParams.set("filters", JSON.stringify(filtersObj));
+  }
 
   if (typeof extendedParams === "string") {
     const value = getParam(extendedParams, "");
@@ -58,7 +62,7 @@ export const getPaginationFields = (
     order,
     search,
     filledSearchParams,
-    filters
+    filters: filtersObj
   };
 };
 
@@ -87,18 +91,50 @@ export const getPaginationProps = (
   }
 });
 
-export const updateQueryParams = (
-  pagination: { current?: number; pageSize?: number },
-  filters: any,
-  currentSearch: string,
-  navigate: ReturnType<typeof useNavigate>
-) => {
-  const queryParams = new URLSearchParams({
-    ...(currentSearch && { search: currentSearch }),
-    ...(pagination.current && { page: pagination.current.toString() }),
-    ...(pagination.pageSize && { pageSize: pagination.pageSize.toString() }),
-    ...(typeof filters === "string" && { filters })
-  });
+export const buildQueryString = (opts: {
+  page?: number;
+  pageSize?: number;
+  search?: string;
+  orderBy?: string;
+  order?: "asc" | "desc" | string | null;
+  filters?: Record<string, any> | string | null;
+}) => {
+  const params = new URLSearchParams();
 
-  navigate(`?${queryParams.toString()}`);
+  if (opts.search && opts.search !== "") params.set("search", opts.search);
+  if (opts.page && opts.page > 1) params.set("page", String(opts.page));
+  if (opts.pageSize && opts.pageSize > 0)
+    params.set("pageSize", String(opts.pageSize));
+  if (opts.orderBy) params.set("orderBy", opts.orderBy);
+  if (opts.order) params.set("order", String(opts.order));
+
+  if (opts.filters && typeof opts.filters === "object") {
+    if (Object.keys(opts.filters).length > 0) {
+      params.set("filters", JSON.stringify(opts.filters));
+    }
+  } else if (opts.filters && typeof opts.filters === "string") {
+    try {
+      JSON.parse(opts.filters);
+      params.set("filters", opts.filters);
+    } catch {
+      //
+    }
+  }
+
+  return params.toString();
+};
+
+export const updateQueryParamsAndNavigate = (
+  navigate: ReturnType<typeof useNavigate>,
+  opts: {
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    orderBy?: string;
+    order?: "asc" | "desc" | string | null;
+    filters?: Record<string, any> | string | null;
+  }
+) => {
+  const qs = buildQueryString(opts);
+  navigate(qs ? `?${qs}` : ".");
 };

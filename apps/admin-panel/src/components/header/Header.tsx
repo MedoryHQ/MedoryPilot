@@ -11,12 +11,15 @@ export const Header: React.FC = () => {
   const currentPath = location.pathname.split("/");
   const { t } = useTranslation();
   const [searchFocused, setSearchFocused] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const { collapsed, toggleCollapsed } = useSidebarStore();
+  console.log(currentPath.length);
+  console.log(currentPath);
+  const name = currentPath.length > 2 ? currentPath[2] : currentPath[1];
 
   useEffect(() => {
     const handleResize = () => {
-      const mobile = window.innerWidth < 768;
+      const mobile = window.innerWidth < 1024;
       setIsMobile(mobile);
 
       if (mobile && !collapsed) {
@@ -67,13 +70,8 @@ export const Header: React.FC = () => {
               className="flex min-w-0 flex-1 items-center gap-3"
             >
               <div>
-                <h1 className="text-foreground font-semibold">
-                  {toUpperCase(
-                    t(
-                      `menu.${currentPath[currentPath.length - 1]}`,
-                      t("menu.notFound")
-                    )
-                  )}
+                <h1 className="text-foreground line-clamp-1 text-[14px] font-semibold md:text-[16px]">
+                  {toUpperCase(t(`menu.${name}`, t("menu.notFound")))}
                 </h1>
                 <div className="text-muted-foreground text-xs">
                   {toUpperCase(t("global.adminPannel"))}

@@ -69,7 +69,7 @@ const Overview: React.FC = () => {
           </CardTitle>
         </CardHeader>
 
-        <CardContent>
+        <CardContent className="pb-6">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {isFetching
               ? Array.from({ length: 12 }).map((_, i) => (

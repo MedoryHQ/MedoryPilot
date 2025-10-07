@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "../ui";
 import { LogOut } from "lucide-react";
 import { useAuthStore } from "@/store";
+import { toUpperCase } from "@/utils";
 
 export const MobileNavigationFooter: React.FC = () => {
   const { t } = useTranslation();
@@ -14,7 +15,9 @@ export const MobileNavigationFooter: React.FC = () => {
         onClick={() => logout()}
       >
         <LogOut className="h-5 w-5" />
-        <span className="font-medium">{t("sidebar.logout", "Logout")}</span>
+        <span className="font-medium">
+          {toUpperCase(t("sidebar.logout", "Logout"))}
+        </span>
       </Button>
     </div>
   );

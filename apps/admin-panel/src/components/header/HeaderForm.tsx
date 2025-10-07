@@ -111,7 +111,6 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
       }
     };
 
-    // normalize logo to shape our schema accepts:
     const formattedLogo = logo
       ? {
           path: (logo as any).path ?? (logo as any).url ?? "",
@@ -120,7 +119,6 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
         }
       : null;
 
-    // reset the whole form (atomic) -> avoids race issues
     reset({
       logo: formattedLogo,
       active: !!active,
@@ -133,10 +131,7 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
       await axios.post("/header", values);
     },
     onSuccess: () => {
-      toast.success(
-        rawT("operation.successful"),
-        rawT("headers.createdSuccessfully")
-      );
+      toast.added("header");
       navigate("/landing/headers");
     },
     onError: (error: any) => {
@@ -155,10 +150,7 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
       await axios.put(`/header/${id}`, values);
     },
     onSuccess: () => {
-      toast.success(
-        rawT("operation.successful"),
-        rawT("headers.updatedSuccessfully")
-      );
+      toast.updated("header");
       navigate("/landing/headers");
     },
     onError: (error: any) => {
@@ -178,10 +170,7 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
       await axios.delete(`/header/${id}`);
     },
     onSuccess: () => {
-      toast.success(
-        rawT("operation.successful"),
-        rawT("headers.deletedSuccessfully")
-      );
+      toast.deleted("header");
       navigate("/landing/headers");
     },
     onError: (error: any) => {
@@ -203,8 +192,6 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
     }
   });
 
-  console.log(formValues.logo);
-
   return (
     <form onSubmit={onSubmit}>
       <FormShell
@@ -214,10 +201,11 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
           <Button
             variant="ghost"
             size="lg"
+            className="group"
             onClick={() => navigate("/landing/headers")}
             type="button"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="h-5 w-5 transition-all duration-200 group-hover:text-white" />
           </Button>
         }
         actionBar={
@@ -249,7 +237,7 @@ export const HeaderFormActions: React.FC<FormActionsProps> = ({
                 errors={errorCounts}
               />
 
-              <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
                 {activeLocale === "en" ? (
                   <>
                     <FieldGroup

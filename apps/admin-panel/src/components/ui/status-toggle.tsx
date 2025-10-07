@@ -27,7 +27,7 @@ export function StatusToggle({
   return (
     <div
       className={cn(
-        "border-border bg-muted/5 flex items-center justify-between rounded-xl border p-6",
+        "border-border bg-muted/5 flex items-center justify-between gap-2 rounded-xl border p-6",
         className
       )}
     >

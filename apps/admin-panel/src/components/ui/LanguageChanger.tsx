@@ -132,7 +132,9 @@ export const MobileLanguageChanger: React.FC<LanguageChangerProps> = ({
     >
       <div className="flex items-center gap-3">
         <Languages className="h-5 w-5" />
-        <span className="font-medium">{t("global.language", "Language")}</span>
+        <span className="font-medium">
+          {toUpperCase(t("global.language", "Language"))}
+        </span>
       </div>
       <Select value={i18n.language} onValueChange={onLanguageChange}>
         <SelectTrigger className="h-8 w-24 border-0 bg-transparent">

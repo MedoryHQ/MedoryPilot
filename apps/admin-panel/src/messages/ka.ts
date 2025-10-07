@@ -127,7 +127,7 @@ export const ka = {
       tariffs: "ტარიფები",
       pages: "გვერდის კომპონენტები",
       contact: "საკონტაქტო ინფორმაცია",
-      faqs: "FAQs"
+      faqs: "ხშირად დასმული კითხვები"
     },
     sidebar: {
       doctor: "DR",
@@ -200,8 +200,8 @@ export const ka = {
       permissionDenied: "წვდომა უარყოფილია. გთხოვთ დაუკავშირდეთ ადმინისტრატორს."
     },
     overview: {
-      headers: "ჰედერები",
-      headersDescription: "ვებსაიტის ჰედერის და ნავიგაციის კონფიგურაცია",
+      headers: "Header-ები",
+      headersDescription: "ვებსაიტის Header-ის და ნავიგაციის კონფიგურაცია",
       introduce: "შესავალი",
       introduceDescription: "ვებსაიტის შესავალი: სათაური და აღწერა",
       news: "სიახლეები",
@@ -229,6 +229,7 @@ export const ka = {
       overviewDescription:
         "მართე შენი საიტის კონტენტი, გვერდები და კომპონენტები",
       active: "აქტიური",
+      inactive: "არააქტიური",
       publishedItems: "გამოქვეყნებული ნივთები"
     },
     headers: {
@@ -280,6 +281,15 @@ export const ka = {
         updatedSuccessfully: "Header წარმატებით განახლდა",
         deletedSuccessfully: "Header წარმატებით წაიშალა"
       },
+      filters: {
+        status: "სტატუსი",
+        all: "ყველა",
+        active: "აქტიური",
+        inactive: "არააქტიური",
+        clearAll: "ყველას გასუფთავება",
+        hasImage: "სურათი აქვს",
+        noImage: "სურათი არ აქვს"
+      },
       errors: {
         logoRequired: "ლოგო აუცილებელია",
         activeRequired: "აქტიურობის სტატუსი აუცილებელია",
@@ -296,7 +306,14 @@ export const ka = {
       previous: "წინა",
       next: "შემდეგი",
       page: "გვერდი",
-      of: "დან"
+      of: "დან",
+      search: "ძებნა...",
+      filters: "ფილტრები",
+      clearFilters: "ფილტრების გასუფთავება",
+      clearAll: "გასუფთავება",
+      all: "ყველა",
+      noItemsFound: "ელემენტები ვერ მოიძებნა",
+      pages: "{{page}} გვერდი {{totalPages}}-დან"
     },
     ui: {
       metadata: "მეტა მონაცემები",
