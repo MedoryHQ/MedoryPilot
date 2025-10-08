@@ -35,7 +35,7 @@ export const fetchHeaders = async (
         "translations.some.description": "insensitive",
       },
       {
-        OR: [
+        AND: [
           {
             ...(typeof active === "boolean"
               ? active
