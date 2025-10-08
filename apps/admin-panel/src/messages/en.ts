@@ -313,7 +313,8 @@ export const en = {
       pages: "Page {{page}} of {{totalPages}}",
       delete: "Delete",
       edit: "Edit",
-      view: "View"
+      view: "View",
+      rowsPerPage: "Rows per page: "
     },
     ui: {
       metadata: "Metadata",

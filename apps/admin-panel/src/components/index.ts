@@ -3,3 +3,4 @@ export * from "./MultiFileUpload";
 export * from "./Layout";
 export * from "./Icons";
 export * from "./header";
+export * from "./Pagination";

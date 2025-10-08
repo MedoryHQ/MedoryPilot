@@ -316,7 +316,8 @@ export const ka = {
       pages: "{{page}} გვერდი {{totalPages}}-დან",
       delete: "წაშლა",
       edit: "რედაქტირება",
-      view: "ნახვა"
+      view: "ნახვა",
+      rowsPerPage: "ჩანაწერი გვერდზე: "
     },
     ui: {
       metadata: "მეტა მონაცემები",
