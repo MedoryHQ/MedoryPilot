@@ -6,3 +6,4 @@ export * from "./confirm-dialog";
 export * from "./form-shell";
 export * from "./media-uploader";
 export * from "./translations-panel";
+export * from "./HeaderForm";

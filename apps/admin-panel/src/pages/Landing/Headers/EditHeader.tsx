@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { HeaderFormActions } from "@/components/header";
+import { HeaderFormActions } from "@/components/forms";
 
 const EditHeader = () => {
   const navigate = useNavigate();
