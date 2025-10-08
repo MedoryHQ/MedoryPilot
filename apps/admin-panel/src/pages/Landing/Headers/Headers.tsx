@@ -10,21 +10,18 @@ import {
 } from "@/utils";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Edit, Trash2, ImageIcon, Plus } from "lucide-react";
-import { DataTable, Column, Action, FilterConfig } from "@/components/ui";
-import { DeleteDialog } from "@/components/forms";
-import { useState } from "react";
+import { ImageIcon, Plus } from "lucide-react";
+import { DataTable, Column, FilterConfig } from "@/components/ui";
 
 const Headers = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const { pageSize, orderBy, order, search, filledSearchParams } =
     getPaginationFields(searchParams);
 
-  const { data, refetch } = useGetHeaders(filledSearchParams);
+  const { data, refetch, isFetching } = useGetHeaders(filledSearchParams);
   const items = data?.data ?? [];
 
   const getFiltersObjectFromUrl = () => {
@@ -101,16 +98,15 @@ const Headers = () => {
       label: toUpperCase(t("headers.filters.hasImage")),
       type: "select",
       options: [
-        { label: toUpperCase(t("headers.filters.hasImage")), value: "has" },
-        { label: toUpperCase(t("headers.filters.noImage")), value: "no" }
+        { label: toUpperCase(t("headers.filters.hasImage")), value: "true" },
+        { label: toUpperCase(t("headers.filters.noImage")), value: "false" }
       ]
     }
   ];
   const columns: Column<any>[] = [
     {
-      key: "name",
+      key: "header",
       label: toUpperCase(t("headers.header")),
-      sortable: true,
       render: (item) => {
         const tr = getTranslatedObject(item.translations, i18n.language);
         return (
@@ -142,7 +138,6 @@ const Headers = () => {
     {
       key: "position",
       label: toUpperCase(t("headers.position")),
-      sortable: true,
       render: (item) => {
         const tr = getTranslatedObject(item.translations, i18n.language);
         return <span className="text-foreground">{tr.position}</span>;
@@ -176,22 +171,6 @@ const Headers = () => {
     }
   ];
 
-  const actions: Action<any>[] = [
-    {
-      label: toUpperCase(t("headers.edit")),
-      icon: <Edit className="h-4 w-4" />,
-      onClick: (item) => navigate(`/landing/headers/edit?id=${item.id}`),
-      variant: "outline"
-    },
-    {
-      label: toUpperCase(t("headers.delete")),
-      icon: <Trash2 className="h-4 w-4" />,
-      onClick: (item) => console.log("delete", item.id),
-      variant: "destructive",
-      className: "hover:bg-destructive hover:text-destructive-foreground"
-    }
-  ];
-
   return (
     <motion.div
       className="mx-auto space-y-8"
@@ -220,10 +199,11 @@ const Headers = () => {
       <DataTable
         data={items}
         columns={columns}
-        actions={actions}
+        refetch={refetch}
+        isLoading={isFetching}
+        deleteEndpoint="header"
         searchable
         searchPlaceholder={toUpperCase(t("headers.search"))}
-        searchKeys={["name", "position", "headline"]}
         filters={filters}
         sortable
         pagination={{
@@ -322,13 +302,6 @@ const Headers = () => {
         onPageChange={(pageNumber, newPageSize) =>
           handlePageChange(pageNumber, newPageSize)
         }
-      />
-      <DeleteDialog
-        open={deleteId !== null}
-        onOpenChange={(open) => !open && setDeleteId(null)}
-        endpoint="header"
-        itemId={deleteId}
-        onSuccess={() => refetch()}
       />
     </motion.div>
   );

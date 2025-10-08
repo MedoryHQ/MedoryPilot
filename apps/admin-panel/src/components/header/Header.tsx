@@ -13,8 +13,6 @@ export const Header: React.FC = () => {
   const [searchFocused, setSearchFocused] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const { collapsed, toggleCollapsed } = useSidebarStore();
-  console.log(currentPath.length);
-  console.log(currentPath);
   const name = currentPath.length > 2 ? currentPath[2] : currentPath[1];
 
   useEffect(() => {
