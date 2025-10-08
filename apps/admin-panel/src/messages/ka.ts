@@ -443,6 +443,25 @@ export const ka = {
         titleRequired: "სათაური სავალდებულოა",
         descriptionRequired: "აღწერა სავალდებულოა"
       }
+    },
+    services: {
+      management: "სერვისების მენეჯმენტი",
+      managementDescription: "მართეთ ვებსაიტის სერვისები და ნავიგაცია",
+      addService: "სერვისის დამატება",
+      search: "სერვისის ძიება...",
+      noServicesFound: "სერვისები ვერ მოიძებნა",
+      service: "სერვისი",
+      name: "სახელი",
+      title: "სათაური",
+      translations: "თარგმანები",
+      visits: "ვიზიტები",
+      created: "შეიქმნა",
+      filters: {
+        hasIcon: "Icon-ით",
+        noIcon: "Icon-ის გარეშე",
+        hasBackground: "ფონით",
+        noBackground: "უფონოდ"
+      }
     }
   }
 };

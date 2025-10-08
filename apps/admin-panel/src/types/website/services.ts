@@ -19,6 +19,9 @@ export interface Service {
   translations: ServiceTranslation[];
   createdAt: string;
   updatedAt: string;
+  _count: {
+    visits: number;
+  };
 }
 
 export interface ServiceTranslation {
