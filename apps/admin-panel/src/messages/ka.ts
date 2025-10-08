@@ -313,7 +313,10 @@ export const ka = {
       clearAll: "გასუფთავება",
       all: "ყველა",
       noItemsFound: "ელემენტები ვერ მოიძებნა",
-      pages: "{{page}} გვერდი {{totalPages}}-დან"
+      pages: "{{page}} გვერდი {{totalPages}}-დან",
+      delete: "წაშლა",
+      edit: "რედაქტირება",
+      view: "ნახვა"
     },
     ui: {
       metadata: "მეტა მონაცემები",

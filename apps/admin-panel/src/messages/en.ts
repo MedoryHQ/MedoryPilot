@@ -310,7 +310,10 @@ export const en = {
       clearAll: "Clear all",
       all: "All",
       noItemsFound: "No items found",
-      pages: "Page {{page}} of {{totalPages}}"
+      pages: "Page {{page}} of {{totalPages}}",
+      delete: "Delete",
+      edit: "Edit",
+      view: "View"
     },
     ui: {
       metadata: "Metadata",
