@@ -9,6 +9,8 @@ import {
   logAdminWarn as logWarn,
   generateWhereInput,
   getPaginationAndFilters,
+  parseQueryParams,
+  parseFilters,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
 import { CreateHeaderDTO, UpdateHeaderDTO } from "@/types/admin";
@@ -20,13 +22,36 @@ export const fetchHeaders = async (
 ) => {
   try {
     const { skip, take, orderBy, search } = getPaginationAndFilters(req);
+    const filters = parseFilters(req);
+    const { active, logo } = filters;
 
-    const where = generateWhereInput<Prisma.HeaderWhereInput>(search, {
-      "translations.some.name": "insensitive",
-      "translations.some.position": "insensitive",
-      "translations.some.headline": "insensitive",
-      "translations.some.description": "insensitive",
-    });
+    const where = generateWhereInput<Prisma.HeaderWhereInput>(
+      search,
+      {
+        "translations.some.name": "insensitive",
+        "translations.some.position": "insensitive",
+        "translations.some.headline": "insensitive",
+        "translations.some.description": "insensitive",
+      },
+      {
+        AND: [
+          {
+            ...(typeof active === "boolean"
+              ? active
+                ? { active: true }
+                : { active: false }
+              : {}),
+          },
+          {
+            ...(typeof logo === "boolean"
+              ? logo
+                ? { logo: { isNot: null } }
+                : { logo: { is: null } }
+              : {}),
+          },
+        ],
+      }
+    );
 
     const [headers, count] = await Promise.all([
       prisma.header.findMany({

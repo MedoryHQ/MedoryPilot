@@ -2,89 +2,26 @@ import { motion } from "framer-motion";
 import { Badge, Button } from "@/components/ui";
 import { useGetHeaders } from "@/libs/queries";
 import {
+  formatDate,
   getFileUrl,
   getPaginationFields,
   getTranslatedObject,
-  toUpperCase,
-  updateQueryParamsAndNavigate
+  toUpperCase
 } from "@/utils";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Edit, Trash2, ImageIcon, Plus } from "lucide-react";
-import { DataTable, Column, Action, FilterConfig } from "@/components/ui";
-import { DeleteDialog } from "@/components/forms";
-import { useState } from "react";
+import { ImageIcon, Plus } from "lucide-react";
+import { DataTable, Column, FilterConfig } from "@/components/ui";
 
 const Headers = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  const { pageSize, orderBy, order, search, filledSearchParams } =
-    getPaginationFields(searchParams);
+  const { pageSize, filledSearchParams } = getPaginationFields(searchParams);
 
-  const { data, refetch } = useGetHeaders(filledSearchParams);
+  const { data, refetch, isFetching } = useGetHeaders(filledSearchParams);
   const items = data?.data ?? [];
-
-  const getFiltersObjectFromUrl = () => {
-    try {
-      const raw = searchParams.get("filters") || "{}";
-      const decoded = decodeURIComponent(raw);
-      return JSON.parse(decoded) as Record<string, any>;
-    } catch {
-      return {};
-    }
-  };
-
-  const setFiltersInUrl = (nextFiltersObj: Record<string, any> | null) => {
-    const finalFilters = nextFiltersObj ?? {};
-    updateQueryParamsAndNavigate(navigate, {
-      page: 1,
-      pageSize,
-      search,
-      orderBy,
-      order,
-      filters: finalFilters
-    });
-  };
-
-  const handleSort = (sortKey: string, direction: "asc" | "desc" | null) => {
-    updateQueryParamsAndNavigate(navigate, {
-      page: 1,
-      pageSize,
-      search,
-      orderBy: direction ? sortKey : undefined,
-      order: direction ?? undefined,
-      filters: getFiltersObjectFromUrl()
-    });
-  };
-
-  const handleFilter = (newFilters: Record<string, any>) => {
-    setFiltersInUrl(newFilters);
-  };
-
-  const handleSearch = (q: string) => {
-    updateQueryParamsAndNavigate(navigate, {
-      page: 1,
-      pageSize,
-      search: q ?? "",
-      orderBy,
-      order,
-      filters: getFiltersObjectFromUrl()
-    });
-  };
-
-  const handlePageChange = (nextPage: number, nextPageSize?: number) => {
-    updateQueryParamsAndNavigate(navigate, {
-      page: nextPage,
-      pageSize: nextPageSize ?? pageSize,
-      search,
-      orderBy,
-      order,
-      filters: getFiltersObjectFromUrl()
-    });
-  };
 
   const filters: FilterConfig[] = [
     {
@@ -101,16 +38,15 @@ const Headers = () => {
       label: toUpperCase(t("headers.filters.hasImage")),
       type: "select",
       options: [
-        { label: toUpperCase(t("headers.filters.hasImage")), value: "has" },
-        { label: toUpperCase(t("headers.filters.noImage")), value: "no" }
+        { label: toUpperCase(t("headers.filters.hasImage")), value: "true" },
+        { label: toUpperCase(t("headers.filters.noImage")), value: "false" }
       ]
     }
   ];
   const columns: Column<any>[] = [
     {
-      key: "name",
+      key: "header",
       label: toUpperCase(t("headers.header")),
-      sortable: true,
       render: (item) => {
         const tr = getTranslatedObject(item.translations, i18n.language);
         return (
@@ -142,7 +78,6 @@ const Headers = () => {
     {
       key: "position",
       label: toUpperCase(t("headers.position")),
-      sortable: true,
       render: (item) => {
         const tr = getTranslatedObject(item.translations, i18n.language);
         return <span className="text-foreground">{tr.position}</span>;
@@ -176,22 +111,6 @@ const Headers = () => {
     }
   ];
 
-  const actions: Action<any>[] = [
-    {
-      label: toUpperCase(t("headers.edit")),
-      icon: <Edit className="h-4 w-4" />,
-      onClick: (item) => navigate(`/landing/headers/edit?id=${item.id}`),
-      variant: "outline"
-    },
-    {
-      label: toUpperCase(t("headers.delete")),
-      icon: <Trash2 className="h-4 w-4" />,
-      onClick: (item) => console.log("delete", item.id),
-      variant: "destructive",
-      className: "hover:bg-destructive hover:text-destructive-foreground"
-    }
-  ];
-
   return (
     <motion.div
       className="mx-auto space-y-8"
@@ -220,10 +139,11 @@ const Headers = () => {
       <DataTable
         data={items}
         columns={columns}
-        actions={actions}
+        refetch={refetch}
+        isLoading={isFetching}
+        deleteEndpoint="header"
         searchable
         searchPlaceholder={toUpperCase(t("headers.search"))}
-        searchKeys={["name", "position", "headline"]}
         filters={filters}
         sortable
         pagination={{
@@ -231,6 +151,7 @@ const Headers = () => {
           pageSize: pageSize || 10,
           pageSizeOptions: [10, 25, 50]
         }}
+        total={data?.count}
         keyExtractor={(it) => it.id}
         emptyMessage={toUpperCase(t("headers.noHeadersFound"))}
         mobileCardRender={(item, tableActions) => {
@@ -289,7 +210,9 @@ const Headers = () => {
                   <span className="text-muted-foreground text-sm">
                     {toUpperCase(t("headers.created"))}
                   </span>
-                  <p className="mt-1 text-sm">{item.createdAt}</p>
+                  <p className="mt-1 text-sm">
+                    {formatDate(item.createdAt, i18n.language, true)}
+                  </p>
                 </div>
               </div>
 
@@ -312,23 +235,6 @@ const Headers = () => {
             </div>
           );
         }}
-        onSort={(sortObj) => {
-          handleSort(sortObj.key, sortObj.direction);
-        }}
-        onFilter={(filtersObj) => {
-          handleFilter(filtersObj);
-        }}
-        onSearch={(q) => handleSearch(q)}
-        onPageChange={(pageNumber, newPageSize) =>
-          handlePageChange(pageNumber, newPageSize)
-        }
-      />
-      <DeleteDialog
-        open={deleteId !== null}
-        onOpenChange={(open) => !open && setDeleteId(null)}
-        endpoint="header"
-        itemId={deleteId}
-        onSuccess={() => refetch()}
       />
     </motion.div>
   );

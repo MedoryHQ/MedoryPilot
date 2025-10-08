@@ -313,7 +313,11 @@ export const ka = {
       clearAll: "გასუფთავება",
       all: "ყველა",
       noItemsFound: "ელემენტები ვერ მოიძებნა",
-      pages: "{{page}} გვერდი {{totalPages}}-დან"
+      pages: "{{page}} გვერდი {{totalPages}}-დან",
+      delete: "წაშლა",
+      edit: "რედაქტირება",
+      view: "ნახვა",
+      rowsPerPage: "ჩანაწერი გვერდზე: "
     },
     ui: {
       metadata: "მეტა მონაცემები",
@@ -438,6 +442,25 @@ export const ka = {
         backgroundRequired: "ფონი სავალდებულოა",
         titleRequired: "სათაური სავალდებულოა",
         descriptionRequired: "აღწერა სავალდებულოა"
+      }
+    },
+    services: {
+      management: "სერვისების მენეჯმენტი",
+      managementDescription: "მართეთ ვებსაიტის სერვისები და ნავიგაცია",
+      addService: "სერვისის დამატება",
+      search: "სერვისის ძიება...",
+      noServicesFound: "სერვისები ვერ მოიძებნა",
+      service: "სერვისი",
+      name: "სახელი",
+      title: "სათაური",
+      translations: "თარგმანები",
+      visits: "ვიზიტები",
+      created: "შეიქმნა",
+      filters: {
+        hasIcon: "Icon-ით",
+        noIcon: "Icon-ის გარეშე",
+        hasBackground: "ფონით",
+        noBackground: "უფონოდ"
       }
     }
   }

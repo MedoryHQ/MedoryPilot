@@ -1,11 +1,6 @@
-import {
-  ServiceFormValues,
-  ServiceResponse,
-  ServicesResponse
-} from "@/types/website";
+import { ServiceResponse, ServicesResponse } from "@/types/website";
 import instance from "../../api/axios";
 import { useQuery } from "react-query";
-import { UseFormSetValue } from "react-hook-form";
 
 export const useGetServices = (search?: URLSearchParams) => {
   return useQuery<ServicesResponse, Error>({
@@ -20,45 +15,17 @@ export const useGetServices = (search?: URLSearchParams) => {
   });
 };
 
-export const useGetService = (
-  id: string | null,
-  setValue: UseFormSetValue<ServiceFormValues>
-) => {
+export const useGetService = (id: string | null) => {
   return useQuery<ServiceResponse, Error>({
-    queryKey: ["services"],
+    queryKey: ["service", id],
     queryFn: async (): Promise<ServiceResponse> => {
       const { data } = await instance.get<ServiceResponse>(`/service/${id}`);
       return data;
     },
     enabled: !!id,
-    refetchOnReconnect: false,
-    refetchInterval: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
-    onSuccess(data: ServiceResponse) {
-      const { translations, background, icon } = data.data;
-
-      const enTranslation = translations?.find(
-        (translation) => translation.language.code === "en"
-      );
-      const kaTranslation = translations?.find(
-        (translation) => translation.language.code === "ka"
-      );
-
-      const formTranslations = {
-        en: {
-          description: enTranslation?.description || "",
-          title: enTranslation?.title || ""
-        },
-        ka: {
-          title: kaTranslation?.title || "",
-          description: kaTranslation?.description || ""
-        }
-      };
-
-      setValue("background", background);
-      setValue("icon", icon);
-      setValue("translations", formTranslations);
-    }
+    refetchOnReconnect: false,
+    refetchInterval: false
   });
 };

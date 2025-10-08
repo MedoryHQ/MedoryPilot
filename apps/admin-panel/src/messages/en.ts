@@ -310,7 +310,11 @@ export const en = {
       clearAll: "Clear all",
       all: "All",
       noItemsFound: "No items found",
-      pages: "Page {{page}} of {{totalPages}}"
+      pages: "Page {{page}} of {{totalPages}}",
+      delete: "Delete",
+      edit: "Edit",
+      view: "View",
+      rowsPerPage: "Rows per page: "
     },
     ui: {
       metadata: "Metadata",
@@ -436,6 +440,27 @@ export const en = {
         backgroundRequired: "Background is required",
         titleRequired: "Title is required",
         descriptionRequired: "Description is required"
+      }
+    },
+    services: {
+      management: "Services Management",
+      managementDescription: "Manage website services and navigation elements",
+      addService: "Add Service",
+      search: "Search services...",
+      noServicesFound: "No services found",
+
+      service: "Service",
+      name: "Name",
+      title: "Title",
+      translations: "Translations",
+      visits: "Visits",
+      created: "Created",
+
+      filters: {
+        hasIcon: "With Icon",
+        noIcon: "Without Icon",
+        hasBackground: "With Background",
+        noBackground: "Without Background"
       }
     }
   }

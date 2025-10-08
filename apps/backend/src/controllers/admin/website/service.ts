@@ -9,6 +9,7 @@ import {
   logAdminError as logCatchyError,
   logAdminInfo as logInfo,
   logAdminWarn as logWarn,
+  parseFilters,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
 import { CreateServiceDTO, UpdateServiceDTO } from "@/types/admin";
@@ -20,11 +21,34 @@ export const fetchServices = async (
 ) => {
   try {
     const { skip, take, search, orderBy } = getPaginationAndFilters(req);
+    const filters = parseFilters(req);
+    const { icon, background } = filters;
 
-    const where = generateWhereInput<Prisma.ServiceWhereInput>(search, {
-      "translations.some.title": "insensitive",
-      "translations.some.description": "insensitive",
-    });
+    const where = generateWhereInput<Prisma.ServiceWhereInput>(
+      search,
+      {
+        "translations.some.title": "insensitive",
+        "translations.some.description": "insensitive",
+      },
+      {
+        AND: [
+          {
+            ...(typeof icon === "boolean"
+              ? icon
+                ? { icon: { isNot: null } }
+                : { icon: { is: null } }
+              : {}),
+          },
+          {
+            ...(typeof background === "boolean"
+              ? background
+                ? { background: { isNot: null } }
+                : { background: { is: null } }
+              : {}),
+          },
+        ],
+      }
+    );
 
     const [services, count] = await Promise.all([
       prisma.service.findMany({
@@ -43,6 +67,9 @@ export const fetchServices = async (
                 },
               },
             },
+          },
+          _count: {
+            select: { visits: true },
           },
         },
       }),
