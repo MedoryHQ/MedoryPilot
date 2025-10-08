@@ -44,6 +44,7 @@ export type Column<T> = {
   label: string;
   sortable?: boolean;
   render?: (item: T) => React.ReactNode;
+  mobileRender?: (item: T) => React.ReactNode;
   className?: string;
   mobileLabel?: string;
 };
@@ -84,7 +85,7 @@ export interface DataTableProps<T> {
   searchKeys?: string[];
   filters?: FilterConfig[];
   sortable?: boolean;
-  pagination?: PaginationConf;
+  pagination?: boolean;
   total: number | undefined;
   keyExtractor: (item: T) => string;
   emptyMessage?: string;
@@ -108,7 +109,7 @@ export function DataTable<T extends Record<string, any>>({
   searchPlaceholder = "Search...",
   filters = [],
   sortable = true,
-  pagination = { enabled: false, pageSize: 10, pageSizeOptions: [10, 25, 50] },
+  pagination = true,
   keyExtractor,
   emptyMessage = "No items found",
   mobileCardRender,
@@ -447,51 +448,49 @@ export function DataTable<T extends Record<string, any>>({
               >
                 <Card className="border-border/50 shadow-sm transition-shadow hover:shadow-md">
                   <CardContent className="p-5">
-                    {mobileCardRender ? (
-                      mobileCardRender(row, effectiveActions)
-                    ) : (
-                      <div className="space-y-3">
-                        {columns.map((col) => (
-                          <div
-                            key={col.key}
-                            className="flex items-start justify-between"
-                          >
-                            <span className="text-secondary-foreground text-sm font-medium">
-                              {col.mobileLabel || col.label}
-                            </span>
-                            <span className="text-right text-sm font-medium">
-                              {col.render
-                                ? col.render(row)
-                                : String(row[col.key] ?? "")}
-                            </span>
-                          </div>
-                        ))}
-                        {effectiveActions && effectiveActions.length > 0 && (
-                          <div className="border-border flex gap-2 border-t pt-3">
-                            {effectiveActions.map((action, idx) => (
-                              <Button
-                                key={idx}
-                                variant={action.variant || "outline"}
-                                size="sm"
-                                onClick={() => action.onClick(row)}
-                                className={cn("flex-1", action.className)}
-                              >
-                                {action.icon}
-                                <span className="ml-2">{action.label}</span>
-                              </Button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    )}
+                    <div className="space-y-4">
+                      {mobileCardRender
+                        ? mobileCardRender(row)
+                        : columns.map((col) => (
+                            <div
+                              key={col.key}
+                              className="flex items-start justify-between"
+                            >
+                              <span className="text-secondary-foreground text-sm font-medium">
+                                {col.mobileLabel || col.label}
+                              </span>
+                              <span className="text-right text-sm font-medium">
+                                {col.render
+                                  ? col.render(row)
+                                  : String(row[col.key] ?? "")}
+                              </span>
+                            </div>
+                          ))}
+                      {effectiveActions && effectiveActions.length > 0 && (
+                        <div className="border-border flex gap-2 border-t pt-3">
+                          {effectiveActions.map((action, idx) => (
+                            <Button
+                              key={idx}
+                              variant={action.variant || "outline"}
+                              size="sm"
+                              onClick={() => action.onClick(row)}
+                              className={cn("flex-1", action.className)}
+                            >
+                              {action.icon}
+                              <span className="ml-2">{action.label}</span>
+                            </Button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               </motion.div>
             ))
           )}
         </div>
-        {total !== undefined && total > 0 && (
-          <Pagination pagination={pagination} total={total} />
+        {pagination && total !== undefined && total > 0 && (
+          <Pagination total={total} />
         )}
       </div>
 

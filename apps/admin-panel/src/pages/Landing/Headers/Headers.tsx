@@ -17,11 +17,8 @@ const Headers = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-
-  const { pageSize, filledSearchParams } = getPaginationFields(searchParams);
-
+  const { filledSearchParams } = getPaginationFields(searchParams);
   const { data, refetch, isFetching } = useGetHeaders(filledSearchParams);
-  const items = data?.data ?? [];
 
   const filters: FilterConfig[] = [
     {
@@ -43,6 +40,7 @@ const Headers = () => {
       ]
     }
   ];
+
   const columns: Column<any>[] = [
     {
       key: "header",
@@ -137,7 +135,7 @@ const Headers = () => {
       </div>
 
       <DataTable
-        data={items}
+        data={data?.data ?? []}
         columns={columns}
         refetch={refetch}
         isLoading={isFetching}
@@ -146,20 +144,15 @@ const Headers = () => {
         searchPlaceholder={toUpperCase(t("headers.search"))}
         filters={filters}
         sortable
-        pagination={{
-          enabled: true,
-          pageSize: pageSize || 10,
-          pageSizeOptions: [10, 25, 50]
-        }}
         total={data?.count}
         keyExtractor={(it) => it.id}
         emptyMessage={toUpperCase(t("headers.noHeadersFound"))}
-        mobileCardRender={(item, tableActions) => {
+        mobileCardRender={(item) => {
           const tr = getTranslatedObject(item.translations, i18n.language);
           return (
-            <div className="space-y-4">
+            <div>
               <div className="flex items-start gap-3">
-                <div className="border-border bg-muted/10 flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg">
+                <div className="border-border bg-muted/10 mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg">
                   {item.logo ? (
                     <img
                       src={getFileUrl(item.logo.path)}
@@ -215,23 +208,6 @@ const Headers = () => {
                   </p>
                 </div>
               </div>
-
-              {tableActions && tableActions.length > 0 && (
-                <div className="border-border flex gap-2 border-t pt-3">
-                  {tableActions.map((action, idx) => (
-                    <Button
-                      key={idx}
-                      variant={action.variant || "outline"}
-                      size="sm"
-                      onClick={() => action.onClick(item)}
-                      className="flex-1"
-                    >
-                      {action.icon}
-                      <span className="ml-2">{action.label}</span>
-                    </Button>
-                  ))}
-                </div>
-              )}
             </div>
           );
         }}

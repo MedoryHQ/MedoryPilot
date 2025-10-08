@@ -18,11 +18,8 @@ const Services = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-
-  const { pageSize, filledSearchParams } = getPaginationFields(searchParams);
-
+  const { filledSearchParams } = getPaginationFields(searchParams);
   const { data, refetch, isFetching } = useGetServices(filledSearchParams);
-  const items = data?.data ?? [];
 
   const filters: FilterConfig[] = [
     {
@@ -77,13 +74,14 @@ const Services = () => {
               <div className="text-foreground truncate font-medium">
                 {toUpperCase(translation.title)}
               </div>
-              <div className="text-muted-foreground mt-1 line-clamp-3 max-w-[350px] text-sm">
+              <div className="text-muted-foreground mt-1 line-clamp-3 hidden max-w-[350px] text-sm md:block">
                 {toUpperCase(translation.description)}
               </div>
             </div>
           </div>
         );
       },
+
       mobileLabel: toUpperCase(t("services.name"))
     },
     {
@@ -134,7 +132,7 @@ const Services = () => {
       </div>
 
       <DataTable
-        data={items}
+        data={data?.data ?? []}
         columns={columns}
         refetch={refetch}
         isLoading={isFetching}
@@ -143,20 +141,18 @@ const Services = () => {
         searchPlaceholder={toUpperCase(t("services.search"))}
         filters={filters}
         sortable
-        pagination={{
-          enabled: true,
-          pageSize: pageSize || 10,
-          pageSizeOptions: [10, 25, 50]
-        }}
         total={data?.count}
         keyExtractor={(it) => it.id}
         emptyMessage={toUpperCase(t("services.noServicesFound"))}
-        mobileCardRender={(item, tableActions) => {
-          const tr = getTranslatedObject(item.translations, i18n.language);
+        mobileCardRender={(item) => {
+          const translation = getTranslatedObject(
+            item.translations,
+            i18n.language
+          );
           return (
-            <div className="space-y-4">
+            <div>
               <div className="flex items-start gap-3">
-                <div className="border-border bg-muted/10 flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg">
+                <div className="border-border bg-muted/10 mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg">
                   {item.icon ? (
                     <img
                       src={getFileUrl(item.icon.path)}
@@ -168,7 +164,9 @@ const Services = () => {
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-foreground font-semibold">{tr.title}</h3>
+                  <h3 className="text-foreground font-semibold">
+                    {translation.title}
+                  </h3>
                 </div>
               </div>
               <div className="border-border grid grid-cols-2 gap-3 border-t pt-3">
@@ -176,7 +174,7 @@ const Services = () => {
                   <span className="text-muted-foreground text-sm">
                     {toUpperCase(t("services.title"))}
                   </span>
-                  <p className="mt-1 font-medium">{tr.title}</p>
+                  <p className="mt-1 font-medium">{translation.title}</p>
                 </div>
                 <div>
                   <span className="text-muted-foreground text-sm">
@@ -190,6 +188,16 @@ const Services = () => {
                 </div>
                 <div>
                   <span className="text-muted-foreground text-sm">
+                    {toUpperCase(t("services.visits"))}
+                  </span>
+                  <div className="mt-1">
+                    <Badge variant="default" className="px-3 py-1">
+                      {item._count.visits}
+                    </Badge>
+                  </div>
+                </div>
+                <div>
+                  <span className="text-muted-foreground text-sm">
                     {toUpperCase(t("services.created"))}
                   </span>
                   <p className="mt-1 text-sm">
@@ -197,23 +205,6 @@ const Services = () => {
                   </p>
                 </div>
               </div>
-
-              {tableActions && tableActions.length > 0 && (
-                <div className="border-border flex gap-2 border-t pt-3">
-                  {tableActions.map((action, idx) => (
-                    <Button
-                      key={idx}
-                      variant={action.variant || "outline"}
-                      size="sm"
-                      onClick={() => action.onClick(item)}
-                      className="flex-1"
-                    >
-                      {action.icon}
-                      <span className="ml-2">{action.label}</span>
-                    </Button>
-                  ))}
-                </div>
-              )}
             </div>
           );
         }}
