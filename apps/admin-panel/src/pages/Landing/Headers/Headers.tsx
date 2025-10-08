@@ -2,11 +2,11 @@ import { motion } from "framer-motion";
 import { Badge, Button } from "@/components/ui";
 import { useGetHeaders } from "@/libs/queries";
 import {
+  formatDate,
   getFileUrl,
   getPaginationFields,
   getTranslatedObject,
-  toUpperCase,
-  updateQueryParamsAndNavigate
+  toUpperCase
 } from "@/utils";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -18,70 +18,10 @@ const Headers = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const { pageSize, orderBy, order, search, filledSearchParams } =
-    getPaginationFields(searchParams);
+  const { pageSize, filledSearchParams } = getPaginationFields(searchParams);
 
   const { data, refetch, isFetching } = useGetHeaders(filledSearchParams);
   const items = data?.data ?? [];
-
-  const getFiltersObjectFromUrl = () => {
-    try {
-      const raw = searchParams.get("filters") || "{}";
-      const decoded = decodeURIComponent(raw);
-      return JSON.parse(decoded) as Record<string, any>;
-    } catch {
-      return {};
-    }
-  };
-
-  const setFiltersInUrl = (nextFiltersObj: Record<string, any> | null) => {
-    const finalFilters = nextFiltersObj ?? {};
-    updateQueryParamsAndNavigate(navigate, {
-      page: 1,
-      pageSize,
-      search,
-      orderBy,
-      order,
-      filters: finalFilters
-    });
-  };
-
-  const handleSort = (sortKey: string, direction: "asc" | "desc" | null) => {
-    updateQueryParamsAndNavigate(navigate, {
-      page: 1,
-      pageSize,
-      search,
-      orderBy: direction ? sortKey : undefined,
-      order: direction ?? undefined,
-      filters: getFiltersObjectFromUrl()
-    });
-  };
-
-  const handleFilter = (newFilters: Record<string, any>) => {
-    setFiltersInUrl(newFilters);
-  };
-
-  const handleSearch = (q: string) => {
-    updateQueryParamsAndNavigate(navigate, {
-      page: 1,
-      pageSize,
-      search: q ?? "",
-      orderBy,
-      order,
-      filters: getFiltersObjectFromUrl()
-    });
-  };
-
-  const handlePageChange = (nextPage: number, nextPageSize?: number) => {
-    updateQueryParamsAndNavigate(navigate, {
-      page: nextPage,
-      pageSize: nextPageSize ?? pageSize,
-      search,
-      orderBy,
-      order,
-      filters: getFiltersObjectFromUrl()
-    });
-  };
 
   const filters: FilterConfig[] = [
     {
@@ -211,6 +151,7 @@ const Headers = () => {
           pageSize: pageSize || 10,
           pageSizeOptions: [10, 25, 50]
         }}
+        total={data?.count}
         keyExtractor={(it) => it.id}
         emptyMessage={toUpperCase(t("headers.noHeadersFound"))}
         mobileCardRender={(item, tableActions) => {
@@ -269,7 +210,9 @@ const Headers = () => {
                   <span className="text-muted-foreground text-sm">
                     {toUpperCase(t("headers.created"))}
                   </span>
-                  <p className="mt-1 text-sm">{item.createdAt}</p>
+                  <p className="mt-1 text-sm">
+                    {formatDate(item.createdAt, i18n.language, true)}
+                  </p>
                 </div>
               </div>
 
@@ -292,16 +235,6 @@ const Headers = () => {
             </div>
           );
         }}
-        onSort={(sortObj) => {
-          handleSort(sortObj.key, sortObj.direction);
-        }}
-        onFilter={(filtersObj) => {
-          handleFilter(filtersObj);
-        }}
-        onSearch={(q) => handleSearch(q)}
-        onPageChange={(pageNumber, newPageSize) =>
-          handlePageChange(pageNumber, newPageSize)
-        }
       />
     </motion.div>
   );
