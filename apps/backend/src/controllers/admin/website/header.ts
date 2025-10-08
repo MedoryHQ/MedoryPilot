@@ -24,7 +24,6 @@ export const fetchHeaders = async (
     const { skip, take, orderBy, search } = getPaginationAndFilters(req);
     const filters = parseFilters(req);
     const { active, logo } = filters;
-    console.log(logo);
 
     const where = generateWhereInput<Prisma.HeaderWhereInput>(
       search,
