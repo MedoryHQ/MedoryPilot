@@ -269,7 +269,7 @@ export function DataTable<T extends Record<string, any>>({
         <div className="flex flex-col items-start gap-3 md:flex-row md:items-center">
           {searchable && (
             <div className="relative w-full flex-1">
-              <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+              <Search className="text-secondary-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
               <Input
                 placeholder={searchPlaceholder}
                 value={searchTerm}
@@ -312,7 +312,7 @@ export function DataTable<T extends Record<string, any>>({
                           variant="ghost"
                           size="sm"
                           onClick={() => setActiveFilters({})}
-                          className="text-muted-foreground h-auto rounded-[12px] px-2 py-1 text-xs hover:text-white"
+                          className="text-secondary-foreground h-auto rounded-[12px] px-2 py-1 text-xs hover:text-white"
                         >
                           {toUpperCase(t("dataTable.clearAll"))}
                         </Button>
@@ -376,13 +376,13 @@ export function DataTable<T extends Record<string, any>>({
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-muted/30 border-border border-b-2">
+                <thead className="bg-secondary/50 border-border border-b-2">
                   <tr>
                     {columns.map((col) => (
                       <th
                         key={col.key}
                         className={cn(
-                          "text-foreground px-6 py-5 text-left font-semibold",
+                          "text-foreground hover:bg-secondary/80 cursor-pointer px-6 py-3 text-left text-sm font-medium select-none",
                           col.className,
                           col.sortable && "cursor-pointer"
                         )}
@@ -395,7 +395,7 @@ export function DataTable<T extends Record<string, any>>({
                       </th>
                     ))}
                     {effectiveActions && effectiveActions.length > 0 && (
-                      <th className="text-foreground px-6 py-5 text-center font-semibold">
+                      <th className="text-foreground hover:bg-secondary/80 cursor-pointer px-6 py-3 text-center text-sm font-medium select-none">
                         {toUpperCase(t("dataTable.actions"))}
                       </th>
                     )}
@@ -406,10 +406,10 @@ export function DataTable<T extends Record<string, any>>({
                     <tr>
                       <td
                         colSpan={columns.length + (effectiveActions ? 1 : 0)}
-                        className="text-muted-foreground py-12 text-center"
+                        className="text-secondary-foreground py-12 text-center"
                       >
                         <div className="flex flex-col items-center gap-3">
-                          <AlertCircle className="text-muted-foreground/50 h-12 w-12" />
+                          <AlertCircle className="text-secondary-foreground/50 h-12 w-12" />
                           <p className="text-lg">{emptyMessage}</p>
                         </div>
                       </td>
@@ -422,14 +422,17 @@ export function DataTable<T extends Record<string, any>>({
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.2, delay: idx * 0.02 }}
                         className={cn(
-                          "border-border/50 hover:bg-muted/20 border-b transition-colors",
-                          idx % 2 === 0 ? "bg-background" : "bg-muted/5"
+                          "border-border/50 hover:bg-secondary/20 border-b transition-colors",
+                          idx % 2 === 0 ? "bg-background" : "bg-secondary/5"
                         )}
                       >
                         {columns.map((col) => (
                           <td
                             key={col.key}
-                            className={cn("px-6 py-5", col.className)}
+                            className={cn(
+                              "px-6 py-5 !text-left",
+                              col.className
+                            )}
                           >
                             {col.render ? (
                               col.render(row)
@@ -482,8 +485,8 @@ export function DataTable<T extends Record<string, any>>({
             <Card className="border-border/50 shadow-sm">
               <CardContent className="p-4">
                 <div className="flex flex-col items-center gap-3 text-center">
-                  <AlertCircle className="text-muted-foreground/50 h-12 w-12" />
-                  <p className="text-muted-foreground text-lg">
+                  <AlertCircle className="text-secondary-foreground/50 h-12 w-12" />
+                  <p className="text-secondary-foreground text-lg">
                     {emptyMessage}
                   </p>
                 </div>
@@ -508,7 +511,7 @@ export function DataTable<T extends Record<string, any>>({
                             key={col.key}
                             className="flex items-start justify-between"
                           >
-                            <span className="text-muted-foreground text-sm font-medium">
+                            <span className="text-secondary-foreground text-sm font-medium">
                               {col.mobileLabel || col.label}
                             </span>
                             <span className="text-right text-sm font-medium">
@@ -547,7 +550,7 @@ export function DataTable<T extends Record<string, any>>({
           <Card className="border-border/50 shadow-sm">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
-                <div className="text-muted-foreground text-sm">
+                <div className="text-secondary-foreground text-sm">
                   {toUpperCase(
                     t("dataTable.pages", {
                       page,
