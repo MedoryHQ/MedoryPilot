@@ -11,8 +11,9 @@ import {
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ImageIcon, Plus } from "lucide-react";
-import { DataTable, Column, FilterConfig } from "@/components/ui";
+import { DataTable } from "@/components/ui";
 import { Service } from "@/types/website";
+import { Column, FilterConfig } from "@/types/ui";
 
 const Services = () => {
   const { t, i18n } = useTranslation();
@@ -137,12 +138,8 @@ const Services = () => {
         refetch={refetch}
         isLoading={isFetching}
         deleteEndpoint="service"
-        searchable
-        searchPlaceholder={toUpperCase(t("services.search"))}
         filters={filters}
-        sortable
         total={data?.count}
-        keyExtractor={(it) => it.id}
         emptyMessage={toUpperCase(t("services.noServicesFound"))}
         mobileCardRender={(item) => {
           const translation = getTranslatedObject(

@@ -462,6 +462,22 @@ export const en = {
         hasBackground: "With Background",
         noBackground: "Without Background"
       }
+    },
+    socials: {
+      management: "Socials Management",
+      managementDescription: "Manage website socials and navigation elements",
+      addSocial: "Add Social",
+      search: "Search socials...",
+      noSocialsFound: "No socials found",
+      social: "Social",
+      name: "Name",
+      created: "Created",
+      icon: "Icon",
+      link: "Link",
+      filters: {
+        hasIcon: "With Icon",
+        noIcon: "Without Icon"
+      }
     }
   }
 };

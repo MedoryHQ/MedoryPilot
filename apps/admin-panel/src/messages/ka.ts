@@ -462,6 +462,22 @@ export const ka = {
         hasBackground: "ფონით",
         noBackground: "უფონოდ"
       }
+    },
+    socials: {
+      management: "სოც. ქსელების მენეჯმენტი",
+      managementDescription: "მართეთ ვებსაიტის სოც. ქსელები და ნავიგაცია",
+      addSocial: "სოც. ქსელის დამატება",
+      search: "სოც. ქსელების ძიება",
+      noSocialsFound: "სოც. ქსელი ვერ მოიძებნა",
+      social: "სოც. ქსელი",
+      name: "სახელი",
+      created: "შეიქმნა",
+      icon: "სურათი",
+      link: "ლინკი",
+      filters: {
+        hasIcon: "სურათით",
+        noIcon: "სურათის გარეშე"
+      }
     }
   }
 };

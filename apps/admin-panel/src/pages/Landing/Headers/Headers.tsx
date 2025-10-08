@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Badge, Button } from "@/components/ui";
+import { Badge, Button, DataTable } from "@/components/ui";
 import { useGetHeaders } from "@/libs/queries";
 import {
   formatDate,
@@ -11,7 +11,8 @@ import {
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ImageIcon, Plus } from "lucide-react";
-import { DataTable, Column, FilterConfig } from "@/components/ui";
+import { Column, FilterConfig } from "@/types/ui";
+import { Header } from "@/types/website";
 
 const Headers = () => {
   const { t, i18n } = useTranslation();
@@ -41,7 +42,7 @@ const Headers = () => {
     }
   ];
 
-  const columns: Column<any>[] = [
+  const columns: Column<Header>[] = [
     {
       key: "header",
       label: toUpperCase(t("headers.header")),
@@ -140,12 +141,8 @@ const Headers = () => {
         refetch={refetch}
         isLoading={isFetching}
         deleteEndpoint="header"
-        searchable
-        searchPlaceholder={toUpperCase(t("headers.search"))}
         filters={filters}
-        sortable
         total={data?.count}
-        keyExtractor={(it) => it.id}
         emptyMessage={toUpperCase(t("headers.noHeadersFound"))}
         mobileCardRender={(item) => {
           const tr = getTranslatedObject(item.translations, i18n.language);

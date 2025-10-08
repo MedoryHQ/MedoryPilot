@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Card,
@@ -38,64 +38,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { DeleteDialog } from "../forms";
 import { cn } from "@/libs";
 import { Pagination } from "../Pagination";
-
-export type Column<T> = {
-  key: string;
-  label: string;
-  sortable?: boolean;
-  render?: (item: T) => React.ReactNode;
-  mobileRender?: (item: T) => React.ReactNode;
-  className?: string;
-  mobileLabel?: string;
-};
-
-export type Action<T> = {
-  label: string;
-  icon?: React.ReactNode;
-  onClick: (item: T) => void;
-  variant?: "default" | "outline" | "destructive" | "ghost";
-  className?: string;
-  hidden?: (item: T) => boolean;
-  actionType?: "edit" | "delete" | "custom";
-};
-
-export type FilterConfig = {
-  key: string;
-  label: string;
-  type: "select" | "boolean";
-  options?: { label: string; value: any }[];
-  defaultValue?: any;
-};
-
-export type PaginationConf = {
-  enabled?: boolean;
-  pageSize?: number;
-  pageSizeOptions?: number[];
-};
-
-export interface DataTableProps<T> {
-  data: T[];
-  columns: Column<T>[];
-  showEdit?: boolean;
-  showDelete?: boolean;
-  searchable?: boolean;
-  refetch?: () => any;
-  isLoading?: boolean;
-  searchPlaceholder?: string;
-  searchKeys?: string[];
-  filters?: FilterConfig[];
-  sortable?: boolean;
-  pagination?: boolean;
-  total: number | undefined;
-  keyExtractor: (item: T) => string;
-  emptyMessage?: string;
-  mobileCardRender?: (item: T, actions?: Action<T>[]) => React.ReactNode;
-  onSearch?: (q: string) => void;
-  onFilter?: (filters: Record<string, any>) => void;
-  onSort?: (sort: { key: string; direction: "asc" | "desc" | null }) => void;
-  actions?: Action<T>[];
-  deleteEndpoint?: string;
-}
+import { Action, DataTableProps } from "@/types/ui";
 
 export function DataTable<T extends Record<string, any>>({
   data,
@@ -106,11 +49,10 @@ export function DataTable<T extends Record<string, any>>({
   total,
   isLoading = false,
   searchable = true,
-  searchPlaceholder = "Search...",
   filters = [],
   sortable = true,
   pagination = true,
-  keyExtractor,
+  keyExtractor = (it) => it.id,
   emptyMessage = "No items found",
   mobileCardRender,
   actions: propActions,
@@ -241,7 +183,7 @@ export function DataTable<T extends Record<string, any>>({
             <div className="relative w-full flex-1">
               <Search className="text-secondary-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
               <Input
-                placeholder={searchPlaceholder}
+                placeholder={toUpperCase(t("services.search"))}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-9"
