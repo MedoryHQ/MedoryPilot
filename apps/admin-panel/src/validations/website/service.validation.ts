@@ -1,22 +1,22 @@
 import { z } from "zod";
 
+const BackendFileSchema = z.object({
+  name: z.string(),
+  path: z.string(),
+  size: z.number()
+});
+
 export const serviceSchema = (
   t: (key: string, lang?: "en" | "ka") => string,
   lang: "en" | "ka" = "en"
 ) =>
   z.object({
-    icon: z
-      .instanceof(File)
-      .nullable()
-      .refine((file) => file !== null, {
-        message: t("service.errors.iconRequired", lang)
-      }),
-    background: z
-      .instanceof(File)
-      .nullable()
-      .refine((file) => file !== null, {
-        message: t("service.errors.backgroundRequired", lang)
-      }),
+    icon: BackendFileSchema.nullable().refine((file) => file !== null, {
+      message: t("headers.errors.iconRequired", lang)
+    }),
+    background: BackendFileSchema.nullable().refine((file) => file !== null, {
+      message: t("headers.errors.backgroundRequired", lang)
+    }),
     translations: z.object({
       en: z.object({
         title: z
