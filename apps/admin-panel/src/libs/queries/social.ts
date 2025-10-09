@@ -1,11 +1,6 @@
-import {
-  SocialFormValues,
-  SocialResponse,
-  SocialsResponse
-} from "@/types/website";
+import { SocialResponse, SocialsResponse } from "@/types/website";
 import instance from "../../api/axios";
 import { useQuery } from "react-query";
-import { UseFormSetValue } from "react-hook-form";
 
 export const useGetSocials = (search?: URLSearchParams) => {
   return useQuery<SocialsResponse, Error>({
@@ -20,27 +15,17 @@ export const useGetSocials = (search?: URLSearchParams) => {
   });
 };
 
-export const useGetSocial = (
-  id: string | null,
-  setValue: UseFormSetValue<SocialFormValues>
-) => {
+export const useGetSocial = (id: string | null) => {
   return useQuery<SocialResponse, Error>({
-    queryKey: ["socials"],
+    queryKey: ["socials", id],
     queryFn: async (): Promise<SocialResponse> => {
       const { data } = await instance.get<SocialResponse>(`/social/${id}`);
       return data;
     },
     enabled: !!id,
-    refetchOnReconnect: false,
-    refetchInterval: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
-    onSuccess(data: SocialResponse) {
-      const { icon, name, url } = data.data;
-
-      setValue("icon", icon);
-      setValue("name", name);
-      setValue("url", url);
-    }
+    refetchOnReconnect: false,
+    refetchInterval: false
   });
 };
