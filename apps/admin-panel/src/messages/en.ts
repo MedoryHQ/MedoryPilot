@@ -314,7 +314,9 @@ export const en = {
       delete: "Delete",
       edit: "Edit",
       view: "View",
-      rowsPerPage: "Rows per page: "
+      rowsPerPage: "Rows per page: ",
+      min: "Min",
+      max: "Max"
     },
     ui: {
       metadata: "Metadata",
@@ -491,6 +493,27 @@ export const en = {
       created: "Created",
       translations: "Translations",
       order: "Order"
+    },
+    tariffs: {
+      management: "Tariffs Management",
+      managementDescription: "Manage website tariffs and navigation elements",
+      addTariff: "Add Tariff",
+      search: "Search tariffs...",
+      noTariffsFound: "No tariffs found",
+      tariff: "Tariff",
+      name: "Name",
+      created: "Created",
+      type: "Type",
+      history: "History",
+      price: "Price",
+      from: "From Date",
+      to: "End Date",
+      filters: {
+        price: "Price",
+        type: "Type",
+        tariff: "Tariff",
+        history: "History"
+      }
     }
   }
 };

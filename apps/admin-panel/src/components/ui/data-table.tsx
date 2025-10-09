@@ -273,7 +273,7 @@ export function DataTable<T extends Record<string, any>>({
                           <div className="flex gap-2">
                             <Input
                               type="number"
-                              placeholder="min"
+                              placeholder={toUpperCase(t("dataTable.min"))}
                               value={activeFilters[f.key]?.min ?? ""}
                               onChange={(e) =>
                                 setActiveFilters((prev) => ({
@@ -291,7 +291,7 @@ export function DataTable<T extends Record<string, any>>({
                             />
                             <Input
                               type="number"
-                              placeholder="max"
+                              placeholder={toUpperCase(t("dataTable.max"))}
                               value={activeFilters[f.key]?.max ?? ""}
                               onChange={(e) =>
                                 setActiveFilters((prev) => ({

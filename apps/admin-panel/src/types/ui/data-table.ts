@@ -21,7 +21,7 @@ export type Action<T> = {
 export type FilterConfig = {
   key: string;
   label: string;
-  type: "select" | "boolean";
+  type: "select" | "boolean" | "number";
   options?: { label: string; value: any }[];
   defaultValue?: any;
 };

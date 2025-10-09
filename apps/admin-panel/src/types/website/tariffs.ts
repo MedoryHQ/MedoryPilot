@@ -1,10 +1,23 @@
 export interface TariffsResponse {
-  data: Tariff[];
-  count: number;
+  data: TariffTable[];
+  count: {
+    total: number;
+  };
 }
 
 export interface TariffResponse {
   data: Tariff;
+}
+
+export interface TariffTable {
+  id: string;
+  price: number;
+  tariffId?: string;
+  fromDate?: string;
+  endDate?: string;
+  createdAt: string;
+  updatedAt: string;
+  __type: "history" | "tariff";
 }
 
 export interface Tariff {
