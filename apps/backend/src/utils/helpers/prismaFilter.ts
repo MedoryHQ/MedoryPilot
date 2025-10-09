@@ -12,27 +12,55 @@ export const generateWhereInput = <T>(
   fields: { [key: string]: string | boolean | undefined },
   extraConditions?: T
 ): T => {
-  const orConditions = Object.entries(fields).map(([key, value]) => {
-    const relations = key.split(".");
-    const field = relations.pop();
+  const hasSearch =
+    typeof search === "string" && search.trim().length > 0
+      ? search.trim()
+      : null;
 
-    if (relations.length > 0 && field) {
-      let nestedObject: any = {
-        [field]: { contains: search, mode: "insensitive" },
-      };
-      while (relations.length > 0) {
-        const relation = relations.pop();
-        if (relation) {
-          nestedObject = { [relation]: nestedObject };
-        }
-      }
-      return nestedObject;
+  const isProbablyStringField = (fieldName: string) => {
+    const lower = fieldName.toLowerCase();
+    const nonStringPatterns = [
+      "price",
+      "id",
+      "date",
+      "at",
+      "_count",
+      "count",
+      "size",
+      "amount",
+      "qty",
+      "quantity",
+    ];
+    for (const p of nonStringPatterns) {
+      if (lower.includes(p)) return false;
     }
+    return true;
+  };
 
-    if (value === "insensitive") {
-      return { [key]: { contains: search, mode: "insensitive" } };
-    }
-  });
+  const orConditions = hasSearch
+    ? Object.entries(fields)
+        .map(([key, value]) => {
+          if (value !== "insensitive") return undefined;
+
+          const relations = key.split(".");
+          const field = relations.pop();
+          if (!field) return undefined;
+
+          if (!isProbablyStringField(field)) return undefined;
+
+          let nestedObject: any = {
+            [field]: { contains: hasSearch, mode: "insensitive" },
+          };
+          while (relations.length > 0) {
+            const relation = relations.pop();
+            if (relation) {
+              nestedObject = { [relation]: nestedObject };
+            }
+          }
+          return nestedObject;
+        })
+        .filter(Boolean)
+    : [];
 
   const andConditions = Object.entries(fields)
     .filter(([, value]) => value === true || value === false)
