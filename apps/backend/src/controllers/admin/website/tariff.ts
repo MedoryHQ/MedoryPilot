@@ -7,6 +7,8 @@ import {
   logAdminError as logCatchyError,
   logAdminWarn as logWarn,
   logAdminInfo as logInfo,
+  parseFilters,
+  generateWhereInput,
 } from "@/utils";
 import {
   GetTariffDTO,
@@ -14,6 +16,7 @@ import {
   CreateTariffDTO,
   UpdateTariffDTO,
 } from "@/types/admin";
+import { Prisma } from "@prisma/client";
 
 export const fetchTariffs = async (
   req: Request,
@@ -21,18 +24,103 @@ export const fetchTariffs = async (
   next: NextFunction
 ) => {
   try {
-    const [currentTariff, tariffCount, historyCount] = await Promise.all([
-      prisma.tariff.findFirst(),
-      prisma.tariff.count(),
-      prisma.tariffHistory.count(),
+    const { skip, take, orderBy, search } = getPaginationAndFilters(req);
+    const filters = parseFilters(req);
+    const { minPrice, maxPrice } = filters;
+    const applyMinPrice = minPrice !== undefined && Number(minPrice) > 0;
+    const applyMaxPrice = maxPrice !== undefined && Number(maxPrice) > 0;
+
+    const priceExtra: any = {};
+    if (applyMinPrice) priceExtra.gte = Number(minPrice);
+    if (applyMaxPrice) priceExtra.lte = Number(maxPrice);
+
+    const tariffWhere = generateWhereInput<Prisma.TariffWhereInput>(
+      search,
+      { price: "insensitive" },
+      Object.keys(priceExtra).length ? { price: priceExtra } : undefined
+    );
+
+    const historyWhere = generateWhereInput<Prisma.TariffHistoryWhereInput>(
+      search,
+      { price: "insensitive", fromDate: "insensitive", endDate: "insensitive" },
+      Object.keys(priceExtra).length ? { price: priceExtra } : undefined
+    );
+
+    const [tariffCount, historyCount] = await Promise.all([
+      prisma.tariff.count({ where: tariffWhere }),
+      prisma.tariffHistory.count({ where: historyWhere }),
     ]);
 
+    const tariffPromise = prisma.tariff.findMany({
+      where: tariffWhere,
+      orderBy,
+      take: 1,
+    });
+
+    const historiesToFetch = Math.max(0, skip + take);
+    const historyPromise = prisma.tariffHistory.findMany({
+      where: historyWhere,
+      orderBy,
+      take: historiesToFetch,
+    });
+
+    const [tariffs, histories] = await Promise.all([
+      tariffPromise,
+      historyPromise,
+    ]);
+
+    type Unified = { __type: "tariff" | "history"; payload: any };
+
+    const combined: Unified[] = [
+      ...tariffs.map((t) => ({ __type: "tariff" as const, payload: t })),
+      ...histories.map((h) => ({ __type: "history" as const, payload: h })),
+    ];
+
+    const orderKey = orderBy ? Object.keys(orderBy)[0] : "createdAt";
+    const orderDir = orderBy
+      ? (Object.values(orderBy)[0] as "asc" | "desc")
+      : "desc";
+    const dir = orderDir === "asc" ? 1 : -1;
+
+    const getVal = (item: Unified, key: string) => {
+      return item.payload?.[key];
+    };
+
+    combined.sort((a, b) => {
+      const va = getVal(a, orderKey);
+      const vb = getVal(b, orderKey);
+
+      if (va == null && vb == null) return 0;
+      if (va == null) return 1 * dir;
+      if (vb == null) return -1 * dir;
+
+      if (va instanceof Date || vb instanceof Date) {
+        const da = va instanceof Date ? va.getTime() : new Date(va).getTime();
+        const db = vb instanceof Date ? vb.getTime() : new Date(vb).getTime();
+        return (da - db) * dir;
+      }
+
+      if (typeof va === "number" && typeof vb === "number") {
+        return (va - vb) * dir;
+      }
+
+      const sa = String(va).toLowerCase();
+      const sb = String(vb).toLowerCase();
+      if (sa < sb) return -1 * dir;
+      if (sa > sb) return 1 * dir;
+      return 0;
+    });
+
+    const totalCombined = tariffCount + historyCount;
+
+    const paged = combined.slice(skip, skip + take);
+
+    const data = paged.map((u) => ({ ...u.payload, __type: u.__type }));
+
     return res.status(200).json({
-      data: {
-        currentTariff,
-      },
+      data,
       count: {
-        total: tariffCount + historyCount,
+        total: totalCombined,
       },
     });
   } catch (error) {
