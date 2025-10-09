@@ -478,6 +478,19 @@ export const en = {
         hasIcon: "With Icon",
         noIcon: "Without Icon"
       }
+    },
+    faqs: {
+      management: "FAQs Management",
+      managementDescription: "Manage website FAQs and navigation elements",
+      addFaq: "Add FAQ",
+      search: "Search FAQs...",
+      noFaqsFound: "No FAQs found",
+      faq: "FAQ",
+      question: "Question",
+      answer: "Answer",
+      created: "Created",
+      translations: "Translations",
+      order: "Order"
     }
   }
 };
