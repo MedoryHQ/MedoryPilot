@@ -26,14 +26,16 @@ export const fetchTariffs = async (
   try {
     const { skip, take, orderBy, search } = getPaginationAndFilters(req);
     const filters = parseFilters(req);
-    const { minPrice, maxPrice } = filters;
-    const applyMinPrice = minPrice !== undefined && Number(minPrice) > 0;
-    const applyMaxPrice = maxPrice !== undefined && Number(maxPrice) > 0;
+    const { min, max, type } = filters;
+
+    const applyMinPrice = min !== undefined && Number(min) >= 0;
+    const applyMaxPrice = max !== undefined && Number(max) >= 0;
 
     const priceExtra: any = {};
-    if (applyMinPrice) priceExtra.gte = Number(minPrice);
-    if (applyMaxPrice) priceExtra.lte = Number(maxPrice);
+    if (applyMinPrice) priceExtra.gte = Number(min);
+    if (applyMaxPrice) priceExtra.lte = Number(max);
 
+    const clientProvidedOrderBy = typeof req.query.orderBy !== "undefined";
     const tariffWhere = generateWhereInput<Prisma.TariffWhereInput>(
       search,
       { price: "insensitive" },
@@ -46,23 +48,36 @@ export const fetchTariffs = async (
       Object.keys(priceExtra).length ? { price: priceExtra } : undefined
     );
 
+    const wantOnlyTariff = type === "tariff";
+    const wantOnlyHistory = type === "history";
+
     const [tariffCount, historyCount] = await Promise.all([
-      prisma.tariff.count({ where: tariffWhere }),
-      prisma.tariffHistory.count({ where: historyWhere }),
+      wantOnlyHistory
+        ? Promise.resolve(0)
+        : prisma.tariff.count({ where: tariffWhere }),
+      wantOnlyTariff
+        ? Promise.resolve(0)
+        : prisma.tariffHistory.count({ where: historyWhere }),
     ]);
 
-    const tariffPromise = prisma.tariff.findMany({
-      where: tariffWhere,
-      orderBy,
-      take: 1,
-    });
+    const prismaOrder = clientProvidedOrderBy ? orderBy : undefined;
+
+    const tariffPromise = wantOnlyHistory
+      ? Promise.resolve([])
+      : prisma.tariff.findMany({
+          where: tariffWhere,
+          orderBy: prismaOrder,
+          take: 1,
+        });
 
     const historiesToFetch = Math.max(0, skip + take);
-    const historyPromise = prisma.tariffHistory.findMany({
-      where: historyWhere,
-      orderBy,
-      take: historiesToFetch,
-    });
+    const historyPromise = wantOnlyTariff
+      ? Promise.resolve([])
+      : prisma.tariffHistory.findMany({
+          where: historyWhere,
+          orderBy: prismaOrder,
+          take: historiesToFetch,
+        });
 
     const [tariffs, histories] = await Promise.all([
       tariffPromise,
@@ -76,40 +91,40 @@ export const fetchTariffs = async (
       ...histories.map((h) => ({ __type: "history" as const, payload: h })),
     ];
 
-    const orderKey = orderBy ? Object.keys(orderBy)[0] : "createdAt";
-    const orderDir = orderBy
-      ? (Object.values(orderBy)[0] as "asc" | "desc")
-      : "desc";
-    const dir = orderDir === "asc" ? 1 : -1;
+    if (clientProvidedOrderBy) {
+      const orderKey = Object.keys(orderBy)[0];
+      const orderDir = (Object.values(orderBy)[0] as "asc" | "desc") || "desc";
+      const dir = orderDir === "asc" ? 1 : -1;
 
-    const getVal = (item: Unified, key: string) => {
-      return item.payload?.[key];
-    };
+      const getVal = (item: Unified, key: string) => {
+        return item.payload?.[key];
+      };
 
-    combined.sort((a, b) => {
-      const va = getVal(a, orderKey);
-      const vb = getVal(b, orderKey);
+      combined.sort((a, b) => {
+        const va = getVal(a, orderKey);
+        const vb = getVal(b, orderKey);
 
-      if (va == null && vb == null) return 0;
-      if (va == null) return 1 * dir;
-      if (vb == null) return -1 * dir;
+        if (va == null && vb == null) return 0;
+        if (va == null) return 1 * dir;
+        if (vb == null) return -1 * dir;
 
-      if (va instanceof Date || vb instanceof Date) {
-        const da = va instanceof Date ? va.getTime() : new Date(va).getTime();
-        const db = vb instanceof Date ? vb.getTime() : new Date(vb).getTime();
-        return (da - db) * dir;
-      }
+        if (va instanceof Date || vb instanceof Date) {
+          const da = va instanceof Date ? va.getTime() : new Date(va).getTime();
+          const db = vb instanceof Date ? vb.getTime() : new Date(vb).getTime();
+          return (da - db) * dir;
+        }
 
-      if (typeof va === "number" && typeof vb === "number") {
-        return (va - vb) * dir;
-      }
+        if (typeof va === "number" && typeof vb === "number") {
+          return (va - vb) * dir;
+        }
 
-      const sa = String(va).toLowerCase();
-      const sb = String(vb).toLowerCase();
-      if (sa < sb) return -1 * dir;
-      if (sa > sb) return 1 * dir;
-      return 0;
-    });
+        const sa = String(va).toLowerCase();
+        const sb = String(vb).toLowerCase();
+        if (sa < sb) return -1 * dir;
+        if (sa > sb) return 1 * dir;
+        return 0;
+      });
+    }
 
     const totalCombined = tariffCount + historyCount;
 

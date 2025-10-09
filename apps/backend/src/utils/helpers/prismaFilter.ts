@@ -7,6 +7,12 @@ export const parseBooleanQuery = (value?: string): boolean | undefined => {
   return undefined;
 };
 
+export const isNumericString = (val: string) => {
+  if (typeof val !== "string") return false;
+  const n = Number(val);
+  return !Number.isNaN(n) && isFinite(n);
+};
+
 export const generateWhereInput = <T>(
   search: string | undefined,
   fields: { [key: string]: string | boolean | undefined },
@@ -17,10 +23,11 @@ export const generateWhereInput = <T>(
       ? search.trim()
       : null;
 
+  const searchIsNumber = hasSearch !== null && isNumericString(hasSearch);
+
   const isProbablyStringField = (fieldName: string) => {
     const lower = fieldName.toLowerCase();
     const nonStringPatterns = [
-      "price",
       "id",
       "date",
       "at",
@@ -34,6 +41,7 @@ export const generateWhereInput = <T>(
     for (const p of nonStringPatterns) {
       if (lower.includes(p)) return false;
     }
+    if (lower.includes("price")) return false;
     return true;
   };
 
@@ -41,7 +49,6 @@ export const generateWhereInput = <T>(
     ? Object.entries(fields)
         .map(([key, value]) => {
           if (value !== "insensitive") return undefined;
-
           const relations = key.split(".");
           const field = relations.pop();
           if (!field) return undefined;
@@ -61,6 +68,29 @@ export const generateWhereInput = <T>(
         })
         .filter(Boolean)
     : [];
+
+  const numericConditions =
+    hasSearch && searchIsNumber
+      ? Object.entries(fields)
+          .map(([key, value]) => {
+            const fieldName = key.split(".").pop();
+            if (!fieldName) return undefined;
+            if (fieldName.toLowerCase().includes("price")) {
+              const relations = key.split(".");
+              const field = relations.pop();
+              let nestedObject: any = { [field!]: Number(hasSearch) };
+              while (relations.length > 0) {
+                const relation = relations.pop();
+                if (relation) {
+                  nestedObject = { [relation]: nestedObject };
+                }
+              }
+              return nestedObject;
+            }
+            return undefined;
+          })
+          .filter(Boolean)
+      : [];
 
   const andConditions = Object.entries(fields)
     .filter(([, value]) => value === true || value === false)
@@ -84,9 +114,14 @@ export const generateWhereInput = <T>(
       return { [key]: value };
     });
 
+  const orPart = [
+    ...(orConditions.length > 0 ? orConditions : []),
+    ...(numericConditions.length > 0 ? numericConditions : []),
+  ];
+
   return {
     AND: [
-      ...(orConditions.length > 0 ? [{ OR: orConditions }] : []),
+      ...(orPart.length > 0 ? [{ OR: orPart }] : []),
       ...andConditions,
       ...(extraConditions ? [extraConditions] : []),
     ],
