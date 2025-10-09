@@ -16,21 +16,11 @@ import {
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-type PaginationConf = {
-  enabled?: boolean;
-  pageSize?: number;
-  pageSizeOptions?: number[];
-};
-
 interface PaginationProps {
-  pagination: PaginationConf;
   total: number;
 }
 
-export const Pagination: React.FC<PaginationProps> = ({
-  pagination,
-  total
-}) => {
+export const Pagination: React.FC<PaginationProps> = ({ total }) => {
   const [searchParams] = useSearchParams();
 
   const { pageSize, page, search, orderBy, order, filters } =
@@ -38,6 +28,8 @@ export const Pagination: React.FC<PaginationProps> = ({
   const navigate = useNavigate();
 
   const { t } = useTranslation();
+
+  const sizeList = [10, 25, 50, 100];
 
   const handlePageChange = (nextPage: number, nextPageSize?: number) => {
     updateQueryParamsAndNavigate(navigate, {
@@ -51,9 +43,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   };
 
   const totalCount = total ?? 0;
-  const totalPages = pagination.enabled
-    ? Math.max(1, Math.ceil(totalCount / pageSize))
-    : 1;
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
 
   const dataLengthForUI = totalCount;
 
@@ -62,7 +52,6 @@ export const Pagination: React.FC<PaginationProps> = ({
   };
 
   useEffect(() => {
-    if (!pagination.enabled) return;
     if (page > totalPages) handlePageChange(totalPages);
     if (page < 1) handlePageChange(1);
   }, [totalPages, pageSize, total]);
@@ -88,7 +77,7 @@ export const Pagination: React.FC<PaginationProps> = ({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {[10, 25, 50, 100].map((size) => (
+            {sizeList.map((size) => (
               <SelectItem key={size} value={String(size)}>
                 {size}
               </SelectItem>

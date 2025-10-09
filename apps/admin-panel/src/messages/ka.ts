@@ -317,7 +317,9 @@ export const ka = {
       delete: "წაშლა",
       edit: "რედაქტირება",
       view: "ნახვა",
-      rowsPerPage: "ჩანაწერი გვერდზე: "
+      rowsPerPage: "ჩანაწერი გვერდზე: ",
+      min: "მინ.",
+      max: "მაქს."
     },
     ui: {
       metadata: "მეტა მონაცემები",
@@ -461,6 +463,58 @@ export const ka = {
         noIcon: "Icon-ის გარეშე",
         hasBackground: "ფონით",
         noBackground: "უფონოდ"
+      }
+    },
+    socials: {
+      management: "სოც. ქსელების მენეჯმენტი",
+      managementDescription: "მართეთ ვებსაიტის სოც. ქსელები და ნავიგაცია",
+      addSocial: "სოც. ქსელის დამატება",
+      search: "სოც. ქსელების ძიება",
+      noSocialsFound: "სოც. ქსელი ვერ მოიძებნა",
+      social: "სოც. ქსელი",
+      name: "სახელი",
+      created: "შეიქმნა",
+      icon: "სურათი",
+      link: "ლინკი",
+      filters: {
+        hasIcon: "სურათით",
+        noIcon: "სურათის გარეშე"
+      }
+    },
+    faqs: {
+      management: "ხშირად დასმული კითხვების მენეჯმენტი",
+      managementDescription:
+        "მართეთ ვებსაიტის ხშირად დასმული კითხვები და ნავიგაცია",
+      addFaq: "ხშირად დასმული კითხვის დამატება",
+      search: "ხშირად დასმული კითხვების ძიება",
+      noFaqsFound: "ხშირად დასმული კითხვები ვერ მოიძებნა",
+      faq: "ხშირად დასმული კითხვა",
+      question: "კითხვა",
+      answer: "პასუხი",
+      created: "შეიქმნა",
+      translations: "თარგმენბი",
+      order: "რიგი"
+    },
+    tariffs: {
+      management: "ტარიფების მართვა",
+      managementDescription:
+        "მართეთ ვებსაიტის ტარიფები და ნავიგაციის ელემენტები",
+      addTariff: "ტარიფის დამატება",
+      search: "ტარიფების ძიება...",
+      noTariffsFound: "ტარიფები ვერ მოიძებნა",
+      tariff: "ტარიფი",
+      name: "სახელი",
+      created: "შექმნის თარიღი",
+      type: "ტიპი",
+      history: "ისტორია",
+      price: "ფასი",
+      from: "დაწყების თარიღი",
+      to: "დამთავრების თარიღი",
+      filters: {
+        price: "ფასი",
+        type: "ტიპი",
+        tariff: "ტარიფი",
+        history: "ისტორია"
       }
     }
   }

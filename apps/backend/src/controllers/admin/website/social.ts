@@ -7,8 +7,11 @@ import {
   logAdminError as logCatchyError,
   logAdminInfo as logInfo,
   logAdminWarn as logWarn,
+  generateWhereInput,
+  parseFilters,
 } from "@/utils";
 import { CreateSocialDTO, UpdateSocialDTO } from "@/types/admin";
+import { Prisma } from "@prisma/client";
 
 export const fetchSocials = async (
   req: Request,
@@ -16,18 +19,39 @@ export const fetchSocials = async (
   next: NextFunction
 ) => {
   try {
-    const { skip, take, orderBy } = getPaginationAndFilters(req);
+    const { skip, take, orderBy, search } = getPaginationAndFilters(req);
+    const filters = parseFilters(req);
+    const { icon } = filters;
 
+    const where = generateWhereInput<Prisma.SocialWhereInput>(
+      search,
+      {
+        name: "insensitive",
+        url: "insensitive",
+      },
+      {
+        AND: [
+          {
+            ...(typeof icon === "boolean"
+              ? icon
+                ? { icon: { isNot: null } }
+                : { icon: { is: null } }
+              : {}),
+          },
+        ],
+      }
+    );
     const [socials, count] = await Promise.all([
       prisma.social.findMany({
         skip,
         take,
         orderBy,
+        where,
         include: {
           icon: true,
         },
       }),
-      prisma.social.count(),
+      prisma.social.count({ where }),
     ]);
 
     return res.status(200).json({ data: socials, count });

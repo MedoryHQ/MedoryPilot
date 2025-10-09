@@ -9,7 +9,6 @@ import {
   logAdminWarn as logWarn,
   generateWhereInput,
   getPaginationAndFilters,
-  parseQueryParams,
   parseFilters,
 } from "@/utils";
 import { Prisma } from "@prisma/client";

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Badge, Button } from "@/components/ui";
+import { Badge, Button, DataTable } from "@/components/ui";
 import { useGetHeaders } from "@/libs/queries";
 import {
   formatDate,
@@ -11,17 +11,15 @@ import {
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ImageIcon, Plus } from "lucide-react";
-import { DataTable, Column, FilterConfig } from "@/components/ui";
+import { Column, FilterConfig } from "@/types/ui";
+import { Header } from "@/types/website";
 
 const Headers = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-
-  const { pageSize, filledSearchParams } = getPaginationFields(searchParams);
-
+  const { filledSearchParams } = getPaginationFields(searchParams);
   const { data, refetch, isFetching } = useGetHeaders(filledSearchParams);
-  const items = data?.data ?? [];
 
   const filters: FilterConfig[] = [
     {
@@ -43,7 +41,8 @@ const Headers = () => {
       ]
     }
   ];
-  const columns: Column<any>[] = [
+
+  const columns: Column<Header>[] = [
     {
       key: "header",
       label: toUpperCase(t("headers.header")),
@@ -128,7 +127,7 @@ const Headers = () => {
         </div>
         <Button
           size="lg"
-          className="flex items-center gap-2 shadow-md transition-all hover:shadow-lg"
+          className="premium-button floating-action flex items-center gap-2 shadow-md transition-all hover:shadow-lg"
           onClick={() => navigate("/landing/headers/create")}
         >
           <Plus className="h-5 w-5" />
@@ -137,29 +136,20 @@ const Headers = () => {
       </div>
 
       <DataTable
-        data={items}
+        data={data?.data ?? []}
         columns={columns}
         refetch={refetch}
         isLoading={isFetching}
         deleteEndpoint="header"
-        searchable
-        searchPlaceholder={toUpperCase(t("headers.search"))}
         filters={filters}
-        sortable
-        pagination={{
-          enabled: true,
-          pageSize: pageSize || 10,
-          pageSizeOptions: [10, 25, 50]
-        }}
         total={data?.count}
-        keyExtractor={(it) => it.id}
         emptyMessage={toUpperCase(t("headers.noHeadersFound"))}
-        mobileCardRender={(item, tableActions) => {
+        mobileCardRender={(item) => {
           const tr = getTranslatedObject(item.translations, i18n.language);
           return (
-            <div className="space-y-4">
+            <div>
               <div className="flex items-start gap-3">
-                <div className="border-border bg-muted/10 flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg">
+                <div className="border-border bg-muted/10 mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg">
                   {item.logo ? (
                     <img
                       src={getFileUrl(item.logo.path)}
@@ -215,23 +205,6 @@ const Headers = () => {
                   </p>
                 </div>
               </div>
-
-              {tableActions && tableActions.length > 0 && (
-                <div className="border-border flex gap-2 border-t pt-3">
-                  {tableActions.map((action, idx) => (
-                    <Button
-                      key={idx}
-                      variant={action.variant || "outline"}
-                      size="sm"
-                      onClick={() => action.onClick(item)}
-                      className="flex-1"
-                    >
-                      {action.icon}
-                      <span className="ml-2">{action.label}</span>
-                    </Button>
-                  ))}
-                </div>
-              )}
             </div>
           );
         }}

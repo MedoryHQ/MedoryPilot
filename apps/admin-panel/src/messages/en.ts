@@ -314,7 +314,9 @@ export const en = {
       delete: "Delete",
       edit: "Edit",
       view: "View",
-      rowsPerPage: "Rows per page: "
+      rowsPerPage: "Rows per page: ",
+      min: "Min",
+      max: "Max"
     },
     ui: {
       metadata: "Metadata",
@@ -461,6 +463,56 @@ export const en = {
         noIcon: "Without Icon",
         hasBackground: "With Background",
         noBackground: "Without Background"
+      }
+    },
+    socials: {
+      management: "Socials Management",
+      managementDescription: "Manage website socials and navigation elements",
+      addSocial: "Add Social",
+      search: "Search socials...",
+      noSocialsFound: "No socials found",
+      social: "Social",
+      name: "Name",
+      created: "Created",
+      icon: "Icon",
+      link: "Link",
+      filters: {
+        hasIcon: "With Icon",
+        noIcon: "Without Icon"
+      }
+    },
+    faqs: {
+      management: "FAQs Management",
+      managementDescription: "Manage website FAQs and navigation elements",
+      addFaq: "Add FAQ",
+      search: "Search FAQs...",
+      noFaqsFound: "No FAQs found",
+      faq: "FAQ",
+      question: "Question",
+      answer: "Answer",
+      created: "Created",
+      translations: "Translations",
+      order: "Order"
+    },
+    tariffs: {
+      management: "Tariffs Management",
+      managementDescription: "Manage website tariffs and navigation elements",
+      addTariff: "Add Tariff",
+      search: "Search tariffs...",
+      noTariffsFound: "No tariffs found",
+      tariff: "Tariff",
+      name: "Name",
+      created: "Created",
+      type: "Type",
+      history: "History",
+      price: "Price",
+      from: "From Date",
+      to: "End Date",
+      filters: {
+        price: "Price",
+        type: "Type",
+        tariff: "Tariff",
+        history: "History"
       }
     }
   }

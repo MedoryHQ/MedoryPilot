@@ -109,7 +109,7 @@ model TariffHistory {
   endDate  DateTime
 
   current  Tariff @relation(fields: [tariffId], references: [id])
-  tariffId String @unique @db.Uuid
+  tariffId String @db.Uuid
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

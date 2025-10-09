@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Card,
@@ -38,63 +38,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { DeleteDialog } from "../forms";
 import { cn } from "@/libs";
 import { Pagination } from "../Pagination";
-
-export type Column<T> = {
-  key: string;
-  label: string;
-  sortable?: boolean;
-  render?: (item: T) => React.ReactNode;
-  className?: string;
-  mobileLabel?: string;
-};
-
-export type Action<T> = {
-  label: string;
-  icon?: React.ReactNode;
-  onClick: (item: T) => void;
-  variant?: "default" | "outline" | "destructive" | "ghost";
-  className?: string;
-  hidden?: (item: T) => boolean;
-  actionType?: "edit" | "delete" | "custom";
-};
-
-export type FilterConfig = {
-  key: string;
-  label: string;
-  type: "select" | "boolean";
-  options?: { label: string; value: any }[];
-  defaultValue?: any;
-};
-
-export type PaginationConf = {
-  enabled?: boolean;
-  pageSize?: number;
-  pageSizeOptions?: number[];
-};
-
-export interface DataTableProps<T> {
-  data: T[];
-  columns: Column<T>[];
-  showEdit?: boolean;
-  showDelete?: boolean;
-  searchable?: boolean;
-  refetch?: () => any;
-  isLoading?: boolean;
-  searchPlaceholder?: string;
-  searchKeys?: string[];
-  filters?: FilterConfig[];
-  sortable?: boolean;
-  pagination?: PaginationConf;
-  total: number | undefined;
-  keyExtractor: (item: T) => string;
-  emptyMessage?: string;
-  mobileCardRender?: (item: T, actions?: Action<T>[]) => React.ReactNode;
-  onSearch?: (q: string) => void;
-  onFilter?: (filters: Record<string, any>) => void;
-  onSort?: (sort: { key: string; direction: "asc" | "desc" | null }) => void;
-  actions?: Action<T>[];
-  deleteEndpoint?: string;
-}
+import { Action, DataTableProps } from "@/types/ui";
 
 export function DataTable<T extends Record<string, any>>({
   data,
@@ -105,11 +49,10 @@ export function DataTable<T extends Record<string, any>>({
   total,
   isLoading = false,
   searchable = true,
-  searchPlaceholder = "Search...",
   filters = [],
   sortable = true,
-  pagination = { enabled: false, pageSize: 10, pageSizeOptions: [10, 25, 50] },
-  keyExtractor,
+  pagination = true,
+  keyExtractor = (it) => it.id,
   emptyMessage = "No items found",
   mobileCardRender,
   actions: propActions,
@@ -162,11 +105,15 @@ export function DataTable<T extends Record<string, any>>({
   }, [debouncedSearch]);
 
   useEffect(() => {
-    if (Object.keys(activeFilters).length > 0) {
-      updateQuery({ filters: activeFilters });
-    } else {
-      updateQuery({ filters: {} });
-    }
+    const cleaned = Object.entries(activeFilters).reduce(
+      (acc, [k, v]) => {
+        if (v === null || v === undefined || v === "") return acc;
+        acc[k] = v;
+        return acc;
+      },
+      {} as Record<string, any>
+    );
+    updateQuery({ filters: cleaned });
   }, [activeFilters]);
 
   useEffect(() => {
@@ -240,26 +187,30 @@ export function DataTable<T extends Record<string, any>>({
             <div className="relative w-full flex-1">
               <Search className="text-secondary-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
               <Input
-                placeholder={searchPlaceholder}
+                placeholder={toUpperCase(t("services.search"))}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9"
+                className="dark:border-foreground/10 h-[40px] pl-9"
               />
             </div>
           )}
 
           {filters.length > 0 && (
             <div className="flex items-center gap-2">
-              <Button variant="outline" onClick={() => setActiveFilters({})}>
+              <Button
+                className="h-[40px]"
+                variant="outline"
+                onClick={() => setActiveFilters({})}
+              >
                 {toUpperCase(t("dataTable.clearFilters"))}
               </Button>
               <Popover open={filterMenuOpen} onOpenChange={setFilterMenuOpen}>
                 <PopoverTrigger asChild>
-                  <Button variant="outline">
+                  <Button className="h-[40px]" variant="outline">
                     <Filter className="mr-2 h-4 w-4" />
                     {toUpperCase(t("dataTable.filters"))}
                     {activeFilterCount > 0 && (
-                      <Badge className="ml-2 h-5 min-w-[20px] px-1 text-xs">
+                      <Badge className="ml-2 flex h-6 w-6 min-w-6 items-center justify-center rounded-full text-xs leading-1">
                         {activeFilterCount}
                       </Badge>
                     )}
@@ -276,7 +227,7 @@ export function DataTable<T extends Record<string, any>>({
                           variant="ghost"
                           size="sm"
                           onClick={() => setActiveFilters({})}
-                          className="text-xs"
+                          className="text-xs hover:text-white"
                         >
                           {toUpperCase(t("dataTable.clearAll"))}
                         </Button>
@@ -286,6 +237,7 @@ export function DataTable<T extends Record<string, any>>({
                     {filters.map((f) => (
                       <div key={f.key} className="space-y-2">
                         <label className="text-sm font-medium">{f.label}</label>
+
                         {f.type === "select" && f.options && (
                           <Select
                             value={String(activeFilters[f.key] ?? "__all__")}
@@ -297,10 +249,14 @@ export function DataTable<T extends Record<string, any>>({
                             }
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="All" />
+                              <SelectValue
+                                placeholder={toUpperCase(t("dataTable.all"))}
+                              />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="__all__">All</SelectItem>
+                              <SelectItem value="__all__">
+                                {toUpperCase(t("dataTable.all"))}
+                              </SelectItem>
                               {f.options.map((opt) => (
                                 <SelectItem
                                   key={String(opt.value)}
@@ -311,6 +267,47 @@ export function DataTable<T extends Record<string, any>>({
                               ))}
                             </SelectContent>
                           </Select>
+                        )}
+
+                        {f.type === "number" && (
+                          <div className="flex gap-2">
+                            <Input
+                              type="number"
+                              placeholder={toUpperCase(t("dataTable.min"))}
+                              value={activeFilters[f.key]?.min ?? ""}
+                              onChange={(e) =>
+                                setActiveFilters((prev) => ({
+                                  ...prev,
+                                  [f.key]: {
+                                    ...(prev[f.key] || {}),
+                                    min:
+                                      e.target.value === ""
+                                        ? undefined
+                                        : Number(e.target.value)
+                                  }
+                                }))
+                              }
+                              className="w-1/2"
+                            />
+                            <Input
+                              type="number"
+                              placeholder={toUpperCase(t("dataTable.max"))}
+                              value={activeFilters[f.key]?.max ?? ""}
+                              onChange={(e) =>
+                                setActiveFilters((prev) => ({
+                                  ...prev,
+                                  [f.key]: {
+                                    ...(prev[f.key] || {}),
+                                    max:
+                                      e.target.value === ""
+                                        ? undefined
+                                        : Number(e.target.value)
+                                  }
+                                }))
+                              }
+                              className="w-1/2"
+                            />
+                          </div>
                         )}
                       </div>
                     ))}
@@ -381,7 +378,7 @@ export function DataTable<T extends Record<string, any>>({
                         initial={{ opacity: 0, y: 6 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: idx * 0.03 }}
-                        className="border-border/30 hover:bg-secondary/10 border-b"
+                        className="border-border/30 hover:bg-secondary/30 border-b"
                       >
                         {columns.map((col) => (
                           <td key={col.key} className="px-6 py-4">
@@ -447,51 +444,49 @@ export function DataTable<T extends Record<string, any>>({
               >
                 <Card className="border-border/50 shadow-sm transition-shadow hover:shadow-md">
                   <CardContent className="p-5">
-                    {mobileCardRender ? (
-                      mobileCardRender(row, effectiveActions)
-                    ) : (
-                      <div className="space-y-3">
-                        {columns.map((col) => (
-                          <div
-                            key={col.key}
-                            className="flex items-start justify-between"
-                          >
-                            <span className="text-secondary-foreground text-sm font-medium">
-                              {col.mobileLabel || col.label}
-                            </span>
-                            <span className="text-right text-sm font-medium">
-                              {col.render
-                                ? col.render(row)
-                                : String(row[col.key] ?? "")}
-                            </span>
-                          </div>
-                        ))}
-                        {effectiveActions && effectiveActions.length > 0 && (
-                          <div className="border-border flex gap-2 border-t pt-3">
-                            {effectiveActions.map((action, idx) => (
-                              <Button
-                                key={idx}
-                                variant={action.variant || "outline"}
-                                size="sm"
-                                onClick={() => action.onClick(row)}
-                                className={cn("flex-1", action.className)}
-                              >
-                                {action.icon}
-                                <span className="ml-2">{action.label}</span>
-                              </Button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    )}
+                    <div className="space-y-4">
+                      {mobileCardRender
+                        ? mobileCardRender(row)
+                        : columns.map((col) => (
+                            <div
+                              key={col.key}
+                              className="flex items-start justify-between"
+                            >
+                              <span className="text-secondary-foreground text-sm font-medium">
+                                {col.mobileLabel || col.label}
+                              </span>
+                              <span className="text-right text-sm font-medium">
+                                {col.render
+                                  ? col.render(row)
+                                  : String(row[col.key] ?? "")}
+                              </span>
+                            </div>
+                          ))}
+                      {effectiveActions && effectiveActions.length > 0 && (
+                        <div className="border-border flex gap-2 border-t pt-3">
+                          {effectiveActions.map((action, idx) => (
+                            <Button
+                              key={idx}
+                              variant={action.variant || "outline"}
+                              size="sm"
+                              onClick={() => action.onClick(row)}
+                              className={cn("flex-1", action.className)}
+                            >
+                              {action.icon}
+                              <span className="ml-2">{action.label}</span>
+                            </Button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               </motion.div>
             ))
           )}
         </div>
-        {total !== undefined && total > 0 && (
-          <Pagination pagination={pagination} total={total} />
+        {pagination && total !== undefined && total > 0 && (
+          <Pagination total={total} />
         )}
       </div>
 

@@ -7,32 +7,90 @@ export const parseBooleanQuery = (value?: string): boolean | undefined => {
   return undefined;
 };
 
+export const isNumericString = (val: string) => {
+  if (typeof val !== "string") return false;
+  const n = Number(val);
+  return !Number.isNaN(n) && isFinite(n);
+};
+
 export const generateWhereInput = <T>(
   search: string | undefined,
   fields: { [key: string]: string | boolean | undefined },
   extraConditions?: T
 ): T => {
-  const orConditions = Object.entries(fields).map(([key, value]) => {
-    const relations = key.split(".");
-    const field = relations.pop();
+  const hasSearch =
+    typeof search === "string" && search.trim().length > 0
+      ? search.trim()
+      : null;
 
-    if (relations.length > 0 && field) {
-      let nestedObject: any = {
-        [field]: { contains: search, mode: "insensitive" },
-      };
-      while (relations.length > 0) {
-        const relation = relations.pop();
-        if (relation) {
-          nestedObject = { [relation]: nestedObject };
-        }
-      }
-      return nestedObject;
-    }
+  const searchIsNumber = hasSearch !== null && isNumericString(hasSearch);
 
-    if (value === "insensitive") {
-      return { [key]: { contains: search, mode: "insensitive" } };
+  const isProbablyStringField = (fieldName: string) => {
+    const lower = fieldName.toLowerCase();
+    const nonStringPatterns = [
+      "id",
+      "date",
+      "at",
+      "_count",
+      "count",
+      "size",
+      "amount",
+      "qty",
+      "quantity",
+    ];
+    for (const p of nonStringPatterns) {
+      if (lower.includes(p)) return false;
     }
-  });
+    if (lower.includes("price")) return false;
+    return true;
+  };
+
+  const orConditions = hasSearch
+    ? Object.entries(fields)
+        .map(([key, value]) => {
+          if (value !== "insensitive") return undefined;
+          const relations = key.split(".");
+          const field = relations.pop();
+          if (!field) return undefined;
+
+          if (!isProbablyStringField(field)) return undefined;
+
+          let nestedObject: any = {
+            [field]: { contains: hasSearch, mode: "insensitive" },
+          };
+          while (relations.length > 0) {
+            const relation = relations.pop();
+            if (relation) {
+              nestedObject = { [relation]: nestedObject };
+            }
+          }
+          return nestedObject;
+        })
+        .filter(Boolean)
+    : [];
+
+  const numericConditions =
+    hasSearch && searchIsNumber
+      ? Object.entries(fields)
+          .map(([key, value]) => {
+            const fieldName = key.split(".").pop();
+            if (!fieldName) return undefined;
+            if (fieldName.toLowerCase().includes("price")) {
+              const relations = key.split(".");
+              const field = relations.pop();
+              let nestedObject: any = { [field!]: Number(hasSearch) };
+              while (relations.length > 0) {
+                const relation = relations.pop();
+                if (relation) {
+                  nestedObject = { [relation]: nestedObject };
+                }
+              }
+              return nestedObject;
+            }
+            return undefined;
+          })
+          .filter(Boolean)
+      : [];
 
   const andConditions = Object.entries(fields)
     .filter(([, value]) => value === true || value === false)
@@ -56,9 +114,14 @@ export const generateWhereInput = <T>(
       return { [key]: value };
     });
 
+  const orPart = [
+    ...(orConditions.length > 0 ? orConditions : []),
+    ...(numericConditions.length > 0 ? numericConditions : []),
+  ];
+
   return {
     AND: [
-      ...(orConditions.length > 0 ? [{ OR: orConditions }] : []),
+      ...(orPart.length > 0 ? [{ OR: orPart }] : []),
       ...andConditions,
       ...(extraConditions ? [extraConditions] : []),
     ],

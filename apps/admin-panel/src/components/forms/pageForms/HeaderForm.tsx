@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, StatusToggle, LocaleTabSwitcher } from "../ui";
+import { Button, StatusToggle, LocaleTabSwitcher } from "@/components/ui";
 import { ArrowLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { setHookFormErrors, toUpperCase } from "@/utils";
@@ -23,7 +23,7 @@ import {
   MediaUploader,
   MetadataDisplay,
   TwoColumnLayout
-} from "../forms";
+} from "..";
 import { Separator } from "@radix-ui/react-select";
 
 interface FormActionsProps {

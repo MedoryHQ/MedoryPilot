@@ -1,7 +1,6 @@
-import { FaqFormValues, FaqResponse, FaqsResponse } from "@/types/website";
+import { FaqResponse, FaqsResponse } from "@/types/website";
 import instance from "../../api/axios";
 import { useQuery } from "react-query";
-import { UseFormSetValue } from "react-hook-form";
 
 export const useGetFaqs = (search?: URLSearchParams) => {
   return useQuery<FaqsResponse, Error>({
@@ -16,44 +15,17 @@ export const useGetFaqs = (search?: URLSearchParams) => {
   });
 };
 
-export const useGetFaq = (
-  id: string | null,
-  setValue: UseFormSetValue<FaqFormValues>
-) => {
+export const useGetFaq = (id: string | null) => {
   return useQuery<FaqResponse, Error>({
-    queryKey: ["faqs"],
+    queryKey: ["faqs", id],
     queryFn: async (): Promise<FaqResponse> => {
       const { data } = await instance.get<FaqResponse>(`/faq/${id}`);
       return data;
     },
     enabled: !!id,
-    refetchOnReconnect: false,
-    refetchInterval: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
-    onSuccess(data: FaqResponse) {
-      const { translations, order } = data.data;
-
-      const enTranslation = translations?.find(
-        (translation) => translation.language.code === "en"
-      );
-      const kaTranslation = translations?.find(
-        (translation) => translation.language.code === "ka"
-      );
-
-      const formTranslations = {
-        en: {
-          question: enTranslation?.question || "",
-          answer: enTranslation?.answer || ""
-        },
-        ka: {
-          question: kaTranslation?.question || "",
-          answer: kaTranslation?.answer || ""
-        }
-      };
-
-      setValue("order", order);
-      setValue("translations", formTranslations);
-    }
+    refetchOnReconnect: false,
+    refetchInterval: false
   });
 };
