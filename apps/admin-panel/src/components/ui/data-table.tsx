@@ -186,23 +186,27 @@ export function DataTable<T extends Record<string, any>>({
                 placeholder={toUpperCase(t("services.search"))}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9"
+                className="dark:border-foreground/10 h-[40px] pl-9"
               />
             </div>
           )}
 
           {filters.length > 0 && (
             <div className="flex items-center gap-2">
-              <Button variant="outline" onClick={() => setActiveFilters({})}>
+              <Button
+                className="h-[40px]"
+                variant="outline"
+                onClick={() => setActiveFilters({})}
+              >
                 {toUpperCase(t("dataTable.clearFilters"))}
               </Button>
               <Popover open={filterMenuOpen} onOpenChange={setFilterMenuOpen}>
                 <PopoverTrigger asChild>
-                  <Button variant="outline">
+                  <Button className="h-[40px]" variant="outline">
                     <Filter className="mr-2 h-4 w-4" />
                     {toUpperCase(t("dataTable.filters"))}
                     {activeFilterCount > 0 && (
-                      <Badge className="ml-2 h-5 min-w-[20px] px-1 text-xs">
+                      <Badge className="ml-2 flex h-6 w-6 min-w-6 items-center justify-center rounded-full text-xs leading-1">
                         {activeFilterCount}
                       </Badge>
                     )}
@@ -219,7 +223,7 @@ export function DataTable<T extends Record<string, any>>({
                           variant="ghost"
                           size="sm"
                           onClick={() => setActiveFilters({})}
-                          className="text-xs"
+                          className="text-xs hover:text-white"
                         >
                           {toUpperCase(t("dataTable.clearAll"))}
                         </Button>
@@ -240,10 +244,14 @@ export function DataTable<T extends Record<string, any>>({
                             }
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="All" />
+                              <SelectValue
+                                placeholder={toUpperCase(t("dataTable.all"))}
+                              />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="__all__">All</SelectItem>
+                              <SelectItem value="__all__">
+                                {toUpperCase(t("dataTable.all"))}
+                              </SelectItem>
                               {f.options.map((opt) => (
                                 <SelectItem
                                   key={String(opt.value)}
@@ -324,7 +332,7 @@ export function DataTable<T extends Record<string, any>>({
                         initial={{ opacity: 0, y: 6 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: idx * 0.03 }}
-                        className="border-border/30 hover:bg-secondary/10 border-b"
+                        className="border-border/30 hover:bg-secondary/30 border-b"
                       >
                         {columns.map((col) => (
                           <td key={col.key} className="px-6 py-4">

@@ -127,7 +127,7 @@ const Headers = () => {
         </div>
         <Button
           size="lg"
-          className="flex items-center gap-2 shadow-md transition-all hover:shadow-lg"
+          className="premium-button floating-action flex items-center gap-2 shadow-md transition-all hover:shadow-lg"
           onClick={() => navigate("/landing/headers/create")}
         >
           <Plus className="h-5 w-5" />
