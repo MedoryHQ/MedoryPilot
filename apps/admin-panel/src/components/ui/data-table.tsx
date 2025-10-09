@@ -105,11 +105,15 @@ export function DataTable<T extends Record<string, any>>({
   }, [debouncedSearch]);
 
   useEffect(() => {
-    if (Object.keys(activeFilters).length > 0) {
-      updateQuery({ filters: activeFilters });
-    } else {
-      updateQuery({ filters: {} });
-    }
+    const cleaned = Object.entries(activeFilters).reduce(
+      (acc, [k, v]) => {
+        if (v === null || v === undefined || v === "") return acc;
+        acc[k] = v;
+        return acc;
+      },
+      {} as Record<string, any>
+    );
+    updateQuery({ filters: cleaned });
   }, [activeFilters]);
 
   useEffect(() => {
@@ -233,6 +237,7 @@ export function DataTable<T extends Record<string, any>>({
                     {filters.map((f) => (
                       <div key={f.key} className="space-y-2">
                         <label className="text-sm font-medium">{f.label}</label>
+
                         {f.type === "select" && f.options && (
                           <Select
                             value={String(activeFilters[f.key] ?? "__all__")}
@@ -262,6 +267,47 @@ export function DataTable<T extends Record<string, any>>({
                               ))}
                             </SelectContent>
                           </Select>
+                        )}
+
+                        {f.type === "number" && (
+                          <div className="flex gap-2">
+                            <Input
+                              type="number"
+                              placeholder="min"
+                              value={activeFilters[f.key]?.min ?? ""}
+                              onChange={(e) =>
+                                setActiveFilters((prev) => ({
+                                  ...prev,
+                                  [f.key]: {
+                                    ...(prev[f.key] || {}),
+                                    min:
+                                      e.target.value === ""
+                                        ? undefined
+                                        : Number(e.target.value)
+                                  }
+                                }))
+                              }
+                              className="w-1/2"
+                            />
+                            <Input
+                              type="number"
+                              placeholder="max"
+                              value={activeFilters[f.key]?.max ?? ""}
+                              onChange={(e) =>
+                                setActiveFilters((prev) => ({
+                                  ...prev,
+                                  [f.key]: {
+                                    ...(prev[f.key] || {}),
+                                    max:
+                                      e.target.value === ""
+                                        ? undefined
+                                        : Number(e.target.value)
+                                  }
+                                }))
+                              }
+                              className="w-1/2"
+                            />
+                          </div>
                         )}
                       </div>
                     ))}
