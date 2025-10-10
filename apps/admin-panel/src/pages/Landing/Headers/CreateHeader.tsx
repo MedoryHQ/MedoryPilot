@@ -1,16 +1,7 @@
-import { useNavigate } from "react-router-dom";
-import { HeaderFormActions } from "@/components/forms";
+import { HeaderForm } from "@/components/forms";
 
 const CreateHeader = () => {
-  const navigate = useNavigate();
-
-  return (
-    <HeaderFormActions
-      mode="create"
-      isSubmitting={false}
-      onCancel={() => navigate("/landing/headers")}
-    />
-  );
+  return <HeaderForm mode="create" onSuccessNavigate="/landing/headers" />;
 };
 
 export const CreateHeaderNavigationRoute = {
