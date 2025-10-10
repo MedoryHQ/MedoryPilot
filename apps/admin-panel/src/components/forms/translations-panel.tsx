@@ -1,28 +1,7 @@
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/libs";
-
-export interface TranslationField {
-  name: string;
-  label: string;
-  type?: "text" | "email" | "textarea" | "number";
-  placeholder?: string;
-  required?: boolean;
-  rows?: number;
-  maxLength?: number;
-  helperText?: string;
-}
-
-export interface TranslationsPanelProps<T extends string = string> {
-  activeLocale: T;
-  fields: TranslationField[];
-  values: Record<string, string>;
-  errors?: Record<string, string>;
-  onChange: (fieldName: string, value: string) => void;
-  disabled?: boolean;
-  children?: React.ReactNode;
-  className?: string;
-}
+import { TranslationsPanelProps } from "@/types";
 
 export const TranslationsPanel = <T extends string = string>({
   activeLocale,
