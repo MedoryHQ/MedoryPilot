@@ -31,7 +31,8 @@ export type FieldType =
   | "toggle"
   | "media"
   | "custom"
-  | "status";
+  | "status"
+  | "number";
 
 export type FieldConfig<TForm extends FieldValues = FieldValues> =
   | {

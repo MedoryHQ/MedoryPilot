@@ -30,7 +30,7 @@ export interface FaqTranslation {
 }
 
 export type FaqFormValues = {
-  order: number;
+  order: number | null;
   translations: {
     en: {
       question: string;

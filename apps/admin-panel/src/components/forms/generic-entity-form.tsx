@@ -265,6 +265,32 @@ export function GenericEntityForm<
           />
         );
 
+      case "number":
+        return (
+          <FieldGroup
+            key={name}
+            label={toUpperCase(t(label as string))}
+            type="number"
+            value={watchedValue}
+            onChange={(v) =>
+              form.setValue(
+                name as Path<TForm>,
+                Number(v) as unknown as PathValue<TForm, Path<TForm>>
+              )
+            }
+            placeholder={
+              f.props?.placeholder
+                ? t(f.props.placeholder as string)
+                : undefined
+            }
+            required={f.props?.required}
+            helperText={
+              f.props?.description ? t(f.props.description) : undefined
+            }
+            className={f.props?.fullWidth ? "md:col-span-2" : ""}
+            error={(form.formState.errors as any)[name]?.message}
+          />
+        );
       case "toggle":
         return (
           <div key={name}>
