@@ -140,6 +140,7 @@ const Services = () => {
         deleteEndpoint="service"
         filters={filters}
         total={data?.count}
+        editUrl="/landing/services/edit"
         emptyMessage={toUpperCase(t("services.noServicesFound"))}
         mobileCardRender={(item) => {
           const translation = getTranslatedObject(

@@ -30,6 +30,7 @@ export interface DataTableProps<T> {
   data: T[];
   columns: Column<T>[];
   showEdit?: boolean;
+  editUrl: string;
   showDelete?: boolean;
   searchable?: boolean;
   refetch?: () => any;

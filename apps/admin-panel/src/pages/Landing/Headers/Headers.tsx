@@ -143,6 +143,7 @@ const Headers = () => {
         deleteEndpoint="header"
         filters={filters}
         total={data?.count}
+        editUrl="/landing/headers/edit"
         emptyMessage={toUpperCase(t("headers.noHeadersFound"))}
         mobileCardRender={(item) => {
           const tr = getTranslatedObject(item.translations, i18n.language);
