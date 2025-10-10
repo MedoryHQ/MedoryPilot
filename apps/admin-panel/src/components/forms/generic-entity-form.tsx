@@ -19,9 +19,10 @@ import {
   TwoColumnLayout,
   TranslationsPanel,
   FieldGroup,
-  MediaUploader
+  MediaUploader,
+  MetadataDisplay
 } from ".";
-import { Button, LocaleTabSwitcher } from "@/components/ui";
+import { Button, LocaleTabSwitcher, StatusToggle } from "@/components/ui";
 import { DeleteConfirmDialog } from "@/components/forms";
 import { useToast } from "@/hooks";
 import { FieldConfig, GenericEntityFormProps } from "@/types";
@@ -210,6 +211,7 @@ export function GenericEntityForm<
 
     const name = f.name!;
     const label = f.label ?? name;
+    const description = f.description ?? name;
 
     const watchedValue = getFieldValue(name as Path<TForm>);
 
@@ -279,21 +281,42 @@ export function GenericEntityForm<
             />
           </div>
         );
-
-      case "media":
+      case "status":
         return (
-          <FormSection key={name} title={toUpperCase(t(label as string))}>
-            <MediaUploader
-              value={watchedValue ?? null}
+          <div className="flex flex-col gap-6" key={name}>
+            <MetadataDisplay
+              createdAt={(entityQuery.data as any)?.createdAt}
+              updatedAt={(entityQuery.data as any)?.updatedAt}
+            />
+            <StatusToggle
+              label={toUpperCase(t(label as string))}
+              description={toUpperCase(t(description as string))}
+              value={(form.getValues() as any).active ?? false}
               onChange={(v) =>
                 form.setValue(
                   name as Path<TForm>,
-                  v as unknown as PathValue<TForm, Path<TForm>>
+                  toBool(v) as unknown as PathValue<TForm, Path<TForm>>
                 )
               }
-              {...(f.props || {})}
+              activeLabel={toUpperCase(t("headers.form.active"))}
+              inactiveLabel={toUpperCase(t("headers.form.inactive"))}
             />
-          </FormSection>
+          </div>
+        );
+
+      case "media":
+        return (
+          <MediaUploader
+            value={watchedValue ?? null}
+            key={name}
+            onChange={(v) =>
+              form.setValue(
+                name as Path<TForm>,
+                v as unknown as PathValue<TForm, Path<TForm>>
+              )
+            }
+            {...(f.props || {})}
+          />
         );
 
       default:
@@ -409,6 +432,7 @@ export function GenericEntityForm<
                 <FormSection
                   key={sec.key ?? sec.title}
                   title={sec.title}
+                  className="!gap-0"
                   description={sec.description}
                 >
                   {sec.fields?.map((f, idx) => (

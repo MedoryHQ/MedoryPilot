@@ -2,12 +2,10 @@ import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
-
 import { GenericEntityForm } from "..";
 import type { FieldConfig } from "@/types";
 import type { HeaderFormValues } from "@/validations/website/header.validation";
 import { headerSchema } from "@/validations/website/header.validation";
-import { StatusToggle } from "@/components/ui";
 
 export interface HeaderFormProps {
   mode: "create" | "edit" | "readonly";
@@ -89,20 +87,11 @@ export const HeaderForm: React.FC<HeaderFormProps> = ({
       description: undefined,
       fields: [
         {
-          kind: "custom",
-          render: (form) => {
-            const activeVal = (form.getValues() as any).active ?? false;
-            return (
-              <StatusToggle
-                label={toUpperCase(t("headers.form.status"))}
-                description={toUpperCase(t("headers.form.statusDescription"))}
-                value={!!activeVal}
-                onChange={(v: boolean) => form.setValue("active" as any, v)}
-                activeLabel={toUpperCase(t("headers.form.active"))}
-                inactiveLabel={toUpperCase(t("headers.form.inactive"))}
-              />
-            );
-          }
+          kind: "simple",
+          name: "active",
+          label: "headers.form.status",
+          description: "headers.form.statusDescription",
+          type: "status"
         }
       ] as FieldConfig<HeaderFormValues>[]
     },
@@ -152,6 +141,7 @@ export const HeaderForm: React.FC<HeaderFormProps> = ({
           {
             name: "headline",
             label: toUpperCase(t("headers.form.headline")),
+            fullWidth: true,
             required: true
           },
           {

@@ -140,6 +140,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
             name: "title",
             label: toUpperCase(t("services.form.title")),
             required: true,
+            fullWidth: true,
             rows: 1
           },
           {

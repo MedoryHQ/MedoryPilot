@@ -8,6 +8,7 @@ export interface TranslationField {
   type?: "text" | "email" | "textarea" | "number";
   placeholder?: string;
   required?: boolean;
+  fullWidth?: boolean;
   rows?: number;
   maxLength?: number;
   helperText?: string;
@@ -24,7 +25,13 @@ export interface TranslationsPanelProps<T extends string = string> {
   className?: string;
 }
 
-export type FieldType = "text" | "textarea" | "toggle" | "media" | "custom";
+export type FieldType =
+  | "text"
+  | "textarea"
+  | "toggle"
+  | "media"
+  | "custom"
+  | "status";
 
 export type FieldConfig<TForm extends FieldValues = FieldValues> =
   | {
@@ -32,6 +39,7 @@ export type FieldConfig<TForm extends FieldValues = FieldValues> =
       name: string;
       label: string;
       type: FieldType;
+      description?: string;
       props?: any;
     }
   | {

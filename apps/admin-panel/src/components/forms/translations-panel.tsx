@@ -41,7 +41,11 @@ export const TranslationsPanel = <T extends string = string>({
               rows={field.rows}
               maxLength={field.maxLength}
               helperText={field.helperText}
-              className={field.type === "textarea" ? "md:col-span-2" : ""}
+              className={
+                field.type === "textarea" || !!field.fullWidth
+                  ? "md:col-span-2"
+                  : ""
+              }
             />
           ))}
       </motion.div>
