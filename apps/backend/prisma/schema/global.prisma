@@ -65,8 +65,8 @@ model File {
   admin        Admin?      @relation(fields: [adminId], references: [id])
   adminId      String?     @unique @db.Uuid
 
-  serviceIcon       Service? @relation("ServiceIcon")
-  serviceBackground Service? @relation("ServiceBackground")
+  serviceIcon       Service[] @relation("ServiceIcon")
+  serviceBackground Service[] @relation("ServiceBackground")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
