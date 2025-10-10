@@ -262,7 +262,6 @@ export const updateService = async (
 ) => {
   try {
     const { id } = req.params;
-
     const { translations, background, icon } = req.body as UpdateServiceDTO;
 
     logInfo("Service update attempt", {
@@ -293,13 +292,8 @@ export const updateService = async (
       : undefined;
 
     const findService = await prisma.service.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        icon: true,
-        background: true,
-      },
+      where: { id },
+      include: { icon: true, background: true },
     });
 
     if (!findService) {
@@ -307,38 +301,56 @@ export const updateService = async (
         ip: (req as any).hashedIp,
         id: (req as any).userId,
         path: req.path,
-
         event: "service_update_failed",
       });
       return sendError(req, res, 404, "serviceNotFound");
     }
 
+    let newIconFile: { id: string } | null = null;
+    let newBackgroundFile: { id: string } | null = null;
+
+    if (iconToCreate) {
+      newIconFile = await prisma.file.create({
+        data: { ...iconToCreate },
+        select: { id: true },
+      });
+    }
+
+    if (backgroundToCreate) {
+      newBackgroundFile = await prisma.file.create({
+        data: { ...backgroundToCreate },
+        select: { id: true },
+      });
+    }
+
+    const updateData: any = {
+      translations: {
+        deleteMany: {},
+        create: translationsToCreate,
+      },
+    };
+
+    if (newIconFile) {
+      updateData.iconId = newIconFile.id;
+    } else if (
+      Object.prototype.hasOwnProperty.call(req.body, "icon") &&
+      icon === null
+    ) {
+      updateData.iconId = null;
+    }
+    if (newBackgroundFile) {
+      updateData.backgroundId = newBackgroundFile.id;
+    } else if (
+      Object.prototype.hasOwnProperty.call(req.body, "background") &&
+      background === null
+    ) {
+      updateData.backgroundId = null;
+    }
+
     const service = await prisma.service.update({
-      where: {
-        id,
-      },
-      data: {
-        translations: {
-          deleteMany: {},
-          create: translationsToCreate,
-        },
-        icon: iconToCreate
-          ? {
-              delete: findService.icon ? {} : undefined,
-              create: iconToCreate,
-            }
-          : findService.icon
-          ? { delete: {} }
-          : undefined,
-        background: backgroundToCreate
-          ? {
-              delete: findService.background ? {} : undefined,
-              create: backgroundToCreate,
-            }
-          : findService.background
-          ? { delete: {} }
-          : undefined,
-      },
+      where: { id },
+      data: updateData,
+      include: { translations: true, icon: true, background: true },
     });
 
     logInfo("Service updated successfully", {
@@ -348,9 +360,7 @@ export const updateService = async (
       event: "service_updated",
     });
 
-    return res.json({
-      data: service,
-    });
+    return res.json({ data: service });
   } catch (error) {
     logCatchyError("Update service exception", error, {
       ip: (req as any).hashedIp,
