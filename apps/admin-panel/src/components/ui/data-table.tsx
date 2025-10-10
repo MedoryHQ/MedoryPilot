@@ -46,6 +46,7 @@ export function DataTable<T extends Record<string, any>>({
   showEdit = true,
   showDelete = true,
   refetch,
+  editUrl,
   total,
   isLoading = false,
   searchable = true,
@@ -148,7 +149,7 @@ export function DataTable<T extends Record<string, any>>({
     {
       label: toUpperCase(t("dataTable.edit") || "Edit"),
       icon: <Edit className="h-4 w-4" />,
-      onClick: (item: any) => navigate(`/landing/headers/edit?id=${item.id}`),
+      onClick: (item: any) => navigate(`${editUrl}?id=${item.id}`),
       variant: "outline",
       actionType: "edit"
     },

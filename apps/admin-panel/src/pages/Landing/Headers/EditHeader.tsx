@@ -1,19 +1,13 @@
-import { useNavigate, useLocation } from "react-router-dom";
-import { HeaderFormActions } from "@/components/forms";
+import { useLocation } from "react-router-dom";
+import { HeaderForm } from "@/components/forms";
 
 const EditHeader = () => {
-  const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const id = searchParams.get("id") || "";
 
   return (
-    <HeaderFormActions
-      mode="edit"
-      id={id}
-      isSubmitting={false}
-      onCancel={() => navigate("/landing/headers")}
-    />
+    <HeaderForm mode="edit" id={id} onSuccessNavigate="/landing/headers" />
   );
 };
 

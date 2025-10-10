@@ -1,3 +1,4 @@
+import { LocaleConfig } from "@/components/ui";
 import { Stage } from "@/types";
 import { toUpperCase } from "@/utils";
 import {
@@ -220,3 +221,8 @@ export const overviewStatsConfig = [
   { key: "pages", label: "overview.pages", icon: Globe },
   { key: "tariffs", label: "overview.tariffs", icon: Package }
 ];
+
+export const locales = [
+  { code: "en", label: "English", flag: "🇬🇧" },
+  { code: "ka", label: "ქართული", flag: "🇬🇪" }
+] as LocaleConfig[];

@@ -457,7 +457,29 @@ export const en = {
       translations: "Translations",
       visits: "Visits",
       created: "Created",
-
+      form: {
+        createTitle: "Create Service",
+        editTitle: "Edit Service",
+        subtitle: "Configure your website service and navigation",
+        contentTranslations: "Content & Translations",
+        contentTranslationsDescription:
+          "Fill in service details for each language",
+        title: "Title",
+        titlePlaceholder: "e.g., Online Appointments",
+        description: "Description",
+        descriptionPlaceholder: "Enter a brief description for this service...",
+        settings: "Settings",
+        icon: "Icon",
+        iconLabel: "Drop your icon here",
+        iconDescription: "or click to browse",
+        background: "Background",
+        backgroundLabel: "Drop your background here",
+        backgroundDescription: "or click to browse",
+        service: "Service",
+        createdSuccessfully: "Service created successfully",
+        updatedSuccessfully: "Service updated successfully",
+        deletedSuccessfully: "Service deleted successfully"
+      },
       filters: {
         hasIcon: "With Icon",
         noIcon: "Without Icon",

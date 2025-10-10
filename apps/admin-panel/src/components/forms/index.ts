@@ -7,3 +7,4 @@ export * from "./form-shell";
 export * from "./media-uploader";
 export * from "./translations-panel";
 export * from "./pageForms";
+export * from "./generic-entity-form";
