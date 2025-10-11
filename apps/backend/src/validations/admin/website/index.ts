@@ -9,3 +9,4 @@ export * from "./news.validations";
 export * from "./page-component.validations";
 export * from "./social.validations";
 export * from "./footer.validations";
+export * from "./category.validations";
