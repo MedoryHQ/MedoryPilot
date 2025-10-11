@@ -585,6 +585,9 @@ export const ka = {
         createdSuccessfully: "კატეგორია წარმატებით შეიქმნა",
         updatedSuccessfully: "კატეგორია წარმატებით განახლდა",
         deletedSuccessfully: "კატეგორია წარმატებით წაიშალა"
+      },
+      errors: {
+        nameRequired: "სახელი სავალდებულოა"
       }
     }
   }

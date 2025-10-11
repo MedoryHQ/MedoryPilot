@@ -580,6 +580,9 @@ export const en = {
         createdSuccessfully: "Category created successfully",
         updatedSuccessfully: "Category updated successfully",
         deletedSuccessfully: "Category deleted successfully"
+      },
+      errors: {
+        nameRequired: "Name is required"
       }
     }
   }

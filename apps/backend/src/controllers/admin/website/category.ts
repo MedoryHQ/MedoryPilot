@@ -41,6 +41,11 @@ export const fetchCategories = async (
               },
             },
           },
+          _count: {
+            select: {
+              blogs: true,
+            },
+          },
         },
       }),
       prisma.category.count({ where }),

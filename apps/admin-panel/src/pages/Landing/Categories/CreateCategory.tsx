@@ -1,12 +1,12 @@
 import { CategoryForm } from "@/components/forms";
 
 const CreateCategory = () => {
-  return <CategoryForm mode="create" onSuccessNavigate="/landing/categorys" />;
+  return <CategoryForm mode="create" onSuccessNavigate="/landing/categories" />;
 };
 
 export const CreateCategoryNavigationRoute = {
   element: <CreateCategory />,
-  path: "/landing/categorys/create"
+  path: "/landing/categories/create"
 };
 
 export default CreateCategory;
