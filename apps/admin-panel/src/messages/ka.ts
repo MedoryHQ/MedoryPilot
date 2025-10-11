@@ -516,7 +516,26 @@ export const ka = {
       answer: "პასუხი",
       created: "შეიქმნა",
       translations: "თარგმენბი",
-      order: "რიგი"
+      order: "რიგი",
+      form: {
+        createTitle: "Ხშირად დასმული კითხვის შექმნა",
+        editTitle: "Ხშირად დასმული კითხვის რედაქტირება",
+        subtitle: "ვებსაიტის Ხშირად დასმული კითხვის კონფიგურაცია",
+        contentTranslations: "კონტენტი და თარგმანები",
+        contentTranslationsDescription:
+          "შეავსეთ ხშირად დასმული კითხვის დეტალები თითოეული ენისთვის",
+        question: "კითხვა",
+        questionPlaceholder: "მაგ., კითხვა",
+        answer: "კითქვის პასუხი",
+        answerPlaceholder:
+          "შეიყვანეთ მოკლე აღწერა ხშირად დასმული კითხვისთვის...",
+        settings: "პარამეტრები",
+        faq: "Ხშირად დასმული კითხვა",
+        order: "რიგი",
+        createdSuccessfully: "Ხშირად დასმული კითხვა წარმატებით შეიქმნა",
+        updatedSuccessfully: "Ხშირად დასმული კითხვა წარმატებით განახლდა",
+        deletedSuccessfully: "Ხშირად დასმული კითხვა წარმატებით წაიშალა"
+      }
     },
     tariffs: {
       management: "ტარიფების მართვა",

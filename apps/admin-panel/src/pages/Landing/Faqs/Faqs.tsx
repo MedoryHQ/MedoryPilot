@@ -37,7 +37,7 @@ const Faqs = () => {
       render: (item: Faq) => {
         const tr = getTranslatedObject(item.translations, i18n.language);
         return (
-          <span className="text-foreground max-w-[260px]">
+          <span className="text-foreground line-clamp-3 max-w-[260px] text-sm">
             {toUpperCase(tr.question)}
           </span>
         );
@@ -98,6 +98,7 @@ const Faqs = () => {
         refetch={refetch}
         isLoading={isFetching}
         deleteEndpoint="faq"
+        editUrl="/landing/faqs/edit"
         total={data?.count}
         emptyMessage={toUpperCase(t("faqs.noFaqsFound"))}
         mobileCardRender={(item) => {

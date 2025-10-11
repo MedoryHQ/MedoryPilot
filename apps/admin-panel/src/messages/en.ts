@@ -514,7 +514,24 @@ export const en = {
       answer: "Answer",
       created: "Created",
       translations: "Translations",
-      order: "Order"
+      order: "Order",
+      form: {
+        createTitle: "Create Faq",
+        editTitle: "Edit Faq",
+        subtitle: "Configure your website faq and navigation",
+        contentTranslations: "Content & Translations",
+        contentTranslationsDescription: "Fill in faq details for each language",
+        question: "Question",
+        questionPlaceholder: "e.g., Question",
+        answer: "Question Answer",
+        answerPlaceholder: "Enter a brief answer for this faq...",
+        settings: "Settings",
+        faq: "Faq",
+        order: "Order",
+        createdSuccessfully: "Faq created successfully",
+        updatedSuccessfully: "Faq updated successfully",
+        deletedSuccessfully: "Faq deleted successfully"
+      }
     },
     tariffs: {
       management: "Tariffs Management",

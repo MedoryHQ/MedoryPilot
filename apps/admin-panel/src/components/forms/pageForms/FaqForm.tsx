@@ -75,7 +75,7 @@ export const FaqForm: React.FC<FaqFormProps> = ({
         {
           kind: "simple",
           name: "order",
-          label: toUpperCase(t("faqs.form.orderLabel")),
+          label: toUpperCase(t("faqs.form.order")),
           type: "number",
           props: {
             min: 0,
