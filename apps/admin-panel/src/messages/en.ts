@@ -553,6 +553,34 @@ export const en = {
         tariff: "Tariff",
         history: "History"
       }
+    },
+    categories: {
+      management: "Categories Management",
+      managementDescription:
+        "Manage website categories and navigation elements",
+      addCategory: "Add Category",
+      search: "Search categories...",
+      noCategoriesFound: "No categories found",
+      category: "Category",
+      name: "Name",
+      translations: "Translations",
+      blogs: "Blogs",
+      created: "Created",
+      form: {
+        createTitle: "Create Category",
+        editTitle: "Edit Category",
+        subtitle: "Configure your website category and navigation",
+        contentTranslations: "Content & Translations",
+        contentTranslationsDescription:
+          "Fill in category details for each language",
+        name: "Name",
+        namePlaceholder: "e.g., Programming",
+        settings: "Settings",
+        category: "Category",
+        createdSuccessfully: "Category created successfully",
+        updatedSuccessfully: "Category updated successfully",
+        deletedSuccessfully: "Category deleted successfully"
+      }
     }
   }
 };

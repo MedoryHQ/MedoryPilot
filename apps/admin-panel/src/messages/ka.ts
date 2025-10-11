@@ -476,7 +476,7 @@ export const ka = {
         background: "ფონი",
         backgroundLabel: "ჩააგდეთ ფონი აქ",
         backgroundDescription: "ან დააჭირეთ არჩევისთვის",
-        სერვისი: "Სერვისი",
+        service: "Სერვისი",
         createdSuccessfully: "Სერვისი წარმატებით შეიქმნა",
         updatedSuccessfully: "Სერვისი წარმატებით განახლდა",
         deletedSuccessfully: "Სერვისი წარმატებით წაიშალა"
@@ -557,6 +557,34 @@ export const ka = {
         type: "ტიპი",
         tariff: "ტარიფი",
         history: "ისტორია"
+      }
+    },
+    categories: {
+      management: "კატეგორიების მენეჯმენტი",
+      managementDescription: "მართეთ ვებსაიტის კატეგორიები და ნავიგაცია",
+      addCategory: "კატეგორიის დამატება",
+      search: "კატეგორიის ძიება...",
+      noCategoriesFound: "კატეგორიები ვერ მოიძებნა",
+      category: "კატეგორა",
+      name: "სახელი",
+      title: "სათაური",
+      translations: "თარგმანები",
+      blogs: "ბლოგები",
+      created: "შეიქმნა",
+      form: {
+        createTitle: "კატეგორიის შექმნა",
+        editTitle: "კატეგორიის რედაქტირება",
+        subtitle: "ვებსაიტის კატეგორიის კონფიგურაცია",
+        contentTranslations: "კონტენტი და თარგმანები",
+        contentTranslationsDescription:
+          "შეავსეთ კატეგორიის დეტალები თითოეული ენისთვის",
+        name: "სახელი",
+        namePlaceholder: "მაგ., პროგრამირება",
+        settings: "პარამეტრები",
+        category: "კატეგორია",
+        createdSuccessfully: "კატეგორია წარმატებით შეიქმნა",
+        updatedSuccessfully: "კატეგორია წარმატებით განახლდა",
+        deletedSuccessfully: "კატეგორია წარმატებით წაიშალა"
       }
     }
   }
