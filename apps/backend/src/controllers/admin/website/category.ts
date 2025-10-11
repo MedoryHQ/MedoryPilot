@@ -103,3 +103,55 @@ export const fetchCategory = async (
     next(error);
   }
 };
+
+export const deleteCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    logInfo("Category delete attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "category_delete_attempt",
+    });
+
+    const category = await prisma.category.delete({
+      where: {
+        id,
+      },
+    });
+
+    if (!category) {
+      logWarn("Category delete failed: category not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "category_delete_failed",
+      });
+      return sendError(req, res, 404, "categoryNotFound");
+    }
+
+    logInfo("Category deleted successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "category_deleted",
+    });
+
+    return res.status(200).json({
+      message: getResponseMessage("categoryDeleted"),
+    });
+  } catch (error) {
+    logCatchyError("delete_category_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_delete_category_exception",
+    });
+    next(error);
+  }
+};
