@@ -547,6 +547,21 @@ export const en = {
       price: "Price",
       from: "From Date",
       to: "End Date",
+      form: {
+        createTitle: "Create Tariff",
+        editTitle: "Edit Tariff",
+        subtitle: "Configure your website tariff and navigation",
+        price: "Price",
+        pricePlaceholder: "e.g., 55",
+        settings: "Settings",
+        tariff: "Tariff",
+        createdSuccessfully: "Tariff created successfully",
+        updatedSuccessfully: "Tariff updated successfully",
+        deletedSuccessfully: "Tariff deleted successfully"
+      },
+      errors: {
+        priceRequired: "Price is required"
+      },
       filters: {
         price: "Price",
         type: "Type",

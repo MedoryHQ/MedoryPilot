@@ -398,39 +398,42 @@ export function GenericEntityForm<
         <TwoColumnLayout
           left={
             <>
-              <FormSection
-                title={toUpperCase(
-                  t(`${resourceName}.form.contentTranslations`)
-                )}
-                description={toUpperCase(
-                  t(`${resourceName}.form.contentTranslationsDescription`)
-                )}
-              >
-                {translationLocales && translationLocales.length > 0 && (
-                  <LocaleTabSwitcher
-                    locales={locales}
-                    activeLocale={activeLocale}
-                    onChange={handleLocaleChange}
-                    errors={localeErrorCounts}
-                  />
-                )}
+              {translationFields.length ? (
+                <FormSection
+                  title={toUpperCase(
+                    t(`${resourceName}.form.contentTranslations`)
+                  )}
+                  description={toUpperCase(
+                    t(`${resourceName}.form.contentTranslationsDescription`)
+                  )}
+                >
+                  {translationLocales && translationLocales.length > 0 && (
+                    <LocaleTabSwitcher
+                      locales={locales}
+                      activeLocale={activeLocale}
+                      onChange={handleLocaleChange}
+                      errors={localeErrorCounts}
+                    />
+                  )}
 
-                <div className="mt-6">
-                  <TranslationsPanel
-                    activeLocale={activeLocale}
-                    fields={translationFields}
-                    values={translationsValues(activeLocale)}
-                    errors={getErrorMessagesForLocale(activeLocale)}
-                    onChange={(fieldName, value) =>
-                      form.setValue(
-                        `translations.${activeLocale}.${fieldName}` as unknown as Path<TForm>,
-                        value as unknown as PathValue<TForm, Path<TForm>>
-                      )
-                    }
-                  />
-                </div>
-              </FormSection>
-
+                  <div className="mt-6">
+                    <TranslationsPanel
+                      activeLocale={activeLocale}
+                      fields={translationFields}
+                      values={translationsValues(activeLocale)}
+                      errors={getErrorMessagesForLocale(activeLocale)}
+                      onChange={(fieldName, value) =>
+                        form.setValue(
+                          `translations.${activeLocale}.${fieldName}` as unknown as Path<TForm>,
+                          value as unknown as PathValue<TForm, Path<TForm>>
+                        )
+                      }
+                    />
+                  </div>
+                </FormSection>
+              ) : (
+                ""
+              )}
               {leftSections.map((sec) => (
                 <FormSection
                   key={sec.key ?? sec.title}

@@ -552,6 +552,21 @@ export const ka = {
       price: "ფასი",
       from: "დაწყების თარიღი",
       to: "დამთავრების თარიღი",
+      form: {
+        createTitle: "ტარიფის შექმნა",
+        editTitle: "ტარიფის რედაქტირება",
+        subtitle: "ვებსაიტის ტარიფის კონფიგურაცია",
+        price: "ფასი",
+        pricePlaceholder: "მაგ., 55",
+        settings: "პარამეტრები",
+        tariff: "ტარიფი",
+        createdSuccessfully: "ტარიფი წარმატებით შეიქმნა",
+        updatedSuccessfully: "ტარიფი წარმატებით განახლდა",
+        deletedSuccessfully: "ტარიფი წარმატებით წაიშალა"
+      },
+      errors: {
+        priceRequired: "Price is required"
+      },
       filters: {
         price: "ფასი",
         type: "ტიპი",
