@@ -119,3 +119,9 @@ export interface CreateFooterDTO {
 }
 
 export type UpdateFooterDTO = CreateFooterDTO;
+
+export interface CreateCategoryDTO {
+  translations: Translations;
+}
+
+export type UpdateCategoryDTO = CreateCategoryDTO;

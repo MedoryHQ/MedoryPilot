@@ -514,7 +514,24 @@ export const en = {
       answer: "Answer",
       created: "Created",
       translations: "Translations",
-      order: "Order"
+      order: "Order",
+      form: {
+        createTitle: "Create Faq",
+        editTitle: "Edit Faq",
+        subtitle: "Configure your website faq and navigation",
+        contentTranslations: "Content & Translations",
+        contentTranslationsDescription: "Fill in faq details for each language",
+        question: "Question",
+        questionPlaceholder: "e.g., Question",
+        answer: "Question Answer",
+        answerPlaceholder: "Enter a brief answer for this faq...",
+        settings: "Settings",
+        faq: "Faq",
+        order: "Order",
+        createdSuccessfully: "Faq created successfully",
+        updatedSuccessfully: "Faq updated successfully",
+        deletedSuccessfully: "Faq deleted successfully"
+      }
     },
     tariffs: {
       management: "Tariffs Management",
@@ -530,11 +547,57 @@ export const en = {
       price: "Price",
       from: "From Date",
       to: "End Date",
+      form: {
+        createTitle: "Create Tariff",
+        editTitle: "Edit Tariff",
+        subtitle: "Configure your website tariff and navigation",
+        price: "Price",
+        pricePlaceholder: "e.g., 55",
+        settings: "Settings",
+        tariff: "Tariff",
+        createdSuccessfully: "Tariff created successfully",
+        updatedSuccessfully: "Tariff updated successfully",
+        deletedSuccessfully: "Tariff deleted successfully"
+      },
+      errors: {
+        priceRequired: "Price is required"
+      },
       filters: {
         price: "Price",
         type: "Type",
         tariff: "Tariff",
         history: "History"
+      }
+    },
+    categories: {
+      management: "Categories Management",
+      managementDescription:
+        "Manage website categories and navigation elements",
+      addCategory: "Add Category",
+      search: "Search categories...",
+      noCategoriesFound: "No categories found",
+      category: "Category",
+      name: "Name",
+      translations: "Translations",
+      blogs: "Blogs",
+      created: "Created",
+      form: {
+        createTitle: "Create Category",
+        editTitle: "Edit Category",
+        subtitle: "Configure your website category and navigation",
+        contentTranslations: "Content & Translations",
+        contentTranslationsDescription:
+          "Fill in category details for each language",
+        name: "Name",
+        namePlaceholder: "e.g., Programming",
+        settings: "Settings",
+        category: "Category",
+        createdSuccessfully: "Category created successfully",
+        updatedSuccessfully: "Category updated successfully",
+        deletedSuccessfully: "Category deleted successfully"
+      },
+      errors: {
+        nameRequired: "Name is required"
       }
     }
   }

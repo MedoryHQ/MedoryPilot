@@ -476,7 +476,7 @@ export const ka = {
         background: "ფონი",
         backgroundLabel: "ჩააგდეთ ფონი აქ",
         backgroundDescription: "ან დააჭირეთ არჩევისთვის",
-        სერვისი: "Სერვისი",
+        service: "Სერვისი",
         createdSuccessfully: "Სერვისი წარმატებით შეიქმნა",
         updatedSuccessfully: "Სერვისი წარმატებით განახლდა",
         deletedSuccessfully: "Სერვისი წარმატებით წაიშალა"
@@ -516,7 +516,26 @@ export const ka = {
       answer: "პასუხი",
       created: "შეიქმნა",
       translations: "თარგმენბი",
-      order: "რიგი"
+      order: "რიგი",
+      form: {
+        createTitle: "Ხშირად დასმული კითხვის შექმნა",
+        editTitle: "Ხშირად დასმული კითხვის რედაქტირება",
+        subtitle: "ვებსაიტის Ხშირად დასმული კითხვის კონფიგურაცია",
+        contentTranslations: "კონტენტი და თარგმანები",
+        contentTranslationsDescription:
+          "შეავსეთ ხშირად დასმული კითხვის დეტალები თითოეული ენისთვის",
+        question: "კითხვა",
+        questionPlaceholder: "მაგ., კითხვა",
+        answer: "კითქვის პასუხი",
+        answerPlaceholder:
+          "შეიყვანეთ მოკლე აღწერა ხშირად დასმული კითხვისთვის...",
+        settings: "პარამეტრები",
+        faq: "Ხშირად დასმული კითხვა",
+        order: "რიგი",
+        createdSuccessfully: "Ხშირად დასმული კითხვა წარმატებით შეიქმნა",
+        updatedSuccessfully: "Ხშირად დასმული კითხვა წარმატებით განახლდა",
+        deletedSuccessfully: "Ხშირად დასმული კითხვა წარმატებით წაიშალა"
+      }
     },
     tariffs: {
       management: "ტარიფების მართვა",
@@ -533,11 +552,57 @@ export const ka = {
       price: "ფასი",
       from: "დაწყების თარიღი",
       to: "დამთავრების თარიღი",
+      form: {
+        createTitle: "ტარიფის შექმნა",
+        editTitle: "ტარიფის რედაქტირება",
+        subtitle: "ვებსაიტის ტარიფის კონფიგურაცია",
+        price: "ფასი",
+        pricePlaceholder: "მაგ., 55",
+        settings: "პარამეტრები",
+        tariff: "ტარიფი",
+        createdSuccessfully: "ტარიფი წარმატებით შეიქმნა",
+        updatedSuccessfully: "ტარიფი წარმატებით განახლდა",
+        deletedSuccessfully: "ტარიფი წარმატებით წაიშალა"
+      },
+      errors: {
+        priceRequired: "Price is required"
+      },
       filters: {
         price: "ფასი",
         type: "ტიპი",
         tariff: "ტარიფი",
         history: "ისტორია"
+      }
+    },
+    categories: {
+      management: "კატეგორიების მენეჯმენტი",
+      managementDescription: "მართეთ ვებსაიტის კატეგორიები და ნავიგაცია",
+      addCategory: "კატეგორიის დამატება",
+      search: "კატეგორიის ძიება...",
+      noCategoriesFound: "კატეგორიები ვერ მოიძებნა",
+      category: "კატეგორა",
+      name: "სახელი",
+      title: "სათაური",
+      translations: "თარგმანები",
+      blogs: "ბლოგები",
+      created: "შეიქმნა",
+      form: {
+        createTitle: "კატეგორიის შექმნა",
+        editTitle: "კატეგორიის რედაქტირება",
+        subtitle: "ვებსაიტის კატეგორიის კონფიგურაცია",
+        contentTranslations: "კონტენტი და თარგმანები",
+        contentTranslationsDescription:
+          "შეავსეთ კატეგორიის დეტალები თითოეული ენისთვის",
+        name: "სახელი",
+        namePlaceholder: "მაგ., პროგრამირება",
+        settings: "პარამეტრები",
+        category: "კატეგორია",
+        createdSuccessfully: "კატეგორია წარმატებით შეიქმნა",
+        updatedSuccessfully: "კატეგორია წარმატებით განახლდა",
+        deletedSuccessfully: "კატეგორია წარმატებით წაიშალა"
+      },
+      errors: {
+        nameRequired: "სახელი სავალდებულოა"
       }
     }
   }

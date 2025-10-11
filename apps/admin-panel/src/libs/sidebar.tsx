@@ -17,7 +17,8 @@ import {
   Layout,
   Layers,
   Copy,
-  Package
+  Package,
+  FolderTree
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -90,6 +91,12 @@ export const useMenuItems = (): SidebarItem[] => {
           href: "landing/headers",
           label: toUpperCase(t("overview.headers")),
           icon: <Layout className="h-4 w-4" />
+        },
+        {
+          key: "categories",
+          label: toUpperCase(t("overview.categories")),
+          href: "landing/categories",
+          icon: <FolderTree className="h-4 w-4" />
         },
         {
           key: "introduce",

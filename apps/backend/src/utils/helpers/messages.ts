@@ -84,6 +84,10 @@ export const errorMessages = {
     en: "Contact not found",
     ka: "კონტაქტი ვერ მოიძებნა",
   },
+  categoryNotFound: {
+    en: "Category not found",
+    ka: "კატეგორია ვერ მოიძებნა",
+  },
   newsNotFound: {
     en: "News not found",
     ka: "სიახლე ვერ მოიძებნა",
@@ -111,6 +115,10 @@ export const errorMessages = {
   onlyOneActiveHeaderAllowed: {
     en: "Only one active header is allowed",
     ka: "მხოლოდ ერთი აქტიური header არის დაშვებული",
+  },
+  sameOrderedFaqExist: {
+    en: "Faq with same order already exist",
+    ka: "ხშირად დასმული კითხვა იგივე რიგით უკვე არსებობს",
   },
 
   // Messages
@@ -189,6 +197,10 @@ export const errorMessages = {
   footerAlreadyExists: {
     en: "Footer already exists",
     ka: "Footer უკვე არსებობს",
+  },
+  categoryDeleted: {
+    en: "Category deleted successfully",
+    ka: "კატეგორია წარმატებით წაიშალა",
   },
   imageUploaded: {
     en: "Image uploaded successfully",

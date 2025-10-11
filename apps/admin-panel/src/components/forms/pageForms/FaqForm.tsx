@@ -75,7 +75,7 @@ export const FaqForm: React.FC<FaqFormProps> = ({
         {
           kind: "simple",
           name: "order",
-          label: toUpperCase(t("faqs.form.orderLabel")),
+          label: toUpperCase(t("faqs.form.order")),
           type: "number",
           props: {
             min: 0,
@@ -94,7 +94,7 @@ export const FaqForm: React.FC<FaqFormProps> = ({
       resourceName="faqs"
       mode={mode}
       id={id ?? undefined}
-      schema={faqSchema(t as any, i18n.language as "en" | "ka")}
+      schema={faqSchema(t, i18n.language as "en" | "ka")}
       defaultValues={defaultValues}
       fetchEntity={fetchEntity}
       createEntity={createEntity}

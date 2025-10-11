@@ -1,12 +1,12 @@
-import { HeaderForm } from "@/components/forms";
+import { FaqForm } from "@/components/forms";
 
-const CreateHeader = () => {
-  return <HeaderForm mode="create" onSuccessNavigate="/landing/headers" />;
+const CreateFaq = () => {
+  return <FaqForm mode="create" onSuccessNavigate="/landing/faqs" />;
 };
 
-export const CreateHeaderNavigationRoute = {
-  element: <CreateHeader />,
-  path: "/landing/headers/create"
+export const CreateFaqNavigationRoute = {
+  element: <CreateFaq />,
+  path: "/landing/faqs/create"
 };
 
-export default CreateHeader;
+export default CreateFaq;
