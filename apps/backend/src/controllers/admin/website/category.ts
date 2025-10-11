@@ -200,3 +200,72 @@ export const createCategory = async (
     next(error);
   }
 };
+
+export const updateCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    const { translations } = req.body as UpdateCategoryDTO;
+
+    logInfo("Category update attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "category_update_attempt",
+    });
+
+    const translationsToCreate = Prisma.validator<
+      Prisma.CategoryTranslationCreateWithoutCategoryInput[]
+    >()(createTranslations(translations) as any);
+    const findCategory = await prisma.category.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!findCategory) {
+      logWarn("Category update failed: category not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "category_update_failed",
+      });
+      return sendError(req, res, 404, "categoryNotFound");
+    }
+
+    const category = await prisma.category.update({
+      where: {
+        id,
+      },
+      data: {
+        translations: {
+          deleteMany: {},
+          create: translationsToCreate,
+        },
+      },
+    });
+
+    logInfo("Category updated successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "category_updated",
+    });
+
+    return res.json({
+      data: category,
+    });
+  } catch (error) {
+    logCatchyError("Update category exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_update_category_exception",
+    });
+    next(error);
+  }
+};

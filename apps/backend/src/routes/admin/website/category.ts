@@ -6,6 +6,7 @@ import {
   createCategoryValidation,
   deleteCategoryValidation,
   fetchCategoryValidation,
+  updateCategoryValidation,
 } from "@/validations/admin";
 import { validationHandler } from "@/middlewares/global/validationHandler";
 
@@ -58,6 +59,20 @@ adminCategoryRouter.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return categoryController.createCategory(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminCategoryRouter.put(
+  "/:id",
+  adminAuthenticate,
+  updateCategoryValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return categoryController.updateCategory(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }
