@@ -176,6 +176,23 @@ export const createFAQ = async (
       Prisma.FAQTranslationCreateWithoutFaqInput[]
     >()(createTranslations(translations) as any);
 
+    const existSameOrder = await prisma.fAQ.count({
+      where: {
+        order,
+      },
+    });
+
+    if (existSameOrder) {
+      logWarn("FAQ update failed: FAQ with same order already exist", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "FAQ_update_failed",
+      });
+      return sendError(req, res, 404, "sameOrderedFaqExist");
+    }
+
     const FAQ = await prisma.fAQ.create({
       data: {
         ...(order ? { order } : {}),
@@ -239,6 +256,26 @@ export const updateFAQ = async (
         event: "FAQ_update_failed",
       });
       return sendError(req, res, 404, "faqNotFound");
+    }
+
+    const existSameOrder = await prisma.fAQ.count({
+      where: {
+        order,
+        id: {
+          not: id,
+        },
+      },
+    });
+
+    if (existSameOrder) {
+      logWarn("FAQ update failed: FAQ with same order already exist", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "FAQ_update_failed",
+      });
+      return sendError(req, res, 404, "sameOrderedFaqExist");
     }
 
     const FAQ = await prisma.fAQ.update({

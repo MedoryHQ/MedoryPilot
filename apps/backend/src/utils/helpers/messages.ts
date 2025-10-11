@@ -112,6 +112,10 @@ export const errorMessages = {
     en: "Only one active header is allowed",
     ka: "მხოლოდ ერთი აქტიური header არის დაშვებული",
   },
+  sameOrderedFaqExist: {
+    en: "Faq with same order already exist",
+    ka: "ხშირად დასმული კითხვა იგივე რიგით უკვე არსებობს",
+  },
 
   // Messages
   smsVerificationSent: {
