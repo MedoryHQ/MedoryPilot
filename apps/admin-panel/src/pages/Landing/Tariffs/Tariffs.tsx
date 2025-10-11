@@ -137,6 +137,7 @@ const Tariffs = () => {
         isLoading={isFetching}
         deleteEndpoint="tariff"
         total={total}
+        editUrl="/landing/tariffs/edit"
         emptyMessage={toUpperCase(t("tariffs.noTariffsFound"))}
         searchable
         filters={filters}
