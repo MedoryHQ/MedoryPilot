@@ -1,8 +1,7 @@
+import { TFunction } from "i18next";
 import { z } from "zod";
 
-export const categorySchema = (
-  t: (key: string, lang?: "en" | "ka") => string
-) =>
+export const categorySchema = (t: TFunction<"translation", undefined>) =>
   z.object({
     translations: z.object({
       en: z.object({

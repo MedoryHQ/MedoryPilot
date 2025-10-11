@@ -1,7 +1,8 @@
 import { z } from "zod";
+import { TFunction } from "i18next";
 
 export const socialSchema = (
-  t: (key: string, lang?: "en" | "ka") => string,
+  t: TFunction<"translation", undefined>,
   lang: "en" | "ka" = "en"
 ) =>
   z.object({

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TFunction } from "i18next";
 
 const BackendFileSchema = z.object({
   name: z.string(),
@@ -7,7 +8,7 @@ const BackendFileSchema = z.object({
 });
 
 export const serviceSchema = (
-  t: (key: string, lang?: "en" | "ka") => string,
+  t: TFunction<"translation", undefined>,
   lang: "en" | "ka" = "en"
 ) =>
   z.object({
