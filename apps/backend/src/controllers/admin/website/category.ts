@@ -155,3 +155,48 @@ export const deleteCategory = async (
     next(error);
   }
 };
+
+export const createCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { translations } = req.body as CreateCategoryDTO;
+
+    logInfo("Category create attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "category_create_attempt",
+    });
+
+    const translationsToCreate = Prisma.validator<
+      Prisma.CategoryTranslationCreateWithoutCategoryInput[]
+    >()(createTranslations(translations) as any);
+
+    const category = await prisma.category.create({
+      data: {
+        translations: { create: translationsToCreate },
+      },
+    });
+
+    logInfo("Category created successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "category_created",
+    });
+
+    return res.status(201).json({
+      data: category,
+    });
+  } catch (error) {
+    logCatchyError("Create category exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_create_category_exception",
+    });
+    next(error);
+  }
+};

@@ -3,6 +3,7 @@ import { GLOBAL_ERROR_MESSAGE } from "@/utils";
 import * as categoryController from "@/controllers/admin/website/category";
 import { adminAuthenticate } from "@/middlewares/admin";
 import {
+  createCategoryValidation,
   deleteCategoryValidation,
   fetchCategoryValidation,
 } from "@/validations/admin";
@@ -43,6 +44,20 @@ adminCategoryRouter.delete(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return categoryController.deleteCategory(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminCategoryRouter.post(
+  "/",
+  adminAuthenticate,
+  createCategoryValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return categoryController.createCategory(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }
