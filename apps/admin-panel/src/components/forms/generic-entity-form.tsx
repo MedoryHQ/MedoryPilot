@@ -278,6 +278,7 @@ export function GenericEntityForm<
             required={f.props?.required}
             value={watchedValue ?? ""}
             className="mb-5"
+            disabled={internalMode === "readonly"}
             onChange={(v) =>
               form.setValue(
                 name as Path<TForm>,
@@ -301,6 +302,7 @@ export function GenericEntityForm<
             type="textarea"
             required={f.props?.required}
             className="mb-5"
+            disabled={internalMode === "readonly"}
             value={watchedValue ?? ""}
             onChange={(v) =>
               form.setValue(
@@ -326,6 +328,7 @@ export function GenericEntityForm<
             label={toUpperCase(t(label as string))}
             type="number"
             value={watchedValue}
+            disabled={internalMode === "readonly"}
             onChange={(v) =>
               form.setValue(
                 name as Path<TForm>,
@@ -353,6 +356,7 @@ export function GenericEntityForm<
               label={toUpperCase(t(label as string))}
               value={String(watchedValue ?? "")}
               className="mb-5"
+              disabled={internalMode === "readonly"}
               onChange={(v) =>
                 form.setValue(
                   name as Path<TForm>,
@@ -379,6 +383,7 @@ export function GenericEntityForm<
               label={toUpperCase(t(label as string))}
               description={toUpperCase(t(description as string))}
               value={(form.getValues() as any).active ?? false}
+              disabled={internalMode === "readonly"}
               onChange={(v) =>
                 form.setValue(
                   name as Path<TForm>,
@@ -396,6 +401,7 @@ export function GenericEntityForm<
           <MediaUploader
             value={watchedValue ?? null}
             key={name}
+            disabled={internalMode === "readonly"}
             onChange={(v) =>
               form.setValue(
                 name as Path<TForm>,
