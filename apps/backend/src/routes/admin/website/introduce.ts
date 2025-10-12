@@ -5,7 +5,6 @@ import { adminAuthenticate } from "@/middlewares/admin";
 import {
   createIntroduceValidation,
   deleteIntroduceValidation,
-  fetchIntroduceValidation,
   updateIntroduceValidation,
 } from "@/validations/admin";
 import { validationHandler } from "@/middlewares/global/validationHandler";
@@ -15,7 +14,6 @@ export const adminIntroduceRouter = Router();
 adminIntroduceRouter.get(
   "/",
   adminAuthenticate,
-  fetchIntroduceValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
