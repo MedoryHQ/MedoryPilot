@@ -375,6 +375,26 @@ export const ka = {
       uploadError: "სურათის ატვირთვა ვერ მოხერხდა. გთხოვთ სცადეთ თავიდან."
     },
     introduce: {
+      form: {
+        createTitle: "შესავალის შექმნა",
+        editTitle: "შესავალის რედაქტირება",
+        readonlyTitle: "შესავალი",
+        edit: "შესავალის რედაქტირება",
+        read: "შესავალის ნახვა",
+        subtitle: "ვებსაიტის შესავალის კონფიგურაცია",
+        contentTranslations: "კონტენტი და თარგმანები",
+        contentTranslationsDescription:
+          "შეავსეთ შესავალის დეტალები თითოეული ენისთვის",
+        headline: "სათაური",
+        headlinePlaceholder: "მაგ., გამარჯობა",
+        description: "აღწერა",
+        descriptionPlaceholder: "შეიყვანეთ მოკლე აღწერა ამ შესავალისთვის...",
+        settings: "პარამეტრები",
+        introduce: "შესავალი",
+        createdSuccessfully: "შესავალი წარმატებით შეიქმნა",
+        updatedSuccessfully: "შესავალი წარმატებით განახლდა",
+        deletedSuccessfully: "შესავალი წარმატებით წაიშალა"
+      },
       errors: {
         headlineRequired: "სათაური სავალდებულოა",
         descriptionRequired: "აღწერა სავალდებულოა"

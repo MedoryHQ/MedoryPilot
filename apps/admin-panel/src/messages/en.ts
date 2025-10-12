@@ -373,6 +373,27 @@ export const en = {
       uploadError: "Image upload failed. Please try again."
     },
     introduce: {
+      form: {
+        createTitle: "Create Introduce",
+        editTitle: "Edit Introduce",
+        readonlyTitle: "Introduce",
+        edit: "Edit Introduce",
+        read: "Read Introduce",
+        subtitle: "Configure your website introduce and navigation",
+        contentTranslations: "Content & Translations",
+        contentTranslationsDescription:
+          "Fill in introduce details for each language",
+        headline: "Headline",
+        headlinePlaceholder: "e.g., Hello World",
+        description: "Description",
+        descriptionPlaceholder:
+          "Enter a brief description for this introduce...",
+        settings: "Settings",
+        introduce: "Introduce",
+        createdSuccessfully: "Introduce created successfully",
+        updatedSuccessfully: "Introduce updated successfully",
+        deletedSuccessfully: "Introduce deleted successfully"
+      },
       errors: {
         headlineRequired: "Headline is required",
         descriptionRequired: "Description is required"

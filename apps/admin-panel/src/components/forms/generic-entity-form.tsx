@@ -26,7 +26,7 @@ import { Button, LocaleTabSwitcher, StatusToggle } from "@/components/ui";
 import { DeleteConfirmDialog } from "@/components/forms";
 import { useToast } from "@/hooks";
 import { FieldConfig, GenericEntityFormProps } from "@/types";
-import { ArrowLeft, Edit3 } from "lucide-react";
+import { ArrowLeft, Edit3, Eye } from "lucide-react";
 import { locales } from "@/libs";
 
 type localeType = "en" | "ka";
@@ -440,9 +440,20 @@ export function GenericEntityForm<
         size="lg"
         className="premium-button floating-action flex w-full items-center gap-2 shadow-md transition-all hover:shadow-lg md:w-min"
         onClick={() => setMode("edit")}
+        type="button"
       >
         <Edit3 className="h-5 w-5" />
         {toUpperCase(t(`${resourceName}.form.edit`) || "Edit")}
+      </Button>
+    ) : allowModeToggleForReadonly && internalMode === "edit" ? (
+      <Button
+        size="lg"
+        className="premium-button floating-action flex w-full items-center gap-2 shadow-md transition-all hover:shadow-lg md:w-min"
+        onClick={() => setMode("readonly")}
+        type="button"
+      >
+        <Eye className="h-5 w-5" />
+        {toUpperCase(t(`${resourceName}.form.read`) || "Read")}
       </Button>
     ) : null;
 

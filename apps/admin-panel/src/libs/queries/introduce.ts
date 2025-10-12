@@ -4,7 +4,7 @@ import { useQuery } from "react-query";
 
 export const useGetIntroduce = () => {
   return useQuery<IntroduceResponse, Error>({
-    queryKey: ["introduces"],
+    queryKey: ["introduce"],
     queryFn: async (): Promise<IntroduceResponse> => {
       const { data } = await instance.get<IntroduceResponse>("/introduce");
       return data;
