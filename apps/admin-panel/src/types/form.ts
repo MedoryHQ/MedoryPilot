@@ -66,7 +66,7 @@ export interface GenericEntityFormProps<
   id?: string | null;
   schema: z.ZodTypeAny;
   defaultValues: DefaultValues<TForm>;
-  fetchEntity?: (id: string) => Promise<TEntity>;
+  fetchEntity?: (id?: string) => Promise<TEntity>;
   createEntity?: (payload: TForm) => Promise<any>;
   updateEntity?: (id: string, payload: TForm) => Promise<any>;
   deleteEntity?: (id: string) => Promise<any>;
@@ -83,4 +83,9 @@ export interface GenericEntityFormProps<
   actionBarProps?: Partial<React.ComponentProps<typeof ActionBar>>;
   mapFetchedToForm?: (entity: TEntity) => Partial<TForm>;
   renderFooter?: (form: UseFormReturn<TForm>) => React.ReactNode;
+  entityData?: any;
+  refetch?: () => Promise<any> | void;
+  externalMode?: "create" | "edit" | "readonly";
+  onModeChange?: (m: "create" | "edit" | "readonly") => void;
+  allowModeToggleForReadonly?: boolean;
 }

@@ -26,7 +26,7 @@ import { Button, LocaleTabSwitcher, StatusToggle } from "@/components/ui";
 import { DeleteConfirmDialog } from "@/components/forms";
 import { useToast } from "@/hooks";
 import { FieldConfig, GenericEntityFormProps } from "@/types";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Edit3 } from "lucide-react";
 import { locales } from "@/libs";
 
 type localeType = "en" | "ka";
@@ -53,7 +53,12 @@ export function GenericEntityForm<
   onDeleteSuccess,
   actionBarProps,
   mapFetchedToForm,
-  renderFooter
+  renderFooter,
+  entityData,
+  refetch,
+  externalMode,
+  onModeChange,
+  allowModeToggleForReadonly = false
 }: GenericEntityFormProps<TForm, TEntity>) {
   const { t, i18n } = useTranslation();
   const { toast } = useToast(t);
@@ -69,41 +74,74 @@ export function GenericEntityForm<
 
   const watchedAll = watch();
 
+  const useInternalQuery = !entityData && !!fetchEntity && !!id;
+
   const entityQuery = useQuery(
     ["entity", resourceName, id],
     async () => {
-      if (!fetchEntity || !id) return null;
-      return await fetchEntity(id);
+      if (!fetchEntity) return null;
+      return id ? await fetchEntity(id as any) : await fetchEntity();
     },
     {
-      enabled: !!fetchEntity && !!id
+      enabled: useInternalQuery
     }
   );
 
-  const hasResetRef = React.useRef(false);
   useEffect(() => {
-    if (!entityQuery.data) return;
-    if (hasResetRef.current) return;
+    const data = entityData ?? entityQuery.data;
+    if (data) {
+      const mapped = mapFetchedToForm
+        ? mapFetchedToForm(data)
+        : (data as unknown as Partial<TForm>);
+      reset({ ...(defaultValues as any), ...(mapped as any) } as any);
+    } else {
+      reset(defaultValues as any);
+      if (!externalMode) {
+        setInternalMode("create");
+        onModeChange?.("create");
+      }
+    }
+  }, [
+    entityData,
+    entityQuery.data,
+    reset,
+    mapFetchedToForm,
+    defaultValues,
+    externalMode,
+    onModeChange
+  ]);
 
-    const data = entityQuery.data;
-    if (!data) return;
+  const [internalMode, setInternalMode] = useState<
+    "create" | "edit" | "readonly"
+  >(externalMode ?? mode);
 
-    const mapped = mapFetchedToForm
-      ? mapFetchedToForm(data)
-      : (data as unknown as Partial<TForm>);
+  useEffect(() => {
+    if (externalMode) {
+      setInternalMode(externalMode);
+    } else if (mode) {
+      setInternalMode(mode);
+    }
+  }, [externalMode, mode]);
 
-    reset({ ...(defaultValues as any), ...(mapped as any) } as any);
-    hasResetRef.current = true;
-  }, [entityQuery.data]);
+  const setMode = (m: "create" | "edit" | "readonly") => {
+    setInternalMode(m);
+    onModeChange?.(m);
+  };
 
   const createMutation = useMutation({
     mutationFn: async (payload: TForm) => {
       if (!createEntity) throw new Error("createEntity not provided");
       return createEntity(payload);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.added(resourceName);
       onCreateSuccess?.();
+      try {
+        await refetch?.();
+      } catch (e) {
+        // ignore
+      }
+      setMode("readonly");
       if (onSuccessNavigate) navigate(onSuccessNavigate);
     },
     onError: (err: any) => {
@@ -113,13 +151,18 @@ export function GenericEntityForm<
 
   const updateMutation = useMutation({
     mutationFn: async (payload: TForm) => {
-      if (!updateEntity || !id)
-        throw new Error("updateEntity not provided or id missing");
-      return updateEntity(id, payload);
+      if (!updateEntity) throw new Error("updateEntity not provided");
+      return updateEntity(id as any, payload);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.updated(resourceName);
       onUpdateSuccess?.();
+      try {
+        await refetch?.();
+      } catch (e) {
+        // ignore
+      }
+      setMode("readonly");
       if (onSuccessNavigate) navigate(onSuccessNavigate);
     },
     onError: (err: any) => {
@@ -129,13 +172,22 @@ export function GenericEntityForm<
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
-      if (!deleteEntity || !id)
+      if (!deleteEntity)
         throw new Error("deleteEntity not provided or id missing");
-      return deleteEntity(id);
+      return deleteEntity(id as any);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      reset(defaultValues);
       toast.deleted(resourceName);
       onDeleteSuccess?.();
+      try {
+        await refetch?.();
+      } catch (e) {
+        // ignore
+      }
+      if (!externalMode) {
+        setMode("create");
+      }
       if (onSuccessNavigate) navigate(onSuccessNavigate);
     },
     onError: (err: any) => {
@@ -144,9 +196,9 @@ export function GenericEntityForm<
   });
 
   const onSubmit = handleSubmit(async (values: TForm) => {
-    if (mode === "create") {
+    if (internalMode === "create") {
       await createMutation.mutateAsync(values);
-    } else if (mode === "edit") {
+    } else if (internalMode === "edit") {
       await updateMutation.mutateAsync(values);
     }
   });
@@ -314,8 +366,14 @@ export function GenericEntityForm<
         return (
           <div className="mb-5 flex flex-col gap-6" key={name}>
             <MetadataDisplay
-              createdAt={(entityQuery.data as any)?.createdAt}
-              updatedAt={(entityQuery.data as any)?.updatedAt}
+              createdAt={
+                (entityQuery.data as any)?.createdAt ??
+                (entityData as any)?.createdAt
+              }
+              updatedAt={
+                (entityQuery.data as any)?.updatedAt ??
+                (entityData as any)?.updatedAt
+              }
             />
             <StatusToggle
               label={toUpperCase(t(label as string))}
@@ -344,7 +402,6 @@ export function GenericEntityForm<
                 v as unknown as PathValue<TForm, Path<TForm>>
               )
             }
-            error={(form.formState.errors as any)[name]?.message}
             {...(f.props || {})}
           />
         );
@@ -360,18 +417,46 @@ export function GenericEntityForm<
   const translationsValues = (locale: string) =>
     (form.getValues() as any).translations?.[locale] ?? {};
 
-  const titleKey = `${resourceName}.form.${mode}Title`;
+  const titleKey = `${resourceName}.form.${internalMode}Title`;
   const subtitleKey = `${resourceName}.form.subtitle`;
+
+  const headerActions = (
+    <div className="flex items-center gap-2">
+      <Button
+        variant="ghost"
+        size="lg"
+        className="group"
+        onClick={() =>
+          onSuccessNavigate ? navigate(onSuccessNavigate) : navigate(-1)
+        }
+        type="button"
+      >
+        <ArrowLeft className="h-5 w-5 transition-all duration-200 group-hover:text-white" />
+      </Button>
+
+      {internalMode === "readonly" && allowModeToggleForReadonly && (
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => setMode("edit")}
+          type="button"
+        >
+          <Edit3 className="mr-2 h-4 w-4" />
+          {toUpperCase(t(`${resourceName}.form.edit`) || "Edit")}
+        </Button>
+      )}
+    </div>
+  );
 
   const actionBarElement = (
     <ActionBar
-      mode={mode}
+      mode={internalMode}
       isSubmitting={isSubmitting}
       onCancel={() =>
         onSuccessNavigate ? navigate(onSuccessNavigate) : navigate(-1)
       }
       onDelete={
-        mode === "edit" && deleteEntity
+        internalMode === "edit" && deleteEntity
           ? () => setDeleteDialogOpen(true)
           : undefined
       }
@@ -384,19 +469,7 @@ export function GenericEntityForm<
       <FormShell
         title={titleKey}
         subtitle={subtitleKey}
-        headerActions={
-          <Button
-            variant="ghost"
-            size="lg"
-            className="group"
-            onClick={() =>
-              onSuccessNavigate ? navigate(onSuccessNavigate) : navigate(-1)
-            }
-            type="button"
-          >
-            <ArrowLeft className="h-5 w-5 transition-all duration-200 group-hover:text-white" />
-          </Button>
-        }
+        headerActions={headerActions}
         actionBar={actionBarElement}
       >
         <TwoColumnLayout
@@ -432,6 +505,7 @@ export function GenericEntityForm<
                           value as unknown as PathValue<TForm, Path<TForm>>
                         )
                       }
+                      disabled={internalMode === "readonly"}
                     />
                   </div>
                 </FormSection>

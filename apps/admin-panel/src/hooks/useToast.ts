@@ -195,7 +195,7 @@ const createToastHelpers = (t?: (key: string) => string) => ({
         (t
           ? `${item} has been permanently removed.`
           : `${item} has been permanently removed.`),
-      variant: "destructive"
+      variant: "success"
     }),
 
   saved: (description?: string) =>
