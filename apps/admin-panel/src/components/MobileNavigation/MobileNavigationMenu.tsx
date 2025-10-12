@@ -5,6 +5,7 @@ import { ChevronRight } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { arraysEqual, computeInitialExpandedKeys, pathMatches } from "@/utils";
+import { cn } from "@/libs";
 
 interface MobileNavigationMenuProps {
   isActive: (key: string) => boolean;
@@ -68,11 +69,12 @@ export const MobileNavigationMenu: React.FC<MobileNavigationMenuProps> = ({
         >
           <Button
             variant="ghost"
-            className={`h-auto w-full justify-between rounded-xl p-4 text-left ${
+            className={cn(
+              "h-auto w-full justify-between rounded-xl p-4 text-left",
               isActive(item.key)
                 ? "bg-primary/10 text-primary border-primary/20 border"
                 : "hover:bg-muted/50"
-            } `}
+            )}
             onClick={() => handleMenuItemClick(item)}
           >
             <div className="flex items-center gap-3">
@@ -110,11 +112,12 @@ export const MobileNavigationMenu: React.FC<MobileNavigationMenuProps> = ({
                   >
                     <Button
                       variant="ghost"
-                      className={`mb-1 h-auto w-full justify-start rounded-lg p-3 text-left ${
+                      className={cn(
+                        "mb-1 h-auto w-full justify-start rounded-lg p-3 text-left",
                         isChildActive(child.href ?? child.key)
                           ? "bg-primary/10 text-primary"
                           : "hover:bg-muted/30"
-                      } `}
+                      )}
                       onClick={() => {
                         onPageChange(child.href);
                         setIsMenuOpen(false);

@@ -5,6 +5,7 @@ import { Dispatch, SetStateAction } from "react";
 import { SidebarItem } from "@/types";
 import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import { cn } from "@/libs";
 
 const normalize = (p?: string) => (p ? p.replace(/^\/|\/$/g, "") : "");
 const pathMatches = (current: string, candidate?: string) =>
@@ -85,9 +86,10 @@ export const SidebarMobileDrawer: React.FC<SidebarMobileDrawerProps> = ({
                 <Button
                   key={child.key}
                   variant="ghost"
-                  className={`mb-2 h-12 w-full justify-start gap-3 rounded-lg text-white/80 transition-all duration-200 hover:bg-white/10 hover:text-white ${
+                  className={cn(
+                    "mb-2 h-12 w-full justify-start gap-3 rounded-lg text-white/80 transition-all duration-200 hover:bg-white/10 hover:text-white",
                     active ? "bg-white/10 text-white" : ""
-                  }`}
+                  )}
                   onClick={() => {
                     onPageChange(child.href);
                     setMobileDrawer({ open: false, item: null });

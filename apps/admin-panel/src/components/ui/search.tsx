@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { SearchResult } from "@/types";
 import { AnimatePresence, motion } from "framer-motion";
+import { cn } from "@/libs";
 
 interface SearchProps {
   setSearchFocused: React.Dispatch<React.SetStateAction<boolean>>;
@@ -184,13 +185,14 @@ export const Search: React.FC<SearchProps> = ({
         onChange={(e) => handleSearch(e.target.value)}
         onFocus={() => setSearchFocused(true)}
         placeholder={toUpperCase(t("global.search"))}
-        className={`bg-muted/50 text-foreground border-border h-10 rounded-lg pr-4 pl-12 transition-all duration-200 ${
+        className={cn(
+          "bg-muted/50 text-foreground border-border h-10 rounded-lg pr-4 pl-12 transition-all duration-200",
           isMobile
             ? searchFocused
               ? "w-full"
               : "w-40"
             : "w-48 md:w-[250px] lg:w-96"
-        }`}
+        )}
         style={{ width: undefined }}
       />
 
@@ -205,11 +207,12 @@ export const Search: React.FC<SearchProps> = ({
               exit="hidden"
               variants={containerVariant}
               transition={{ duration: 0.16 }}
-              className={`border-border bg-background absolute z-50 overflow-hidden rounded-xl border shadow-lg backdrop-blur-md ${
+              className={cn(
+                "border-border bg-background absolute z-50 overflow-hidden rounded-xl border shadow-lg backdrop-blur-md",
                 isMobile && searchFocused
                   ? "top-full left-0 mt-2 w-full"
                   : "top-12 right-0 w-[250px] lg:w-96"
-              } `}
+              )}
             >
               <div className="search-bar-list max-h-80 overflow-y-auto">
                 {filteredResults.length > 0

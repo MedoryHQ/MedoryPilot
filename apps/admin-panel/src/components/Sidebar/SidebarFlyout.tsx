@@ -4,6 +4,7 @@ import { Dispatch, RefObject, SetStateAction } from "react";
 import { SidebarItem } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
+import { cn } from "@/libs";
 
 const normalize = (p?: string) => (p ? p.replace(/^\/|\/$/g, "") : "");
 const pathMatches = (current: string, candidate?: string) =>
@@ -75,9 +76,10 @@ export const SidebarFlyout: React.FC<SidebarFlyoutProps> = ({
                   <Button
                     key={child.key}
                     variant="ghost"
-                    className={`h-10 w-full justify-start gap-3 rounded-lg text-white/80 transition-all duration-200 hover:bg-white/10 hover:text-white ${
+                    className={cn(
+                      "h-10 w-full justify-start gap-3 rounded-lg text-white/80 transition-all duration-200 hover:bg-white/10 hover:text-white",
                       active ? "bg-white/10 text-white" : ""
-                    }`}
+                    )}
                     onClick={() => {
                       onPageChange(child.href);
                       setFlyoutMenu(null);

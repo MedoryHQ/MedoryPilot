@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
 import axios from "@/api/axios";
 import { ADMIN_API_PATH, getFileUrl } from "@/utils";
+import { cn } from "@/libs";
 
 export interface MediaUploaderProps {
   value?: { name: string; path: string; size?: number } | null;
@@ -286,7 +287,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
   );
 
   return (
-    <div className={`space-y-4 ${className}`}>
+    <div className={cn("space-y-4", className)}>
       {!multi && (
         <>
           <input
@@ -309,7 +310,10 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
                   className="group relative"
                 >
                   <div
-                    className={`border-border bg-muted/10 overflow-hidden rounded-xl border-2 ${previewHeight}`}
+                    className={cn(
+                      "border-border bg-muted/10 overflow-hidden rounded-xl border-2",
+                      previewHeight
+                    )}
                   >
                     <img
                       src={getFileUrl(value.path)}
@@ -346,7 +350,10 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className={`border-primary bg-primary/5 flex flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed p-8 ${previewHeight}`}
+                  className={cn(
+                    "border-primary bg-primary/5 flex flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed p-8",
+                    previewHeight
+                  )}
                 >
                   <Loader2 className="text-primary h-12 w-12 animate-spin" />
                   <p className="text-muted-foreground text-sm">
@@ -360,7 +367,10 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   onClick={() => !disabled && fileInputRef.current?.click()}
-                  className={`border-destructive bg-destructive/5 hover:bg-destructive/10 flex cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed p-8 transition-colors ${previewHeight}`}
+                  className={cn(
+                    "border-destructive bg-destructive/5 hover:bg-destructive/10 flex cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed p-8 transition-colors",
+                    previewHeight
+                  )}
                 >
                   <AlertCircle className="text-destructive h-12 w-12" />
                   <p className="text-destructive text-sm font-medium">
@@ -377,7 +387,10 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   onClick={() => !disabled && fileInputRef.current?.click()}
-                  className={`border-destructive bg-destructive/5 hover:bg-destructive/10 flex cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed p-8 transition-colors ${previewHeight}`}
+                  className={cn(
+                    "border-destructive bg-destructive/5 hover:bg-destructive/10 flex cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed p-8 transition-colors",
+                    previewHeight
+                  )}
                 >
                   <AlertCircle className="text-destructive h-12 w-12" />
                   <p className="text-destructive text-sm font-medium">
@@ -397,11 +410,16 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
                   onClick={() => !disabled && fileInputRef.current?.click()}
-                  className={`flex cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed p-8 transition-all ${
+                  className={cn(
+                    "flex cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed p-8 transition-all",
                     disabled
                       ? "bg-muted/10 cursor-not-allowed opacity-50"
-                      : "hover:border-primary hover:bg-primary/5"
-                  } ${isDragging ? "border-primary bg-primary/10 scale-105" : "border-border"} ${previewHeight} `}
+                      : "hover:border-primary hover:bg-primary/5",
+                    isDragging
+                      ? "border-primary bg-primary/10 scale-105"
+                      : "border-border",
+                    previewHeight
+                  )}
                 >
                   <div className="bg-primary/10 flex items-center justify-center rounded-full p-4">
                     {isDragging ? (
@@ -462,7 +480,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
             aria-label={toUpperCase(t("mediaUploader.uploadImageFile"))}
           />
           <div
-            className={`flex flex-wrap gap-4 ${previewHeight}`}
+            className={cn("flex flex-wrap gap-4", previewHeight)}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
