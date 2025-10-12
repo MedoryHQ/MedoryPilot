@@ -421,32 +421,30 @@ export function GenericEntityForm<
   const subtitleKey = `${resourceName}.form.subtitle`;
 
   const headerActions = (
-    <div className="flex items-center gap-2">
-      <Button
-        variant="ghost"
-        size="lg"
-        className="group"
-        onClick={() =>
-          onSuccessNavigate ? navigate(onSuccessNavigate) : navigate(-1)
-        }
-        type="button"
-      >
-        <ArrowLeft className="h-5 w-5 transition-all duration-200 group-hover:text-white" />
-      </Button>
-
-      {internalMode === "readonly" && allowModeToggleForReadonly && (
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={() => setMode("edit")}
-          type="button"
-        >
-          <Edit3 className="mr-2 h-4 w-4" />
-          {toUpperCase(t(`${resourceName}.form.edit`) || "Edit")}
-        </Button>
-      )}
-    </div>
+    <Button
+      variant="ghost"
+      size="lg"
+      className="group"
+      onClick={() =>
+        onSuccessNavigate ? navigate(onSuccessNavigate) : navigate(-1)
+      }
+      type="button"
+    >
+      <ArrowLeft className="h-5 w-5 transition-all duration-200 group-hover:text-white" />
+    </Button>
   );
+
+  const rightActions =
+    internalMode === "readonly" && allowModeToggleForReadonly ? (
+      <Button
+        size="lg"
+        className="premium-button floating-action flex w-full items-center gap-2 shadow-md transition-all hover:shadow-lg md:w-min"
+        onClick={() => setMode("edit")}
+      >
+        <Edit3 className="h-5 w-5" />
+        {toUpperCase(t(`${resourceName}.form.edit`) || "Edit")}
+      </Button>
+    ) : null;
 
   const actionBarElement = (
     <ActionBar
@@ -469,6 +467,7 @@ export function GenericEntityForm<
       <FormShell
         title={titleKey}
         subtitle={subtitleKey}
+        rightActions={rightActions}
         headerActions={headerActions}
         actionBar={actionBarElement}
       >
