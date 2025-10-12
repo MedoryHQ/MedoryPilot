@@ -501,6 +501,28 @@ export const en = {
       filters: {
         hasIcon: "With Icon",
         noIcon: "Without Icon"
+      },
+      form: {
+        createTitle: "Create Social",
+        editTitle: "Edit Social",
+        subtitle: "Configure your website social and navigation",
+        name: "Name",
+        namePlaceholder: "e.g., Facebook",
+        url: "Url",
+        urlPlaceholder: "e.g., https://www.facebook.com",
+        icon: "Icon",
+        iconLabel: "Drop your icon here",
+        iconDescription: "or click to browse",
+        settings: "Settings",
+        social: "Social",
+        createdSuccessfully: "Social created successfully",
+        updatedSuccessfully: "Social updated successfully",
+        deletedSuccessfully: "Social deleted successfully"
+      },
+      errors: {
+        nameRequired: "Name is required",
+        urlRequired: "Url is required",
+        iconRequired: "Icon is required"
       }
     },
     faqs: {

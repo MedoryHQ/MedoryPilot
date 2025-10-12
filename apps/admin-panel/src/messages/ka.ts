@@ -502,6 +502,28 @@ export const ka = {
       filters: {
         hasIcon: "სურათით",
         noIcon: "სურათის გარეშე"
+      },
+      form: {
+        createTitle: "სოც. ქსელის შექმნა",
+        editTitle: "სოც. ქსელის რედაქტირება",
+        subtitle: "ვებსაიტის სოც. ქსელის კონფიგურაცია",
+        name: "სახელი",
+        namePlaceholder: "მაგ., Facebook",
+        url: "ლინკი",
+        urlPlaceholder: "მაგ., https://www.facebook.com",
+        settings: "პარამეტრები",
+        icon: "სურათი",
+        iconLabel: "ჩააგდეთ სურათი აქ",
+        iconDescription: "ან დააჭირეთ არჩევისთვის",
+        social: "სოც. ქსელი",
+        createdSuccessfully: "სოც. ქსელი წარმატებით შეიქმნა",
+        updatedSuccessfully: "სოც. ქსელი წარმატებით განახლდა",
+        deletedSuccessfully: "სოც. ქსელი წარმატებით წაიშალა"
+      },
+      errors: {
+        nameRequired: "სახელი აუცილებელია",
+        urlRequired: "ლინკი აუცილებელია",
+        iconRequired: "სურათი აუცილებელია"
       }
     },
     faqs: {

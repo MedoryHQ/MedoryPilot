@@ -225,6 +225,7 @@ export function GenericEntityForm<
             )}
             required={f.props?.required}
             value={watchedValue ?? ""}
+            className="mb-5"
             onChange={(v) =>
               form.setValue(
                 name as Path<TForm>,
@@ -247,6 +248,7 @@ export function GenericEntityForm<
             label={toUpperCase(t(label as string))}
             type="textarea"
             required={f.props?.required}
+            className="mb-5"
             value={watchedValue ?? ""}
             onChange={(v) =>
               form.setValue(
@@ -287,7 +289,7 @@ export function GenericEntityForm<
             helperText={
               f.props?.description ? t(f.props.description) : undefined
             }
-            className={f.props?.fullWidth ? "md:col-span-2" : ""}
+            className={f.props?.fullWidth ? "mb-5 md:col-span-2" : "mb-5"}
             error={(form.formState.errors as any)[name]?.message}
           />
         );
@@ -298,6 +300,7 @@ export function GenericEntityForm<
               key={name}
               label={toUpperCase(t(label as string))}
               value={String(watchedValue ?? "")}
+              className="mb-5"
               onChange={(v) =>
                 form.setValue(
                   name as Path<TForm>,
@@ -309,7 +312,7 @@ export function GenericEntityForm<
         );
       case "status":
         return (
-          <div className="flex flex-col gap-6" key={name}>
+          <div className="mb-5 flex flex-col gap-6" key={name}>
             <MetadataDisplay
               createdAt={(entityQuery.data as any)?.createdAt}
               updatedAt={(entityQuery.data as any)?.updatedAt}
@@ -341,6 +344,7 @@ export function GenericEntityForm<
                 v as unknown as PathValue<TForm, Path<TForm>>
               )
             }
+            error={(form.formState.errors as any)[name]?.message}
             {...(f.props || {})}
           />
         );
