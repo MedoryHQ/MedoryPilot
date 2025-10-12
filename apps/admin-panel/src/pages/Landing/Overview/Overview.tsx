@@ -6,7 +6,7 @@ import {
   CardTitle,
   Skeleton
 } from "@/components/ui";
-import { overviewQuickActions, overviewStatsConfig } from "@/libs";
+import { cn, overviewQuickActions, overviewStatsConfig } from "@/libs";
 import { useGetOverview } from "@/libs/queries";
 import { OverviewResponse } from "@/types/website";
 import { toUpperCase } from "@/utils";
@@ -104,22 +104,29 @@ const Overview: React.FC = () => {
                       className="group cursor-pointer"
                       onClick={() => navigate(`/landing/${action.key}`)}
                     >
-                      <div className="border-border hover:border-primary/20 bg-card rounded-lg border p-6 transition-all duration-200 hover:shadow-md">
-                        <div className="flex items-start gap-4">
+                      <div className="border-border hover:border-primary/20 bg-card flex h-full flex-col rounded-lg border p-6 transition-all duration-200 hover:shadow-md">
+                        <div className="flex min-h-0 items-start gap-4">
                           <div
-                            className={`${action.color} rounded-lg p-3 text-white`}
+                            className={cn(
+                              "flex-shrink-0 rounded-lg p-3 text-white",
+                              action.color
+                            )}
                           >
                             <Icon className="h-6 w-6" />
                           </div>
-                          <div className="flex-1">
-                            <h3 className="group-hover:text-primary mb-2 font-medium transition-colors">
-                              {action.label}
-                            </h3>
-                            <p className="text-muted-foreground text-sm">
-                              {action.description}
-                            </p>
+
+                          <div className="flex min-h-0 flex-1 flex-col justify-between">
+                            <div>
+                              <h3 className="group-hover:text-primary mb-2 font-medium transition-colors">
+                                {action.label}
+                              </h3>
+                              <p className="text-muted-foreground text-sm">
+                                {action.description}
+                              </p>
+                            </div>
                           </div>
-                          <div className="opacity-0 transition-opacity group-hover:opacity-100">
+
+                          <div className="flex-shrink-0 opacity-0 transition-opacity group-hover:opacity-100">
                             <Edit className="text-muted-foreground h-4 w-4" />
                           </div>
                         </div>
