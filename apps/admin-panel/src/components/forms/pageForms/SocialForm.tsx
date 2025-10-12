@@ -42,7 +42,7 @@ export const SocialForm: React.FC<SocialFormProps> = ({
     };
   };
 
-  const fetchEntity = async (entityId: string) => {
+  const fetchEntity = async (entityId?: string) => {
     const res = await axios.get(`/social/${entityId}`);
     return res.data?.data ?? res.data;
   };

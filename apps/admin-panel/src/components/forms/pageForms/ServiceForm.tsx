@@ -68,7 +68,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
     };
   };
 
-  const fetchEntity = async (entityId: string) => {
+  const fetchEntity = async (entityId?: string) => {
     const res = await axios.get(`/service/${entityId}`);
     return res.data?.data ?? res.data;
   };
