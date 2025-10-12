@@ -129,9 +129,9 @@ export const useMenuItems = (): SidebarItem[] => {
         },
 
         {
-          key: "contacts",
-          label: toUpperCase(t("overview.contacts")),
-          href: "landing/contacts",
+          key: "contact",
+          label: toUpperCase(t("overview.contact")),
+          href: "landing/contact",
           icon: <Phone className="h-4 w-4" />
         },
         {

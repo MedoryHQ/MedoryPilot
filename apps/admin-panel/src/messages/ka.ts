@@ -214,8 +214,8 @@ export const ka = {
       blogsDescription: "ბლოგების წერა და მართვა",
       categories: "კატეგორიები",
       categoriesDescription: "ბლოგებისა და კონტენტის კატეგორიების მართვა",
-      contacts: "საკონტაქტო ინფორმაცია",
-      contactsDescription: "საკონტაქტო ინფორმაციის განახლება",
+      contact: "საკონტაქტო ინფორმაცია",
+      contactDescription: "საკონტაქტო ინფორმაციის განახლება",
       footer: "Footer",
       footerDescription: "ვებსაიტის footer-ის კონფიგურაცია და ბმულები",
       socials: "სოციალური ქსელები",
@@ -460,6 +460,34 @@ export const ka = {
       }
     },
     contact: {
+      form: {
+        management: "საკ. ინფორმაციის მენეჯმენტი",
+        managementDescription: "მართეთ ვებსაიტის საკ. ინფორმაცია და ნავიგაცია",
+        createTitle: "საკ. ინფორმაციის შექმნა",
+        editTitle: "საკ. ინფორმაციის რედაქტირება",
+        readonlyTitle: "საკ. ინფორმაცია",
+        edit: "საკ. ინფორმაციის რედაქტირება",
+        read: "საკ. ინფორმაციის ნახვა",
+        subtitle: "ვებსაიტის საკ. ინფორმაციის კონფიგურაცია",
+        contentTranslations: "კონტენტი და თარგმანები",
+        contentTranslationsDescription:
+          "შეავსეთ საკ. ინფორმაციის დეტალები თითოეული ენისთვის",
+        title: "სახელი",
+        titlePlaceholder: "მაგ., საკ. ინფორმაცია",
+        description: "აღწერა",
+        descriptionPlaceholder:
+          "შეიყვანეთ მოკლე აღწერა ამ საკ. ინფორმაციისთვის...",
+        location: "ლოკაცია",
+        locationPlaceholder: "მაგ., თბილისი, საქართველო",
+        settings: "პარამეტრები",
+        contact: "საკ. ინფორმაცია",
+        background: "ფონი",
+        backgroundLabel: "ჩააგდეთ ფონი აქ",
+        backgroundDescription: "ან დააჭირეთ არჩევისთვის",
+        createdSuccessfully: "საკ. ინფორმაცია წარმატებით შეიქმნა",
+        updatedSuccessfully: "საკ. ინფორმაცია წარმატებით განახლდა",
+        deletedSuccessfully: "საკ. ინფორმაცია წარმატებით წაიშალა"
+      },
       errors: {
         backgroundRequired: "ფონი სავალდებულოა",
         titleRequired: "სათაური სავალდებულოა",
