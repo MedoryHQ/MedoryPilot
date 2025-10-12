@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Button } from "../ui";
-import { usePrimaryNavItems } from "@/libs";
+import { cn, usePrimaryNavItems } from "@/libs";
 
 interface MobileNavigationBarProps {
   setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -43,11 +43,12 @@ export const MobileNavigationBar: React.FC<MobileNavigationBarProps> = ({
           >
             <Button
               variant="ghost"
-              className={`flex h-auto flex-col items-center gap-1 rounded-xl px-4 py-3 ${
+              className={cn(
+                "flex h-auto flex-col items-center gap-1 rounded-xl px-4 py-3",
                 isActive(item.key) && item.key !== "menu"
                   ? "bg-primary/10 text-primary"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-              } `}
+              )}
               onClick={() => handleNavClick(item)}
             >
               <motion.div

@@ -13,6 +13,7 @@ import { ChevronDown } from "lucide-react";
 import { SidebarItem } from "@/types";
 import { useLocation } from "react-router-dom";
 import { toUpperCase } from "@/utils";
+import { cn } from "@/libs";
 
 const normalize = (p?: string) => (p ? p.replace(/^\/|\/$/g, "") : "");
 
@@ -34,9 +35,10 @@ const ChildItem: React.FC<{
   return (
     <Button
       variant="ghost"
-      className={`sidebar-item h-10 w-full justify-start gap-3 text-white/70 transition-all duration-200 hover:text-white ${
+      className={cn(
+        "sidebar-item h-10 w-full justify-start gap-3 text-white/70 transition-all duration-200 hover:text-white",
         active ? "active" : ""
-      }`}
+      )}
       onClick={() => onClick(child.href)}
     >
       <div className="flex h-4 w-4 flex-shrink-0 items-center justify-center">
@@ -101,9 +103,10 @@ const TopLevelItem: React.FC<{
                 <CollapsibleTrigger asChild>
                   <Button
                     variant="ghost"
-                    className={`sidebar-item h-12 w-full justify-start gap-3 text-white/80 transition-all duration-200 hover:text-white ${
+                    className={cn(
+                      "sidebar-item h-12 w-full justify-start gap-3 text-white/80 transition-all duration-200 hover:text-white",
                       active ? "active" : ""
-                    }`}
+                    )}
                     onClick={() => onItemClick(item)}
                   >
                     <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center">
@@ -170,9 +173,10 @@ const TopLevelItem: React.FC<{
         <TooltipTrigger asChild>
           <Button
             variant="ghost"
-            className={`sidebar-item h-12 w-full justify-start gap-3 text-white/80 transition-all duration-200 hover:text-white ${
+            className={cn(
+              "sidebar-item h-12 w-full justify-start gap-3 text-white/80 transition-all duration-200 hover:text-white",
               active ? "active" : ""
-            }`}
+            )}
             onClick={() => onItemClick(item)}
           >
             <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center">

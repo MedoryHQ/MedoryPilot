@@ -63,7 +63,7 @@ export const HeaderForm: React.FC<HeaderFormProps> = ({
     };
   };
 
-  const fetchEntity = async (entityId: string) => {
+  const fetchEntity = async (entityId?: string) => {
     const res = await axios.get(`/header/${entityId}`);
     return res.data?.data ?? res.data;
   };

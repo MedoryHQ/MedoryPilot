@@ -44,7 +44,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
     };
   };
 
-  const fetchEntity = async (entityId: string) => {
+  const fetchEntity = async (entityId?: string) => {
     const res = await axios.get(`/category/${entityId}`);
     return res.data?.data ?? res.data;
   };

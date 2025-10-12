@@ -15,7 +15,6 @@ import {
   Phone,
   Share2,
   Layout,
-  Layers,
   Copy,
   Package,
   FolderTree
@@ -128,16 +127,11 @@ export const useMenuItems = (): SidebarItem[] => {
           icon: <FileText className="h-4 w-4" />,
           label: toUpperCase(t("menu.blogs"))
         },
+
         {
-          key: "categories",
-          label: toUpperCase(t("overview.categories")),
-          href: "landing/categories",
-          icon: <Layers className="h-4 w-4" />
-        },
-        {
-          key: "contacts",
-          label: toUpperCase(t("overview.contacts")),
-          href: "landing/contacts",
+          key: "contact",
+          label: toUpperCase(t("overview.contact")),
+          href: "landing/contact",
           icon: <Phone className="h-4 w-4" />
         },
         {

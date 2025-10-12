@@ -11,6 +11,7 @@ export interface FormShellProps {
   title: string;
   subtitle?: string;
   headerActions?: React.ReactNode;
+  rightActions?: React.ReactNode;
   children: React.ReactNode;
   actionBar: React.ReactNode;
   className?: string;
@@ -20,6 +21,7 @@ export const FormShell: React.FC<FormShellProps> = ({
   title,
   subtitle,
   headerActions,
+  rightActions,
   children,
   actionBar,
   className = ""
@@ -35,11 +37,18 @@ export const FormShell: React.FC<FormShellProps> = ({
     >
       <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start md:gap-6">
         <div className="flex-1">
-          <div className="mb-2 flex items-center gap-4">
-            {headerActions}
-            <h1 className="text-foreground text-[20px] font-semibold md:text-3xl">
-              {toUpperCase(t(title))}
-            </h1>
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div className="mb-2 flex items-center gap-4">
+              {headerActions}
+              <h1 className="text-foreground text-[20px] font-semibold md:text-3xl">
+                {toUpperCase(t(title))}
+              </h1>
+            </div>
+            {rightActions ? (
+              <div className="flex flex-col gap-2">{rightActions}</div>
+            ) : (
+              ""
+            )}
           </div>
           {subtitle && (
             <p className="text-muted-foreground mt-2">

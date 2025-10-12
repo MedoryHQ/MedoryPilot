@@ -50,7 +50,7 @@ export const FaqForm: React.FC<FaqFormProps> = ({
     };
   };
 
-  const fetchEntity = async (entityId: string) => {
+  const fetchEntity = async (entityId?: string) => {
     const res = await axios.get(`/faq/${entityId}`);
     return res.data?.data ?? res.data;
   };

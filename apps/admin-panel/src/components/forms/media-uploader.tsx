@@ -6,11 +6,12 @@ import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
 import axios from "@/api/axios";
 import { ADMIN_API_PATH, getFileUrl } from "@/utils";
+import { cn } from "@/libs";
 
 export interface MediaUploaderProps {
-  value?: { name: string; path: string; size: number } | null;
+  value?: { name: string; path: string; size?: number } | null;
   onChange: (
-    value: { name: string; path: string; size: number } | null
+    value: { name: string; path: string; size?: number } | null
   ) => void;
   label?: string;
   description?: string;
@@ -21,14 +22,16 @@ export interface MediaUploaderProps {
   className?: string;
   multi?: boolean;
   imageLimit?: number;
-  images?: { name: string; path: string; size: number }[];
+  error?: string;
+  images?: { name: string; path: string; size?: number }[];
   setUploadedImages?: (
-    images: { name: string; path: string; size: number }[]
+    images: { name: string; path: string; size?: number }[]
   ) => void;
+  autoClearErrorMs?: number;
 }
 
 type UploadState = "empty" | "hover" | "uploading" | "error" | "preview";
-type UploadedImage = { name: string; path: string; size: number };
+type UploadedImage = { name: string; path: string; size?: number };
 
 export const MediaUploader: React.FC<MediaUploaderProps> = ({
   value,
@@ -42,8 +45,10 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
   className = "",
   multi = false,
   imageLimit = 10,
+  error: formError,
   images = [],
-  setUploadedImages
+  setUploadedImages,
+  autoClearErrorMs = 5000
 }) => {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -57,6 +62,8 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
   const [fileList, setFileList] = useState<UploadedImage[]>([]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState<string>("");
+
+  const clearTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (images && images.length && !fileList.length) {
@@ -78,19 +85,48 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
     }
   }, [value, multi]);
 
+  useEffect(() => {
+    if (clearTimerRef.current) {
+      window.clearTimeout(clearTimerRef.current);
+      clearTimerRef.current = null;
+    }
+    if (error && autoClearErrorMs && autoClearErrorMs > 0) {
+      clearTimerRef.current = window.setTimeout(() => {
+        setError(null);
+        if (uploadState === "error") {
+          setUploadState(value ? "preview" : "empty");
+        }
+        clearTimerRef.current = null;
+      }, autoClearErrorMs);
+    }
+    return () => {
+      if (clearTimerRef.current) {
+        window.clearTimeout(clearTimerRef.current);
+        clearTimerRef.current = null;
+      }
+    };
+  }, [error, autoClearErrorMs, uploadState, value]);
+
   const uploadFileToBackend = async (
     file: File
   ): Promise<UploadedImage | null> => {
     const sizeMB = file.size / (1024 * 1024);
     if (sizeMB > maxSizeMB) {
-      setError(toUpperCase(t("mediaUploader.maxSize", { maxSize: maxSizeMB })));
+      const msg = toUpperCase(
+        t("mediaUploader.maxSize", { maxSize: maxSizeMB })
+      );
+      setError(msg);
       setUploadState("error");
       return null;
     }
+
     const formData = new FormData();
     formData.append("file", file);
+
     try {
+      setError(null);
       setUploadState("uploading");
+
       const res = await axios.post(
         `${ADMIN_API_PATH}/upload/single`,
         formData,
@@ -98,11 +134,22 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
           headers: { "Content-Type": "multipart/form-data" }
         }
       );
-      const data = res.data.file;
+
+      const data = res.data?.file ?? res.data;
       setUploadState("preview");
-      return { name: data.filename, path: data.path, size: data.size };
-    } catch (err) {
-      setError(toUpperCase(t("mediaUploader.uploadError")));
+
+      return {
+        name: data.filename ?? data.name ?? file.name,
+        path: data.path ?? data.url ?? "",
+        size: data.size ?? file.size
+      };
+    } catch (err: any) {
+      const backendMsg =
+        err?.response?.data?.message || err?.response?.data?.error;
+      const msg =
+        (typeof backendMsg === "string" && backendMsg.trim()) ||
+        toUpperCase(t("mediaUploader.uploadError"));
+      setError(msg);
       setUploadState("error");
       return null;
     }
@@ -112,7 +159,8 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      setError(toUpperCase(t("mediaUploader.invalidType")));
+      const msg = toUpperCase(t("mediaUploader.invalidType"));
+      setError(msg);
       setUploadState("error");
       return;
     }
@@ -125,9 +173,10 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
   const handleMultiInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length + fileList.length > imageLimit) {
-      setError(
-        toUpperCase(t("mediaUploader.limitWarning", { limit: imageLimit }))
+      const msg = toUpperCase(
+        t("mediaUploader.limitWarning", { limit: imageLimit })
       );
+      setError(msg);
       return;
     }
     const uploadedImages: UploadedImage[] = [];
@@ -162,9 +211,10 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
       const files = Array.from(e.dataTransfer.files || []);
       if (multi) {
         if (files.length + fileList.length > imageLimit) {
-          setError(
-            toUpperCase(t("mediaUploader.limitWarning", { limit: imageLimit }))
+          const msg = toUpperCase(
+            t("mediaUploader.limitWarning", { limit: imageLimit })
           );
+          setError(msg);
           return;
         }
         const uploadedImages: UploadedImage[] = [];
@@ -237,7 +287,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
   );
 
   return (
-    <div className={`space-y-4 ${className}`}>
+    <div className={cn("space-y-4", className)}>
       {!multi && (
         <>
           <input
@@ -260,7 +310,10 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
                   className="group relative"
                 >
                   <div
-                    className={`border-border bg-muted/10 overflow-hidden rounded-xl border-2 ${previewHeight}`}
+                    className={cn(
+                      "border-border bg-muted/10 overflow-hidden rounded-xl border-2",
+                      previewHeight
+                    )}
                   >
                     <img
                       src={getFileUrl(value.path)}
@@ -297,7 +350,10 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className={`border-primary bg-primary/5 flex flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed p-8 ${previewHeight}`}
+                  className={cn(
+                    "border-primary bg-primary/5 flex flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed p-8",
+                    previewHeight
+                  )}
                 >
                   <Loader2 className="text-primary h-12 w-12 animate-spin" />
                   <p className="text-muted-foreground text-sm">
@@ -311,11 +367,34 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   onClick={() => !disabled && fileInputRef.current?.click()}
-                  className={`border-destructive bg-destructive/5 hover:bg-destructive/10 flex cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed p-8 transition-colors ${previewHeight}`}
+                  className={cn(
+                    "border-destructive bg-destructive/5 hover:bg-destructive/10 flex cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed p-8 transition-colors",
+                    previewHeight
+                  )}
                 >
                   <AlertCircle className="text-destructive h-12 w-12" />
                   <p className="text-destructive text-sm font-medium">
-                    {toUpperCase(t("mediaUploader.uploadError"))}
+                    {error ?? toUpperCase(t("mediaUploader.uploadError"))}
+                  </p>
+                  <p className="text-muted-foreground text-xs">
+                    {toUpperCase(t("mediaUploader.tryAgain"))}
+                  </p>
+                </motion.div>
+              ) : formError?.length ? (
+                <motion.div
+                  key="error"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => !disabled && fileInputRef.current?.click()}
+                  className={cn(
+                    "border-destructive bg-destructive/5 hover:bg-destructive/10 flex cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed p-8 transition-colors",
+                    previewHeight
+                  )}
+                >
+                  <AlertCircle className="text-destructive h-12 w-12" />
+                  <p className="text-destructive text-sm font-medium">
+                    {formError ?? toUpperCase(t("mediaUploader.uploadError"))}
                   </p>
                   <p className="text-muted-foreground text-xs">
                     {toUpperCase(t("mediaUploader.tryAgain"))}
@@ -331,11 +410,16 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
                   onClick={() => !disabled && fileInputRef.current?.click()}
-                  className={`flex cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed p-8 transition-all ${
+                  className={cn(
+                    "flex cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed p-8 transition-all",
                     disabled
                       ? "bg-muted/10 cursor-not-allowed opacity-50"
-                      : "hover:border-primary hover:bg-primary/5"
-                  } ${isDragging ? "border-primary bg-primary/10 scale-105" : "border-border"} ${previewHeight} `}
+                      : "hover:border-primary hover:bg-primary/5",
+                    isDragging
+                      ? "border-primary bg-primary/10 scale-105"
+                      : "border-border",
+                    previewHeight
+                  )}
                 >
                   <div className="bg-primary/10 flex items-center justify-center rounded-full p-4">
                     {isDragging ? (
@@ -362,6 +446,23 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
                 </motion.div>
               )}
             </AnimatePresence>
+
+            {error && uploadState !== "error" && (
+              <div className="mt-3 flex items-start gap-2">
+                <AlertCircle className="text-destructive mt-1 h-5 w-5" />
+                <div className="flex-1">
+                  <p className="text-destructive text-sm">{error}</p>
+                </div>
+                <button
+                  type="button"
+                  aria-label="Close error"
+                  onClick={() => setError(null)}
+                  className="hover:bg-muted/10 rounded p-1"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            )}
           </div>
         </>
       )}
@@ -379,7 +480,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
             aria-label={toUpperCase(t("mediaUploader.uploadImageFile"))}
           />
           <div
-            className={`flex flex-wrap gap-4 ${previewHeight}`}
+            className={cn("flex flex-wrap gap-4", previewHeight)}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
@@ -410,6 +511,24 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
             ))}
             {fileList.length < imageLimit && uploadButton}
           </div>
+
+          {error && (
+            <div className="mt-3 flex items-start gap-2">
+              <AlertCircle className="text-destructive mt-1 h-5 w-5" />
+              <div className="flex-1">
+                <p className="text-destructive text-sm">{error}</p>
+              </div>
+              <button
+                type="button"
+                aria-label="Close error"
+                onClick={() => setError(null)}
+                className="hover:bg-muted/10 rounded p-1"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          )}
+
           {previewOpen && (
             <div
               className="fixed inset-0 z-50 flex items-center justify-center bg-black/70"

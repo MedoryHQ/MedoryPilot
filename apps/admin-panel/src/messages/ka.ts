@@ -214,8 +214,8 @@ export const ka = {
       blogsDescription: "ბლოგების წერა და მართვა",
       categories: "კატეგორიები",
       categoriesDescription: "ბლოგებისა და კონტენტის კატეგორიების მართვა",
-      contacts: "საკონტაქტო ინფორმაცია",
-      contactsDescription: "საკონტაქტო ინფორმაციის განახლება",
+      contacts: "საკონტაქტო ინფორმაციები",
+      contactsDescription: "საკონტაქტო ინფორმაციების განახლება",
       footer: "Footer",
       footerDescription: "ვებსაიტის footer-ის კონფიგურაცია და ბმულები",
       socials: "სოციალური ქსელები",
@@ -375,6 +375,26 @@ export const ka = {
       uploadError: "სურათის ატვირთვა ვერ მოხერხდა. გთხოვთ სცადეთ თავიდან."
     },
     introduce: {
+      form: {
+        createTitle: "შესავალის შექმნა",
+        editTitle: "შესავალის რედაქტირება",
+        readonlyTitle: "შესავალი",
+        edit: "შესავალის რედაქტირება",
+        read: "შესავალის ნახვა",
+        subtitle: "ვებსაიტის შესავალის კონფიგურაცია",
+        contentTranslations: "კონტენტი და თარგმანები",
+        contentTranslationsDescription:
+          "შეავსეთ შესავალის დეტალები თითოეული ენისთვის",
+        headline: "სათაური",
+        headlinePlaceholder: "მაგ., გამარჯობა",
+        description: "აღწერა",
+        descriptionPlaceholder: "შეიყვანეთ მოკლე აღწერა ამ შესავალისთვის...",
+        settings: "პარამეტრები",
+        introduce: "შესავალი",
+        createdSuccessfully: "შესავალი წარმატებით შეიქმნა",
+        updatedSuccessfully: "შესავალი წარმატებით განახლდა",
+        deletedSuccessfully: "შესავალი წარმატებით წაიშალა"
+      },
       errors: {
         headlineRequired: "სათაური სავალდებულოა",
         descriptionRequired: "აღწერა სავალდებულოა"
@@ -440,6 +460,34 @@ export const ka = {
       }
     },
     contact: {
+      form: {
+        management: "საკ. ინფორმაციის მენეჯმენტი",
+        managementDescription: "მართეთ ვებსაიტის საკ. ინფორმაცია და ნავიგაცია",
+        createTitle: "საკ. ინფორმაციის შექმნა",
+        editTitle: "საკ. ინფორმაციის რედაქტირება",
+        readonlyTitle: "საკ. ინფორმაცია",
+        edit: "საკ. ინფორმაციის რედაქტირება",
+        read: "საკ. ინფორმაციის ნახვა",
+        subtitle: "ვებსაიტის საკ. ინფორმაციის კონფიგურაცია",
+        contentTranslations: "კონტენტი და თარგმანები",
+        contentTranslationsDescription:
+          "შეავსეთ საკ. ინფორმაციის დეტალები თითოეული ენისთვის",
+        title: "სახელი",
+        titlePlaceholder: "მაგ., საკ. ინფორმაცია",
+        description: "აღწერა",
+        descriptionPlaceholder:
+          "შეიყვანეთ მოკლე აღწერა ამ საკ. ინფორმაციისთვის...",
+        location: "ლოკაცია",
+        locationPlaceholder: "მაგ., თბილისი, საქართველო",
+        settings: "პარამეტრები",
+        contact: "საკ. ინფორმაცია",
+        background: "ფონი",
+        backgroundLabel: "ჩააგდეთ ფონი აქ",
+        backgroundDescription: "ან დააჭირეთ არჩევისთვის",
+        createdSuccessfully: "საკ. ინფორმაცია წარმატებით შეიქმნა",
+        updatedSuccessfully: "საკ. ინფორმაცია წარმატებით განახლდა",
+        deletedSuccessfully: "საკ. ინფორმაცია წარმატებით წაიშალა"
+      },
       errors: {
         backgroundRequired: "ფონი სავალდებულოა",
         titleRequired: "სათაური სავალდებულოა",
@@ -502,6 +550,28 @@ export const ka = {
       filters: {
         hasIcon: "სურათით",
         noIcon: "სურათის გარეშე"
+      },
+      form: {
+        createTitle: "სოც. ქსელის შექმნა",
+        editTitle: "სოც. ქსელის რედაქტირება",
+        subtitle: "ვებსაიტის სოც. ქსელის კონფიგურაცია",
+        name: "სახელი",
+        namePlaceholder: "მაგ., Facebook",
+        url: "ლინკი",
+        urlPlaceholder: "მაგ., https://www.facebook.com",
+        settings: "პარამეტრები",
+        icon: "სურათი",
+        iconLabel: "ჩააგდეთ სურათი აქ",
+        iconDescription: "ან დააჭირეთ არჩევისთვის",
+        social: "სოც. ქსელი",
+        createdSuccessfully: "სოც. ქსელი წარმატებით შეიქმნა",
+        updatedSuccessfully: "სოც. ქსელი წარმატებით განახლდა",
+        deletedSuccessfully: "სოც. ქსელი წარმატებით წაიშალა"
+      },
+      errors: {
+        nameRequired: "სახელი აუცილებელია",
+        urlRequired: "ლინკი აუცილებელია",
+        iconRequired: "სურათი აუცილებელია"
       }
     },
     faqs: {

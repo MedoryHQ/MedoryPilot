@@ -2,48 +2,40 @@ import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
-
 import { GenericEntityForm } from "..";
-import type { FieldConfig } from "@/types";
-import type { ServiceFormValues } from "@/validations/website/service.validation";
-import { serviceSchema } from "@/validations/website/service.validation";
+import type { ContactFormValues } from "@/validations/website/contact.validation.ts";
+import { contactSchema } from "@/validations/website/contact.validation.ts";
+import { FieldConfig } from "@/types";
 
-export interface ServiceFormProps {
+export interface ContactFormProps {
   mode: "create" | "edit" | "readonly";
   id?: string | null;
-  onSuccessNavigate?: string;
+  entityData?: any;
+  refetch?: () => Promise<any> | void;
 }
 
-const defaultValues: ServiceFormValues = {
-  icon: null,
+const defaultValues: ContactFormValues = {
   background: null,
+  location: "",
   translations: {
     en: { title: "", description: "" },
     ka: { title: "", description: "" }
   }
 };
 
-export const ServiceForm: React.FC<ServiceFormProps> = ({
+export const ContactForm: React.FC<ContactFormProps> = ({
   mode,
   id = null,
-  onSuccessNavigate = "/landing/services"
+  entityData,
+  refetch
 }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<ServiceFormValues> => {
+  const mapFetchedToForm = (entity: any): Partial<ContactFormValues> => {
     if (!entity) return {};
     const translations = entity.translations ?? [];
     const en = translations.find((tr: any) => tr.language?.code === "en") ?? {};
     const ka = translations.find((tr: any) => tr.language?.code === "ka") ?? {};
-
-    const icon = entity.icon
-      ? {
-          path: entity.icon.path ?? entity.icon.url ?? "",
-          name: entity.icon.name ?? "",
-          size: entity.icon.size ?? undefined
-        }
-      : null;
-
     const background = entity.background
       ? {
           path: entity.background.path ?? entity.background.url ?? "",
@@ -53,8 +45,8 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
       : null;
 
     return {
-      icon,
       background,
+      location: entity.location || "",
       translations: {
         en: {
           title: en.title ?? "",
@@ -68,49 +60,49 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
     };
   };
 
-  const fetchEntity = async (entityId?: string) => {
-    const res = await axios.get(`/service/${entityId}`);
+  const fetchEntity = async () => {
+    const res = await axios.get("/contact");
     return res.data?.data ?? res.data;
   };
 
-  const createEntity = async (payload: ServiceFormValues) => {
-    await axios.post("/service", payload);
+  const createEntity = async (payload: ContactFormValues) => {
+    await axios.post("/contact", payload);
   };
 
-  const updateEntity = async (entityId: string, payload: ServiceFormValues) => {
-    await axios.put(`/service/${entityId}`, payload);
+  const updateEntity = async (entityId: string, payload: ContactFormValues) => {
+    await axios.put(`/contact/${entityId}`, payload);
   };
 
   const deleteEntity = async (entityId: string) => {
-    await axios.delete(`/service/${entityId}`);
+    await axios.delete(`/contact/${entityId}`);
   };
 
   const rightSections = [
     {
-      key: "icon",
-      title: toUpperCase(t("services.form.icon")),
+      key: "location",
+      title: toUpperCase(t("contact.form.management")),
       fields: [
         {
           kind: "simple",
-          name: "icon",
-          label: toUpperCase(t("services.form.iconLabel")),
-          type: "media",
+          name: "location",
+          label: toUpperCase(t("contact.form.location")),
+          type: "text",
           props: {
-            maxSizeMB: 5,
-            acceptedFormats: ["PNG", "JPG", "SVG", "WEBP"],
-            previewHeight: "h-[248px]"
+            step: 1,
+            placeholder: t("contact.form.locationPlaceholder"),
+            fullWidth: true
           }
         }
-      ] as FieldConfig<ServiceFormValues>[]
+      ] as FieldConfig<ContactFormValues>[]
     },
     {
       key: "background",
-      title: toUpperCase(t("services.form.background")),
+      title: toUpperCase(t("contact.form.background")),
       fields: [
         {
           kind: "simple",
           name: "background",
-          label: toUpperCase(t("services.form.backgroundLabel")),
+          label: toUpperCase(t("contact.form.backgroundLabel")),
           type: "media",
           props: {
             maxSizeMB: 5,
@@ -118,46 +110,49 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
             previewHeight: "h-[248px]"
           }
         }
-      ] as FieldConfig<ServiceFormValues>[]
+      ] as FieldConfig<ContactFormValues>[]
     }
   ];
 
   return (
-    <GenericEntityForm<ServiceFormValues, any>
-      resourceName="services"
+    <GenericEntityForm<ContactFormValues, any>
+      resourceName="contact"
       mode={mode}
       id={id ?? undefined}
-      schema={serviceSchema(t, i18n.language as "en" | "ka")}
+      schema={contactSchema(t)}
       defaultValues={defaultValues}
       fetchEntity={fetchEntity}
       createEntity={createEntity}
       updateEntity={updateEntity}
       deleteEntity={deleteEntity}
+      onDeleteSuccess={() => {}}
       translationLocales={["en", "ka"]}
       translationFields={
         [
           {
             name: "title",
-            label: toUpperCase(t("services.form.title")),
-            required: true,
+            label: toUpperCase(t("contact.form.title")),
             fullWidth: true,
-            rows: 1
+            required: true
           },
           {
             name: "description",
-            label: toUpperCase(t("services.form.description")),
+            label: toUpperCase(t("contact.form.description")),
             type: "textarea",
             rows: 5,
-            maxLength: 500
+            maxLength: 500,
+            required: true
           }
         ] as const
       }
       sections={{ left: [], right: rightSections }}
-      onSuccessNavigate={onSuccessNavigate}
       mapFetchedToForm={mapFetchedToForm}
       renderFooter={() => null}
+      entityData={entityData}
+      refetch={refetch}
+      allowModeToggleForReadonly
     />
   );
 };
 
-export default ServiceForm;
+export default ContactForm;

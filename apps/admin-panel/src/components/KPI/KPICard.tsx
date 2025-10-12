@@ -1,3 +1,4 @@
+import { cn } from "@/libs";
 import { Card, CardContent } from "../ui/card";
 import { motion } from "framer-motion";
 import { TrendingUp, TrendingDown } from "lucide-react";
@@ -58,7 +59,10 @@ export function KPICard({
                         <TrendingDown className="text-destructive h-3 w-3" />
                       )}
                       <span
-                        className={`text-xs ${isPositive ? "text-success" : "text-destructive"}`}
+                        className={cn(
+                          "text-xs",
+                          isPositive ? "text-success" : "text-destructive"
+                        )}
                       >
                         {delta > 0 ? "+" : ""}
                         {delta}%

@@ -9,6 +9,7 @@ interface StatusToggleProps {
   value: boolean;
   onChange: (value: boolean) => void;
   activeLabel?: string;
+  disabled?: boolean;
   inactiveLabel?: string;
   className?: string;
   showBadge?: boolean;
@@ -20,6 +21,7 @@ export function StatusToggle({
   value,
   onChange,
   activeLabel = "Active",
+  disabled = false,
   inactiveLabel = "Inactive",
   className = "",
   showBadge = true
@@ -49,6 +51,7 @@ export function StatusToggle({
       </div>
       <Switch
         checked={value}
+        disabled={disabled}
         onCheckedChange={onChange}
         className="scale-110"
       />

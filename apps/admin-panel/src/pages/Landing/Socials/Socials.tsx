@@ -101,6 +101,7 @@ const Socials = () => {
         isLoading={isFetching}
         deleteEndpoint="social"
         filters={filters}
+        editUrl="/landing/socials/edit"
         total={data?.count}
         emptyMessage={toUpperCase(t("socials.noSocialsFound"))}
         mobileCardRender={(item) => {

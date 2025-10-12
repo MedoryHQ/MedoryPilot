@@ -31,7 +31,7 @@ export const TariffForm: React.FC<TariffFormProps> = ({
     };
   };
 
-  const fetchEntity = async (entityId: string) => {
+  const fetchEntity = async (entityId?: string) => {
     const res = await axios.get(`/tariff/${entityId}`);
     return res.data?.data ?? res.data;
   };

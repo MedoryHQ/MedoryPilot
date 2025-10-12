@@ -1,18 +1,21 @@
 import { z } from "zod";
 import { TFunction } from "i18next";
 
+const BackendFileSchema = z.object({
+  name: z.string(),
+  path: z.string(),
+  size: z.number()
+});
+
 export const contactSchema = (
   t: TFunction<"translation", undefined>,
   lang: "en" | "ka" = "en"
 ) =>
   z.object({
     location: z.string().optional(),
-    background: z
-      .instanceof(File)
-      .nullable()
-      .refine((file) => file !== null, {
-        message: t("contact.errors.backgroundRequired", lang)
-      }),
+    background: BackendFileSchema.nullable().refine((file) => file !== null, {
+      message: t("headers.errors.backgroundRequired", lang)
+    }),
     translations: z.object({
       en: z.object({
         title: z

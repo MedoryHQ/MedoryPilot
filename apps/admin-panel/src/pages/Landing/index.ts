@@ -3,7 +3,7 @@ export * from "./Overview";
 export * from "./News";
 export * from "./Services";
 export * from "./Categories";
-export * from "./Contacts";
+export * from "./Contact";
 export * from "./Faqs";
 export * from "./Footers";
 export * from "./Headers";

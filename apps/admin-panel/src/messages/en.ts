@@ -212,8 +212,8 @@ export const en = {
       blogsDescription: "Write and manage blog posts",
       categories: "Categories",
       categoriesDescription: "Manage blog and content categories",
-      contacts: "Contact Info",
-      contactsDescription: "Update contact information",
+      contacts: "Contacts Info",
+      contactsDescription: "Update contacts information",
       footer: "Footer",
       footerDescription: "Configure website footer and links",
       socials: "Socials",
@@ -373,6 +373,27 @@ export const en = {
       uploadError: "Image upload failed. Please try again."
     },
     introduce: {
+      form: {
+        createTitle: "Create Introduce",
+        editTitle: "Edit Introduce",
+        readonlyTitle: "Introduce",
+        edit: "Edit Introduce",
+        read: "Read Introduce",
+        subtitle: "Configure your website introduce and navigation",
+        contentTranslations: "Content & Translations",
+        contentTranslationsDescription:
+          "Fill in introduce details for each language",
+        headline: "Headline",
+        headlinePlaceholder: "e.g., Hello World",
+        description: "Description",
+        descriptionPlaceholder:
+          "Enter a brief description for this introduce...",
+        settings: "Settings",
+        introduce: "Introduce",
+        createdSuccessfully: "Introduce created successfully",
+        updatedSuccessfully: "Introduce updated successfully",
+        deletedSuccessfully: "Introduce deleted successfully"
+      },
       errors: {
         headlineRequired: "Headline is required",
         descriptionRequired: "Description is required"
@@ -438,6 +459,33 @@ export const en = {
       }
     },
     contact: {
+      form: {
+        management: "Contact Management",
+        managementDescription: "Manage website contact and navigation elements",
+        createTitle: "Create Contact",
+        editTitle: "Edit Contact",
+        readonlyTitle: "Contact",
+        edit: "Edit Contact",
+        read: "Read Contact",
+        subtitle: "Configure your website contact and navigation",
+        contentTranslations: "Content & Translations",
+        contentTranslationsDescription:
+          "Fill in contact details for each language",
+        title: "Title",
+        titlePlaceholder: "e.g., Contact information",
+        location: "Location",
+        locationPlaceholder: "e.g., Tbilisi, Georgia",
+        description: "Description",
+        descriptionPlaceholder: "Enter a brief description for this contact...",
+        background: "Background",
+        backgroundLabel: "Drop your background here",
+        backgroundDescription: "or click to browse",
+        settings: "Settings",
+        contact: "Contact",
+        createdSuccessfully: "Contact created successfully",
+        updatedSuccessfully: "Contact updated successfully",
+        deletedSuccessfully: "Contact deleted successfully"
+      },
       errors: {
         backgroundRequired: "Background is required",
         titleRequired: "Title is required",
@@ -501,6 +549,28 @@ export const en = {
       filters: {
         hasIcon: "With Icon",
         noIcon: "Without Icon"
+      },
+      form: {
+        createTitle: "Create Social",
+        editTitle: "Edit Social",
+        subtitle: "Configure your website social and navigation",
+        name: "Name",
+        namePlaceholder: "e.g., Facebook",
+        url: "Url",
+        urlPlaceholder: "e.g., https://www.facebook.com",
+        icon: "Icon",
+        iconLabel: "Drop your icon here",
+        iconDescription: "or click to browse",
+        settings: "Settings",
+        social: "Social",
+        createdSuccessfully: "Social created successfully",
+        updatedSuccessfully: "Social updated successfully",
+        deletedSuccessfully: "Social deleted successfully"
+      },
+      errors: {
+        nameRequired: "Name is required",
+        urlRequired: "Url is required",
+        iconRequired: "Icon is required"
       }
     },
     faqs: {

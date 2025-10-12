@@ -3,6 +3,7 @@ import { Card, CardContent, Separator, Button } from "../ui";
 import { Save, Loader2, Trash2, X, Eye } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
+import { cn } from "@/libs";
 
 export interface ActionBarProps {
   mode: "create" | "edit" | "readonly";
@@ -58,7 +59,7 @@ export const ActionBar: React.FC<ActionBarProps> = ({
 
   return (
     <Card
-      className={`border-border/50 shadow-sm ${containerClasses} ${className}`}
+      className={cn("border-border/50 shadow-sm", containerClasses, className)}
     >
       <CardContent className="space-y-4 p-6">
         {showHelperText && !isReadOnly && (
@@ -171,7 +172,7 @@ export const InlineActions: React.FC<InlineActionsProps> = ({
     deleteLabel || toUpperCase(t("formActions.delete"));
 
   return (
-    <div className={`flex items-center justify-between gap-4 ${className}`}>
+    <div className={cn("flex items-center justify-between gap-4", className)}>
       <div className="flex items-center gap-3">
         {!isReadOnly && onSave && (
           <Button
