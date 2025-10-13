@@ -121,7 +121,6 @@ export const deleteTariff = async (
 ) => {
   try {
     const { id } = req.params;
-    const { type } = req.body as DeleteTariffDTO;
 
     logInfo("Tariff delete attempt", {
       ip: (req as any).hashedIp,
@@ -130,27 +129,36 @@ export const deleteTariff = async (
       event: "tariff_delete_attempt",
     });
 
-    let tariff;
+    const existing = await prisma.tariff.findUnique({ where: { id } });
 
-    if (type === "active") {
-      tariff = await prisma.tariff.delete({
-        where: { id },
-      });
-    } else if (type === "history") {
-      tariff = await prisma.tariffHistory.delete({
-        where: { id },
-      });
-    }
-
-    if (!tariff) {
+    if (!existing) {
       logWarn("Tariff delete failed: tariff not found", {
         ip: (req as any).hashedIp,
         id: (req as any).userId,
         path: req.path,
-
         event: "tariff_delete_failed",
       });
       return sendError(req, res, 404, "tariffNotFound");
+    }
+
+    await prisma.tariff.delete({ where: { id } });
+
+    if (existing.isCurrent) {
+      const childToPromote = await prisma.tariff.findFirst({
+        where: { parentId: id },
+        orderBy: { createdAt: "desc" },
+      });
+
+      if (childToPromote) {
+        await prisma.tariff.update({
+          where: { id: childToPromote.id },
+          data: {
+            isCurrent: true,
+            parentId: null,
+            endDate: null,
+          },
+        });
+      }
     }
 
     logInfo("Tariff deleted successfully", {
