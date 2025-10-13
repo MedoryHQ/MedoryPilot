@@ -201,7 +201,15 @@ export const createTariff = async (
       orderBy: { createdAt: "desc" },
     });
 
-    let newTariff;
+    let newTariff = await prisma.tariff.create({
+      data: {
+        price,
+        fromDate: new Date(),
+        endDate: null,
+        isCurrent: true,
+        parentId: null,
+      },
+    });
 
     if (currentTariff) {
       await prisma.tariff.update({
@@ -209,26 +217,16 @@ export const createTariff = async (
         data: {
           isCurrent: false,
           endDate: new Date(),
+          parentId: newTariff.id,
         },
       });
 
-      newTariff = await prisma.tariff.create({
-        data: {
-          price,
-          fromDate: new Date(),
-          endDate: null,
-          isCurrent: true,
+      await prisma.tariff.updateMany({
+        where: {
           parentId: currentTariff.id,
         },
-      });
-    } else {
-      newTariff = await prisma.tariff.create({
         data: {
-          price,
-          fromDate: new Date(),
-          endDate: null,
-          isCurrent: true,
-          parentId: null,
+          parentId: newTariff.id,
         },
       });
     }
@@ -279,39 +277,9 @@ export const updateTariff = async (
       return sendError(req, res, 404, "tariffNotFound");
     }
 
-    const currentTariff = await prisma.tariff.findFirst({
-      where: { isCurrent: true },
-      orderBy: { createdAt: "desc" },
-    });
-
-    if (currentTariff && currentTariff.id !== target.id) {
-      await prisma.tariff.update({
-        where: { id: currentTariff.id },
-        data: {
-          isCurrent: false,
-          endDate: new Date(),
-        },
-      });
-    }
-
-    if (target.isCurrent) {
-      await prisma.tariff.update({
-        where: { id: target.id },
-        data: {
-          isCurrent: false,
-          endDate: new Date(),
-        },
-      });
-    }
-
-    const newTariff = await prisma.tariff.create({
-      data: {
-        price,
-        fromDate: new Date(),
-        endDate: null,
-        isCurrent: true,
-        parentId: target.id,
-      },
+    const updated = await prisma.tariff.update({
+      where: { id },
+      data: { price },
     });
 
     logInfo("Tariff updated successfully", {
@@ -322,7 +290,7 @@ export const updateTariff = async (
     });
 
     return res.json({
-      data: newTariff,
+      data: updated,
     });
   } catch (error) {
     logCatchyError("Update tariff exception", error, {
