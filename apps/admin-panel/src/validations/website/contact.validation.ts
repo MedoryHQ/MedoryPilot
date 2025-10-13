@@ -1,11 +1,6 @@
 import { z } from "zod";
 import { TFunction } from "i18next";
-
-const BackendFileSchema = z.object({
-  name: z.string(),
-  path: z.string(),
-  size: z.number()
-});
+import { FileSchema } from "../global.validation";
 
 export const contactSchema = (
   t: TFunction<"translation", undefined>,
@@ -13,7 +8,7 @@ export const contactSchema = (
 ) =>
   z.object({
     location: z.string().optional(),
-    background: BackendFileSchema.nullable().refine((file) => file !== null, {
+    background: FileSchema.nullable().refine((file) => file !== null, {
       message: t("headers.errors.backgroundRequired", lang)
     }),
     translations: z.object({

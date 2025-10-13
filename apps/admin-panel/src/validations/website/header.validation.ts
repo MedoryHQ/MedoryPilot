@@ -1,18 +1,13 @@
 import { z } from "zod";
 import { TFunction } from "i18next";
-
-const BackendFileSchema = z.object({
-  name: z.string(),
-  path: z.string(),
-  size: z.number()
-});
+import { FileSchema } from "../global.validation";
 
 export const headerSchema = (
   t: TFunction<"translation", undefined>,
   lang: "en" | "ka" = "en"
 ) =>
   z.object({
-    logo: BackendFileSchema.nullable().refine((file) => file !== null, {
+    logo: FileSchema.nullable().refine((file) => file !== null, {
       message: t("headers.errors.logoRequired", lang)
     }),
     active: z
