@@ -14,13 +14,7 @@ const overviewQueries = {
   footers: () => prisma.footer.count(),
   socials: () => prisma.social.count(),
   pages: () => prisma.pageComponent.count(),
-  tariffs: async () => {
-    const [currentCount, historyCount] = await Promise.all([
-      prisma.tariff.count(),
-      prisma.tariffHistory.count(),
-    ]);
-    return currentCount + historyCount;
-  },
+  tariffs: () => prisma.tariff.count(),
 };
 
 export const fetchOverviews = async (
