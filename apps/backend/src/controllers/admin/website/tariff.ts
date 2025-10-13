@@ -86,32 +86,24 @@ export const fetchTariff = async (
 ) => {
   try {
     const { id } = req.params;
-    const { type } = req.body as GetTariffDTO;
 
-    let data;
+    const tariff = await prisma.tariff.findUnique({
+      where: { id },
+    });
 
-    if (type === "active") {
-      data = await prisma.tariff.findUnique({
-        where: { id },
-      });
-    } else if (type === "history") {
-      data = await prisma.tariffHistory.findUnique({
-        where: { id },
-      });
-    }
-
-    if (!data) {
+    if (!tariff) {
       logWarn("Tariff fetch failed: tariff not found", {
         ip: (req as any).hashedIp,
         id: (req as any).userId,
         path: req.path,
-
         event: "tariff_fetch_failed",
       });
       return sendError(req, res, 404, "tariffNotFound");
     }
 
-    return res.status(200).json({ data, type });
+    const type = tariff.isCurrent ? "active" : "history";
+
+    return res.status(200).json({ data: tariff, type });
   } catch (error) {
     logCatchyError("fetch_tariff_exception", error, {
       ip: (req as any).hashedIp,
