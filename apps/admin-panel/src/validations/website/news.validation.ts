@@ -1,17 +1,15 @@
 import { z } from "zod";
 import { TFunction } from "i18next";
+import { FileSchema, metaSchema } from "../global.validation";
 
 export const newsSchema = (
   t: TFunction<"translation", undefined>,
   lang: "en" | "ka" = "en"
 ) =>
   z.object({
-    background: z
-      .instanceof(File)
-      .nullable()
-      .refine((file) => file !== null, {
-        message: t("news.errors.backgroundRequired", lang)
-      }),
+    background: FileSchema.nullable().refine((file) => file !== null, {
+      message: t("news.errors.backgroundRequired", lang)
+    }),
     slug: z.string().min(1, { message: t("news.errors.slugRequired", lang) }),
     showInLanding: z.boolean(),
     order: z
@@ -20,10 +18,7 @@ export const newsSchema = (
       .refine((val) => val !== null, {
         message: t("news.errors.orderRequired", lang)
       }),
-    metaTitle: z.string().nullable(),
-    metaDescription: z.string().nullable(),
-    metaKeywords: z.string().nullable(),
-    metaImage: z.string().nullable(),
+    ...metaSchema,
     translations: z.object({
       en: z.object({
         content: z

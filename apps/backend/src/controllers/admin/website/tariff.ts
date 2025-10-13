@@ -10,12 +10,7 @@ import {
   parseFilters,
   generateWhereInput,
 } from "@/utils";
-import {
-  GetTariffDTO,
-  DeleteTariffDTO,
-  CreateTariffDTO,
-  UpdateTariffDTO,
-} from "@/types/admin";
+import { CreateTariffDTO, UpdateTariffDTO } from "@/types/admin";
 import { Prisma } from "@prisma/client";
 
 export const fetchTariffs = async (
@@ -26,120 +21,56 @@ export const fetchTariffs = async (
   try {
     const { skip, take, orderBy, search } = getPaginationAndFilters(req);
     const filters = parseFilters(req);
-    const { min, max, type } = filters;
+    const { price, type } = filters;
 
-    const applyMinPrice = min !== undefined && Number(min) >= 0;
-    const applyMaxPrice = max !== undefined && Number(max) >= 0;
+    const applyMinPrice = price?.min && Number(price.min) > 0;
+    const applyMaxPrice = price?.max && Number(price.max) > 0;
 
-    const priceExtra: any = {};
-    if (applyMinPrice) priceExtra.gte = Number(min);
-    if (applyMaxPrice) priceExtra.lte = Number(max);
-
-    const clientProvidedOrderBy = typeof req.query.orderBy !== "undefined";
-    const tariffWhere = generateWhereInput<Prisma.TariffWhereInput>(
+    const where = generateWhereInput<Prisma.TariffWhereInput>(
       search,
       { price: "insensitive" },
-      Object.keys(priceExtra).length ? { price: priceExtra } : undefined
+      {
+        AND: [
+          applyMinPrice
+            ? {
+                price: {
+                  gte: Number(price.min),
+                },
+              }
+            : {},
+          applyMaxPrice
+            ? {
+                price: {
+                  lte: Number(price.max),
+                },
+              }
+            : {},
+        ],
+      }
     );
 
-    const historyWhere = generateWhereInput<Prisma.TariffHistoryWhereInput>(
-      search,
-      { price: "insensitive", fromDate: "insensitive", endDate: "insensitive" },
-      Object.keys(priceExtra).length ? { price: priceExtra } : undefined
-    );
-
-    const wantOnlyTariff = type === "tariff";
-    const wantOnlyHistory = type === "history";
-
-    const [tariffCount, historyCount] = await Promise.all([
-      wantOnlyHistory
-        ? Promise.resolve(0)
-        : prisma.tariff.count({ where: tariffWhere }),
-      wantOnlyTariff
-        ? Promise.resolve(0)
-        : prisma.tariffHistory.count({ where: historyWhere }),
-    ]);
-
-    const prismaOrder = clientProvidedOrderBy ? orderBy : undefined;
-
-    const tariffPromise = wantOnlyHistory
-      ? Promise.resolve([])
-      : prisma.tariff.findMany({
-          where: tariffWhere,
-          orderBy: prismaOrder,
-          take: 1,
-        });
-
-    const historiesToFetch = Math.max(0, skip + take);
-    const historyPromise = wantOnlyTariff
-      ? Promise.resolve([])
-      : prisma.tariffHistory.findMany({
-          where: historyWhere,
-          orderBy: prismaOrder,
-          take: historiesToFetch,
-        });
-
-    const [tariffs, histories] = await Promise.all([
-      tariffPromise,
-      historyPromise,
-    ]);
-
-    type Unified = { __type: "tariff" | "history"; payload: any };
-
-    const combined: Unified[] = [
-      ...tariffs.map((t) => ({ __type: "tariff" as const, payload: t })),
-      ...histories.map((h) => ({ __type: "history" as const, payload: h })),
-    ];
-
-    if (clientProvidedOrderBy) {
-      const orderKey = Object.keys(orderBy)[0];
-      const orderDir = (Object.values(orderBy)[0] as "asc" | "desc") || "desc";
-      const dir = orderDir === "asc" ? 1 : -1;
-
-      const getVal = (item: Unified, key: string) => {
-        return item.payload?.[key];
-      };
-
-      combined.sort((a, b) => {
-        const va = getVal(a, orderKey);
-        const vb = getVal(b, orderKey);
-
-        if (va == null && vb == null) return 0;
-        if (va == null) return 1 * dir;
-        if (vb == null) return -1 * dir;
-
-        if (va instanceof Date || vb instanceof Date) {
-          const da = va instanceof Date ? va.getTime() : new Date(va).getTime();
-          const db = vb instanceof Date ? vb.getTime() : new Date(vb).getTime();
-          return (da - db) * dir;
-        }
-
-        if (typeof va === "number" && typeof vb === "number") {
-          return (va - vb) * dir;
-        }
-
-        const sa = String(va).toLowerCase();
-        const sb = String(vb).toLowerCase();
-        if (sa < sb) return -1 * dir;
-        if (sa > sb) return 1 * dir;
-        return 0;
-      });
+    if (type === "tariff") {
+      (where as any).AND = [...((where as any).AND ?? []), { isCurrent: true }];
+    } else if (type === "history") {
+      (where as any).AND = [
+        ...((where as any).AND ?? []),
+        { isCurrent: false },
+      ];
     }
 
-    const totalCombined = tariffCount + historyCount;
+    const [tariffs, count] = await Promise.all([
+      prisma.tariff.findMany({
+        skip,
+        take,
+        orderBy: orderBy as any,
+        where,
+      }),
+      prisma.tariff.count({ where }),
+    ]);
 
-    const paged = combined.slice(skip, skip + take);
-
-    const data = paged.map((u) => ({ ...u.payload, __type: u.__type }));
-
-    return res.status(200).json({
-      data,
-      count: {
-        total: totalCombined,
-      },
-    });
+    return res.status(200).json({ data: tariffs, count: { total: count } });
   } catch (error) {
-    logCatchyError("fetch_tariffs_exception", error, {
+    logCatchyError("Fetch tariffs exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       event: "admin_fetch_tariffs_exception",
@@ -155,32 +86,24 @@ export const fetchTariff = async (
 ) => {
   try {
     const { id } = req.params;
-    const { type } = req.body as GetTariffDTO;
 
-    let data;
+    const tariff = await prisma.tariff.findUnique({
+      where: { id },
+    });
 
-    if (type === "active") {
-      data = await prisma.tariff.findUnique({
-        where: { id },
-      });
-    } else if (type === "history") {
-      data = await prisma.tariffHistory.findUnique({
-        where: { id },
-      });
-    }
-
-    if (!data) {
+    if (!tariff) {
       logWarn("Tariff fetch failed: tariff not found", {
         ip: (req as any).hashedIp,
         id: (req as any).userId,
         path: req.path,
-
         event: "tariff_fetch_failed",
       });
       return sendError(req, res, 404, "tariffNotFound");
     }
 
-    return res.status(200).json({ data, type });
+    const type = tariff.isCurrent ? "active" : "history";
+
+    return res.status(200).json({ data: tariff, type });
   } catch (error) {
     logCatchyError("fetch_tariff_exception", error, {
       ip: (req as any).hashedIp,
@@ -198,7 +121,6 @@ export const deleteTariff = async (
 ) => {
   try {
     const { id } = req.params;
-    const { type } = req.body as DeleteTariffDTO;
 
     logInfo("Tariff delete attempt", {
       ip: (req as any).hashedIp,
@@ -207,27 +129,36 @@ export const deleteTariff = async (
       event: "tariff_delete_attempt",
     });
 
-    let tariff;
+    const existing = await prisma.tariff.findUnique({ where: { id } });
 
-    if (type === "active") {
-      tariff = await prisma.tariff.delete({
-        where: { id },
-      });
-    } else if (type === "history") {
-      tariff = await prisma.tariffHistory.delete({
-        where: { id },
-      });
-    }
-
-    if (!tariff) {
+    if (!existing) {
       logWarn("Tariff delete failed: tariff not found", {
         ip: (req as any).hashedIp,
         id: (req as any).userId,
         path: req.path,
-
         event: "tariff_delete_failed",
       });
       return sendError(req, res, 404, "tariffNotFound");
+    }
+
+    await prisma.tariff.delete({ where: { id } });
+
+    if (existing.isCurrent) {
+      const childToPromote = await prisma.tariff.findFirst({
+        where: { parentId: id },
+        orderBy: { createdAt: "desc" },
+      });
+
+      if (childToPromote) {
+        await prisma.tariff.update({
+          where: { id: childToPromote.id },
+          data: {
+            isCurrent: true,
+            parentId: null,
+            endDate: null,
+          },
+        });
+      }
     }
 
     logInfo("Tariff deleted successfully", {
@@ -265,26 +196,38 @@ export const createTariff = async (
       event: "tariff_create_attempt",
     });
 
-    const currentTariff = await prisma.tariff.findFirst();
+    const currentTariff = await prisma.tariff.findFirst({
+      where: { isCurrent: true },
+      orderBy: { createdAt: "desc" },
+    });
 
-    const tariff = await prisma.tariff.create({
-      data: { price },
+    let newTariff = await prisma.tariff.create({
+      data: {
+        price,
+        fromDate: new Date(),
+        endDate: null,
+        isCurrent: true,
+        parentId: null,
+      },
     });
 
     if (currentTariff) {
-      await prisma.tariffHistory.create({
+      await prisma.tariff.update({
+        where: { id: currentTariff.id },
         data: {
-          price: currentTariff.price,
-          fromDate: currentTariff.createdAt,
+          isCurrent: false,
           endDate: new Date(),
-          current: {
-            connect: { id: tariff.id },
-          },
+          parentId: newTariff.id,
         },
       });
 
-      await prisma.tariff.delete({
-        where: { id: currentTariff.id },
+      await prisma.tariff.updateMany({
+        where: {
+          parentId: currentTariff.id,
+        },
+        data: {
+          parentId: newTariff.id,
+        },
       });
     }
 
@@ -295,7 +238,7 @@ export const createTariff = async (
       event: "tariff_created",
     });
 
-    return res.status(201).json({ data: tariff });
+    return res.status(201).json({ data: newTariff });
   } catch (error) {
     logCatchyError("Create tariff exception", error, {
       ip: (req as any).hashedIp,
@@ -313,7 +256,6 @@ export const updateTariff = async (
 ) => {
   try {
     const { id } = req.params;
-
     const { price } = req.body as UpdateTariffDTO;
 
     logInfo("Tariff update attempt", {
@@ -323,30 +265,21 @@ export const updateTariff = async (
       event: "tariff_update_attempt",
     });
 
-    const findTariff = await prisma.tariff.findUnique({
-      where: {
-        id,
-      },
-    });
+    const target = await prisma.tariff.findUnique({ where: { id } });
 
-    if (!findTariff) {
+    if (!target) {
       logWarn("Tariff update failed: tariff not found", {
         ip: (req as any).hashedIp,
         id: (req as any).userId,
         path: req.path,
-
         event: "tariff_update_failed",
       });
       return sendError(req, res, 404, "tariffNotFound");
     }
 
-    const tariff = await prisma.tariff.update({
-      where: {
-        id,
-      },
-      data: {
-        price,
-      },
+    const updated = await prisma.tariff.update({
+      where: { id },
+      data: { price },
     });
 
     logInfo("Tariff updated successfully", {
@@ -357,7 +290,7 @@ export const updateTariff = async (
     });
 
     return res.json({
-      data: tariff,
+      data: updated,
     });
   } catch (error) {
     logCatchyError("Update tariff exception", error, {

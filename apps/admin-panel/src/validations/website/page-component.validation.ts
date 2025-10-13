@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { TFunction } from "i18next";
+import { metaSchema } from "../global.validation";
 
 export const pageComponentSchema = (
   t: TFunction<"translation", undefined>,
@@ -15,10 +16,7 @@ export const pageComponentSchema = (
       .refine((val) => val !== null, {
         message: t("pageComponent.errors.footerOrderRequired", lang)
       }),
-    metaTitle: z.string().nullable(),
-    metaDescription: z.string().nullable(),
-    metaKeywords: z.string().nullable(),
-    metaImage: z.string().nullable(),
+    ...metaSchema,
     translations: z.object({
       en: z.object({
         name: z

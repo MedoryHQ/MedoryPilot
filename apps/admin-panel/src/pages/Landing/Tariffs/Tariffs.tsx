@@ -5,8 +5,8 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { Column, FilterConfig } from "@/types/ui";
-import { TariffTable } from "@/types/website";
 import { useGetTariffs } from "@/libs/queries/tariff";
+import { Tariff } from "@/types/website";
 
 const Tariffs = () => {
   const { t, i18n } = useTranslation();
@@ -16,8 +16,8 @@ const Tariffs = () => {
   const { filledSearchParams } = getPaginationFields(searchParams);
 
   const { data, refetch, isFetching } = useGetTariffs(filledSearchParams);
-  const items: TariffTable[] = data?.data ?? [];
-  const total = data?.count?.total;
+  const items = data?.data ?? [];
+  const total = data?.count;
 
   const filters: FilterConfig[] = [
     {
@@ -42,16 +42,18 @@ const Tariffs = () => {
     }
   ];
 
-  const columns: Column<TariffTable>[] = [
+  const columns: Column<Tariff>[] = [
     {
       key: "type",
       label: toUpperCase(t("tariffs.type") || "Type"),
       render: (item) => (
         <Badge
-          variant={item.__type === "tariff" ? "default" : "secondary"}
+          variant={item.isCurrent ? "default" : "secondary"}
           className="px-3 py-1"
         >
-          {toUpperCase(t(`tariffs.${item.__type}`))}
+          {toUpperCase(
+            t(item.isCurrent ? "tariffs.tariff" : "tariffs.history")
+          )}
         </Badge>
       ),
       className: "w-[110px] text-center"
@@ -149,7 +151,9 @@ const Tariffs = () => {
               <div className="mb-3 flex items-center justify-between">
                 <div>
                   <div className="text-sm font-medium">
-                    {toUpperCase(`${t(`tariffs.${item.__type}`)}`)}
+                    {toUpperCase(
+                      t(item.isCurrent ? "tariffs.tariff" : "tariffs.history")
+                    )}
                   </div>
                   <div className="text-foreground mt-1 text-lg font-semibold">
                     {String(item.price)}

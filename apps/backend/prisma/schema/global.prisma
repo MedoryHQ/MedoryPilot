@@ -90,31 +90,22 @@ model RefreshToken {
 }
 
 model Tariff {
-  id String @id @default(uuid()) @db.Uuid
+  id        String    @id @default(uuid()) @db.Uuid
+  price     Float     @default(0)
+  fromDate  DateTime  @default(now())
+  endDate   DateTime?
+  isCurrent Boolean   @default(false)
 
-  price   Float
-  history TariffHistory[]
+  parentId String?  @db.Uuid
+  parent   Tariff?  @relation("TariffVersions", fields: [parentId], references: [id])
+  versions Tariff[] @relation("TariffVersions")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([parentId])
+  @@index([isCurrent])
   @@map("tariffs")
-}
-
-model TariffHistory {
-  id String @id @default(uuid()) @db.Uuid
-
-  price    Float
-  fromDate DateTime
-  endDate  DateTime
-
-  current  Tariff @relation(fields: [tariffId], references: [id])
-  tariffId String @db.Uuid
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("tariffs_history")
 }
 
 model Theme {

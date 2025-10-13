@@ -16,7 +16,6 @@ jest.mock("@/config", () => ({
     social: { count: jest.fn() },
     pageComponent: { count: jest.fn() },
     tariff: { count: jest.fn() },
-    tariffHistory: { count: jest.fn() },
     $disconnect: jest.fn(),
   },
 }));
@@ -63,7 +62,6 @@ describe("Admin Overview routes — /admin/overview", () => {
       (prisma.social.count as jest.Mock).mockResolvedValueOnce(6);
       (prisma.pageComponent.count as jest.Mock).mockResolvedValueOnce(9);
       (prisma.tariff.count as jest.Mock).mockResolvedValueOnce(3);
-      (prisma.tariffHistory.count as jest.Mock).mockResolvedValueOnce(2);
 
       const res = await request(app).get("/admin/overview");
 
@@ -85,7 +83,6 @@ describe("Admin Overview routes — /admin/overview", () => {
 
       expect(prisma.header.count).toHaveBeenCalled();
       expect(prisma.tariff.count).toHaveBeenCalled();
-      expect(prisma.tariffHistory.count).toHaveBeenCalled();
     });
 
     it("handles DB errors gracefully", async () => {
