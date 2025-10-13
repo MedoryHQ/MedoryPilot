@@ -9,7 +9,7 @@ export const contactSchema = (
   z.object({
     location: z.string().optional(),
     background: FileSchema.nullable().refine((file) => file !== null, {
-      message: t("headers.errors.backgroundRequired", lang)
+      message: t("contact.errors.backgroundRequired", lang)
     }),
     translations: z.object({
       en: z.object({
