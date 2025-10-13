@@ -196,26 +196,40 @@ export const createTariff = async (
       event: "tariff_create_attempt",
     });
 
-    const currentTariff = await prisma.tariff.findFirst();
-
-    const tariff = await prisma.tariff.create({
-      data: { price },
+    const currentTariff = await prisma.tariff.findFirst({
+      where: { isCurrent: true },
+      orderBy: { createdAt: "desc" },
     });
 
+    let newTariff;
+
     if (currentTariff) {
-      await prisma.tariffHistory.create({
+      await prisma.tariff.update({
+        where: { id: currentTariff.id },
         data: {
-          price: currentTariff.price,
-          fromDate: currentTariff.createdAt,
+          isCurrent: false,
           endDate: new Date(),
-          current: {
-            connect: { id: tariff.id },
-          },
         },
       });
 
-      await prisma.tariff.delete({
-        where: { id: currentTariff.id },
+      newTariff = await prisma.tariff.create({
+        data: {
+          price,
+          fromDate: new Date(),
+          endDate: null,
+          isCurrent: true,
+          parentId: currentTariff.id,
+        },
+      });
+    } else {
+      newTariff = await prisma.tariff.create({
+        data: {
+          price,
+          fromDate: new Date(),
+          endDate: null,
+          isCurrent: true,
+          parentId: null,
+        },
       });
     }
 
@@ -226,7 +240,7 @@ export const createTariff = async (
       event: "tariff_created",
     });
 
-    return res.status(201).json({ data: tariff });
+    return res.status(201).json({ data: newTariff });
   } catch (error) {
     logCatchyError("Create tariff exception", error, {
       ip: (req as any).hashedIp,
