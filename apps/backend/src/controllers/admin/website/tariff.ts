@@ -23,8 +23,8 @@ export const fetchTariffs = async (
     const filters = parseFilters(req);
     const { price, type } = filters;
 
-    const applyMinPrice = price.min && Number(price.min) > 0;
-    const applyMaxPrice = price.max && Number(price.max) > 0;
+    const applyMinPrice = price?.min && Number(price.min) > 0;
+    const applyMaxPrice = price?.max && Number(price.max) > 0;
 
     const where = generateWhereInput<Prisma.TariffWhereInput>(
       search,
