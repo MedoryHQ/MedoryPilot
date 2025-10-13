@@ -11,11 +11,11 @@ export interface Tariff {
   id: string;
   price: number;
   fromDate: string;
-  endDate?: string;
+  endDate: string | null;
   isCurrent: boolean;
-  parentId: string;
-  parent?: Tariff;
-  versions: Tariff[];
+  parentId: string | null;
+  parent?: Tariff | null;
+  versions?: Tariff[];
   createdAt: string;
   updatedAt: string;
 }

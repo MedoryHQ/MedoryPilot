@@ -6,9 +6,9 @@ export const FileSchema = z.object({
   size: z.number().optional()
 });
 
-export const metaSchema = {
+export const metaSchema = z.object({
   metaTitle: z.string().nullable(),
   metaDescription: z.string().nullable(),
   metaKeywords: z.string().nullable(),
   metaImage: z.string().nullable()
-};
+}).shape;

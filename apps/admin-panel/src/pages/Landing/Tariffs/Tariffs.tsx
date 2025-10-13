@@ -16,7 +16,7 @@ const Tariffs = () => {
   const { filledSearchParams } = getPaginationFields(searchParams);
 
   const { data, refetch, isFetching } = useGetTariffs(filledSearchParams);
-  const items: Tariff[] = data?.data ?? [];
+  const items = data?.data ?? [];
   const total = data?.count;
 
   const filters: FilterConfig[] = [
