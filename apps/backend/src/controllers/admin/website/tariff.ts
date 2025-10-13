@@ -258,7 +258,6 @@ export const updateTariff = async (
 ) => {
   try {
     const { id } = req.params;
-
     const { price } = req.body as UpdateTariffDTO;
 
     logInfo("Tariff update attempt", {
@@ -268,29 +267,50 @@ export const updateTariff = async (
       event: "tariff_update_attempt",
     });
 
-    const findTariff = await prisma.tariff.findUnique({
-      where: {
-        id,
-      },
-    });
+    const target = await prisma.tariff.findUnique({ where: { id } });
 
-    if (!findTariff) {
+    if (!target) {
       logWarn("Tariff update failed: tariff not found", {
         ip: (req as any).hashedIp,
         id: (req as any).userId,
         path: req.path,
-
         event: "tariff_update_failed",
       });
       return sendError(req, res, 404, "tariffNotFound");
     }
 
-    const tariff = await prisma.tariff.update({
-      where: {
-        id,
-      },
+    const currentTariff = await prisma.tariff.findFirst({
+      where: { isCurrent: true },
+      orderBy: { createdAt: "desc" },
+    });
+
+    if (currentTariff && currentTariff.id !== target.id) {
+      await prisma.tariff.update({
+        where: { id: currentTariff.id },
+        data: {
+          isCurrent: false,
+          endDate: new Date(),
+        },
+      });
+    }
+
+    if (target.isCurrent) {
+      await prisma.tariff.update({
+        where: { id: target.id },
+        data: {
+          isCurrent: false,
+          endDate: new Date(),
+        },
+      });
+    }
+
+    const newTariff = await prisma.tariff.create({
       data: {
         price,
+        fromDate: new Date(),
+        endDate: null,
+        isCurrent: true,
+        parentId: target.id,
       },
     });
 
@@ -302,7 +322,7 @@ export const updateTariff = async (
     });
 
     return res.json({
-      data: tariff,
+      data: newTariff,
     });
   } catch (error) {
     logCatchyError("Update tariff exception", error, {
