@@ -94,21 +94,20 @@ export function GenericEntityForm<
         ? mapFetchedToForm(data)
         : (data as unknown as Partial<TForm>);
       reset({ ...(defaultValues as any), ...(mapped as any) } as any);
-    } else {
+      return;
+    }
+    if (!useInternalQuery || entityQuery.isSuccess) {
       reset(defaultValues as any);
-      if (!externalMode) {
-        setInternalMode("create");
-        onModeChange?.("create");
-      }
+      setMode("create");
     }
   }, [
     entityData,
     entityQuery.data,
+    entityQuery.isSuccess,
     reset,
     mapFetchedToForm,
     defaultValues,
-    externalMode,
-    onModeChange
+    useInternalQuery
   ]);
 
   const [internalMode, setInternalMode] = useState<

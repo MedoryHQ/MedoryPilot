@@ -213,6 +213,7 @@ export const en = {
       categories: "Categories",
       categoriesDescription: "Manage blog and content categories",
       contacts: "Contacts Info",
+      contact: "Contact Info",
       contactsDescription: "Update contacts information",
       footer: "Footer",
       footerDescription: "Configure website footer and links",

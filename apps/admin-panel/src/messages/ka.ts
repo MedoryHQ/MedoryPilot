@@ -215,6 +215,7 @@ export const ka = {
       categories: "კატეგორიები",
       categoriesDescription: "ბლოგებისა და კონტენტის კატეგორიების მართვა",
       contacts: "საკონტაქტო ინფორმაციები",
+      contact: "საკონტაქტო ინფორმაცია",
       contactsDescription: "საკონტაქტო ინფორმაციების განახლება",
       footer: "Footer",
       footerDescription: "ვებსაიტის footer-ის კონფიგურაცია და ბმულები",
