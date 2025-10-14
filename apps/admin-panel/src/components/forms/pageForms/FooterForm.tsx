@@ -7,6 +7,7 @@ import type { FooterFormValues } from "@/validations/website/footer.validation.t
 import { footerSchema } from "@/validations/website/footer.validation.ts";
 import { FieldConfig } from "@/types";
 import { Footer } from "@/types/website";
+import { TranslatedSelect } from "@/components/TranslatedSelect";
 
 export interface FooterFormProps {
   mode: "create" | "edit" | "readonly";
@@ -33,8 +34,8 @@ export const FooterForm: React.FC<FooterFormProps> = ({
   const mapFetchedToForm = (entity: Footer): Partial<FooterFormValues> => {
     if (!entity) return {};
     const { phone, email, socials, pages } = entity;
-    const filteredSocials = socials.map((social) => social.id);
-    const filteredPages = pages.map((page) => page.id);
+    const filteredSocials = (socials || []).map((social) => social.id);
+    const filteredPages = (pages || []).map((page) => page.id);
     return {
       phone: phone || "",
       email: email || "",
@@ -86,8 +87,51 @@ export const FooterForm: React.FC<FooterFormProps> = ({
             placeholder: t("footers.form.emailPlaceholder"),
             fullWidth: true
           }
+        },
+        {
+          kind: "custom",
+          name: "socials",
+          label: toUpperCase(t("footers.form.socials")),
+          render: (form) => {
+            return (
+              <div className="mb-5">
+                <label className="text-muted-foreground mb-2 block text-sm font-medium">
+                  {toUpperCase(t("footers.form.socials"))}
+                </label>
+                <TranslatedSelect
+                  endpoints="/socials"
+                  translationKey="name"
+                  value={(form.getValues() as any).socials ?? []}
+                  multiple
+                  placeholder={t("footers.form.selectSocials") as string}
+                  onChange={(vals) => form.setValue("socials" as any, vals)}
+                />
+              </div>
+            );
+          }
+        },
+        {
+          kind: "custom",
+          name: "pages",
+          label: toUpperCase(t("footers.form.pages")),
+          render: (form) => {
+            return (
+              <div className="mb-5">
+                <label className="text-muted-foreground mb-2 block text-sm font-medium">
+                  {toUpperCase(t("footers.form.pages"))}
+                </label>
+                <TranslatedSelect
+                  endpoints="/page-component"
+                  translationKey="name"
+                  value={(form.getValues() as any).pages ?? []}
+                  multiple
+                  placeholder={t("footers.form.selectPages") as string}
+                  onChange={(vals) => form.setValue("pages" as any, vals)}
+                />
+              </div>
+            );
+          }
         }
-        // add multi select of pages and socials
       ] as FieldConfig<FooterFormValues>[]
     }
   ];
