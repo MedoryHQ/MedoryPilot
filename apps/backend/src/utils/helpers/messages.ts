@@ -120,6 +120,14 @@ export const errorMessages = {
     en: "Faq with same order already exist",
     ka: "ხშირად დასმული კითხვა იგივე რიგით უკვე არსებობს",
   },
+  introduceAlreadyExists: {
+    en: "Introduce already exists",
+    ka: "შესავალი უკვე არსებობს",
+  },
+  contactAlreadyExists: {
+    en: "Contact already exists",
+    ka: "საკ. ინფორმაცია უკვე არსებობს",
+  },
 
   // Messages
   smsVerificationSent: {

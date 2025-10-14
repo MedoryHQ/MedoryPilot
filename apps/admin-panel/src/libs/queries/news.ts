@@ -1,7 +1,6 @@
-import { NewsFormValues, NewsResponse, NewsesResponse } from "@/types/website";
+import { NewsResponse, NewsesResponse } from "@/types/website";
 import instance from "../../api/axios";
 import { useQuery } from "react-query";
-import { UseFormSetValue } from "react-hook-form";
 
 export const useGetNewses = (search?: URLSearchParams) => {
   return useQuery<NewsesResponse, Error>({
@@ -16,59 +15,17 @@ export const useGetNewses = (search?: URLSearchParams) => {
   });
 };
 
-export const useGetNews = (
-  slug: string | null,
-  setValue: UseFormSetValue<NewsFormValues>
-) => {
+export const useGetNews = (slug: string | null) => {
   return useQuery<NewsResponse, Error>({
-    queryKey: ["newses"],
+    queryKey: ["news", slug],
     queryFn: async (): Promise<NewsResponse> => {
       const { data } = await instance.get<NewsResponse>(`/news/${slug}`);
       return data;
     },
     enabled: !!slug,
-    refetchOnReconnect: false,
-    refetchInterval: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
-    onSuccess(data: NewsResponse) {
-      const {
-        translations,
-        background,
-        order,
-        slug,
-        showInLanding,
-        metaDescription,
-        metaImage,
-        metaKeywords,
-        metaTitle
-      } = data.data;
-
-      const enTranslation = translations?.find(
-        (translation) => translation.language.code === "en"
-      );
-      const kaTranslation = translations?.find(
-        (translation) => translation.language.code === "ka"
-      );
-
-      const formTranslations = {
-        en: {
-          content: enTranslation?.content || ""
-        },
-        ka: {
-          content: kaTranslation?.content || ""
-        }
-      };
-
-      setValue("order", order);
-      setValue("slug", slug);
-      setValue("showInLanding", showInLanding);
-      setValue("metaDescription", metaDescription || "");
-      setValue("metaImage", metaImage || null);
-      setValue("metaKeywords", metaKeywords || "");
-      setValue("metaTitle", metaTitle || "");
-      setValue("background", background);
-      setValue("translations", formTranslations);
-    }
+    refetchOnReconnect: false,
+    refetchInterval: false
   });
 };

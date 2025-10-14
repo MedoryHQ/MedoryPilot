@@ -120,6 +120,18 @@ export const createIntroduce = async (
       event: "introduce_create_attempt",
     });
 
+    const footerExistance = await prisma.introduce.count();
+
+    if (footerExistance) {
+      logWarn("Introduce create failed: introduce already exist", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+        event: "introduce_create_failed",
+      });
+      return sendError(req, res, 400, "introduceAlreadyExists");
+    }
+
     const translationsToCreate = Prisma.validator<
       Prisma.IntroduceTranslationCreateWithoutIntroduceInput[]
     >()(createTranslations(translations) as any);

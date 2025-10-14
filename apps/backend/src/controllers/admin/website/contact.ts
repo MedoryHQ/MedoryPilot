@@ -117,6 +117,18 @@ export const createContact = async (
       event: "contact_create_attempt",
     });
 
+    const contactExistance = await prisma.contact.count();
+
+    if (contactExistance) {
+      logWarn("Contact create failed: contact already exist", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+        event: "contact_create_failed",
+      });
+      return sendError(req, res, 400, "contactAlreadyExists");
+    }
+
     const translationsToCreate = Prisma.validator<
       Prisma.ContactTranslationCreateWithoutContactInput[]
     >()(createTranslations(translations) as any);
