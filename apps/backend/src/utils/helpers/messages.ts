@@ -124,6 +124,10 @@ export const errorMessages = {
     en: "Introduce already exists",
     ka: "შესავალი უკვე არსებობს",
   },
+  contactAlreadyExists: {
+    en: "Contact already exists",
+    ka: "საკ. ინფორმაცია უკვე არსებობს",
+  },
 
   // Messages
   smsVerificationSent: {
