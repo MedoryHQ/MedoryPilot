@@ -32,7 +32,9 @@ export type FieldType =
   | "media"
   | "custom"
   | "status"
-  | "number";
+  | "number"
+  | "email"
+  | "translated-select";
 
 export type FieldConfig<TForm extends FieldValues = FieldValues> =
   | {

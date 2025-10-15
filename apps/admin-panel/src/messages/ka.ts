@@ -145,6 +145,7 @@ export const ka = {
     },
     search: {
       results: "ძიების შედეგები",
+      placeholder: "ძიება...",
       noResults: "შედეგი ვერ მოიძებნა",
       seeAllResults: "ყველა შედეგის ნახვა"
     },
@@ -434,8 +435,32 @@ export const ka = {
       }
     },
     footer: {
+      form: {
+        management: "Footer-ის მართვა",
+        managementDescription: "მართეთ ვებსაიტის Footer და ნავიგაცია",
+        createTitle: "Header-ის შექმნა",
+        editTitle: "Header-ის რედაქტირება",
+        subtitle: "კონფიგურაცია ვებსაიტის Header-ისა და ნავიგაციისთვის",
+        readonlyTitle: "Footer",
+        edit: "Footer-ის რედაქტირება",
+        read: "Footer-ის ნახვა",
+        phone: "ტელ. ნომერი",
+        phonePlaceholder: "მაგ., +995555555555",
+        email: "ელ. ფოსტა",
+        emailPlaceholder: "მაგ., email@gmail.com",
+        socials: "სოც. ქსელები",
+        socialsPlaceholder: "e.g., Facebook, Instagram",
+        pages: "გვერდები",
+        pagesPlaceholder: "მაგ., სიახლე, ბლოგი",
+        settings: "პარამეტრები",
+        footer: "Footer",
+        createdSuccessfully: "Footer წარმატებით შეიქმნა",
+        updatedSuccessfully: "Footer წარმატებით განახლდა",
+        deletedSuccessfully: "Footer წარმატებით წაიშალა"
+      },
       errors: {
-        phoneRequired: "ტელეფონი სავალდებულოა",
+        phoneRequired: "ტელ. ნომერი სავალდებულოა",
+        phoneInvalid: "ტელ. ნომერი არასწორია",
         emailRequired: "ელ.ფოსტა სავალდებულოა",
         emailInvalid: "ელ.ფოსტა არასწორია",
         socialsRequired: "მინიმუმ ერთი სოციალური ბმული სავალდებულოა",

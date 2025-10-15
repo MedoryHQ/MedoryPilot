@@ -59,3 +59,30 @@ export interface RefreshToken {
   createdAt: string;
   updatedAt: string;
 }
+
+export type Mode = "multiple" | "tags" | undefined;
+
+export interface Option {
+  label: React.ReactNode;
+  value: string | number;
+}
+
+export interface TranslatedSelectProps {
+  label?: string;
+  endpoints: string[] | string;
+  translationKey: string | string[];
+  className?: string;
+  disabled?: boolean;
+  placeholder?: string;
+  onChange?: (value: any) => void;
+  mode?: Mode;
+  enabled?: boolean;
+  onFetch?: (data: any) => void;
+  labelInValue?: boolean;
+  labelKey?: string;
+  onUpdate?: (option: Option) => void;
+  defaultValue?: string | string[] | number;
+  value?: string | number | (string | number)[];
+  error?: string | null;
+  required?: boolean;
+}
