@@ -28,6 +28,7 @@ import { useToast } from "@/hooks";
 import { FieldConfig, GenericEntityFormProps } from "@/types";
 import { ArrowLeft, Edit3, Eye } from "lucide-react";
 import { locales } from "@/libs";
+import TranslatedSelect from "../TranslatedSelect";
 
 type localeType = "en" | "ka";
 
@@ -265,6 +266,11 @@ export function GenericEntityForm<
     const description = f.description ?? name;
 
     const watchedValue = getFieldValue(name as Path<TForm>);
+    const fieldError = (form.formState.errors as any)[name]?.message ?? null;
+
+    const endpoints = f.props.endpoints as string | string[];
+    const translationKey = f.props.translationKey ?? "name";
+    const multiple = f.props.mode === "multiple";
 
     switch (f.type) {
       case "text":
@@ -274,6 +280,32 @@ export function GenericEntityForm<
             label={toUpperCase(
               typeof label === "string" ? t(label) : (label as any)
             )}
+            required={f.props?.required}
+            value={watchedValue ?? ""}
+            className="mb-5"
+            disabled={internalMode === "readonly"}
+            onChange={(v) =>
+              form.setValue(
+                name as Path<TForm>,
+                v as unknown as PathValue<TForm, Path<TForm>>
+              )
+            }
+            error={(form.formState.errors as any)[name]?.message}
+            placeholder={
+              f.props?.placeholder
+                ? t(f.props.placeholder as string)
+                : undefined
+            }
+          />
+        );
+      case "email":
+        return (
+          <FieldGroup
+            key={name}
+            label={toUpperCase(
+              typeof label === "string" ? t(label) : (label as any)
+            )}
+            type="email"
             required={f.props?.required}
             value={watchedValue ?? ""}
             className="mb-5"
@@ -394,7 +426,6 @@ export function GenericEntityForm<
             />
           </div>
         );
-
       case "media":
         return (
           <MediaUploader
@@ -411,6 +442,32 @@ export function GenericEntityForm<
           />
         );
 
+      case "translated-select":
+        return (
+          <TranslatedSelect
+            className="mb-5"
+            key={name}
+            endpoints={endpoints}
+            translationKey={translationKey}
+            defaultValue={watchedValue ?? (multiple ? [] : "")}
+            value={watchedValue ?? (multiple ? [] : "")}
+            mode={multiple ? "multiple" : undefined}
+            disabled={internalMode === "readonly"}
+            placeholder={
+              f.props?.placeholder
+                ? (t(f.props.placeholder as string) as string)
+                : undefined
+            }
+            onChange={(v: any) =>
+              form.setValue(
+                name as Path<TForm>,
+                v as unknown as PathValue<TForm, Path<TForm>>
+              )
+            }
+            error={fieldError}
+            required={!!f.props?.required}
+          />
+        );
       default:
         return null;
     }
@@ -531,6 +588,7 @@ export function GenericEntityForm<
                 <FormSection
                   key={sec.key ?? sec.title}
                   title={sec.title}
+                  className="!gap-0"
                   description={sec.description}
                 >
                   {sec.fields?.map((f, idx) => (
