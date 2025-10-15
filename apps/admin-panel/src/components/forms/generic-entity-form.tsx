@@ -268,9 +268,9 @@ export function GenericEntityForm<
     const watchedValue = getFieldValue(name as Path<TForm>);
     const fieldError = (form.formState.errors as any)[name]?.message ?? null;
 
-    const endpoints = f.props.endpoints as string | string[];
-    const translationKey = f.props.translationKey ?? "name";
-    const multiple = f.props.mode === "multiple";
+    const endpoints = f?.props?.endpoints as string | string[];
+    const translationKey = f?.props?.translationKey ?? "name";
+    const multiple = f?.props?.mode === "multiple";
 
     switch (f.type) {
       case "text":
