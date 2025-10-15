@@ -25,6 +25,18 @@ adminSocialRouter.get(
 );
 
 adminSocialRouter.get(
+  "/list",
+  adminAuthenticate,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return SocialController.fetchSocialsList(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminSocialRouter.get(
   "/:id",
   adminAuthenticate,
   fetchSocialValidation,
