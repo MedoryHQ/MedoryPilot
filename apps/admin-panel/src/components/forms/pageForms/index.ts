@@ -5,3 +5,4 @@ export * from "./CategoryForm";
 export * from "./TariffForm";
 export * from "./SocialForm";
 export * from "./ContactForm";
+export * from "./FooterForm";

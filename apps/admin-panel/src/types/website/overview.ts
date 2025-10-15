@@ -8,7 +8,7 @@ export interface OverviewResponse {
     blogs: number;
     categories: number;
     contacts: number;
-    footers: number;
+    footer: number;
     socials: number;
     pages: number;
     tariffs: number;

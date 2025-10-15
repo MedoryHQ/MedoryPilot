@@ -135,9 +135,9 @@ export const useMenuItems = (): SidebarItem[] => {
           icon: <Phone className="h-4 w-4" />
         },
         {
-          key: "footers",
+          key: "footer",
           label: toUpperCase(t("overview.footer")),
-          href: "landing/footers",
+          href: "landing/footer",
           icon: <Copy className="h-4 w-4" />
         },
         {

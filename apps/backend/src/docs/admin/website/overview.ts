@@ -7,7 +7,7 @@
  * /admin/overview:
  *   get:
  *     summary: Get overview statistics
- *     description: Returns counts of main entities in the system (headers, introduce, news, services, faqs, blogs, categories, contacts, footers, socials, pages, tariffs).
+ *     description: Returns counts of main entities in the system (headers, introduce, news, services, faqs, blogs, categories, contacts, footer, socials, pages, tariffs).
  *     security:
  *       - cookieAuth: []
  *     tags:
@@ -56,7 +56,7 @@
  *             contacts:
  *               type: integer
  *               example: 3
- *             footers:
+ *             footer:
  *               type: integer
  *               example: 1
  *             socials:

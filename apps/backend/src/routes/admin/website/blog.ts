@@ -5,6 +5,7 @@ import { adminAuthenticate } from "@/middlewares/admin";
 import {
   createBlogValidation,
   deleteBlogValidation,
+  fetchBlogsFilterOptions,
   fetchBlogValidation,
   updateBlogValidation,
 } from "@/validations/admin";
@@ -18,6 +19,19 @@ adminBlogRouter.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return blogController.fetchBlogs(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminBlogRouter.get(
+  "/filter-options",
+  adminAuthenticate,
+  fetchBlogsFilterOptions,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return blogController.fetchBlogsFilterOptions(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }

@@ -178,7 +178,7 @@ export const overviewQuickActions = (t: (key: string) => string) => [
     color: "bg-teal-500"
   },
   {
-    key: "footers",
+    key: "footer",
     label: toUpperCase(t("overview.footer")),
     description: toUpperCase(t("overview.footerDescription")),
     icon: Copy,
@@ -216,7 +216,7 @@ export const overviewStatsConfig = [
   { key: "blogs", label: "overview.blogs", icon: FileText },
   { key: "categories", label: "overview.categories", icon: Layers },
   { key: "contacts", label: "overview.contacts", icon: Phone },
-  { key: "footers", label: "overview.footer", icon: Copy },
+  { key: "footer", label: "overview.footer", icon: Copy },
   { key: "socials", label: "overview.socials", icon: Share2 },
   { key: "pages", label: "overview.pages", icon: Globe },
   { key: "tariffs", label: "overview.tariffs", icon: Package }

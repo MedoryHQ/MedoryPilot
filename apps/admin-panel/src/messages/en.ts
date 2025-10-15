@@ -144,6 +144,7 @@ export const en = {
     },
     search: {
       results: "Search Results",
+      placeholder: "Search...",
       noResults: "No results",
       seeAllResults: "See all results"
     },
@@ -433,8 +434,32 @@ export const en = {
       }
     },
     footer: {
+      form: {
+        management: "Footer Management",
+        managementDescription: "Manage website footer and navigation elements",
+        createTitle: "Create Footer",
+        editTitle: "Edit Footer",
+        readonlyTitle: "Footer",
+        edit: "Edit Footer",
+        read: "Read Footer",
+        phone: "Phone Number",
+        phonePlaceholder: "e.g., +995555555555",
+        email: "Email",
+        emailPlaceholder: "e.g., email@gmail.com",
+        socials: "Socials",
+        socialsPlaceholder: "e.g., Facebook, Instagram",
+        pages: "Pages",
+        pagesPlaceholder: "e.g., Last News, Blog",
+        subtitle: "Configure your website footer and navigation",
+        settings: "Settings",
+        footer: "Footer",
+        createdSuccessfully: "Footer created successfully",
+        updatedSuccessfully: "Footer updated successfully",
+        deletedSuccessfully: "Footer deleted successfully"
+      },
       errors: {
         phoneRequired: "Phone is required",
+        phoneInvalid: "Phone is invalid",
         emailRequired: "Email is required",
         emailInvalid: "Email is invalid",
         socialsRequired: "At least one social is required",

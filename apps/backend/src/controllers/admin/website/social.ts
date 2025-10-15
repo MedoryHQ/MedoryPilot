@@ -65,6 +65,47 @@ export const fetchSocials = async (
   }
 };
 
+export const fetchSocialsList = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { skip, take, orderBy, search } = getPaginationAndFilters(req);
+    const where = generateWhereInput<Prisma.SocialWhereInput>(search, {
+      name: "insensitive",
+      url: "insensitive",
+    });
+    const [socials] = await Promise.all([
+      prisma.social.findMany({
+        skip,
+        take,
+        orderBy,
+        where,
+        select: {
+          name: true,
+          id: true,
+        },
+      }),
+      prisma.social.count({ where }),
+    ]);
+
+    const socialsOptions = socials.map((social) => ({
+      label: social?.name,
+      value: social.id,
+    }));
+
+    return res.status(200).json({ data: socialsOptions });
+  } catch (error) {
+    logCatchyError("Fetch socials_list_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_fetch_socials_list_exception",
+    });
+    next(error);
+  }
+};
+
 export const fetchSocial = async (
   req: Request,
   res: Response,

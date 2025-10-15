@@ -25,6 +25,18 @@ adminPageComponentRouter.get(
 );
 
 adminPageComponentRouter.get(
+  "/list",
+  adminAuthenticate,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return pageComponentController.fetchPageComponentsList(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminPageComponentRouter.get(
   "/:slug",
   adminAuthenticate,
   fetchPageComponentValidation,

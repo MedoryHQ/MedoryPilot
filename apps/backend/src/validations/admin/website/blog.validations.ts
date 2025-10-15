@@ -5,9 +5,15 @@ import {
   slugValidation,
   validateTranslations,
 } from "@/validations/shared";
-import { body } from "express-validator";
+import { body, query } from "express-validator";
 
 export const fetchBlogValidation = [slugValidation()];
+
+export const fetchBlogsFilterOptions = [
+  query("languageCode")
+    .isIn(["en", "ka"])
+    .withMessage("languageCodeNotProvided"),
+];
 
 export const deleteBlogValidation = [slugValidation()];
 

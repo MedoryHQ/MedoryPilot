@@ -7,7 +7,6 @@ import type { FooterFormValues } from "@/validations/website/footer.validation.t
 import { footerSchema } from "@/validations/website/footer.validation.ts";
 import { FieldConfig } from "@/types";
 import { Footer } from "@/types/website";
-import { TranslatedSelect } from "@/components/TranslatedSelect";
 
 export interface FooterFormProps {
   mode: "create" | "edit" | "readonly";
@@ -64,72 +63,55 @@ export const FooterForm: React.FC<FooterFormProps> = ({
   const leftSections = [
     {
       key: "management",
-      title: toUpperCase(t("footers.management")),
+      title: toUpperCase(t("footer.form.management")),
       fields: [
         {
           kind: "simple",
           name: "phone",
-          label: toUpperCase(t("footers.form.phone")),
+          label: toUpperCase(t("footer.form.phone")),
           type: "text",
           props: {
             step: 1,
-            placeholder: t("footers.form.phonePlaceholder"),
+            placeholder: t("footer.form.phonePlaceholder"),
             fullWidth: true
           }
         },
         {
           kind: "simple",
           name: "email",
-          label: toUpperCase(t("footers.form.email")),
-          type: "text",
+          label: toUpperCase(t("footer.form.email")),
+          type: "email",
           props: {
             step: 1,
-            placeholder: t("footers.form.emailPlaceholder"),
+            placeholder: t("footer.form.emailPlaceholder"),
             fullWidth: true
           }
         },
         {
-          kind: "custom",
+          kind: "simple",
           name: "socials",
-          label: toUpperCase(t("footers.form.socials")),
-          render: (form) => {
-            return (
-              <div className="mb-5">
-                <label className="text-muted-foreground mb-2 block text-sm font-medium">
-                  {toUpperCase(t("footers.form.socials"))}
-                </label>
-                <TranslatedSelect
-                  endpoints="/socials"
-                  translationKey="name"
-                  value={(form.getValues() as any).socials ?? []}
-                  multiple
-                  placeholder={t("footers.form.selectSocials") as string}
-                  onChange={(vals) => form.setValue("socials" as any, vals)}
-                />
-              </div>
-            );
+          label: toUpperCase(t("footer.form.socials")),
+          type: "translated-select",
+
+          props: {
+            endpoints: "/social/list",
+            mode: "multiple",
+            translationKey: "name",
+            placeholder: t("footer.form.socialsPlaceholder"),
+            required: true
           }
         },
         {
-          kind: "custom",
+          kind: "simple",
           name: "pages",
-          label: toUpperCase(t("footers.form.pages")),
-          render: (form) => {
-            return (
-              <div className="mb-5">
-                <label className="text-muted-foreground mb-2 block text-sm font-medium">
-                  {toUpperCase(t("footers.form.pages"))}
-                </label>
-                <TranslatedSelect
-                  endpoints="/page-component"
-                  translationKey="name"
-                  value={(form.getValues() as any).pages ?? []}
-                  multiple
-                  placeholder={t("footers.form.selectPages") as string}
-                  onChange={(vals) => form.setValue("pages" as any, vals)}
-                />
-              </div>
-            );
+          label: toUpperCase(t("footer.form.pages")),
+          type: "translated-select",
+          props: {
+            endpoints: "/page-component/list",
+            mode: "multiple",
+            translationKey: "name",
+            placeholder: t("footer.form.pagesPlaceholder"),
+            required: true
           }
         }
       ] as FieldConfig<FooterFormValues>[]

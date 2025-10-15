@@ -5,7 +5,7 @@ export * from "./Services";
 export * from "./Categories";
 export * from "./Contact";
 export * from "./Faqs";
-export * from "./Footers";
+export * from "./Footer";
 export * from "./Headers";
 export * from "./Tariffs";
 export * from "./Socials";
