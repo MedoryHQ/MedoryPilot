@@ -59,6 +59,59 @@ export const fetchPageComponents = async (
   }
 };
 
+export const fetchPageComponentsList = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { skip, take, orderBy, search } = getPaginationAndFilters(req);
+
+    const where = generateWhereInput<Prisma.PageComponentWhereInput>(search, {
+      "translations.some.name": "insensitive",
+      "translations.some.content": "insensitive",
+      slug: "insensitive",
+    });
+
+    const [pageComponents] = await Promise.all([
+      prisma.pageComponent.findMany({
+        skip,
+        take,
+        orderBy,
+        where,
+        select: {
+          id: true,
+          translations: {
+            select: {
+              language: {
+                select: {
+                  code: true,
+                },
+              },
+              languageId: true,
+              name: true,
+            },
+          },
+        },
+      }),
+    ]);
+
+    const pageComponentsOptions = pageComponents.map((pageComponent) => ({
+      label: pageComponent?.translations[0].name,
+      value: pageComponent.id,
+    }));
+
+    return res.status(200).json({ data: pageComponentsOptions });
+  } catch (error) {
+    logCatchyError("fetch_pageComponents_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_fetch_pageComponents_exception",
+    });
+    next(error);
+  }
+};
+
 export const fetchPageComponent = async (
   req: Request,
   res: Response,
