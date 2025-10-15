@@ -111,6 +111,48 @@ export const fetchBlogs = async (
   }
 };
 
+export const fetchBlogsFilterOptions = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { languageCode } = req.query as { languageCode: "en" | "ka" };
+
+    const [categories] = await prisma.$transaction([
+      prisma.category.findMany({
+        select: {
+          id: true,
+          translations: {
+            where: {
+              language: {
+                code: languageCode,
+              },
+            },
+            select: {
+              name: true,
+            },
+          },
+        },
+      }),
+    ]);
+
+    const categoryOptions = categories.map((category) => ({
+      label: category.translations[0]?.name,
+      value: category.id,
+    }));
+
+    return res.status(200).json({ data: categoryOptions });
+  } catch (error) {
+    logCatchyError("fetch_blogs_filter_options_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_fetch_blogs_filter_options_exception",
+    });
+    next(error);
+  }
+};
+
 export const fetchBlog = async (
   req: Request,
   res: Response,
