@@ -29,7 +29,7 @@ const Overview: React.FC = () => {
     blogs: 0,
     categories: 0,
     contacts: 0,
-    footers: 0,
+    footer: 0,
     socials: 0,
     pages: 0,
     tariffs: 0
