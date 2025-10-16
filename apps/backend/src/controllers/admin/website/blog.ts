@@ -183,7 +183,7 @@ export const fetchBlogsFilterOptions = async (
   try {
     const { languageCode } = req.query as { languageCode: "en" | "ka" };
 
-    const [categories] = await prisma.$transaction([
+    const [categories, users] = await prisma.$transaction([
       prisma.category.findMany({
         select: {
           id: true,
@@ -199,14 +199,29 @@ export const fetchBlogsFilterOptions = async (
           },
         },
       }),
+      prisma.user.findMany({
+        select: {
+          id: true,
+          fullName: true,
+        },
+      }),
     ]);
 
     const categoryOptions = categories.map((category) => ({
       label: category.translations[0]?.name,
       value: category.id,
     }));
+    const userOptions = users.map((user) => ({
+      label: user.fullName,
+      value: user.id,
+    }));
 
-    return res.status(200).json({ data: categoryOptions });
+    return res.status(200).json({
+      data: {
+        categories: categoryOptions,
+        users: userOptions,
+      },
+    });
   } catch (error) {
     logCatchyError("fetch_blogs_filter_options_exception", error, {
       ip: (req as any).hashedIp,
