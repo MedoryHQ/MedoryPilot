@@ -46,15 +46,15 @@ const Blogs = () => {
     },
     {
       key: "background",
-      label: toUpperCase(t("headers.filters.hasBackground")),
+      label: toUpperCase(t("blogs.filters.hasBackground")),
       type: "select",
       options: [
         {
-          label: toUpperCase(t("headers.filters.hasBackground")),
+          label: toUpperCase(t("blogs.filters.hasBackground")),
           value: "true"
         },
         {
-          label: toUpperCase(t("headers.filters.noBackground")),
+          label: toUpperCase(t("blogs.filters.noBackground")),
           value: "false"
         }
       ]

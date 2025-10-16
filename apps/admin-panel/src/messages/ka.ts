@@ -321,7 +321,8 @@ export const ka = {
       view: "ნახვა",
       rowsPerPage: "ჩანაწერი გვერდზე: ",
       min: "მინ.",
-      max: "მაქს."
+      max: "მაქს.",
+      clear: "წაშლა"
     },
     ui: {
       metadata: "მეტა მონაცემები",
@@ -730,6 +731,36 @@ export const ka = {
       cancel: "გაუქმება",
       uploading: "იტვირთება...",
       close: "დახურვა"
+    },
+    blogs: {
+      management: "ბლოგების მართვა",
+      managementDescription:
+        "მართეთ ლანდინგ გვერდის ბლოგები, კატეგორიები და მეტა მონაცემები",
+      addBlog: "ბლოგის შექმნა",
+      noBlogsFound: "ბლოგები ვერ მოიძებნა",
+      background: "ფონი",
+      slug: "სლაგი",
+      translations: "თარგმანები",
+      showInLanding: "ჩვენების ლანდინგზე",
+      landingOrder: "ლანდინგ რიგი",
+      categories: "კატეგორიები",
+      stars: "ვარსკვლავები",
+      featured: "ფურცელი",
+      yes: "დიახ",
+      no: "არა",
+      filters: {
+        showInLanding: "ჩვენების ლანდინგზე",
+        withMeta: "მეტა-ინფორმაციით",
+        withoutMeta: "მეტა-ინფორმაციის გარეშე",
+        stars: "ვარსკვლავები",
+        categories: "კატეგორიები",
+        hasBackground: "ფონით",
+        noBackground: "უფონოდ"
+      },
+      managementSummary: "მართეთ და დაალაგეთ ლანდინგზე გამოჩენილი ბლოგ პოსტები",
+      add: "დაამატე",
+      edit: "რედაქტირება",
+      delete: "წაშლა"
     }
   }
 };
