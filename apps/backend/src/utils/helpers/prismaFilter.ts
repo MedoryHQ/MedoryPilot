@@ -1,7 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { Request } from "express";
 
-export const parseBooleanQuery = (value?: string): boolean | undefined => {
+export const parseBooleanQuery = (
+  value?: string | boolean
+): boolean | undefined => {
+  if (typeof value === "boolean") return value;
   if (value === "true") return true;
   if (value === "false") return false;
   return undefined;
