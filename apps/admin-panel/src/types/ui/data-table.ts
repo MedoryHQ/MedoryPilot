@@ -21,11 +21,16 @@ export type Action<T> = {
 export type FilterConfig = {
   key: string;
   label: string;
-  type: "select" | "boolean" | "number";
-  options?: { label: string; value: any }[];
+  type: "select" | "boolean" | "number" | "multiple-select";
+  multiple?: boolean;
+  options?: Option[];
   defaultValue?: any;
 };
 
+export interface Option {
+  label: string;
+  value: any;
+}
 export interface DataTableProps<T> {
   data: T[];
   columns: Column<T>[];

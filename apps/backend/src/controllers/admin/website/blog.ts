@@ -11,6 +11,7 @@ import {
   parseQueryParams,
   parseBooleanQuery,
   generateWhereInput,
+  parseFilters,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
 import { CreateBlogDTO, UpdateBlogDTO } from "@/types/admin";
@@ -22,12 +23,34 @@ export const fetchBlogs = async (
 ) => {
   try {
     const { skip, take, orderBy, search } = getPaginationAndFilters(req);
-    const filters = parseQueryParams(req, ["categories", "starredUsers"]);
+    const filters = parseFilters(req);
 
-    const { categories, starredUsers } = filters;
+    const {
+      categories,
+      showInLanding,
+      starredUsers,
+      withMeta,
+      background,
+      stars,
+    } = filters as {
+      categories?: string[];
+      starredUsers?: string[];
+      showInLanding?: boolean | string;
+      withMeta?: boolean | string;
+      background?: boolean | string;
+      stars?: {
+        min?: number;
+        max?: number;
+      };
+    };
 
-    const { showIsLanding } = req.query as { showIsLanding: string };
-    const isLanding = parseBooleanQuery(showIsLanding);
+    const isLanding = parseBooleanQuery(showInLanding);
+    const meta = parseBooleanQuery(withMeta);
+    const hasBackground = parseBooleanQuery(background);
+    const applyMinStars =
+      stars?.min && Number(stars.min) > 0 && Number(stars.max) <= 5;
+    const applyMaxStars =
+      stars?.max && Number(stars.max) > 0 && Number(stars.max) <= 5;
 
     const where = generateWhereInput<Prisma.BlogWhereInput>(
       search,
@@ -59,6 +82,47 @@ export const fetchBlogs = async (
           typeof isLanding === "boolean"
             ? {
                 showInLanding: isLanding,
+              }
+            : {},
+          typeof meta === "boolean"
+            ? meta
+              ? {
+                  metaImage: {
+                    not: null,
+                  },
+                  metaDescription: {
+                    not: null,
+                  },
+                  metaKeywords: {
+                    not: null,
+                  },
+                  metaTitle: {
+                    not: null,
+                  },
+                }
+              : {
+                  metaImage: null,
+                  metaDescription: null,
+                  metaKeywords: null,
+                }
+            : {},
+          typeof hasBackground === "boolean"
+            ? background
+              ? { background: { isNot: null } }
+              : { background: { is: null } }
+            : {},
+          applyMinStars
+            ? {
+                stars: {
+                  gte: Number(stars.min),
+                },
+              }
+            : {},
+          applyMaxStars
+            ? {
+                stars: {
+                  lte: Number(stars.max),
+                },
               }
             : {},
         ],
@@ -119,7 +183,7 @@ export const fetchBlogsFilterOptions = async (
   try {
     const { languageCode } = req.query as { languageCode: "en" | "ka" };
 
-    const [categories] = await prisma.$transaction([
+    const [categories, users] = await prisma.$transaction([
       prisma.category.findMany({
         select: {
           id: true,
@@ -135,14 +199,29 @@ export const fetchBlogsFilterOptions = async (
           },
         },
       }),
+      prisma.user.findMany({
+        select: {
+          id: true,
+          fullName: true,
+        },
+      }),
     ]);
 
     const categoryOptions = categories.map((category) => ({
       label: category.translations[0]?.name,
       value: category.id,
     }));
+    const userOptions = users.map((user) => ({
+      label: user.fullName,
+      value: user.id,
+    }));
 
-    return res.status(200).json({ data: categoryOptions });
+    return res.status(200).json({
+      data: {
+        categories: categoryOptions,
+        users: userOptions,
+      },
+    });
   } catch (error) {
     logCatchyError("fetch_blogs_filter_options_exception", error, {
       ip: (req as any).hashedIp,

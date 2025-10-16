@@ -1,4 +1,8 @@
-import { BlogResponse, BlogsResponse } from "@/types/website";
+import {
+  BlogResponse,
+  BlogsFilterOptions,
+  BlogsResponse
+} from "@/types/website";
 import instance from "../../api/axios";
 import { useQuery } from "react-query";
 
@@ -27,5 +31,19 @@ export const useGetBlog = (slug: string | null) => {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchInterval: false
+  });
+};
+
+export const useGetBlogsFilterOptions = (languageCode: "en" | "ka") => {
+  return useQuery<BlogsFilterOptions, Error>({
+    queryKey: ["blogs", languageCode],
+    queryFn: async (): Promise<BlogsFilterOptions> => {
+      const { data } = await instance.get<BlogsFilterOptions>(
+        `/blog/filter-options?languageCode=${languageCode}`
+      );
+      return data;
+    },
+    enabled: !!languageCode,
+    refetchOnWindowFocus: false
   });
 };

@@ -318,7 +318,8 @@ export const en = {
       view: "View",
       rowsPerPage: "Rows per page: ",
       min: "Min",
-      max: "Max"
+      max: "Max",
+      clear: "Clear"
     },
     ui: {
       metadata: "Metadata",
@@ -695,6 +696,67 @@ export const en = {
       errors: {
         nameRequired: "Name is required"
       }
+    },
+    editor: {
+      mode: {
+        editor: "Editor",
+        source: "Source",
+        preview: "Preview"
+      }
+    },
+    toolbar: {
+      bold: "Bold",
+      italic: "Italic",
+      h2: "Heading 2",
+      bulletList: "Bullet list",
+      orderedList: "Ordered list",
+      codeBlock: "Code block",
+      insertImage: "Insert image",
+      insertLink: "Insert link",
+      preview: "Preview"
+    },
+    prompt: {
+      enterUrlToLinkTo: "Enter URL to link to",
+      enterImageUrl: "Enter image URL:"
+    },
+    insertImage: {
+      title: "Insert image",
+      description: "Upload an image or paste an external URL",
+      insertFromUrl: "Insert from URL",
+      cancel: "Cancel",
+      uploading: "Uploading...",
+      close: "Close"
+    },
+    blogs: {
+      management: "Blogs Management",
+      managementDescription:
+        "Manage landing page blog entries, categories and metadata",
+      addBlog: "Add Blog",
+      noBlogsFound: "No blogs found",
+      background: "Background",
+      slug: "Slug",
+      translations: "Translations",
+      showInLanding: "Show in Landing",
+      landingOrder: "Landing Order",
+      categories: "Categories",
+      stars: "Stars",
+      featured: "Featured",
+      yes: "Yes",
+      no: "No",
+      filters: {
+        showInLanding: "Show in Landing",
+        withMeta: "With Meta",
+        withoutMeta: "Without Meta",
+        stars: "Stars",
+        categories: "Categories",
+        hasBackground: "Has Background",
+        noBackground: "Without Background"
+      },
+      managementSummary:
+        "Manage and order blog posts shown on the landing page",
+      add: "Add",
+      edit: "Edit",
+      delete: "Delete"
     }
   }
 };
