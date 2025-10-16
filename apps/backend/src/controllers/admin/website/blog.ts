@@ -11,6 +11,7 @@ import {
   parseQueryParams,
   parseBooleanQuery,
   generateWhereInput,
+  parseFilters,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
 import { CreateBlogDTO, UpdateBlogDTO } from "@/types/admin";
@@ -22,12 +23,23 @@ export const fetchBlogs = async (
 ) => {
   try {
     const { skip, take, orderBy, search } = getPaginationAndFilters(req);
-    const filters = parseQueryParams(req, ["categories", "starredUsers"]);
+    const filters = parseFilters(req);
 
-    const { categories, starredUsers } = filters;
+    const {
+      categories,
+      showInLanding,
+      starredUsers,
+      withMeta,
+      background,
+      stars,
+    } = filters;
 
-    const { showIsLanding } = req.query as { showIsLanding: string };
-    const isLanding = parseBooleanQuery(showIsLanding);
+    const isLanding = parseBooleanQuery(showInLanding);
+    const meta = parseBooleanQuery(withMeta);
+    const hasBackground = parseBooleanQuery(background);
+    const applyMinStars = stars?.min && Number(stars.min) > 0;
+    const applyMaxStars =
+      stars?.max && Number(stars.max) > 0 && Number(stars.max) <= 5;
 
     const where = generateWhereInput<Prisma.BlogWhereInput>(
       search,
@@ -59,6 +71,41 @@ export const fetchBlogs = async (
           typeof isLanding === "boolean"
             ? {
                 showInLanding: isLanding,
+              }
+            : {},
+          typeof meta === "boolean"
+            ? {
+                metaImage: {
+                  not: null,
+                },
+                metaDescription: {
+                  not: null,
+                },
+                metaKeywords: {
+                  not: null,
+                },
+                metaTitle: {
+                  not: null,
+                },
+              }
+            : {},
+          typeof hasBackground === "boolean"
+            ? background
+              ? { background: { isNot: null } }
+              : { background: { is: null } }
+            : {},
+          applyMinStars
+            ? {
+                stars: {
+                  gte: Number(stars.min),
+                },
+              }
+            : {},
+          applyMaxStars
+            ? {
+                stars: {
+                  lte: Number(stars.max),
+                },
               }
             : {},
         ],
