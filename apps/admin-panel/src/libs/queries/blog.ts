@@ -29,3 +29,17 @@ export const useGetBlog = (slug: string | null) => {
     refetchInterval: false
   });
 };
+
+export const useGetBlogsFilterOptions = (languageCode: "en" | "ka") => {
+  return useQuery<BlogsResponse, Error>({
+    queryKey: ["blogs", languageCode],
+    queryFn: async (): Promise<BlogsResponse> => {
+      const { data } = await instance.get<BlogsResponse>(
+        `/blog/filter-options?languageCode=${languageCode}`
+      );
+      return data;
+    },
+    enabled: !!languageCode,
+    refetchOnWindowFocus: false
+  });
+};
