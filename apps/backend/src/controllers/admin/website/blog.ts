@@ -32,12 +32,23 @@ export const fetchBlogs = async (
       withMeta,
       background,
       stars,
-    } = filters;
+    } = filters as {
+      categories?: string[];
+      starredUsers?: string[];
+      showInLanding?: boolean | string;
+      withMeta?: boolean | string;
+      background?: boolean | string;
+      stars?: {
+        min?: number;
+        max?: number;
+      };
+    };
 
     const isLanding = parseBooleanQuery(showInLanding);
     const meta = parseBooleanQuery(withMeta);
     const hasBackground = parseBooleanQuery(background);
-    const applyMinStars = stars?.min && Number(stars.min) > 0;
+    const applyMinStars =
+      stars?.min && Number(stars.min) > 0 && Number(stars.max) <= 5;
     const applyMaxStars =
       stars?.max && Number(stars.max) > 0 && Number(stars.max) <= 5;
 
@@ -74,20 +85,26 @@ export const fetchBlogs = async (
               }
             : {},
           typeof meta === "boolean"
-            ? {
-                metaImage: {
-                  not: null,
-                },
-                metaDescription: {
-                  not: null,
-                },
-                metaKeywords: {
-                  not: null,
-                },
-                metaTitle: {
-                  not: null,
-                },
-              }
+            ? meta
+              ? {
+                  metaImage: {
+                    not: null,
+                  },
+                  metaDescription: {
+                    not: null,
+                  },
+                  metaKeywords: {
+                    not: null,
+                  },
+                  metaTitle: {
+                    not: null,
+                  },
+                }
+              : {
+                  metaImage: null,
+                  metaDescription: null,
+                  metaKeywords: null,
+                }
             : {},
           typeof hasBackground === "boolean"
             ? background
