@@ -5,3 +5,4 @@ export * from "./Icons";
 export * from "./header";
 export * from "./Pagination";
 export * from "./TranslatedSelect";
+export * from "./MarkdownRenderer";

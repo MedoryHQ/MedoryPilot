@@ -700,6 +700,36 @@ export const ka = {
       errors: {
         nameRequired: "სახელი სავალდებულოა"
       }
+    },
+    editor: {
+      mode: {
+        editor: "რედაქტორი",
+        source: "წყარო",
+        preview: "ნახვა"
+      }
+    },
+    toolbar: {
+      bold: "სქელი",
+      italic: "იტალიკა",
+      h2: "სათაური 2",
+      bulletList: "დაუნომრავი სია",
+      orderedList: "დანომრილი სია",
+      codeBlock: "კოდის ნაწილი",
+      insertImage: "სურათის ჩასმა",
+      insertLink: "ბმულის ჩასმა",
+      preview: "ნახვა"
+    },
+    prompt: {
+      enterUrlToLinkTo: "ჩასვით ბმულში URL",
+      enterImageUrl: "ჩასვით სურათის URL:"
+    },
+    insertImage: {
+      title: "სურათის ჩასმა",
+      description: "ატვირთეთ სურათი ან ჩასვით გარე URL",
+      insertFromUrl: "ჩასმა URL-დან",
+      cancel: "გაუქმება",
+      uploading: "იტვირთება...",
+      close: "დახურვა"
     }
   }
 };

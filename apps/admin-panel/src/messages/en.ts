@@ -695,6 +695,36 @@ export const en = {
       errors: {
         nameRequired: "Name is required"
       }
+    },
+    editor: {
+      mode: {
+        editor: "Editor",
+        source: "Source",
+        preview: "Preview"
+      }
+    },
+    toolbar: {
+      bold: "Bold",
+      italic: "Italic",
+      h2: "Heading 2",
+      bulletList: "Bullet list",
+      orderedList: "Ordered list",
+      codeBlock: "Code block",
+      insertImage: "Insert image",
+      insertLink: "Insert link",
+      preview: "Preview"
+    },
+    prompt: {
+      enterUrlToLinkTo: "Enter URL to link to",
+      enterImageUrl: "Enter image URL:"
+    },
+    insertImage: {
+      title: "Insert image",
+      description: "Upload an image or paste an external URL",
+      insertFromUrl: "Insert from URL",
+      cancel: "Cancel",
+      uploading: "Uploading...",
+      close: "Close"
     }
   }
 };
