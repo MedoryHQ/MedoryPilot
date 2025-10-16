@@ -1,4 +1,5 @@
 import { File, Language } from "../global";
+import { Option } from "../ui";
 import { User } from "../user";
 import { Category } from "./category";
 
@@ -9,6 +10,10 @@ export interface BlogsResponse {
 
 export interface BlogResponse {
   data: Blog;
+}
+
+export interface BlogsFilterOptions {
+  data: Option[];
 }
 
 export interface Blog {
