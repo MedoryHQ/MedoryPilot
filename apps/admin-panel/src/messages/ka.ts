@@ -471,7 +471,31 @@ export const ka = {
         pagesRequired: "მინიმუმ ერთი გვერდი სავალდებულოა"
       }
     },
-    news: {
+    newses: {
+      management: "სიახლეების მართვა",
+      managementDescription:
+        "მართეთ ლანდინგ გვერდის სიახლეები, და მეტა მონაცემები",
+      addBlog: "სიახლის შექმნა",
+      noBlogsFound: "სიახლეები ვერ მოიძებნა",
+      background: "ფონი",
+      slug: "სლაგი",
+      translations: "თარგმანები",
+      showInLanding: "ჩვენების ლანდინგზე",
+      order: "რიგი",
+      featured: "ფურცელი",
+      yes: "დიახ",
+      no: "არა",
+      filters: {
+        showInLanding: "ჩვენების ლანდინგზე",
+        withMeta: "მეტა-ინფორმაციით",
+        withoutMeta: "მეტა-ინფორმაციის გარეშე",
+        hasBackground: "ფონით",
+        noBackground: "უფონოდ"
+      },
+      managementSummary: "მართეთ და დაალაგეთ ლანდინგზე გამოჩენილი სიახლეები",
+      add: "დაამატე",
+      edit: "რედაქტირება",
+      delete: "წაშლა",
       errors: {
         backgroundRequired: "ფონი სავალდებულოა",
         slugRequired: "სლაგი სავალდებულოა",
@@ -758,7 +782,8 @@ export const ka = {
         stars: "ვარსკვლავები",
         categories: "კატეგორიები",
         hasBackground: "ფონით",
-        noBackground: "უფონოდ"
+        noBackground: "უფონოდ",
+        users: "მომხმარებლები"
       },
       managementSummary: "მართეთ და დაალაგეთ ლანდინგზე გამოჩენილი ბლოგ პოსტები",
       add: "დაამატე",

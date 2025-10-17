@@ -470,7 +470,31 @@ export const en = {
         pagesRequired: "At least one page is required"
       }
     },
-    news: {
+    newses: {
+      management: "Newses Management",
+      managementDescription: "Manage landing page news entries, and metadata",
+      addNews: "Add News",
+      noNewsesFound: "No Newses found",
+      background: "Background",
+      slug: "Slug",
+      translations: "Translations",
+      showInLanding: "Show in Landing",
+      order: "Order",
+      featured: "Featured",
+      yes: "Yes",
+      no: "No",
+      filters: {
+        showInLanding: "Show in Landing",
+        withMeta: "With Meta",
+        withoutMeta: "Without Meta",
+        hasBackground: "Has Background",
+        noBackground: "Without Background"
+      },
+      managementSummary:
+        "Manage and order news posts shown on the landing page",
+      add: "Add",
+      edit: "Edit",
+      delete: "Delete",
       errors: {
         backgroundRequired: "Background is required",
         slugRequired: "Slug is required",
@@ -753,7 +777,8 @@ export const en = {
         stars: "Stars",
         categories: "Categories",
         hasBackground: "Has Background",
-        noBackground: "Without Background"
+        noBackground: "Without Background",
+        users: "Users"
       },
       managementSummary:
         "Manage and order blog posts shown on the landing page",
