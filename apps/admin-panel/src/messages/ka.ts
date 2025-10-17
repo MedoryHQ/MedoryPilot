@@ -482,7 +482,7 @@ export const ka = {
       translations: "თარგმანები",
       showInLanding: "ჩვენების ლანდინგზე",
       order: "რიგი",
-      featured: "ფურცელი",
+      inLanding: "ჩანს ლენდინგზე",
       yes: "დიახ",
       no: "არა",
       filters: {

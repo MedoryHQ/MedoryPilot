@@ -172,7 +172,7 @@ const Newses = () => {
 
                 {item.showInLanding && (
                   <span className="absolute top-2 left-2 rounded-md bg-yellow-500/95 px-2 py-0.5 text-xs font-medium text-white">
-                    {toUpperCase(t("newses.featured") || "Featured")}
+                    {toUpperCase(t("newses.inLanding") || "In Landing")}
                   </span>
                 )}
                 <div className="min-w-0 flex-1">

@@ -480,7 +480,7 @@ export const en = {
       translations: "Translations",
       showInLanding: "Show in Landing",
       order: "Order",
-      featured: "Featured",
+      inLanding: "In Landing",
       yes: "Yes",
       no: "No",
       filters: {
