@@ -9,6 +9,8 @@ import {
   logAdminError as logCatchyError,
   logAdminInfo as logInfo,
   logAdminWarn as logWarn,
+  parseFilters,
+  parseBooleanQuery,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
 import { CreatePageComponentDTO, UpdatePageComponentDTO } from "@/types/admin";
@@ -20,12 +22,55 @@ export const fetchPageComponents = async (
 ) => {
   try {
     const { skip, take, orderBy, search } = getPaginationAndFilters(req);
+    const filters = parseFilters(req);
 
-    const where = generateWhereInput<Prisma.PageComponentWhereInput>(search, {
-      "translations.some.name": "insensitive",
-      "translations.some.content": "insensitive",
-      slug: "insensitive",
-    });
+    const { footer, withMeta } = filters as {
+      footer?: boolean | string;
+      withMeta?: boolean | string;
+    };
+
+    const meta = parseBooleanQuery(withMeta);
+    const inFooter = parseBooleanQuery(footer);
+
+    const where = generateWhereInput<Prisma.PageComponentWhereInput>(
+      search,
+      {
+        "translations.some.name": "insensitive",
+        "translations.some.content": "insensitive",
+        slug: "insensitive",
+      },
+      {
+        AND: [
+          typeof meta === "boolean"
+            ? meta
+              ? {
+                  metaImage: {
+                    not: null,
+                  },
+                  metaDescription: {
+                    not: null,
+                  },
+                  metaKeywords: {
+                    not: null,
+                  },
+                  metaTitle: {
+                    not: null,
+                  },
+                }
+              : {
+                  metaImage: null,
+                  metaDescription: null,
+                  metaKeywords: null,
+                }
+            : {},
+          typeof inFooter === "boolean"
+            ? inFooter
+              ? { footer: { isNot: null } }
+              : { footer: { is: null } }
+            : {},
+        ],
+      }
+    );
 
     const [pageComponents, count] = await Promise.all([
       prisma.pageComponent.findMany({

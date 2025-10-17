@@ -319,7 +319,10 @@ export const en = {
       rowsPerPage: "Rows per page: ",
       min: "Min",
       max: "Max",
-      clear: "Clear"
+      clear: "Clear",
+      noData: "No Data",
+      loading: "Loading...",
+      select: "Select"
     },
     ui: {
       metadata: "Metadata",
@@ -426,7 +429,27 @@ export const en = {
         footerIdRequired: "Footer ID is required"
       }
     },
-    pageComponent: {
+    pageComponents: {
+      management: "Page Components Management",
+      managementDescription: "Manage page Component entries, and metadata",
+      addPageComponent: "Add Page Component",
+      noPageComponentsFound: "No page Components found",
+      slug: "Slug",
+      translations: "Translations",
+      showInFooter: "Show in Footer",
+      footerOrder: "Footer Order",
+      yes: "Yes",
+      no: "No",
+      filters: {
+        showInFooter: "Show in Footer",
+        withMeta: "With Meta",
+        withoutMeta: "Without Meta"
+      },
+      managementSummary:
+        "Manage and order page Component posts shown on the footer",
+      add: "Add",
+      edit: "Edit",
+      delete: "Delete",
       errors: {
         slugRequired: "Slug is required",
         footerOrderRequired: "Footer order is required",
@@ -467,7 +490,31 @@ export const en = {
         pagesRequired: "At least one page is required"
       }
     },
-    news: {
+    newses: {
+      management: "Newses Management",
+      managementDescription: "Manage landing page news entries, and metadata",
+      addNews: "Add News",
+      noNewsesFound: "No Newses found",
+      background: "Background",
+      slug: "Slug",
+      translations: "Translations",
+      showInLanding: "Show in Landing",
+      order: "Order",
+      inLanding: "In Landing",
+      yes: "Yes",
+      no: "No",
+      filters: {
+        showInLanding: "Show in Landing",
+        withMeta: "With Meta",
+        withoutMeta: "Without Meta",
+        hasBackground: "Has Background",
+        noBackground: "Without Background"
+      },
+      managementSummary:
+        "Manage and order news posts shown on the landing page",
+      add: "Add",
+      edit: "Edit",
+      delete: "Delete",
       errors: {
         backgroundRequired: "Background is required",
         slugRequired: "Slug is required",
@@ -740,7 +787,7 @@ export const en = {
       landingOrder: "Landing Order",
       categories: "Categories",
       stars: "Stars",
-      featured: "Featured",
+      inLanding: "In Landing",
       yes: "Yes",
       no: "No",
       filters: {
@@ -750,7 +797,8 @@ export const en = {
         stars: "Stars",
         categories: "Categories",
         hasBackground: "Has Background",
-        noBackground: "Without Background"
+        noBackground: "Without Background",
+        users: "Users"
       },
       managementSummary:
         "Manage and order blog posts shown on the landing page",

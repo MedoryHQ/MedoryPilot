@@ -96,7 +96,7 @@ const Categories = () => {
               <div className="border-border mb-4 border-b">
                 <h5 className="mb-2 text-[14px]">{toUpperCase(tr.name)}</h5>
               </div>
-              <div className="border-border grid grid-cols-2 gap-3 border-t pt-3">
+              <div className="mb-2 grid grid-cols-2 gap-3">
                 <div>
                   <span className="text-muted-foreground text-sm">
                     {toUpperCase(t("categories.translations"))}

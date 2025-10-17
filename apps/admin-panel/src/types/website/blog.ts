@@ -13,7 +13,10 @@ export interface BlogResponse {
 }
 
 export interface BlogsFilterOptions {
-  data: Option[];
+  data: {
+    categories: Option[];
+    users: Option[];
+  };
 }
 
 export interface Blog {

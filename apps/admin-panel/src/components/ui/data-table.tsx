@@ -39,6 +39,7 @@ import { DeleteDialog } from "../forms";
 import { cn } from "@/libs";
 import { Pagination } from "../Pagination";
 import { Action, DataTableProps } from "@/types/ui";
+import { MultiSelectFilter } from "../MutliSelectFilter";
 
 export function DataTable<T extends Record<string, any>>({
   data,
@@ -269,128 +270,17 @@ export function DataTable<T extends Record<string, any>>({
                             </SelectContent>
                           </Select>
                         )}
-                        {f.type === "multiple-select" && f.options && (
+                        {f.type === "multiple-select" && (
                           <div>
-                            {(() => {
-                              const vals: string[] = Array.isArray(
-                                activeFilters[f.key]
-                              )
-                                ? (activeFilters[f.key] as any[])
-                                : [];
-
-                              const toggleValue = (value: string) => {
-                                setActiveFilters((prev) => {
-                                  const prevArr = Array.isArray(prev[f.key])
-                                    ? [...(prev[f.key] as any[])]
-                                    : [];
-                                  const exists = prevArr.some(
-                                    (p) => String(p) === String(value)
-                                  );
-                                  const nextArr = exists
-                                    ? prevArr.filter(
-                                        (p) => String(p) !== String(value)
-                                      )
-                                    : [...prevArr, value];
-                                  return {
-                                    ...prev,
-                                    ...(nextArr.length
-                                      ? { [f.key]: nextArr }
-                                      : { [f.key]: undefined })
-                                  };
-                                });
-                              };
-
-                              const clearVals = () => {
-                                setActiveFilters((prev) => {
-                                  const copy = { ...prev };
-                                  delete copy[f.key];
-                                  return copy;
-                                });
-                              };
-
-                              const displayLabel = () => {
-                                if (!vals || vals.length === 0)
-                                  return toUpperCase(t("dataTable.all"));
-                                const labels = vals
-                                  .map((v) => {
-                                    const found = f.options!.find(
-                                      (o) => String(o.value) === String(v)
-                                    );
-                                    return found ? found.label : String(v);
-                                  })
-                                  .slice(0, 3);
-                                return (
-                                  labels.join(", ") +
-                                  (vals.length > 3
-                                    ? ` +${vals.length - 3}`
-                                    : "")
-                                );
-                              };
-
-                              return (
-                                <Popover>
-                                  <PopoverTrigger asChild>
-                                    <button
-                                      type="button"
-                                      className={cn(
-                                        "w-full rounded-md border px-3 py-2 text-left text-sm",
-                                        activeFilters[f.key] &&
-                                          activeFilters[f.key].length
-                                          ? "bg-muted/5"
-                                          : ""
-                                      )}
-                                    >
-                                      <span className="truncate">
-                                        {displayLabel()}
-                                      </span>
-                                    </button>
-                                  </PopoverTrigger>
-                                  <PopoverContent className="w-80">
-                                    <div className="space-y-2">
-                                      <div className="flex items-center justify-between">
-                                        <div className="text-sm font-medium">
-                                          {f.label}
-                                        </div>
-                                        <button
-                                          type="button"
-                                          onClick={clearVals}
-                                          className="text-muted-foreground text-xs"
-                                        >
-                                          {toUpperCase(t("dataTable.clear"))}
-                                        </button>
-                                      </div>
-
-                                      <div className="max-h-56 overflow-auto py-1">
-                                        {f.options!.map((opt) => {
-                                          const valStr = String(opt.value);
-                                          const checked = vals.some(
-                                            (v) => String(v) === valStr
-                                          );
-                                          return (
-                                            <label
-                                              key={valStr}
-                                              className="hover:bg-accent/5 flex items-center gap-2 rounded px-2 py-1"
-                                            >
-                                              <input
-                                                type="checkbox"
-                                                checked={checked}
-                                                onChange={() =>
-                                                  toggleValue(valStr)
-                                                }
-                                                className="h-4 w-4 rounded border"
-                                              />
-                                              <span className="text-sm">
-                                                {opt.label}
-                                              </span>
-                                            </label>
-                                          );
-                                        })}
-                                      </div>
-                                    </div>
-                                  </PopoverContent>
-                                </Popover>
-                              );
-                            })()}
+                            <MultiSelectFilter
+                              f={f as any}
+                              values={
+                                Array.isArray(activeFilters[f.key])
+                                  ? (activeFilters[f.key] as string[])
+                                  : []
+                              }
+                              setActiveFilters={setActiveFilters}
+                            />
                           </div>
                         )}
 

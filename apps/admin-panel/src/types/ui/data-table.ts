@@ -23,8 +23,12 @@ export type FilterConfig = {
   label: string;
   type: "select" | "boolean" | "number" | "multiple-select";
   multiple?: boolean;
+  withSearch?: boolean;
+  searchEndpoint?: string;
   options?: Option[];
   defaultValue?: any;
+  onSearchChange?: (q: string) => void;
+  searchValue?: string;
 };
 
 export interface Option {

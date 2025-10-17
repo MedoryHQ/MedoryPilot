@@ -322,7 +322,10 @@ export const ka = {
       rowsPerPage: "ჩანაწერი გვერდზე: ",
       min: "მინ.",
       max: "მაქს.",
-      clear: "წაშლა"
+      clear: "წაშლა",
+      noData: "მონაცემები არ არის",
+      loading: "ჩატვირთვა...",
+      select: "არჩევა"
     },
     ui: {
       metadata: "მეტა მონაცემები",
@@ -427,7 +430,26 @@ export const ka = {
         footerIdRequired: "Footer ID სავალდებულოა"
       }
     },
-    pageComponent: {
+    pageComponents: {
+      management: "გვერდების მართვა",
+      managementDescription: "მართეთ გვერდები, და მისი მეტა მონაცემები",
+      addBlog: "გვერდის შექმნა",
+      noBlogsFound: "გვერდები ვერ მოიძებნა",
+      slug: "სლაგი",
+      translations: "თარგმანები",
+      showInFooter: "ჩვენების footer-ში",
+      footerOrder: "footer-ის რიგი",
+      yes: "დიახ",
+      no: "არა",
+      filters: {
+        showInFooter: "ჩვენების footer-ში",
+        withMeta: "მეტა-ინფორმაციით",
+        withoutMeta: "მეტა-ინფორმაციის გარეშე"
+      },
+      managementSummary: "მართეთ და დაალაგეთ footer-ში გამოსაჩენი გვერდები",
+      add: "დაამატე",
+      edit: "რედაქტირება",
+      delete: "წაშლა",
       errors: {
         slugRequired: "სლაგი სავალდებულოა",
         footerOrderRequired: "Footer-ის რიგი სავალდებულოა",
@@ -468,7 +490,31 @@ export const ka = {
         pagesRequired: "მინიმუმ ერთი გვერდი სავალდებულოა"
       }
     },
-    news: {
+    newses: {
+      management: "სიახლეების მართვა",
+      managementDescription:
+        "მართეთ ლანდინგ გვერდის სიახლეები, და მეტა მონაცემები",
+      addBlog: "სიახლის შექმნა",
+      noBlogsFound: "სიახლეები ვერ მოიძებნა",
+      background: "ფონი",
+      slug: "სლაგი",
+      translations: "თარგმანები",
+      showInLanding: "ჩვენების ლანდინგზე",
+      order: "რიგი",
+      inLanding: "ჩანს ლენდინგზე",
+      yes: "დიახ",
+      no: "არა",
+      filters: {
+        showInLanding: "ჩვენების ლანდინგზე",
+        withMeta: "მეტა-ინფორმაციით",
+        withoutMeta: "მეტა-ინფორმაციის გარეშე",
+        hasBackground: "ფონით",
+        noBackground: "უფონოდ"
+      },
+      managementSummary: "მართეთ და დაალაგეთ ლანდინგზე გამოჩენილი სიახლეები",
+      add: "დაამატე",
+      edit: "რედაქტირება",
+      delete: "წაშლა",
       errors: {
         backgroundRequired: "ფონი სავალდებულოა",
         slugRequired: "სლაგი სავალდებულოა",
@@ -745,7 +791,7 @@ export const ka = {
       landingOrder: "ლანდინგ რიგი",
       categories: "კატეგორიები",
       stars: "ვარსკვლავები",
-      featured: "ფურცელი",
+      inLanding: "ჩანს ლენდინგზე",
       yes: "დიახ",
       no: "არა",
       filters: {
@@ -755,7 +801,8 @@ export const ka = {
         stars: "ვარსკვლავები",
         categories: "კატეგორიები",
         hasBackground: "ფონით",
-        noBackground: "უფონოდ"
+        noBackground: "უფონოდ",
+        users: "მომხმარებლები"
       },
       managementSummary: "მართეთ და დაალაგეთ ლანდინგზე გამოჩენილი ბლოგ პოსტები",
       add: "დაამატე",

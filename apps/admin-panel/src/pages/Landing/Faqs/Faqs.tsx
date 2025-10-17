@@ -106,12 +106,18 @@ const Faqs = () => {
           return (
             <div>
               <div className="border-border mb-4 border-b">
+                <span className="text-muted-foreground text-sm">
+                  {toUpperCase(t("faqs.question"))}
+                </span>
                 <h5 className="mb-2 text-[14px]">{toUpperCase(tr.question)}</h5>
-                <p className="text-foreground line-clamp-4 text-[12px]">
+                <span className="text-muted-foreground text-sm">
+                  {toUpperCase(t("faqs.answer"))}
+                </span>
+                <p className="text-foreground mb-3 line-clamp-4 text-[10px]">
                   {toUpperCase(tr.answer)}
                 </p>
               </div>
-              <div className="border-border grid grid-cols-2 gap-3 border-t pt-3">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <span className="text-muted-foreground text-sm">
                     {toUpperCase(t("faqs.translations"))}
