@@ -264,9 +264,8 @@ const Blogs = () => {
         editUrl="/landing/blogs/edit"
         emptyMessage={toUpperCase(t("blogs.noBlogsFound"))}
         mobileCardRender={(item) => {
-          const tr = getTranslatedObject(item.translations, i18n.language);
           return (
-            <article className="bg-card flex flex-col gap-3 rounded-lg p-4 shadow-sm">
+            <article className="flex flex-col gap-3">
               <div className="bg-muted/10 relative w-full overflow-hidden rounded-md">
                 {item.background ? (
                   <img
@@ -285,36 +284,25 @@ const Blogs = () => {
                     {toUpperCase(t("blogs.featured") || "Featured")}
                   </span>
                 )}
-              </div>
-
-              <div className="flex items-start gap-3">
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-foreground truncate text-base font-semibold">
-                    {tr.name}
-                  </h3>
-                  <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">
-                    {tr.headline}
-                  </p>
-
-                  {item.categories?.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {item.categories.slice(0, 3).map((cat, i) => {
-                        const cTr = getTranslatedObject(
-                          cat.translations,
-                          i18n.language
-                        );
-                        return (
-                          <Badge key={i} variant="outline" className="text-xs">
-                            <Tag className="mr-1 h-3 w-3" />
-                            {cTr.name}
-                          </Badge>
-                        );
-                      })}
-                    </div>
-                  )}
+                <div className="mt-2 min-w-0 flex-1">
+                  <h3 className="text-foreground font-normal">{item.slug}</h3>
                 </div>
-
-                <div className="flex flex-col items-end gap-2">
+              </div>
+              <div className="grid grid-cols-2 items-start gap-2">
+                <div>
+                  <span className="text-muted-foreground text-sm">
+                    {toUpperCase(t("blogs.translations"))}
+                  </span>
+                  <div className="mt-1">
+                    <Badge variant="secondary">
+                      {item.translations?.length}
+                    </Badge>
+                  </div>
+                </div>
+                <div className="flex flex-col items-end">
+                  <h4 className="text-muted-foreground mb-[10px] text-sm">
+                    {toUpperCase(t("blogs.stars"))}
+                  </h4>
                   <div className="flex items-center gap-1">
                     {Array.from({ length: 5 }, (_, i) => (
                       <Star
@@ -328,10 +316,33 @@ const Blogs = () => {
                       />
                     ))}
                   </div>
-                  <div className="text-muted-foreground text-right text-xs">
-                    {formatDate(item.createdAt, i18n.language, true)}
-                  </div>
                 </div>
+              </div>
+              <div className="min-w-0 flex-1">
+                {item.categories?.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {item.categories.slice(0, 3).map((cat, i) => {
+                      const cTr = getTranslatedObject(
+                        cat.translations,
+                        i18n.language
+                      );
+                      return (
+                        <Badge key={i} variant="outline" className="text-xs">
+                          <Tag className="mr-1 h-3 w-3" />
+                          {cTr.name}
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+              <div>
+                <span className="text-muted-foreground text-sm">
+                  {toUpperCase(t("blogs.created"))}
+                </span>
+                <p className="mt-1 text-sm">
+                  {formatDate(item.createdAt, i18n.language, true)}
+                </p>
               </div>
             </article>
           );

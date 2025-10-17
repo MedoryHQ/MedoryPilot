@@ -772,7 +772,7 @@ export const ka = {
       landingOrder: "ლანდინგ რიგი",
       categories: "კატეგორიები",
       stars: "ვარსკვლავები",
-      featured: "ფურცელი",
+      inLanding: "ჩანს ლენდინგზე",
       yes: "დიახ",
       no: "არა",
       filters: {

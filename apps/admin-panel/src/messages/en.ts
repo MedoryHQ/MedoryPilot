@@ -767,7 +767,7 @@ export const en = {
       landingOrder: "Landing Order",
       categories: "Categories",
       stars: "Stars",
-      featured: "Featured",
+      inLanding: "In Landing",
       yes: "Yes",
       no: "No",
       filters: {

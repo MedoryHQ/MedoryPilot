@@ -156,7 +156,7 @@ const Newses = () => {
         emptyMessage={toUpperCase(t("newses.noNewsesFound"))}
         mobileCardRender={(item) => {
           return (
-            <article className="bg-card flex flex-col gap-3 rounded-lg p-4 shadow-sm">
+            <article className="flex flex-col gap-3">
               <div className="bg-muted/10 relative w-full overflow-hidden rounded-md">
                 {item.background ? (
                   <img
@@ -175,8 +175,8 @@ const Newses = () => {
                     {toUpperCase(t("newses.inLanding") || "In Landing")}
                   </span>
                 )}
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-foreground font-semibold">{item.slug}</h3>
+                <div className="mt-2 min-w-0 flex-1">
+                  <h3 className="text-foreground font-normal">{item.slug}</h3>
                 </div>
               </div>
               <div>
