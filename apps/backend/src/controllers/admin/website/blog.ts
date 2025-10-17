@@ -8,7 +8,6 @@ import {
   logAdminError as logCatchyError,
   logAdminInfo as logInfo,
   logAdminWarn as logWarn,
-  parseQueryParams,
   parseBooleanQuery,
   generateWhereInput,
   parseFilters,

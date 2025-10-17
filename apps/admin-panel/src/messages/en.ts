@@ -429,7 +429,27 @@ export const en = {
         footerIdRequired: "Footer ID is required"
       }
     },
-    pageComponent: {
+    pageComponents: {
+      management: "Page Components Management",
+      managementDescription: "Manage page Component entries, and metadata",
+      addPageComponent: "Add Page Component",
+      noPageComponentsFound: "No page Components found",
+      slug: "Slug",
+      translations: "Translations",
+      showInFooter: "Show in Footer",
+      footerOrder: "Footer Order",
+      yes: "Yes",
+      no: "No",
+      filters: {
+        showInFooter: "Show in Footer",
+        withMeta: "With Meta",
+        withoutMeta: "Without Meta"
+      },
+      managementSummary:
+        "Manage and order page Component posts shown on the footer",
+      add: "Add",
+      edit: "Edit",
+      delete: "Delete",
       errors: {
         slugRequired: "Slug is required",
         footerOrderRequired: "Footer order is required",

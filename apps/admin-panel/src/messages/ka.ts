@@ -430,7 +430,26 @@ export const ka = {
         footerIdRequired: "Footer ID სავალდებულოა"
       }
     },
-    pageComponent: {
+    pageComponents: {
+      management: "გვერდების მართვა",
+      managementDescription: "მართეთ გვერდები, და მისი მეტა მონაცემები",
+      addBlog: "გვერდის შექმნა",
+      noBlogsFound: "გვერდები ვერ მოიძებნა",
+      slug: "სლაგი",
+      translations: "თარგმანები",
+      showInFooter: "ჩვენების footer-ში",
+      footerOrder: "footer-ის რიგი",
+      yes: "დიახ",
+      no: "არა",
+      filters: {
+        showInFooter: "ჩვენების footer-ში",
+        withMeta: "მეტა-ინფორმაციით",
+        withoutMeta: "მეტა-ინფორმაციის გარეშე"
+      },
+      managementSummary: "მართეთ და დაალაგეთ footer-ში გამოსაჩენი გვერდები",
+      add: "დაამატე",
+      edit: "რედაქტირება",
+      delete: "წაშლა",
       errors: {
         slugRequired: "სლაგი სავალდებულოა",
         footerOrderRequired: "Footer-ის რიგი სავალდებულოა",
