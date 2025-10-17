@@ -248,7 +248,7 @@ export const TranslatedSelect: React.FC<TranslatedSelectProps> = React.memo(
               className={`${triggerBaseClass} ${errorClass} ${disabledClass}`}
             >
               <SelectValue
-                placeholder={placeholder ?? toUpperCase(t("select"))}
+                placeholder={placeholder ?? toUpperCase(t("dataTable.select"))}
               />
             </SelectTrigger>
 
@@ -257,7 +257,7 @@ export const TranslatedSelect: React.FC<TranslatedSelectProps> = React.memo(
                 <div className="mb-2">
                   <input
                     className="w-full rounded border px-2 py-1 text-sm"
-                    placeholder={toUpperCase(t("search"))}
+                    placeholder={toUpperCase(t("dataTable.search"))}
                     value={searchText}
                     onChange={(e) => handleSearch(e.target.value)}
                     disabled={disabled}
@@ -266,11 +266,11 @@ export const TranslatedSelect: React.FC<TranslatedSelectProps> = React.memo(
 
                 {loading ? (
                   <div className="text-muted-foreground px-2 py-2 text-sm">
-                    {toUpperCase(t("loading"))}
+                    {toUpperCase(t("dataTable.loading"))}
                   </div>
                 ) : options.length === 0 ? (
                   <div className="text-muted-foreground px-2 py-2 text-sm">
-                    {toUpperCase(t("noData"))}
+                    {toUpperCase(t("dataTable.noData"))}
                   </div>
                 ) : (
                   options.map((opt) => (
@@ -346,7 +346,7 @@ export const TranslatedSelect: React.FC<TranslatedSelectProps> = React.memo(
               <div className="mb-2">
                 <input
                   className="w-full rounded border px-2 py-1 text-sm"
-                  placeholder={toUpperCase(t("search.placeholder"))}
+                  placeholder={toUpperCase(t("dataTable.search"))}
                   value={searchText}
                   onChange={(e) => handleSearch(e.target.value)}
                   disabled={disabled}
@@ -355,11 +355,11 @@ export const TranslatedSelect: React.FC<TranslatedSelectProps> = React.memo(
 
               {loading ? (
                 <div className="text-muted-foreground px-2 py-2 text-sm">
-                  {toUpperCase(t("loading"))}
+                  {toUpperCase(t("dataTable.loading"))}
                 </div>
               ) : options.length === 0 ? (
                 <div className="text-muted-foreground px-2 py-2 text-sm">
-                  {toUpperCase(t("noData"))}
+                  {toUpperCase(t("dataTable.noData"))}
                 </div>
               ) : (
                 <div className="max-h-60 overflow-auto">
