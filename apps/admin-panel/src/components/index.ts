@@ -6,3 +6,4 @@ export * from "./header";
 export * from "./Pagination";
 export * from "./TranslatedSelect";
 export * from "./MarkdownRenderer";
+export * from "./MutliSelectFilter";

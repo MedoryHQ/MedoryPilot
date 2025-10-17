@@ -322,7 +322,10 @@ export const ka = {
       rowsPerPage: "ჩანაწერი გვერდზე: ",
       min: "მინ.",
       max: "მაქს.",
-      clear: "წაშლა"
+      clear: "წაშლა",
+      noData: "მონაცემები არ არის",
+      loading: "ჩატვირთვა...",
+      select: "არჩევა"
     },
     ui: {
       metadata: "მეტა მონაცემები",

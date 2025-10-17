@@ -319,7 +319,10 @@ export const en = {
       rowsPerPage: "Rows per page: ",
       min: "Min",
       max: "Max",
-      clear: "Clear"
+      clear: "Clear",
+      noData: "No Data",
+      loading: "Loading...",
+      select: "Select"
     },
     ui: {
       metadata: "Metadata",
