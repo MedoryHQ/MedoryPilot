@@ -10,6 +10,7 @@ import {
   logAdminInfo as logInfo,
   logAdminWarn as logWarn,
   parseBooleanQuery,
+  parseFilters,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
 import { CreateNewsDTO, UpdateNewsDTO } from "@/types/admin";
@@ -21,9 +22,17 @@ export const fetchNewses = async (
 ) => {
   try {
     const { skip, take, orderBy, search } = getPaginationAndFilters(req);
+    const filters = parseFilters(req);
 
-    const { showInLanding } = req.query as { showInLanding: string };
+    const { showInLanding, withMeta, background } = filters as {
+      showInLanding?: boolean | string;
+      withMeta?: boolean | string;
+      background?: boolean | string;
+    };
+
     const isLanding = parseBooleanQuery(showInLanding);
+    const meta = parseBooleanQuery(withMeta);
+    const hasBackground = parseBooleanQuery(background);
 
     const where = generateWhereInput<Prisma.NewsWhereInput>(
       search,
@@ -37,6 +46,33 @@ export const fetchNewses = async (
             ? {
                 showInLanding: isLanding,
               }
+            : {},
+          typeof meta === "boolean"
+            ? meta
+              ? {
+                  metaImage: {
+                    not: null,
+                  },
+                  metaDescription: {
+                    not: null,
+                  },
+                  metaKeywords: {
+                    not: null,
+                  },
+                  metaTitle: {
+                    not: null,
+                  },
+                }
+              : {
+                  metaImage: null,
+                  metaDescription: null,
+                  metaKeywords: null,
+                }
+            : {},
+          typeof hasBackground === "boolean"
+            ? background
+              ? { background: { isNot: null } }
+              : { background: { is: null } }
             : {},
         ],
       }
