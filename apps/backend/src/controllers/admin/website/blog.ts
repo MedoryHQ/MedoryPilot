@@ -184,14 +184,22 @@ export const fetchBlogsFilterOptions = async (
     const { languageCode } = req.query as { languageCode: "en" | "ka" };
     const { skip, take, search } = getPaginationAndFilters(req);
 
-    const where = generateWhereInput<Prisma.UserWhereInput>(search, {
-      email: "insensitive",
-      firstName: "insensitive",
-      lastName: "insensitive",
-      fullName: "insensitive",
-      personalId: "insensitive",
-      phoneNumber: "insensitive",
-    });
+    const where = generateWhereInput<Prisma.UserWhereInput>(
+      search,
+      {
+        email: "insensitive",
+        firstName: "insensitive",
+        lastName: "insensitive",
+        fullName: "insensitive",
+        personalId: "insensitive",
+        phoneNumber: "insensitive",
+      }
+      // {
+      //   starredBlogs: {
+      //     some: {},
+      //   },
+      // }
+    );
 
     const [categories, users] = await prisma.$transaction([
       prisma.category.findMany({

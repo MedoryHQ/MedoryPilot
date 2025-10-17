@@ -14,6 +14,7 @@ import { ImageIcon, Plus, Star, Tag } from "lucide-react";
 import { Column, FilterConfig } from "@/types/ui";
 import { Blog } from "@/types/website";
 import { cn } from "@/libs";
+import { useMemo, useState, useCallback } from "react";
 
 const Blogs = () => {
   const { t, i18n } = useTranslation();
@@ -21,161 +22,211 @@ const Blogs = () => {
   const [searchParams] = useSearchParams();
   const { filledSearchParams } = getPaginationFields(searchParams);
   const { data, refetch, isFetching } = useGetBlogs(filledSearchParams);
+
+  const [filterSearchParams, setFilterSearchParams] = useState<
+    Record<string, string>
+  >({});
+
+  const handleUsersSearch = useCallback((q: string) => {
+    setFilterSearchParams((prev) => {
+      const next = { ...prev, users: q ?? "" };
+      if ((prev.users ?? "") === (next.users ?? "")) return prev;
+      return next;
+    });
+  }, []);
+
+  const filterQuery = useMemo(() => {
+    const p = new URLSearchParams();
+    p.set("page", "0");
+    p.set("pageSize", "10");
+    Object.entries(filterSearchParams).forEach(([k, v]) => {
+      if (v && v.trim() !== "") {
+        p.set("search", v);
+      }
+    });
+    return p;
+  }, [filterSearchParams]);
+
   const { data: filterOptions } = useGetBlogsFilterOptions(
-    i18n.language as "en" | "ka"
+    i18n.language as "en" | "ka",
+    filterQuery
   );
 
-  const filters: FilterConfig[] = [
-    {
-      key: "showInLanding",
-      label: toUpperCase(t("blogs.filters.showInLanding")),
-      type: "select",
-      options: [
-        { label: toUpperCase(t("blogs.yes")), value: "true" },
-        { label: toUpperCase(t("blogs.no")), value: "false" }
-      ]
-    },
-    {
-      key: "withMeta",
-      label: toUpperCase(t("blogs.filters.withMeta")),
-      type: "select",
-      options: [
-        { label: toUpperCase(t("blogs.filters.withMeta")), value: "true" },
-        { label: toUpperCase(t("blogs.filters.withoutMeta")), value: "false" }
-      ]
-    },
-    {
-      key: "background",
-      label: toUpperCase(t("blogs.filters.hasBackground")),
-      type: "select",
-      options: [
-        {
-          label: toUpperCase(t("blogs.filters.hasBackground")),
-          value: "true"
-        },
-        {
-          label: toUpperCase(t("blogs.filters.noBackground")),
-          value: "false"
-        }
-      ]
-    },
-    {
-      key: "stars",
-      label: toUpperCase(t("blogs.filters.stars")),
-      type: "number"
-    },
-    {
-      key: "categories",
-      label: toUpperCase(t("blogs.filters.categories")),
-      type: "multiple-select",
-      options: filterOptions?.data?.length ? filterOptions?.data : []
-    }
-  ];
+  const filters: FilterConfig[] = useMemo(() => {
+    return [
+      {
+        key: "showInLanding",
+        label: toUpperCase(t("blogs.filters.showInLanding")),
+        type: "select",
+        options: [
+          { label: toUpperCase(t("blogs.yes")), value: "true" },
+          { label: toUpperCase(t("blogs.no")), value: "false" }
+        ]
+      },
+      {
+        key: "withMeta",
+        label: toUpperCase(t("blogs.filters.withMeta")),
+        type: "select",
+        options: [
+          { label: toUpperCase(t("blogs.filters.withMeta")), value: "true" },
+          { label: toUpperCase(t("blogs.filters.withoutMeta")), value: "false" }
+        ]
+      },
+      {
+        key: "background",
+        label: toUpperCase(t("blogs.filters.hasBackground")),
+        type: "select",
+        options: [
+          {
+            label: toUpperCase(t("blogs.filters.hasBackground")),
+            value: "true"
+          },
+          {
+            label: toUpperCase(t("blogs.filters.noBackground")),
+            value: "false"
+          }
+        ]
+      },
+      {
+        key: "stars",
+        label: toUpperCase(t("blogs.filters.stars")),
+        type: "number"
+      },
+      {
+        key: "categories",
+        label: toUpperCase(t("blogs.filters.categories")),
+        type: "multiple-select",
+        options: filterOptions?.data?.categories?.length
+          ? filterOptions?.data?.categories
+          : []
+      },
+      {
+        key: "users",
+        label: toUpperCase(t("blogs.filters.users")),
+        type: "multiple-select",
+        withSearch: true,
+        onSearchChange: handleUsersSearch,
+        searchValue: filterSearchParams.users ?? "",
+        options: filterOptions?.data?.users?.length
+          ? filterOptions?.data?.users
+          : []
+      }
+    ];
+  }, [
+    t,
+    filterOptions?.data?.categories,
+    filterOptions?.data?.users,
+    handleUsersSearch,
+    filterSearchParams.users
+  ]);
 
-  const columns: Column<Blog>[] = [
-    {
-      key: "background",
-      label: toUpperCase(t("blogs.background")),
-      render: (item) => (
-        <div className="border-border bg-muted/10 flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border">
-          {item.background ? (
-            <img
-              src={getFileUrl(item.background.path)}
-              alt={item.background.name}
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <ImageIcon className="text-muted-foreground h-6 w-6" />
-          )}
-        </div>
-      )
-    },
-    {
-      key: "slug",
-      label: toUpperCase(t("blogs.slug")),
-      render: (item) => <span className="text-foreground">{item.slug}</span>,
-      sortable: true
-    },
-    {
-      key: "translationsCount",
-      label: toUpperCase(t("blogs.translations")),
-      render: (item) => (
-        <Badge variant="secondary" className="px-3 py-1">
-          {item.translations?.length}
-        </Badge>
-      ),
-      className: "text-center"
-    },
-    {
-      key: "showInLanding",
-      label: toUpperCase(t("blogs.showInLanding")),
-      sortable: true,
-      render: (item) => (
-        <Badge
-          variant={item.showInLanding ? "default" : "outline"}
-          className="px-3 py-1"
-        >
-          {item.showInLanding
-            ? toUpperCase(t("blogs.yes"))
-            : toUpperCase(t("blogs.no"))}
-        </Badge>
-      ),
-      className: "text-center"
-    },
-    {
-      key: "landingOrder",
-      label: toUpperCase(t("blogs.landingOrder")),
-      sortable: true,
-      render: (item) => (
-        <Badge variant="outline" className="px-3 py-1">
-          {item.landingOrder}
-        </Badge>
-      ),
-      className: "text-center"
-    },
-    {
-      key: "categories",
-      label: toUpperCase(t("blogs.categories")),
-      render: (item) => (
-        <div className="flex flex-wrap gap-1">
-          {item.categories.map((category, i) => {
-            const tr = getTranslatedObject(
-              category.translations,
-              i18n.language
-            );
-            return (
-              <Badge key={i} variant="outline" className="text-xs">
-                <Tag className="mr-1 h-3 w-3" />
-                {tr.name}
-              </Badge>
-            );
-          })}
-        </div>
-      ),
-      className: "text-center"
-    },
-    {
-      key: "stars",
-      label: toUpperCase(t("blogs.stars")),
-      sortable: true,
-      render: (item) => (
-        <div className="flex items-center justify-center gap-1">
-          {Array.from({ length: 5 }, (_, i) => (
-            <Star
-              key={i}
-              className={cn(
-                "h-3 w-3",
-                i < item.stars
-                  ? "fill-current text-yellow-500"
-                  : "text-muted-foreground"
-              )}
-            />
-          ))}
-        </div>
-      ),
-      className: "text-center"
-    }
-  ];
+  const columns: Column<Blog>[] = useMemo(
+    () => [
+      {
+        key: "background",
+        label: toUpperCase(t("blogs.background")),
+        render: (item) => (
+          <div className="border-border bg-muted/10 flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border">
+            {item.background ? (
+              <img
+                src={getFileUrl(item.background.path)}
+                alt={item.background.name}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <ImageIcon className="text-muted-foreground h-6 w-6" />
+            )}
+          </div>
+        )
+      },
+      {
+        key: "slug",
+        label: toUpperCase(t("blogs.slug")),
+        render: (item) => <span className="text-foreground">{item.slug}</span>,
+        sortable: true
+      },
+      {
+        key: "translationsCount",
+        label: toUpperCase(t("blogs.translations")),
+        render: (item) => (
+          <Badge variant="secondary" className="px-3 py-1">
+            {item.translations?.length}
+          </Badge>
+        ),
+        className: "text-center"
+      },
+      {
+        key: "showInLanding",
+        label: toUpperCase(t("blogs.showInLanding")),
+        sortable: true,
+        render: (item) => (
+          <Badge
+            variant={item.showInLanding ? "default" : "outline"}
+            className="px-3 py-1"
+          >
+            {item.showInLanding
+              ? toUpperCase(t("blogs.yes"))
+              : toUpperCase(t("blogs.no"))}
+          </Badge>
+        ),
+        className: "text-center"
+      },
+      {
+        key: "landingOrder",
+        label: toUpperCase(t("blogs.landingOrder")),
+        sortable: true,
+        render: (item) => (
+          <Badge variant="outline" className="px-3 py-1">
+            {item.landingOrder}
+          </Badge>
+        ),
+        className: "text-center"
+      },
+      {
+        key: "categories",
+        label: toUpperCase(t("blogs.categories")),
+        render: (item) => (
+          <div className="flex flex-wrap gap-1">
+            {item.categories.map((category, i) => {
+              const tr = getTranslatedObject(
+                category.translations,
+                i18n.language
+              );
+              return (
+                <Badge key={i} variant="outline" className="text-xs">
+                  <Tag className="mr-1 h-3 w-3" />
+                  {tr.name}
+                </Badge>
+              );
+            })}
+          </div>
+        ),
+        className: "text-center"
+      },
+      {
+        key: "stars",
+        label: toUpperCase(t("blogs.stars")),
+        sortable: true,
+        render: (item) => (
+          <div className="flex items-center justify-center gap-1">
+            {Array.from({ length: 5 }, (_, i) => (
+              <Star
+                key={i}
+                className={cn(
+                  "h-3 w-3",
+                  i < item.stars
+                    ? "fill-current text-yellow-500"
+                    : "text-muted-foreground"
+                )}
+              />
+            ))}
+          </div>
+        ),
+        className: "text-center"
+      }
+    ],
+    [t, i18n.language]
+  );
 
   return (
     <motion.div

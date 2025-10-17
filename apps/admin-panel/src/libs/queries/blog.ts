@@ -34,12 +34,15 @@ export const useGetBlog = (slug: string | null) => {
   });
 };
 
-export const useGetBlogsFilterOptions = (languageCode: "en" | "ka") => {
+export const useGetBlogsFilterOptions = (
+  languageCode: "en" | "ka",
+  search?: URLSearchParams
+) => {
   return useQuery<BlogsFilterOptions, Error>({
-    queryKey: ["blogs", languageCode],
+    queryKey: ["blogs", languageCode, search?.toString() ?? ""],
     queryFn: async (): Promise<BlogsFilterOptions> => {
       const { data } = await instance.get<BlogsFilterOptions>(
-        `/blog/filter-options?languageCode=${languageCode}`
+        `/blog/filter-options?languageCode=${languageCode}${search ? `&${search}` : ""}`
       );
       return data;
     },
