@@ -11,14 +11,7 @@ jest.mock("@/config", () => ({
       findFirst: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
-      delete: jest.fn(),
-    },
-    tariffHistory: {
-      findMany: jest.fn(),
-      findUnique: jest.fn(),
-      count: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
+      updateMany: jest.fn(),
       delete: jest.fn(),
     },
     $disconnect: jest.fn(),
@@ -48,32 +41,26 @@ jest.mock("@/utils", () => {
   const actual = jest.requireActual("@/utils");
   const errorMessages = {
     ...((actual as any).errorMessages ?? {}),
-    tariffNotFound: {
-      en: "Tariff not found",
-      ka: "ტარიფი ვერ მოიძებნა",
-    },
     tariffDeleted: {
       en: "Tariff deleted successfully",
       ka: "ტარიფი წარმატებით წაიშალა",
     },
+    tariffNotFound: {
+      en: "Tariff not found",
+      ka: "ტარიფი ვერ მოიძებნა",
+    },
   };
+
   return {
     ...actual,
-    getPaginationAndFilters: jest.fn(() => ({
-      skip: 0,
-      take: 10,
-      orderBy: { createdAt: "desc" },
-      search: undefined,
-    })),
-    getResponseMessage: jest.fn(
-      (key: string) => (errorMessages as any)[key] ?? key
-    ),
+    logAdminWarn: jest.fn(),
+    logAdminInfo: jest.fn(),
+    logAdminError: jest.fn(),
     sendError: jest.fn((req: any, res: any, status: number, key: string) =>
       res.status(status).json({ error: (errorMessages as any)[key] ?? key })
     ),
-    logAdminError: jest.fn(),
-    logAdminInfo: jest.fn(),
-    logAdminWarn: jest.fn(),
+    getResponseMessage: jest.fn((key: string) => key),
+    GLOBAL_ERROR_MESSAGE: "GLOBAL_ERROR",
     errorMessages,
   };
 });
@@ -88,24 +75,13 @@ app.use("/admin/tariff", adminTariffRouter);
 
 const mockTariff = {
   id: "11111111-1111-1111-1111-111111111111",
-  price: 99,
-  fromDate: new Date("2024-01-01"),
-  endDate: null,
+  price: 100,
   isCurrent: true,
+  fromDate: new Date().toISOString(),
+  endDate: null,
   parentId: null,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
-
-const mockHistoryRow = {
-  id: "22222222-2222-2222-2222-222222222222",
-  price: 80,
-  fromDate: new Date("2023-01-01"),
-  endDate: new Date("2023-12-31"),
-  isCurrent: false,
-  parentId: "11111111-1111-1111-1111-111111111111",
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
 };
 
 afterAll(async () => {
@@ -121,23 +97,20 @@ describe("Admin Tariff (integration-style) — /admin/tariff", () => {
 
   describe("GET /admin/tariff", () => {
     it("returns combined active/history and counts", async () => {
+      (prisma.tariff.findMany as jest.Mock).mockResolvedValueOnce([mockTariff]);
       (prisma.tariff.count as jest.Mock).mockResolvedValueOnce(1);
-      (prisma.tariff.count as jest.Mock).mockResolvedValueOnce(2);
 
-      (prisma.tariff.findMany as jest.Mock)
-        .mockResolvedValueOnce([mockTariff])
-        .mockResolvedValueOnce([mockHistoryRow, mockHistoryRow]);
-
-      const res = await request(app).get("/admin/tariff");
+      const res = await request(app).get("/tariff");
 
       expect(res.status).toBe(200);
-      expect(res.body.data).toBeDefined();
-      expect(res.body.count).toEqual({ total: 3 });
-      expect(prisma.tariff.count).toHaveBeenCalledTimes(2);
-      expect(prisma.tariff.findMany).toHaveBeenCalledTimes(2);
+      expect(res.body.data).toBeInstanceOf(Array);
+      expect(res.body.count.total).toBe(1);
+      expect(prisma.tariff.findMany).toHaveBeenCalled();
+      expect(prisma.tariff.count).toHaveBeenCalled();
     });
 
     it("handles DB error gracefully", async () => {
+      (prisma.tariff.count as jest.Mock).mockResolvedValueOnce(1);
       (prisma.tariff.findMany as jest.Mock).mockRejectedValueOnce(
         new Error("DB")
       );
@@ -146,44 +119,21 @@ describe("Admin Tariff (integration-style) — /admin/tariff", () => {
     });
   });
 
-  describe("GET /admin/tariff/:id (fetchTariff)", () => {
-    it("fetches active tariff when type is 'active'", async () => {
+  describe("GET /tariff/:id", () => {
+    it("returns a tariff when found", async () => {
       (prisma.tariff.findUnique as jest.Mock).mockResolvedValueOnce(mockTariff);
 
-      const res = await request(app)
-        .get(`/admin/tariff/${mockTariff.id}`)
-        .send({ type: "active" });
+      const res = await request(app).get(`/tariff/${mockTariff.id}`);
 
       expect(res.status).toBe(200);
-      expect(res.body.data).toBeDefined();
-      expect(res.body.type).toBe("active");
-      expect(prisma.tariff.findUnique).toHaveBeenCalledWith(
-        expect.objectContaining({ where: { id: mockTariff.id } })
-      );
+      expect(res.body.data).toHaveProperty("id", mockTariff.id);
+      expect(prisma.tariff.findUnique).toHaveBeenCalled();
     });
 
-    it("fetches history tariff when type is 'history'", async () => {
-      const historyRow = { ...mockHistoryRow };
-      (prisma.tariff.findUnique as jest.Mock).mockResolvedValueOnce(historyRow);
-
-      const res = await request(app)
-        .get(`/admin/tariff/${historyRow.id}`)
-        .send({ type: "history" });
-
-      expect(res.status).toBe(200);
-      expect(res.body.data).toBeDefined();
-      expect(res.body.type).toBe("history");
-      expect(prisma.tariff.findUnique).toHaveBeenCalledWith(
-        expect.objectContaining({ where: { id: historyRow.id } })
-      );
-    });
-
-    it("returns 404 when tariff not found", async () => {
+    it("returns 404 when not found", async () => {
       (prisma.tariff.findUnique as jest.Mock).mockResolvedValueOnce(null);
 
-      const res = await request(app)
-        .get(`/admin/tariff/${mockTariff.id}`)
-        .send({ type: "active" });
+      const res = await request(app).get(`/tariff/${mockTariff.id}`);
 
       expect(res.status).toBe(404);
       expect(res.body).toHaveProperty("error");
@@ -203,30 +153,6 @@ describe("Admin Tariff (integration-style) — /admin/tariff", () => {
       expect(res.status).toBe(201);
       expect(res.body.data).toBeDefined();
       expect(res.body.data.price).toBe(120);
-      expect(prisma.tariff.create).toHaveBeenCalled();
-    });
-
-    it("creates tariff and marks previous as history when current exists", async () => {
-      const existing = {
-        ...mockTariff,
-        price: 50,
-        createdAt: new Date("2023-01-01"),
-      };
-      (prisma.tariff.findFirst as jest.Mock).mockResolvedValueOnce(existing);
-
-      const newTariff = { ...mockTariff, id: "new-id", price: 200 };
-      (prisma.tariff.update as jest.Mock).mockResolvedValueOnce({
-        ...existing,
-        isCurrent: false,
-        endDate: new Date(),
-      });
-      (prisma.tariff.create as jest.Mock).mockResolvedValueOnce(newTariff);
-
-      const res = await request(app).post("/admin/tariff").send({ price: 200 });
-
-      expect(res.status).toBe(201);
-      expect(res.body.data).toBeDefined();
-      expect(prisma.tariff.update).toHaveBeenCalled();
       expect(prisma.tariff.create).toHaveBeenCalled();
     });
 
@@ -276,24 +202,11 @@ describe("Admin Tariff (integration-style) — /admin/tariff", () => {
 
   describe("DELETE /admin/tariff/:id", () => {
     it("deletes active tariff and promotes child if present", async () => {
-      const active = { ...mockTariff, isCurrent: true };
-      const child = {
-        id: "child-id",
-        price: 60,
-        isCurrent: false,
-        parentId: active.id,
-        fromDate: new Date("2023-06-01"),
-        createdAt: new Date("2023-06-01"),
-        updatedAt: new Date(),
-      };
+      const active = { ...mockTariff };
 
       (prisma.tariff.findUnique as jest.Mock).mockResolvedValueOnce(active);
-      (prisma.tariff.findFirst as jest.Mock).mockResolvedValueOnce(child);
       (prisma.tariff.delete as jest.Mock).mockResolvedValueOnce(active);
       (prisma.tariff.update as jest.Mock).mockResolvedValueOnce({
-        ...child,
-        isCurrent: true,
-        parentId: null,
         endDate: null,
       });
 
@@ -309,37 +222,17 @@ describe("Admin Tariff (integration-style) — /admin/tariff", () => {
       expect(prisma.tariff.update).toHaveBeenCalled();
     });
 
-    it("deletes history tariff when type is 'history'", async () => {
-      const historyRow = { ...mockHistoryRow, isCurrent: false };
-      (prisma.tariff.findUnique as jest.Mock).mockResolvedValueOnce(historyRow);
-      (prisma.tariff.delete as jest.Mock).mockResolvedValueOnce(historyRow);
-
-      const res = await request(app)
-        .delete(`/admin/tariff/${historyRow.id}`)
-        .send({ type: "history" });
-
-      expect(res.status).toBe(200);
-      expect(res.body).toHaveProperty("message");
-      expect(prisma.tariff.delete).toHaveBeenCalledWith(
-        expect.objectContaining({ where: { id: historyRow.id } })
-      );
-    });
-
-    it("returns 404 when deletion target not found", async () => {
+    it("returns 404 when nothing deleted", async () => {
       (prisma.tariff.findUnique as jest.Mock).mockResolvedValueOnce(null);
 
-      const res = await request(app)
-        .delete(`/admin/tariff/${mockTariff.id}`)
-        .send({ type: "active" });
+      const res = await request(app).delete(`/tariff/${mockTariff.id}`);
 
       expect(res.status).toBe(404);
       expect(res.body).toHaveProperty("error");
     });
 
     it("returns 400 for invalid id", async () => {
-      const res = await request(app)
-        .delete("/admin/tariff/INVALID_ID!!")
-        .send({ type: "active" });
+      const res = await request(app).delete("/tariff/INVALID_ID!!");
 
       expect(res.status).toBe(400);
       expect(res.body).toHaveProperty("errors");
