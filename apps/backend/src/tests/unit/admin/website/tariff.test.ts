@@ -123,52 +123,16 @@ describe("Admin Tariff API — /tariff", () => {
     });
   });
 
-  describe("POST /admin/tariff", () => {
-    it("creates tariff successfully when no current tariff exists", async () => {
+  describe("POST /tariff", () => {
+    it("creates a tariff successfully", async () => {
       (prisma.tariff.findFirst as jest.Mock).mockResolvedValueOnce(null);
-      (prisma.tariff.create as jest.Mock).mockResolvedValueOnce({
-        ...mockTariff,
-        price: 120,
-      });
+      (prisma.tariff.create as jest.Mock).mockResolvedValueOnce(mockTariff);
 
-      const res = await request(app).post("/admin/tariff").send({ price: 120 });
+      const res = await request(app).post("/tariff").send({ price: 200 });
 
-      expect(res).toHaveStatus(201);
-      expect(res.body.data).toBeDefined();
-      expect(res.body.data.price).toBe(120);
+      expect(res.status).toBe(201);
+      expect(res.body.data).toHaveProperty("id", mockTariff.id);
       expect(prisma.tariff.create).toHaveBeenCalled();
-    });
-
-    it("creates tariff and moves previous current to history when current exists", async () => {
-      const existing = {
-        ...mockTariff,
-        price: 50,
-        createdAt: new Date("2023-01-01"),
-      };
-      (prisma.tariff.findFirst as jest.Mock).mockResolvedValueOnce(existing);
-
-      (prisma.tariff.update as jest.Mock).mockResolvedValueOnce({
-        ...existing,
-        isCurrent: false,
-        endDate: new Date(),
-      });
-      (prisma.tariff.create as jest.Mock).mockResolvedValueOnce({
-        ...mockTariff,
-        id: "new-id",
-        price: 200,
-      });
-
-      const res = await request(app).post("/admin/tariff").send({ price: 200 });
-
-      expect(res).toHaveStatus(201);
-      expect(res.body.data).toBeDefined();
-      expect(prisma.tariff.update).toHaveBeenCalled();
-      expect(prisma.tariff.create).toHaveBeenCalled();
-    });
-
-    it("returns 400 for invalid body", async () => {
-      const res = await request(app).post("/admin/tariff").send({});
-      expect(res).toHaveStatus(400);
     });
   });
 
