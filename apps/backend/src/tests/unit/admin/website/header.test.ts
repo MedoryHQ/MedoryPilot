@@ -7,11 +7,13 @@ import { adminHeaderRouter } from "@/routes/admin/website/header";
 jest.mock("@/config", () => ({
   prisma: {
     header: {
+      findMany: jest.fn(),
+      count: jest.fn(),
       findFirst: jest.fn(),
+      findUnique: jest.fn(),
       delete: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
-      findUnique: jest.fn(),
     },
     $disconnect: jest.fn(),
   },
@@ -60,9 +62,25 @@ jest.mock("@/utils", () => {
 
   return {
     ...actual,
+    getPaginationAndFilters: jest.fn((req: any) => {
+      const page = Number(req.query.page) || 1;
+      const take = Number(req.query.take) || 10;
+      const orderBy = req.query.orderBy
+        ? { order: req.query.orderBy }
+        : { order: "asc" };
+      return {
+        skip: (page - 1) * take,
+        take,
+        orderBy,
+        search: req.query.search,
+      };
+    }),
+    parseFilters: jest.fn(() => ({})),
+    generateWhereInput: jest.fn((search: any, fields: any, extra: any) => ({})),
     logAdminWarn: jest.fn(),
     logAdminInfo: jest.fn(),
     logAdminError: jest.fn(),
+    logCatchyError: jest.fn(),
     sendError: jest.fn((req: any, res: any, status: number, key: string) =>
       res.status(status).json({ error: (errorMessages as any)[key] ?? key })
     ),
@@ -101,7 +119,7 @@ const mockHeader = {
 
 const createPayload = {
   active: true,
-  logo: { path: "/logo.png", name: "Logo", size: 123 },
+  logo: { id: "logo_1", path: "/logo.png", name: "Logo", size: 123 },
   translations: {
     en: {
       name: "John",
@@ -150,30 +168,46 @@ describe("Admin Header API — /header", () => {
 
   describe("GET /header", () => {
     it("returns header when found", async () => {
-      (prisma.header.findFirst as jest.Mock).mockResolvedValueOnce(mockHeader);
+      (prisma.header.findMany as jest.Mock).mockResolvedValueOnce([mockHeader]);
+      (prisma.header.count as jest.Mock).mockResolvedValueOnce(1);
 
       const res = await request(app).get("/header");
 
       expect(res.status).toBe(200);
-      expect(res.body.data).toHaveProperty("id", mockHeader.id);
-      expect(prisma.header.findFirst).toHaveBeenCalled();
+      expect(res.body).toHaveProperty("data");
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.count).toEqual(1);
+      expect(prisma.header.findMany).toHaveBeenCalled();
+      expect(prisma.header.count).toHaveBeenCalled();
     });
 
-    it("returns 404 when not found", async () => {
-      (prisma.header.findFirst as jest.Mock).mockResolvedValueOnce(null);
+    it("handles DB error", async () => {
+      (prisma.header.findMany as jest.Mock).mockRejectedValueOnce(
+        new Error("DB error")
+      );
 
       const res = await request(app).get("/header");
+
+      expect(res.status).toBe(500);
+    });
+  });
+
+  describe("GET /header/:id", () => {
+    it("returns 404 when not found", async () => {
+      (prisma.header.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app).get("/header/invalidUUID");
 
       expect(res.status).toBe(404);
       expect(res.body).toHaveProperty("error");
     });
 
     it("handles DB error", async () => {
-      (prisma.header.findFirst as jest.Mock).mockRejectedValueOnce(
+      (prisma.header.findUnique as jest.Mock).mockRejectedValueOnce(
         new Error("DB error")
       );
 
-      const res = await request(app).get("/header");
+      const res = await request(app).get("/header/some-id");
 
       expect(res.status).toBe(500);
     });
