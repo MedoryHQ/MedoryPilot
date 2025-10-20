@@ -56,7 +56,7 @@ export const TranslationsPanel = <T extends string = string>({
 interface FieldGroupProps {
   label: string;
   required?: boolean;
-  type?: "text" | "email" | "password" | "number" | "textarea";
+  type?: "text" | "email" | "password" | "number" | "textarea" | "markdown";
   placeholder?: string;
   value: string;
   onChange: (value: string) => void;

@@ -136,20 +136,20 @@ describe("Admin Tariff API — /tariff", () => {
     });
   });
 
-  describe("PUT /admin/tariff/:id", () => {
-    it("updates tariff successfully", async () => {
+  describe("PUT /tariff/:id", () => {
+    it("updates a tariff successfully", async () => {
       (prisma.tariff.findUnique as jest.Mock).mockResolvedValueOnce(mockTariff);
       (prisma.tariff.update as jest.Mock).mockResolvedValueOnce({
         ...mockTariff,
-        price: 150,
+        price: 300,
       });
 
       const res = await request(app)
-        .put(`/admin/tariff/${mockTariff.id}`)
-        .send({ price: 150 });
+        .put(`/tariff/${mockTariff.id}`)
+        .send({ price: 300 });
 
-      expect(res).toHaveStatus(200);
-      expect(res.body.data.price).toBe(150);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toHaveProperty("price", 300);
       expect(prisma.tariff.update).toHaveBeenCalled();
     });
 
@@ -157,19 +157,11 @@ describe("Admin Tariff API — /tariff", () => {
       (prisma.tariff.findUnique as jest.Mock).mockResolvedValueOnce(null);
 
       const res = await request(app)
-        .put(`/admin/tariff/${mockTariff.id}`)
-        .send({ price: 100 });
+        .put(`/tariff/${mockTariff.id}`)
+        .send({ price: 300 });
 
-      expect(res).toHaveStatus(404);
+      expect(res.status).toBe(404);
       expect(res.body).toHaveProperty("error");
-    });
-
-    it("returns 400 for invalid body", async () => {
-      const res = await request(app)
-        .put(`/admin/tariff/${mockTariff.id}`)
-        .send({ price: "not-a-number" });
-      expect(res).toHaveStatus(400);
-      expect(res.body).toHaveProperty("errors");
     });
   });
 

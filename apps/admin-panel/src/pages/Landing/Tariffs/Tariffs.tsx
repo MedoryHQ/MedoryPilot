@@ -172,7 +172,7 @@ const Tariffs = () => {
                   <p className="mt-1 text-sm">
                     {item.fromDate
                       ? formatDate(item.fromDate, i18n.language)
-                      : "—"}
+                      : ""}
                   </p>
                 </div>
                 <div>
@@ -182,7 +182,7 @@ const Tariffs = () => {
                   <p className="mt-1 text-sm">
                     {item.endDate
                       ? formatDate(item.endDate, i18n.language)
-                      : "—"}
+                      : ""}
                   </p>
                 </div>
               </div>

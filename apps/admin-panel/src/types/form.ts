@@ -5,7 +5,7 @@ import { UseFormReturn, FieldValues, DefaultValues } from "react-hook-form";
 export interface TranslationField {
   name: string;
   label: string;
-  type?: "text" | "email" | "textarea" | "number";
+  type?: "text" | "email" | "textarea" | "number" | "markdown";
   placeholder?: string;
   required?: boolean;
   fullWidth?: boolean;
