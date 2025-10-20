@@ -12,6 +12,9 @@ jest.mock("@/config", () => ({
       create: jest.fn(),
       update: jest.fn(),
     },
+    file: {
+      create: jest.fn(),
+    },
     $disconnect: jest.fn(),
   },
   getEnvVariable: jest.fn((key: string) => {
@@ -63,6 +66,7 @@ jest.mock("@/utils", () => {
       }))
     ),
     generateWhereInput: jest.fn((search: any, fields: any) => ({})),
+    parseFilters: jest.fn(() => ({})), // <-- added
     getPaginationAndFilters: jest.fn((req: any) => {
       const page = Number(req.query.page) || 1;
       const take = Number(req.query.take) || 10;
@@ -128,10 +132,10 @@ describe("Admin Service routes — /admin/service", () => {
 
   describe("GET /admin/service", () => {
     it("returns list of services with count", async () => {
+      (prisma.service.count as jest.Mock).mockResolvedValueOnce(1);
       (prisma.service.findMany as jest.Mock).mockResolvedValueOnce([
         mockService,
       ]);
-      (prisma.service.count as jest.Mock).mockResolvedValueOnce(1);
 
       const res = await request(app).get("/admin/service");
 
@@ -229,6 +233,9 @@ describe("Admin Service routes — /admin/service", () => {
       (prisma.service.findUnique as jest.Mock).mockResolvedValueOnce(
         mockService
       );
+      (prisma.file.create as jest.Mock).mockResolvedValueOnce({
+        id: "file-id",
+      });
       (prisma.service.update as jest.Mock).mockResolvedValueOnce({
         ...mockService,
         translations: updatePayload.translations,
@@ -251,6 +258,7 @@ describe("Admin Service routes — /admin/service", () => {
 
     it("returns 404 when updating non-existing service", async () => {
       (prisma.service.findUnique as jest.Mock).mockResolvedValueOnce(null);
+      (prisma.service.update as jest.Mock).mockResolvedValueOnce(null);
 
       const res = await request(app)
         .put(`/admin/service/${mockService.id}`)
