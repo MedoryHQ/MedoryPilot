@@ -63,12 +63,15 @@ jest.mock("@/utils", () => {
         : { order: "asc" };
       return { skip: (page - 1) * take, take, orderBy };
     }),
+    parseFilters: jest.fn(() => ({})),
+    generateWhereInput: jest.fn((search: any, fields: any, extra: any) => ({})),
     getResponseMessage: jest.fn(
       (key: string) => (errorMessages as any)[key] ?? key
     ),
     sendError: jest.fn((req: any, res: any, status: number, key: string) => {
       res.status(status).json({ error: (errorMessages as any)[key] ?? key });
     }),
+    logCatchyError: jest.fn(),
     logAdminError: jest.fn(),
     logAdminInfo: jest.fn(),
     logAdminWarn: jest.fn(),
@@ -108,8 +111,8 @@ describe("Admin Social routes — /admin/social", () => {
 
   describe("GET /admin/social", () => {
     it("returns list of socials with count", async () => {
-      (prisma.social.findMany as jest.Mock).mockResolvedValueOnce([mockSocial]);
       (prisma.social.count as jest.Mock).mockResolvedValueOnce(1);
+      (prisma.social.findMany as jest.Mock).mockResolvedValueOnce([mockSocial]);
 
       const res = await request(app).get("/admin/social");
 
