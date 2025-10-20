@@ -9,6 +9,8 @@ jest.mock("@/config", () => ({
     contact: {
       findFirst: jest.fn(),
       deleteMany: jest.fn(),
+      count: jest.fn(),
+
       create: jest.fn(),
       update: jest.fn(),
       findUnique: jest.fn(),
@@ -178,6 +180,7 @@ describe("Admin Contact API — /contact", () => {
   describe("POST /contact", () => {
     it("creates a contact successfully", async () => {
       (prisma.contact.create as jest.Mock).mockResolvedValueOnce(mockContact);
+      (prisma.contact.count as jest.Mock).mockResolvedValueOnce(0);
 
       const res = await request(app)
         .post("/contact")
