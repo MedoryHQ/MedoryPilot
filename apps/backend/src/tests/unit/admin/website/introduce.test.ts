@@ -6,6 +6,7 @@ jest.mock("@/config", () => ({
   prisma: {
     introduce: {
       findFirst: jest.fn(),
+      count: jest.fn(),
       findUnique: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
@@ -155,6 +156,7 @@ describe("Admin Introduce routes — /admin/introduce", () => {
     };
 
     it("creates introduce successfully", async () => {
+      (prisma.introduce.count as jest.Mock).mockResolvedValueOnce(0);
       (prisma.introduce.create as jest.Mock).mockResolvedValueOnce(
         mockIntroduce
       );

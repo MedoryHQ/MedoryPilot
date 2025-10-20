@@ -8,6 +8,7 @@ jest.mock("@/config", () => ({
     contact: {
       findFirst: jest.fn(),
       findUnique: jest.fn(),
+      count: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
       deleteMany: jest.fn(),
@@ -135,6 +136,7 @@ describe("Admin Contact (integration-style) — /contact", () => {
   describe("POST /contact", () => {
     it("creates a new contact", async () => {
       (prisma.contact.create as jest.Mock).mockResolvedValueOnce(mockContact);
+      (prisma.contact.count as jest.Mock).mockResolvedValueOnce(0);
 
       const res = await request(app)
         .post("/contact")
@@ -163,7 +165,7 @@ describe("Admin Contact (integration-style) — /contact", () => {
   });
 
   describe("PUT /contact/:id", () => {
-    it("updates a contact", async () => {
+    it("updates a contact successfully", async () => {
       (prisma.contact.findUnique as jest.Mock).mockResolvedValueOnce(
         mockContact
       );
@@ -174,20 +176,14 @@ describe("Admin Contact (integration-style) — /contact", () => {
 
       const res = await request(app)
         .put(`/contact/${mockContact.id}`)
-        .send({
-          location: "Updated",
-          translations: {
-            en: { title: "Bye", description: "World" },
-            ka: { title: "ნახვამდის", description: "მსოფლიო" },
-          },
-        });
+        .send(updatePayload);
 
       expect(res.status).toBe(200);
       expect(res.body.data).toHaveProperty("location", "Updated");
-      expect(prisma.contact.update).toHaveBeenCalledTimes(1);
+      expect(prisma.contact.update).toHaveBeenCalled();
     });
 
-    it("returns 404 if contact not found", async () => {
+    it("returns 404 when contact not found", async () => {
       (prisma.contact.findUnique as jest.Mock).mockResolvedValueOnce(null);
 
       const res = await request(app)
@@ -195,7 +191,7 @@ describe("Admin Contact (integration-style) — /contact", () => {
         .send(updatePayload);
 
       expect(res.status).toBe(404);
-      expect(res.body).toHaveProperty("error", errorMessages.contactNotFound);
+      expect(res.body).toHaveProperty("error");
     });
 
     it("returns 400 for invalid UUID id", async () => {

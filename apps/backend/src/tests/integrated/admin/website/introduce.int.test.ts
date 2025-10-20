@@ -6,6 +6,7 @@ jest.mock("@/config", () => ({
   prisma: {
     introduce: {
       findFirst: jest.fn(),
+      count: jest.fn(),
       findUnique: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
@@ -156,6 +157,7 @@ describe("Admin Introduce (integration-style) — /introduce", () => {
       (prisma.introduce.create as jest.Mock).mockResolvedValueOnce(
         mockIntroduce
       );
+      (prisma.introduce.count as jest.Mock).mockResolvedValueOnce(0);
 
       const res = await request(app).post("/introduce").send(validPayload);
 

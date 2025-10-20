@@ -22,6 +22,7 @@ jest.mock("@/config", () => ({
 
 jest.mock("@/middlewares/admin", () => ({
   isAdminVerified: (req: any, res: any, next: any) => next(),
+  adminAuthenticate: (req: any, res: any, next: any) => next(),
 }));
 
 jest.mock("@/utils", () => ({
@@ -61,7 +62,7 @@ describe("Admin Overview routes — /admin/overview", () => {
       (prisma.footer.count as jest.Mock).mockResolvedValueOnce(1);
       (prisma.social.count as jest.Mock).mockResolvedValueOnce(6);
       (prisma.pageComponent.count as jest.Mock).mockResolvedValueOnce(9);
-      (prisma.tariff.count as jest.Mock).mockResolvedValueOnce(3);
+      (prisma.tariff.count as jest.Mock).mockResolvedValueOnce(5);
 
       const res = await request(app).get("/admin/overview");
 

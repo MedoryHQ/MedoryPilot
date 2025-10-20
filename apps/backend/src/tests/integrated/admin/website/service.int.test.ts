@@ -12,6 +12,9 @@ jest.mock("@/config", () => ({
       create: jest.fn(),
       update: jest.fn(),
     },
+    file: {
+      create: jest.fn(),
+    },
     $disconnect: jest.fn(),
   },
   getEnvVariable: jest.fn(() => "test"),
@@ -239,7 +242,9 @@ describe("Admin Service (integration-style) — /service", () => {
         ...mockService,
         translations: updatePayload.translations,
       });
-
+      (prisma.file.create as jest.Mock).mockResolvedValueOnce({
+        id: "file-id",
+      });
       const res = await request(app)
         .put(`/service/${mockService.id}`)
         .send(updatePayload);
