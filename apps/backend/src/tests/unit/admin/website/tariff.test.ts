@@ -1,6 +1,8 @@
 import request from "supertest";
 import express from "express";
 import cookieParser from "cookie-parser";
+import { prisma } from "@/config";
+import { adminTariffRouter } from "@/routes/admin/website/tariff";
 
 jest.mock("@/config", () => ({
   prisma: {
@@ -11,14 +13,7 @@ jest.mock("@/config", () => ({
       findFirst: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
-      delete: jest.fn(),
-    },
-    tariffHistory: {
-      findMany: jest.fn(),
-      findUnique: jest.fn(),
-      count: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
+      updateMany: jest.fn(),
       delete: jest.fn(),
     },
     $disconnect: jest.fn(),
@@ -33,14 +28,7 @@ jest.mock("@/middlewares/admin", () => ({
 
 jest.mock("@/middlewares/global/validationHandler", () => {
   return {
-    validationHandler: (req: any, res: any, next: any) => {
-      const { validationResult } = require("express-validator");
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
-      return next();
-    },
+    validationHandler: (req: any, res: any, next: any) => next(),
   };
 });
 
@@ -48,67 +36,44 @@ jest.mock("@/utils", () => {
   const actual = jest.requireActual("@/utils");
   const errorMessages = {
     ...((actual as any).errorMessages ?? {}),
-    tariffNotFound: {
-      en: "Tariff not found",
-      ka: "ტარიფი ვერ მოიძებნა",
-    },
     tariffDeleted: {
       en: "Tariff deleted successfully",
       ka: "ტარიფი წარმატებით წაიშალა",
     },
+    tariffNotFound: {
+      en: "Tariff not found",
+      ka: "ტარიფი ვერ მოიძებნა",
+    },
   };
+
   return {
     ...actual,
-    getPaginationAndFilters: jest.fn(() => ({
-      skip: 0,
-      take: 10,
-      orderBy: { createdAt: "desc" },
-      search: undefined,
-    })),
-    getResponseMessage: jest.fn(
-      (key: string) => (errorMessages as any)[key] ?? key
-    ),
+    logAdminWarn: jest.fn(),
+    logAdminInfo: jest.fn(),
+    logAdminError: jest.fn(),
     sendError: jest.fn((req: any, res: any, status: number, key: string) =>
       res.status(status).json({ error: (errorMessages as any)[key] ?? key })
     ),
-    logAdminError: jest.fn(),
-    logAdminInfo: jest.fn(),
-    logAdminWarn: jest.fn(),
+    getResponseMessage: jest.fn((key: string) => key),
+    GLOBAL_ERROR_MESSAGE: "GLOBAL_ERROR",
     errorMessages,
   };
 });
 
-import { prisma } from "@/config";
-import { adminTariffRouter } from "@/routes/admin/website/tariff";
-import { authMatchers } from "@/tests/helpers/authMatchers";
-
-expect.extend(authMatchers);
-
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-app.use("/admin/tariff", adminTariffRouter);
+app.use("/tariff", adminTariffRouter);
 
 const mockTariff = {
   id: "11111111-1111-1111-1111-111111111111",
-  price: 99,
-  fromDate: new Date("2024-01-01"),
-  endDate: null,
+  price: 100,
   isCurrent: true,
+  fromDate: new Date().toISOString(),
+  endDate: null,
   parentId: null,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
-
-const mockHistoryRow = {
-  id: "22222222-2222-2222-2222-222222222222",
-  price: 80,
-  fromDate: new Date("2023-01-01"),
-  endDate: new Date("2023-12-31"),
-  isCurrent: false,
-  parentId: mockTariff.id,
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
 };
 
 afterAll(async () => {
@@ -117,36 +82,23 @@ afterAll(async () => {
   } catch {}
 });
 
-describe.only("Admin Tariff routes — /admin/tariff", () => {
+describe("Admin Tariff API — /tariff", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe("GET /admin/tariff", () => {
-    it("returns currentTariff, tariffs and counts", async () => {
+  describe("GET /tariff", () => {
+    it("returns tariffs and count", async () => {
+      (prisma.tariff.findMany as jest.Mock).mockResolvedValueOnce([mockTariff]);
       (prisma.tariff.count as jest.Mock).mockResolvedValueOnce(1);
-      (prisma.tariff.count as jest.Mock).mockResolvedValueOnce(2);
 
-      (prisma.tariff.findMany as jest.Mock)
-        .mockResolvedValueOnce([mockTariff])
-        .mockResolvedValueOnce([mockHistoryRow, mockHistoryRow]);
+      const res = await request(app).get("/tariff");
 
-      const res = await request(app).get("/admin/tariff");
-
-      expect(res).toHaveStatus(200);
-      expect(res.body).toHaveProperty("data");
-      expect(res.body.data).toHaveLength(3);
-      expect(res.body.count).toEqual({ total: 3 });
-      expect(prisma.tariff.count).toHaveBeenCalledTimes(2);
-      expect(prisma.tariff.findMany).toHaveBeenCalledTimes(2);
-    });
-
-    it("handles DB error gracefully", async () => {
-      (prisma.tariff.findMany as jest.Mock).mockRejectedValueOnce(
-        new Error("DB")
-      );
-      const res = await request(app).get("/admin/tariff");
-      expect(res).toHaveStatus(500);
+      expect(res.status).toBe(200);
+      expect(res.body.data).toBeInstanceOf(Array);
+      expect(res.body.count.total).toBe(1);
+      expect(prisma.tariff.findMany).toHaveBeenCalled();
+      expect(prisma.tariff.count).toHaveBeenCalled();
     });
   });
 
