@@ -100,7 +100,7 @@ describe("Admin Tariff (integration-style) — /admin/tariff", () => {
       (prisma.tariff.findMany as jest.Mock).mockResolvedValueOnce([mockTariff]);
       (prisma.tariff.count as jest.Mock).mockResolvedValueOnce(1);
 
-      const res = await request(app).get("/tariff");
+      const res = await request(app).get("/admin/tariff");
 
       expect(res.status).toBe(200);
       expect(res.body.data).toBeInstanceOf(Array);
@@ -123,7 +123,7 @@ describe("Admin Tariff (integration-style) — /admin/tariff", () => {
     it("returns a tariff when found", async () => {
       (prisma.tariff.findUnique as jest.Mock).mockResolvedValueOnce(mockTariff);
 
-      const res = await request(app).get(`/tariff/${mockTariff.id}`);
+      const res = await request(app).get(`/admin/tariff/${mockTariff.id}`);
 
       expect(res.status).toBe(200);
       expect(res.body.data).toHaveProperty("id", mockTariff.id);
@@ -133,7 +133,7 @@ describe("Admin Tariff (integration-style) — /admin/tariff", () => {
     it("returns 404 when not found", async () => {
       (prisma.tariff.findUnique as jest.Mock).mockResolvedValueOnce(null);
 
-      const res = await request(app).get(`/tariff/${mockTariff.id}`);
+      const res = await request(app).get(`/admin/tariff/${mockTariff.id}`);
 
       expect(res.status).toBe(404);
       expect(res.body).toHaveProperty("error");
@@ -206,33 +206,27 @@ describe("Admin Tariff (integration-style) — /admin/tariff", () => {
 
       (prisma.tariff.findUnique as jest.Mock).mockResolvedValueOnce(active);
       (prisma.tariff.delete as jest.Mock).mockResolvedValueOnce(active);
-      (prisma.tariff.update as jest.Mock).mockResolvedValueOnce({
-        endDate: null,
-      });
 
-      const res = await request(app)
-        .delete(`/admin/tariff/${active.id}`)
-        .send({ type: "active" });
+      const res = await request(app).delete(`/admin/tariff/${active.id}`);
 
       expect(res.status).toBe(200);
       expect(res.body).toHaveProperty("message");
       expect(prisma.tariff.delete).toHaveBeenCalledWith(
         expect.objectContaining({ where: { id: active.id } })
       );
-      expect(prisma.tariff.update).toHaveBeenCalled();
     });
 
     it("returns 404 when nothing deleted", async () => {
       (prisma.tariff.findUnique as jest.Mock).mockResolvedValueOnce(null);
 
-      const res = await request(app).delete(`/tariff/${mockTariff.id}`);
+      const res = await request(app).delete(`/admin/tariff/${mockTariff.id}`);
 
       expect(res.status).toBe(404);
       expect(res.body).toHaveProperty("error");
     });
 
     it("returns 400 for invalid id", async () => {
-      const res = await request(app).delete("/tariff/INVALID_ID!!");
+      const res = await request(app).delete("/admin/tariff/INVALID_ID!!");
 
       expect(res.status).toBe(400);
       expect(res.body).toHaveProperty("errors");

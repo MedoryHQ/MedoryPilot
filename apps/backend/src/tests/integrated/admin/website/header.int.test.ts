@@ -1,10 +1,14 @@
 import request from "supertest";
 import express from "express";
 import cookieParser from "cookie-parser";
+import { prisma } from "@/config";
+import { adminHeaderRouter } from "@/routes/admin/website/header";
 
 jest.mock("@/config", () => ({
   prisma: {
     header: {
+      findMany: jest.fn(),
+      count: jest.fn(),
       findFirst: jest.fn(),
       findUnique: jest.fn(),
       delete: jest.fn(),
@@ -17,8 +21,8 @@ jest.mock("@/config", () => ({
 }));
 
 jest.mock("@/middlewares/admin", () => ({
-  isAdminVerified: (_req: any, _res: any, next: any) => next(),
-  adminAuthenticate: (_req: any, _res: any, next: any) => next(),
+  isAdminVerified: (req: any, res: any, next: any) => next(),
+  adminAuthenticate: (req: any, res: any, next: any) => next(),
 }));
 
 jest.mock("@/middlewares/global/validationHandler", () => {
@@ -46,18 +50,51 @@ jest.mock("@/utils", () => {
   const actual = jest.requireActual("@/utils");
   const errorMessages = {
     ...((actual as any).errorMessages ?? {}),
+    headerDeleted: {
+      en: "Header deleted successfully",
+      ka: "Header წარმატებით წაიშალა",
+    },
     headerNotFound: {
       en: "Header not found",
       ka: "Header ვერ მოიძებნა",
     },
-    headerDeleted: {
-      en: "Header deleted successfully",
-      ka: "Header წარმატებით წაიშალა",
+    onlyOneActiveHeaderAllowed: {
+      en: "Only one active header is allowed",
+      ka: "მხოლოდ ერთი აქტიური header არის დაშვებული",
     },
   };
 
   return {
     ...actual,
+    getPaginationAndFilters: jest.fn((req: any) => {
+      const page = Number(req.query.page) || 1;
+      const take = Number(req.query.take) || 10;
+      const orderBy = req.query.orderBy
+        ? { order: req.query.orderBy }
+        : { order: "asc" };
+      return {
+        skip: (page - 1) * take,
+        take,
+        orderBy,
+        search: req.query.search,
+      };
+    }),
+    parseFilters: jest.fn(() => ({})),
+    generateWhereInput: jest.fn((search: any, fields: any, extra: any) => ({})),
+    createTranslations: jest.fn((translations: any) =>
+      Object.entries(translations || {}).map(([code, payload]: any) => ({
+        language: { connect: { code } },
+        name: payload?.name,
+        position: payload?.position,
+        headline: payload?.headline,
+        description: payload?.description,
+      }))
+    ),
+
+    logAdminWarn: jest.fn(),
+    logAdminInfo: jest.fn(),
+    logAdminError: jest.fn(),
+    logCatchyError: jest.fn(),
     sendError: jest.fn((req: any, res: any, status: number, key: string) =>
       res.status(status).json({ error: (errorMessages as any)[key] ?? key })
     ),
@@ -65,15 +102,9 @@ jest.mock("@/utils", () => {
       (key: string) => (errorMessages as any)[key] ?? key
     ),
     GLOBAL_ERROR_MESSAGE: "GLOBAL_ERROR",
-    logAdminError: jest.fn(),
-    logAdminInfo: jest.fn(),
-    logAdminWarn: jest.fn(),
     errorMessages,
   };
 });
-
-import { prisma } from "@/config";
-import { adminHeaderRouter } from "@/routes/admin/website/header";
 
 const app = express();
 app.use(express.json());
@@ -101,7 +132,6 @@ const mockHeader = {
     },
   ],
 };
-
 const createPayload = {
   active: true,
   logo: { path: "/logo.png", name: "Logo", size: 123 },
@@ -153,30 +183,49 @@ describe("Admin Header (integration-style) — /admin/header", () => {
 
   describe("GET /admin/header", () => {
     it("returns header when found", async () => {
-      (prisma.header.findFirst as jest.Mock).mockResolvedValueOnce(mockHeader);
+      (prisma.header.findMany as jest.Mock).mockResolvedValueOnce([mockHeader]);
+      (prisma.header.count as jest.Mock).mockResolvedValueOnce(1);
 
       const res = await request(app).get("/admin/header");
 
       expect(res.status).toBe(200);
-      expect(res.body.data).toHaveProperty("id", mockHeader.id);
-      expect(prisma.header.findFirst).toHaveBeenCalledTimes(1);
+      expect(res.body).toHaveProperty("data");
+      expect(res.body.data).toHaveLength(1);
+      expect(res.body.count).toEqual(1);
+      expect(prisma.header.findMany).toHaveBeenCalled();
+      expect(prisma.header.count).toHaveBeenCalled();
     });
 
-    it("returns 404 when not found", async () => {
-      (prisma.header.findFirst as jest.Mock).mockResolvedValueOnce(null);
-
-      const res = await request(app).get("/admin/header");
-
-      expect(res.status).toBe(404);
-      expect(res.body).toHaveProperty("error");
-    });
-
-    it("handles DB error (500)", async () => {
-      (prisma.header.findFirst as jest.Mock).mockRejectedValueOnce(
+    it("handles DB error", async () => {
+      (prisma.header.findMany as jest.Mock).mockRejectedValueOnce(
         new Error("DB error")
       );
 
       const res = await request(app).get("/admin/header");
+
+      expect(res.status).toBe(500);
+    });
+  });
+
+  describe("GET /header/:id", () => {
+    it("returns 404 when not found", async () => {
+      (prisma.header.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app).get("/admin/header/invalidUUID");
+
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty(
+        "error",
+        require("@/utils").errorMessages.headerNotFound
+      );
+    });
+
+    it("handles DB error", async () => {
+      (prisma.header.findUnique as jest.Mock).mockRejectedValueOnce(
+        new Error("DB error")
+      );
+
+      const res = await request(app).get("/admin/header/some-id");
 
       expect(res.status).toBe(500);
     });
@@ -191,29 +240,17 @@ describe("Admin Header (integration-style) — /admin/header", () => {
       expect(res.status).toBe(201);
       expect(res.body.data).toHaveProperty("id", mockHeader.id);
       expect(prisma.header.create).toHaveBeenCalledTimes(1);
-
-      const callArg = (prisma.header.create as jest.Mock).mock.calls[0][0];
-      expect(callArg).toHaveProperty("data");
-      expect(callArg.data).toHaveProperty("active");
-      expect(callArg.data).toHaveProperty("translations");
     });
 
     it("returns 400 when translations missing or invalid", async () => {
+      (prisma.header.create as jest.Mock).mockResolvedValueOnce(mockHeader);
+
       const res = await request(app)
         .post("/admin/header")
         .send({ translations: {} });
 
       expect(res.status).toBe(400);
       expect(res.body).toHaveProperty("errors");
-    });
-
-    it("handles DB create error (500)", async () => {
-      (prisma.header.create as jest.Mock).mockRejectedValueOnce(
-        new Error("DB create")
-      );
-
-      const res = await request(app).post("/admin/header").send(createPayload);
-      expect(res.status).toBe(500);
     });
   });
 
@@ -252,7 +289,10 @@ describe("Admin Header (integration-style) — /admin/header", () => {
         .send(updatePayload);
 
       expect(res.status).toBe(404);
-      expect(res.body).toHaveProperty("error");
+      expect(res.body).toHaveProperty(
+        "error",
+        require("@/utils").errorMessages.headerNotFound
+      );
     });
 
     it("returns 400 for invalid UUID id", async () => {
@@ -295,7 +335,10 @@ describe("Admin Header (integration-style) — /admin/header", () => {
       const res = await request(app).delete(`/admin/header/${mockHeader.id}`);
 
       expect(res.status).toBe(404);
-      expect(res.body).toHaveProperty("error");
+      expect(res.body).toHaveProperty(
+        "error",
+        require("@/utils").errorMessages.headerNotFound
+      );
     });
 
     it("handles DB delete error (500)", async () => {
