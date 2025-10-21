@@ -167,4 +167,33 @@ describe("Admin Category routes — /admin/category", () => {
       expect(res.status).toBe(500);
     });
   });
+
+  describe("POST /admin/category", () => {
+    it("creates category successfully", async () => {
+      const payload = {
+        translations: { en: { name: "New" }, ka: { name: "ახალი" } },
+      };
+      (prisma.category.create as jest.Mock).mockResolvedValueOnce({
+        ...mockCategory,
+        translations: [
+          { id: "t3", name: "New", language: { code: "en" } },
+          { id: "t4", name: "ახალი", language: { code: "ka" } },
+        ],
+      });
+
+      const res = await request(app).post("/admin/category").send(payload);
+
+      expect(res.status).toBe(201);
+      expect(res.body.data).toBeDefined();
+      expect(prisma.category.create).toHaveBeenCalled();
+    });
+
+    it("returns 400 when translations missing/invalid", async () => {
+      const res = await request(app)
+        .post("/admin/category")
+        .send({ translations: {} });
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
