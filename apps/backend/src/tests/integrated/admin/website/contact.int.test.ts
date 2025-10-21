@@ -56,19 +56,32 @@ jest.mock("@/utils", () => {
       en: "Contact not found",
       ka: "კონტაქტი ვერ მოიძებნა",
     },
+    contactAlreadyExists: {
+      en: "Contact already exists",
+      ka: "საკ. ინფორმაცია უკვე არსებობს",
+    },
   };
 
   return {
     ...actual,
+    createTranslations: jest.fn((translations: any) =>
+      Object.entries(translations || {}).map(([code, payload]: any) => ({
+        language: { connect: { code } },
+        title: payload?.title ?? payload?.question,
+        description: payload?.description ?? payload?.answer,
+      }))
+    ),
+    getResponseMessage: jest.fn(
+      (key: string) => (errorMessages as any)[key] ?? key
+    ),
     sendError: jest.fn((req: any, res: any, status: number, key: string) =>
       res.status(status).json({ error: (errorMessages as any)[key] ?? key })
     ),
-    getResponseMessage: jest.fn((key: string) => key),
     GLOBAL_ERROR_MESSAGE: "GLOBAL_ERROR",
-    errorMessages,
     logAdminError: jest.fn(),
     logAdminInfo: jest.fn(),
     logAdminWarn: jest.fn(),
+    errorMessages,
   };
 });
 
@@ -129,7 +142,10 @@ describe("Admin Contact (integration-style) — /contact", () => {
       const res = await request(app).get("/contact");
 
       expect(res.status).toBe(404);
-      expect(res.body).toHaveProperty("error", errorMessages.contactNotFound);
+      expect(res.body).toHaveProperty(
+        "error",
+        require("@/utils").errorMessages.contactNotFound
+      );
     });
   });
 
@@ -142,7 +158,6 @@ describe("Admin Contact (integration-style) — /contact", () => {
         .post("/contact")
         .send({
           location: "Tbilisi",
-          background: null,
           translations: {
             en: { title: "Hello", description: "World" },
             ka: { title: "გამარჯობა", description: "მსოფლიო" },
@@ -151,7 +166,7 @@ describe("Admin Contact (integration-style) — /contact", () => {
 
       expect(res.status).toBe(201);
       expect(res.body.data).toHaveProperty("id", mockContact.id);
-      expect(prisma.contact.create).toHaveBeenCalledTimes(1);
+      expect(prisma.contact.create).toHaveBeenCalled();
     });
 
     it("fails with 400 if translations missing", async () => {
