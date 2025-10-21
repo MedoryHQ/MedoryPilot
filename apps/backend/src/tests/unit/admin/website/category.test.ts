@@ -196,4 +196,52 @@ describe("Admin Category routes — /admin/category", () => {
       expect(res.body).toHaveProperty("errors");
     });
   });
+
+  describe("PUT /admin/category/:id", () => {
+    it("updates category successfully", async () => {
+      const updatePayload = {
+        translations: { en: { name: "Updated" }, ka: { name: "განახლებული" } },
+      };
+
+      (prisma.category.findUnique as jest.Mock).mockResolvedValueOnce(
+        mockCategory
+      );
+      (prisma.category.update as jest.Mock).mockResolvedValueOnce({
+        ...mockCategory,
+        translations: [{ id: "t5", name: "Updated", language: { code: "en" } }],
+      });
+
+      const res = await request(app)
+        .put(`/admin/category/${mockCategory.id}`)
+        .send(updatePayload);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toBeDefined();
+      expect(prisma.category.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: mockCategory.id } })
+      );
+      expect(prisma.category.update).toHaveBeenCalled();
+    });
+
+    it("returns 404 when updating non-existing category", async () => {
+      (prisma.category.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .put(`/admin/category/${mockCategory.id}`)
+        .send({
+          translations: { en: { name: "X" }, ka: { name: "Y" } },
+        });
+
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid body", async () => {
+      const res = await request(app)
+        .put(`/admin/category/${mockCategory.id}`)
+        .send({ translations: {} });
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
