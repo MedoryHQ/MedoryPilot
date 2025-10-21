@@ -244,4 +244,46 @@ describe("Admin Category routes — /admin/category", () => {
       expect(res.body).toHaveProperty("errors");
     });
   });
+
+  describe("DELETE /admin/category/:id", () => {
+    it("deletes category successfully", async () => {
+      (prisma.category.delete as jest.Mock).mockResolvedValueOnce(mockCategory);
+
+      const res = await request(app).delete(
+        `/admin/category/${mockCategory.id}`
+      );
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty("message");
+      expect(prisma.category.delete).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: mockCategory.id } })
+      );
+    });
+
+    it("returns 404 when category not found", async () => {
+      (prisma.category.delete as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app).delete(
+        `/admin/category/${mockCategory.id}`
+      );
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("handles delete DB error (500)", async () => {
+      (prisma.category.delete as jest.Mock).mockRejectedValueOnce(
+        new Error("DB err")
+      );
+
+      const res = await request(app).delete(
+        `/admin/category/${mockCategory.id}`
+      );
+      expect(res.status).toBe(500);
+    });
+
+    it("returns 400 for invalid UUID", async () => {
+      const res = await request(app).delete("/admin/category/not-uuid");
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+  });
 });
