@@ -134,4 +134,37 @@ describe("Admin Category routes — /admin/category", () => {
       expect(res.status).toBe(500);
     });
   });
+
+  describe("GET /admin/category/:id", () => {
+    it("returns single category when found", async () => {
+      (prisma.category.findUnique as jest.Mock).mockResolvedValueOnce(
+        mockCategory
+      );
+
+      const res = await request(app).get(`/admin/category/${mockCategory.id}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toBeDefined();
+      expect(res.body.data.id).toEqual(mockCategory.id);
+      expect(prisma.category.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: mockCategory.id } })
+      );
+    });
+
+    it("returns 404 when category not found", async () => {
+      (prisma.category.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app).get(`/admin/category/${mockCategory.id}`);
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("handles DB error (500)", async () => {
+      (prisma.category.findUnique as jest.Mock).mockRejectedValueOnce(
+        new Error("DB err")
+      );
+      const res = await request(app).get(`/admin/category/${mockCategory.id}`);
+      expect(res.status).toBe(500);
+    });
+  });
 });
