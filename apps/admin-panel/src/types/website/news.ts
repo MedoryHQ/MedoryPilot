@@ -15,11 +15,12 @@ export interface News {
   showInLanding: boolean;
   order: number;
   background: File | null;
+  backgroundId: string;
   translations: NewsTranslation[];
   metaTitle: string | null;
   metaDescription: string | null;
   metaKeywords: string | null;
-  metaImage: string | null;
+  metaImage: File | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -43,7 +44,7 @@ export type NewsFormValues = {
   metaTitle: string | null;
   metaDescription: string | null;
   metaKeywords: string | null;
-  metaImage: string | null;
+  metaImage: File | null;
   translations: {
     en: {
       content: string;

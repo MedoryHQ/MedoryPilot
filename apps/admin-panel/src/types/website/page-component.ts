@@ -20,7 +20,7 @@ export interface PageComponent {
   metaTitle: string | null;
   metaDescription: string | null;
   metaKeywords: string | null;
-  metaImage: string | null;
+  metaImage: File | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -43,7 +43,7 @@ export type PageComponentFormValues = {
   metaTitle: string | null;
   metaDescription: string | null;
   metaKeywords: string | null;
-  metaImage: string | null;
+  metaImage: File | null;
   translations: {
     en: {
       content: string;

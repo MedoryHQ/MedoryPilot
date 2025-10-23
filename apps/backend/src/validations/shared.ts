@@ -80,7 +80,7 @@ export const generateMetaValidations = () => {
     body("metaTitle").isString().optional({ nullable: true }),
     body("metaDescription").isString().optional({ nullable: true }),
     body("metaKeywords").isString().optional({ nullable: true }),
-    body("metaImage").isString().optional({ nullable: true }),
+    body("metaImage").isObject().optional({ nullable: true }),
   ];
 };
 

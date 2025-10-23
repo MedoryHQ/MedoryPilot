@@ -20,7 +20,7 @@ const defaultValues: NewsFormValues = {
   metaTitle: "",
   metaDescription: "",
   metaKeywords: "",
-  metaImage: "",
+  metaImage: null,
   slug: "",
   translations: {
     en: { content: "" },
@@ -61,12 +61,20 @@ export const NewsForm: React.FC<NewsFormProps> = ({
         }
       : null;
 
+    const formMetaImage = metaImage
+      ? {
+          path: metaImage.path ?? metaImage.url ?? "",
+          name: metaImage.name ?? "",
+          size: metaImage.size ?? undefined
+        }
+      : null;
+
     return {
       background: formBackground,
       metaTitle,
       metaDescription,
       metaKeywords,
-      metaImage,
+      metaImage: formMetaImage,
       slug,
       showInLanding,
       order,
