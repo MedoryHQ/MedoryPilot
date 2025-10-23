@@ -148,6 +148,7 @@ const Newses = () => {
         data={data?.data ?? []}
         columns={columns}
         refetch={refetch}
+        editKey="slug"
         isLoading={isFetching}
         deleteEndpoint="news"
         filters={filters}

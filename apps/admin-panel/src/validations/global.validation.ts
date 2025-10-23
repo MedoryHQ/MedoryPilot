@@ -10,5 +10,5 @@ export const metaSchema = z.object({
   metaTitle: z.string().nullable(),
   metaDescription: z.string().nullable(),
   metaKeywords: z.string().nullable(),
-  metaImage: z.string().nullable()
+  metaImage: FileSchema.nullable()
 }).shape;

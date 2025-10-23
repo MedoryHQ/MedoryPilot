@@ -20,7 +20,7 @@ export const useGetPageComponent = (slug: string | null) => {
     queryKey: ["pageComponents", slug],
     queryFn: async (): Promise<PageComponentResponse> => {
       const { data } = await instance.get<PageComponentResponse>(
-        `/pageComponent/${slug}`
+        `/page-component/${slug}`
       );
       return data;
     },

@@ -66,7 +66,7 @@ export interface CreateNewsDTO {
   metaTitle?: string | null;
   metaDescription?: string | null;
   metaKeywords?: string | null;
-  metaImage?: string | null;
+  metaImage?: File | null;
 }
 
 export type UpdateNewsDTO = CreateNewsDTO;
@@ -80,7 +80,7 @@ export interface CreateBlogDTO {
   metaTitle?: string | null;
   metaDescription?: string | null;
   metaKeywords?: string | null;
-  metaImage?: string | null;
+  metaImage?: File | null;
 
   categories: string[];
   translations: Translations;
@@ -95,7 +95,7 @@ export interface CreatePageComponentDTO {
   metaTitle?: string | null;
   metaDescription?: string | null;
   metaKeywords?: string | null;
-  metaImage?: string | null;
+  metaImage?: File | null;
 
   translations: Translations;
 }
