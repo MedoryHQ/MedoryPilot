@@ -45,7 +45,7 @@ export const fetchPageComponents = async (
             ? meta
               ? {
                   metaImage: {
-                    not: null,
+                    isNot: null,
                   },
                   metaDescription: {
                     not: null,
@@ -79,6 +79,8 @@ export const fetchPageComponents = async (
         orderBy,
         where,
         include: {
+          metaImage: true,
+
           translations: {
             include: {
               language: {
@@ -170,6 +172,8 @@ export const fetchPageComponent = async (
         slug,
       },
       include: {
+        metaImage: true,
+
         translations: {
           include: {
             language: {
@@ -262,7 +266,7 @@ export const createPageComponent = async (
   next: NextFunction
 ) => {
   try {
-    const { translations, footerOrder, footerId, ...rest } =
+    const { translations, footerOrder, footerId, metaImage, ...rest } =
       req.body as CreatePageComponentDTO;
 
     logInfo("PageComponent create attempt", {
@@ -276,6 +280,13 @@ export const createPageComponent = async (
       Prisma.PageComponentTranslationCreateWithoutPageComponentInput[]
     >()(createTranslations(translations) as any);
 
+    const metaImageToCreate = metaImage
+      ? {
+          path: metaImage.path,
+          name: metaImage.name,
+          size: metaImage.size,
+        }
+      : undefined;
     const pageComponent = await prisma.pageComponent.create({
       data: {
         ...rest,
@@ -288,6 +299,9 @@ export const createPageComponent = async (
             }
           : {}),
         translations: { create: translationsToCreate },
+        ...(metaImageToCreate
+          ? { metaImage: { create: metaImageToCreate } }
+          : {}),
       },
     });
 
@@ -319,7 +333,7 @@ export const updatePageComponent = async (
   try {
     const { slug } = req.params;
 
-    const { translations, footerOrder, footerId, ...rest } =
+    const { translations, footerOrder, footerId, metaImage, ...rest } =
       req.body as UpdatePageComponentDTO;
 
     logInfo("PageComponent update attempt", {
@@ -333,9 +347,20 @@ export const updatePageComponent = async (
       Prisma.PageComponentTranslationCreateWithoutPageComponentInput[]
     >()(createTranslations(translations) as any);
 
+    const metaImageToCreate = metaImage
+      ? {
+          path: metaImage.path,
+          name: metaImage.name,
+          size: metaImage.size,
+        }
+      : undefined;
+
     const findPageComponent = await prisma.pageComponent.findUnique({
       where: {
         slug,
+      },
+      include: {
+        metaImage: true,
       },
     });
 
@@ -366,6 +391,14 @@ export const updatePageComponent = async (
           deleteMany: {},
           create: translationsToCreate,
         },
+        metaImage: metaImageToCreate
+          ? {
+              delete: findPageComponent.metaImage ? {} : undefined,
+              create: metaImageToCreate,
+            }
+          : findPageComponent.metaImage
+          ? { delete: {} }
+          : undefined,
       },
     });
 
