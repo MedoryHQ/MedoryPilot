@@ -87,7 +87,7 @@ export const fetchBlogs = async (
             ? meta
               ? {
                   metaImage: {
-                    not: null,
+                    isNot: null,
                   },
                   metaDescription: {
                     not: null,
@@ -136,6 +136,7 @@ export const fetchBlogs = async (
         where,
         include: {
           background: true,
+          metaImage: true,
           categories: {
             include: {
               translations: {
@@ -266,6 +267,7 @@ export const fetchBlog = async (
       },
       include: {
         background: true,
+        metaImage: true,
         categories: {
           include: {
             translations: {
@@ -371,7 +373,7 @@ export const createBlog = async (
   next: NextFunction
 ) => {
   try {
-    const { translations, background, categories, ...rest } =
+    const { translations, background, categories, metaImage, ...rest } =
       req.body as CreateBlogDTO;
 
     logInfo("Blog create attempt", {
@@ -393,6 +395,14 @@ export const createBlog = async (
         }
       : undefined;
 
+    const metaImageToCreate = metaImage
+      ? {
+          path: metaImage.path,
+          name: metaImage.name,
+          size: metaImage.size,
+        }
+      : undefined;
+
     const blog = await prisma.blog.create({
       data: {
         ...rest,
@@ -404,6 +414,9 @@ export const createBlog = async (
         translations: { create: translationsToCreate },
         ...(backgroundToCreate
           ? { background: { create: backgroundToCreate } }
+          : {}),
+        ...(metaImageToCreate
+          ? { metaImage: { create: metaImageToCreate } }
           : {}),
       },
     });
@@ -436,7 +449,7 @@ export const updateBlog = async (
   try {
     const { slug } = req.params;
 
-    const { translations, background, categories, ...rest } =
+    const { translations, background, categories, metaImage, ...rest } =
       req.body as UpdateBlogDTO;
 
     logInfo("Blog update attempt", {
@@ -457,12 +470,21 @@ export const updateBlog = async (
         }
       : undefined;
 
+    const metaImageToCreate = metaImage
+      ? {
+          path: metaImage.path,
+          name: metaImage.name,
+          size: metaImage.size,
+        }
+      : undefined;
+
     const findBlog = await prisma.blog.findUnique({
       where: {
         slug,
       },
       include: {
         background: true,
+        metaImage: true,
       },
     });
 
@@ -476,6 +498,39 @@ export const updateBlog = async (
       });
       return sendError(req, res, 404, "blogNotFound");
     }
+
+    const hasBackgroundProp = Object.prototype.hasOwnProperty.call(
+      req.body,
+      "background"
+    );
+    const hasMetaImageProp = Object.prototype.hasOwnProperty.call(
+      req.body,
+      "metaImage"
+    );
+
+    const backgroundNested =
+      hasBackgroundProp && backgroundToCreate
+        ? {
+            upsert: {
+              update: backgroundToCreate,
+              create: backgroundToCreate,
+            },
+          }
+        : hasBackgroundProp && background === null
+        ? { delete: true }
+        : undefined;
+
+    const metaImageNested =
+      hasMetaImageProp && metaImageToCreate
+        ? {
+            upsert: {
+              update: metaImageToCreate,
+              create: metaImageToCreate,
+            },
+          }
+        : hasMetaImageProp && metaImage === null
+        ? { delete: true }
+        : undefined;
 
     const blog = await prisma.blog.update({
       where: {
@@ -492,14 +547,8 @@ export const updateBlog = async (
           deleteMany: {},
           create: translationsToCreate,
         },
-        background: backgroundToCreate
-          ? {
-              delete: findBlog.background ? {} : undefined,
-              create: backgroundToCreate,
-            }
-          : findBlog.background
-          ? { delete: {} }
-          : undefined,
+        ...(backgroundNested ? { background: backgroundNested } : {}),
+        ...(metaImageNested ? { metaImage: metaImageNested } : {}),
       },
     });
 
