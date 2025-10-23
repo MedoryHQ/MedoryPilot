@@ -50,9 +50,7 @@ export const fetchNewses = async (
           typeof meta === "boolean"
             ? meta
               ? {
-                  metaImage: {
-                    not: null,
-                  },
+                  metaImage: { isNot: null },
                   metaDescription: {
                     not: null,
                   },
@@ -86,6 +84,7 @@ export const fetchNewses = async (
         where,
         include: {
           background: true,
+          metaImage: true,
           translations: {
             include: {
               language: {
@@ -125,6 +124,7 @@ export const fetchNews = async (
       },
       include: {
         background: true,
+        metaImage: true,
         translations: {
           include: {
             language: {
@@ -217,7 +217,7 @@ export const createNews = async (
   next: NextFunction
 ) => {
   try {
-    const { translations, background, order, ...rest } =
+    const { translations, background, order, metaImage, ...rest } =
       req.body as CreateNewsDTO;
 
     logInfo("News create attempt", {
@@ -239,6 +239,14 @@ export const createNews = async (
         }
       : undefined;
 
+    const metaImageToCreate = metaImage
+      ? {
+          path: metaImage.path,
+          name: metaImage.name,
+          size: metaImage.size,
+        }
+      : undefined;
+
     const news = await prisma.news.create({
       data: {
         ...rest,
@@ -246,6 +254,9 @@ export const createNews = async (
         translations: { create: translationsToCreate },
         ...(backgroundToCreate
           ? { background: { create: backgroundToCreate } }
+          : {}),
+        ...(metaImageToCreate
+          ? { metaImage: { create: metaImageToCreate } }
           : {}),
       },
     });
@@ -278,7 +289,7 @@ export const updateNews = async (
   try {
     const { slug } = req.params;
 
-    const { translations, background, order, ...rest } =
+    const { translations, background, metaImage, order, ...rest } =
       req.body as UpdateNewsDTO;
 
     logInfo("News update attempt", {
@@ -291,6 +302,7 @@ export const updateNews = async (
     const translationsToCreate = Prisma.validator<
       Prisma.NewsTranslationCreateWithoutNewsInput[]
     >()(createTranslations(translations) as any);
+
     const backgroundToCreate = background
       ? {
           path: background.path,
@@ -299,12 +311,19 @@ export const updateNews = async (
         }
       : undefined;
 
+    const metaImageToCreate = metaImage
+      ? {
+          path: metaImage.path,
+          name: metaImage.name,
+          size: metaImage.size,
+        }
+      : undefined;
+
     const findNews = await prisma.news.findUnique({
-      where: {
-        slug,
-      },
+      where: { slug },
       include: {
         background: true,
+        metaImage: true,
       },
     });
 
@@ -313,16 +332,46 @@ export const updateNews = async (
         ip: (req as any).hashedIp,
         id: (req as any).userId,
         path: req.path,
-
         event: "news_update_failed",
       });
       return sendError(req, res, 404, "newsNotFound");
     }
 
+    const hasBackgroundProp = Object.prototype.hasOwnProperty.call(
+      req.body,
+      "background"
+    );
+    const hasMetaImageProp = Object.prototype.hasOwnProperty.call(
+      req.body,
+      "metaImage"
+    );
+
+    const backgroundNested =
+      hasBackgroundProp && backgroundToCreate
+        ? {
+            upsert: {
+              update: backgroundToCreate,
+              create: backgroundToCreate,
+            },
+          }
+        : hasBackgroundProp && background === null
+        ? { delete: true }
+        : undefined;
+
+    const metaImageNested =
+      hasMetaImageProp && metaImageToCreate
+        ? {
+            upsert: {
+              update: metaImageToCreate,
+              create: metaImageToCreate,
+            },
+          }
+        : hasMetaImageProp && metaImage === null
+        ? { delete: true }
+        : undefined;
+
     const news = await prisma.news.update({
-      where: {
-        slug,
-      },
+      where: { slug },
       data: {
         ...rest,
         ...(order !== undefined ? { order } : {}),
@@ -330,14 +379,15 @@ export const updateNews = async (
           deleteMany: {},
           create: translationsToCreate,
         },
-        background: backgroundToCreate
-          ? {
-              delete: findNews.background ? {} : undefined,
-              create: backgroundToCreate,
-            }
-          : findNews.background
-          ? { delete: {} }
-          : undefined,
+        ...(backgroundNested ? { background: backgroundNested } : {}),
+        ...(metaImageNested ? { metaImage: metaImageNested } : {}),
+      },
+      include: {
+        background: true,
+        metaImage: true,
+        translations: {
+          include: { language: { select: { code: true } } },
+        },
       },
     });
 
@@ -348,9 +398,7 @@ export const updateNews = async (
       event: "news_updated",
     });
 
-    return res.json({
-      data: news,
-    });
+    return res.json({ data: news });
   } catch (error) {
     logCatchyError("Update news exception", error, {
       ip: (req as any).hashedIp,
