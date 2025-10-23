@@ -41,6 +41,7 @@ export interface DataTableProps<T> {
   showEdit?: boolean;
   editUrl: string;
   showDelete?: boolean;
+  editKey?: "id" | "slug";
   searchable?: boolean;
   refetch?: () => any;
   isLoading?: boolean;

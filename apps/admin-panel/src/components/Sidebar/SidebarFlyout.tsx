@@ -50,7 +50,7 @@ export const SidebarFlyout: React.FC<SidebarFlyoutProps> = ({
           initial={{ opacity: 0, scale: 0.95, x: -10 }}
           animate={{ opacity: 1, scale: 1, x: 0 }}
           exit={{ opacity: 0, scale: 0.95, x: -10 }}
-          className="bg-sidebar border-sidebar-border fixed z-50 max-w-[260px] min-w-48 rounded-xl border shadow-xl backdrop-blur-lg"
+          className="bg-sidebar border-sidebar-border fixed z-50 hidden max-w-[260px] min-w-48 rounded-xl border shadow-xl backdrop-blur-lg md:block"
           style={{
             left: flyoutMenu.position.x,
             top: flyoutMenu.position.y

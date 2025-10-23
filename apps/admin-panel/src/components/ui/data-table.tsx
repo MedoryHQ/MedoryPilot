@@ -48,6 +48,7 @@ export function DataTable<T extends Record<string, any>>({
   showDelete = true,
   refetch,
   editUrl,
+  editKey = "id",
   total,
   isLoading = false,
   searchable = true,
@@ -150,14 +151,18 @@ export function DataTable<T extends Record<string, any>>({
     {
       label: toUpperCase(t("dataTable.edit") || "Edit"),
       icon: <Edit className="h-4 w-4" />,
-      onClick: (item: any) => navigate(`${editUrl}?id=${item.id}`),
+      onClick: (item: any) =>
+        navigate(
+          `${editUrl}?${editKey === "slug" ? `slug=${item.slug}` : `id=${item.id}`}`
+        ),
       variant: "outline",
       actionType: "edit"
     },
     {
       label: toUpperCase(t("dataTable.delete") || "Delete"),
       icon: <Trash2 className="h-4 w-4" />,
-      onClick: (item: any) => setDeleteId(item.id),
+      onClick: (item: any) =>
+        setDeleteId(editKey === "slug" ? item.slug : item.id),
       variant: "destructive",
       actionType: "delete"
     }
