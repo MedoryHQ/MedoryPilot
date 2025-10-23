@@ -86,7 +86,6 @@ export const FieldGroup: React.FC<FieldGroupProps> = ({
   const inputId = `field-${label.toLowerCase().replace(/\s+/g, "-")}`;
   const hasError = !!error;
   const currentLength = value?.length;
-  console.log(value);
   const inputClasses = cn(
     "w-full px-4 py-3 rounded-lg border transition-all bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed",
     hasError

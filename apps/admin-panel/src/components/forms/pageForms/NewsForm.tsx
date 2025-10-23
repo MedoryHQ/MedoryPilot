@@ -122,23 +122,23 @@ export const NewsForm: React.FC<NewsFormProps> = ({
         {
           kind: "simple",
           name: "order",
-          label: toUpperCase(t("faqs.form.order")),
+          label: toUpperCase(t("newses.form.order")),
           type: "number",
           props: {
             min: 0,
             max: 100,
             step: 1,
-            placeholder: t("faqs.form.orderPlaceholder"),
+            placeholder: t("newses.form.orderPlaceholder"),
             fullWidth: true
           }
         },
         {
           kind: "simple",
           name: "slug",
-          label: toUpperCase(t("faqs.form.slug")),
+          label: toUpperCase(t("newses.form.slug")),
           type: "text",
           props: {
-            placeholder: t("faqs.form.slugPlaceholder"),
+            placeholder: t("newses.form.slugPlaceholder"),
             fullWidth: true
           }
         }
