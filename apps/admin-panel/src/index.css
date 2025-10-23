@@ -532,6 +532,10 @@ button,
   height: 80px !important;
 }
 
+.ql-container {
+  min-height: 340px;
+}
+
 .stats-slider-container {
   position: relative;
 }
@@ -559,6 +563,22 @@ button,
   transition: background 0.3s;
 }
 
+.ql-toolbar,
+.ql-snow,
+.ql-container {
+  border-color: var(--color-border) !important;
+}
+
+.ql-stroke {
+  stroke: var(--color-foreground) !important;
+  transition: all 0.2s;
+}
+
+.ql-picker-label {
+  border: none;
+  color: var(--color-foreground) !important;
+  transition: all 0.2s;
+}
 .stats-card-hover {
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
