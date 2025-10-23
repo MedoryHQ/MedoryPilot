@@ -134,10 +134,7 @@ export const FieldGroup: React.FC<FieldGroupProps> = ({
             <MarkdownEditor
               value={value}
               onChange={(v: string) => onChange(v)}
-              placeholder={placeholder}
               disabled={disabled}
-              rows={rows}
-              maxLength={maxLength}
               className={textareaClasses}
               aria-invalid={hasError}
               aria-describedby={error ? `${inputId}-error` : undefined}
