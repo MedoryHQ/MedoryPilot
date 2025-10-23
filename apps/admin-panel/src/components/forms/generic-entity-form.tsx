@@ -400,16 +400,6 @@ export function GenericEntityForm<
       case "status":
         return (
           <div className="mb-5 flex flex-col gap-6" key={name}>
-            <MetadataDisplay
-              createdAt={
-                (entityQuery.data as any)?.createdAt ??
-                (entityData as any)?.createdAt
-              }
-              updatedAt={
-                (entityQuery.data as any)?.updatedAt ??
-                (entityData as any)?.updatedAt
-              }
-            />
             <StatusToggle
               label={toUpperCase(t(label as string))}
               description={toUpperCase(t(description as string))}
@@ -608,13 +598,27 @@ export function GenericEntityForm<
           }
           right={
             <>
-              {rightSections.map((sec) => (
+              {rightSections.map((sec, index) => (
                 <FormSection
                   key={sec.key ?? sec.title}
                   title={sec.title}
                   className="!gap-0"
                   description={sec.description}
                 >
+                  {index === 0 && !!id ? (
+                    <div className="mb-5">
+                      <MetadataDisplay
+                        createdAt={
+                          (entityQuery.data as any)?.createdAt ??
+                          (entityData as any)?.createdAt
+                        }
+                        updatedAt={
+                          (entityQuery.data as any)?.updatedAt ??
+                          (entityData as any)?.updatedAt
+                        }
+                      />
+                    </div>
+                  ) : null}
                   {sec.fields?.map((f, idx) => (
                     <React.Fragment
                       key={
