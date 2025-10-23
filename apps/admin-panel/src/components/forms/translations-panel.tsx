@@ -2,6 +2,7 @@ import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/libs";
 import { TranslationsPanelProps } from "@/types";
+import { MarkdownEditor } from "../MarkdownRenderer";
 
 export const TranslationsPanel = <T extends string = string>({
   activeLocale,
@@ -84,8 +85,8 @@ export const FieldGroup: React.FC<FieldGroupProps> = ({
 }) => {
   const inputId = `field-${label.toLowerCase().replace(/\s+/g, "-")}`;
   const hasError = !!error;
-  const currentLength = value.length;
-
+  const currentLength = value?.length;
+  console.log(value);
   const inputClasses = cn(
     "w-full px-4 py-3 rounded-lg border transition-all bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed",
     hasError
@@ -127,6 +128,20 @@ export const FieldGroup: React.FC<FieldGroupProps> = ({
                 {currentLength}/{maxLength}
               </div>
             )}
+          </>
+        ) : type === "markdown" ? (
+          <>
+            <MarkdownEditor
+              value={value}
+              onChange={(v: string) => onChange(v)}
+              placeholder={placeholder}
+              disabled={disabled}
+              rows={rows}
+              maxLength={maxLength}
+              className={textareaClasses}
+              aria-invalid={hasError}
+              aria-describedby={error ? `${inputId}-error` : undefined}
+            />
           </>
         ) : (
           <input
