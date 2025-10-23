@@ -36,37 +36,39 @@ model File {
   size  Int
   order Int?
 
-  header       Header?     @relation(fields: [headerId], references: [id], onDelete: Cascade)
-  headerId     String?     @unique @db.Uuid
-  news         News?       @relation(fields: [newsId], references: [id], onDelete: Cascade)
-  newsId       String?     @unique @db.Uuid
-  blog         Blog?       @relation(fields: [blogId], references: [id], onDelete: Cascade)
-  blogId       String?     @unique @db.Uuid
-  contact      Contact?    @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  contactId    String?     @unique @db.Uuid
-  visit        Visit?      @relation(fields: [visitId], references: [id])
-  visitId      String?     @unique @db.Uuid
-  theme        Theme?      @relation(fields: [themeId], references: [id])
-  themeId      String?     @unique @db.Uuid
-  social       Social?     @relation(fields: [socialId], references: [id])
-  socialId     String?     @unique @db.Uuid
-  about        About?      @relation(fields: [aboutId], references: [id])
-  aboutId      String?     @unique @db.Uuid
-  education    Education?  @relation(fields: [educationId], references: [id])
-  educationId  String?     @unique @db.Uuid
-  experience   Experience? @relation(fields: [experienceId], references: [id])
-  experienceId String?     @unique @db.Uuid
-  video        Video?      @relation(fields: [videoId], references: [id])
-  videoId      String?     @unique @db.Uuid
-  user         User?       @relation(fields: [userId], references: [id])
-  userId       String?     @unique @db.Uuid
-  message      Message?    @relation(fields: [messageId], references: [id])
-  messageId    String?     @unique @db.Uuid
-  admin        Admin?      @relation(fields: [adminId], references: [id])
-  adminId      String?     @unique @db.Uuid
+  header          Header?        @relation(fields: [headerId], references: [id], onDelete: Cascade)
+  headerId        String?        @unique @db.Uuid
+  contact         Contact?       @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId       String?        @unique @db.Uuid
+  visit           Visit?         @relation(fields: [visitId], references: [id])
+  visitId         String?        @unique @db.Uuid
+  theme           Theme?         @relation(fields: [themeId], references: [id])
+  themeId         String?        @unique @db.Uuid
+  social          Social?        @relation(fields: [socialId], references: [id])
+  socialId        String?        @unique @db.Uuid
+  about           About?         @relation(fields: [aboutId], references: [id])
+  aboutId         String?        @unique @db.Uuid
+  education       Education?     @relation(fields: [educationId], references: [id])
+  educationId     String?        @unique @db.Uuid
+  experience      Experience?    @relation(fields: [experienceId], references: [id])
+  experienceId    String?        @unique @db.Uuid
+  video           Video?         @relation(fields: [videoId], references: [id])
+  videoId         String?        @unique @db.Uuid
+  user            User?          @relation(fields: [userId], references: [id])
+  userId          String?        @unique @db.Uuid
+  message         Message?       @relation(fields: [messageId], references: [id])
+  messageId       String?        @unique @db.Uuid
+  admin           Admin?         @relation(fields: [adminId], references: [id])
+  adminId         String?        @unique @db.Uuid
+  pageComponent   PageComponent? @relation(fields: [pageComponentId], references: [id])
+  pageComponentId String?        @unique @db.Uuid
 
   serviceIcon       Service[] @relation("ServiceIcon")
   serviceBackground Service[] @relation("ServiceBackground")
+  newsBackground    News[]    @relation("NewsBackground")
+  newsMetaImage     News[]    @relation("NewsMetaImage")
+  blogBackground    Blog[]    @relation("BlogBackground")
+  blogMetaImage     Blog[]    @relation("BlogMetaImage")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -27,7 +27,8 @@ model News {
   id String @id @default(uuid(7)) @db.Uuid
 
   slug          String            @unique
-  background    File?
+  background    File?             @relation("NewsBackground", fields: [backgroundId], references: [id], onDelete: SetNull)
+  backgroundId  String?           @db.Uuid
   translations  NewsTranslation[]
   showInLanding Boolean           @default(false)
   order         Int               @default(autoincrement())
@@ -35,7 +36,8 @@ model News {
   metaTitle       String?
   metaDescription String?
   metaKeywords    String?
-  metaImage       String?
+  metaImage       File?   @relation("NewsMetaImage", fields: [metaImageId], references: [id], onDelete: SetNull)
+  metaImageId     String? @db.Uuid
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -77,7 +79,9 @@ model FAQ {
 model Blog {
   id String @id @default(uuid(7)) @db.Uuid
 
-  background   File?
+  background   File?   @relation("BlogBackground", fields: [backgroundId], references: [id], onDelete: SetNull)
+  backgroundId String? @db.Uuid
+
   categories   Category[]
   starredUsers User[]            @relation("BlogStars")
   stars        Int               @default(0)
@@ -90,7 +94,8 @@ model Blog {
   metaTitle       String?
   metaDescription String?
   metaKeywords    String?
-  metaImage       String?
+  metaImage       File?   @relation("BlogMetaImage", fields: [metaImageId], references: [id], onDelete: SetNull)
+  metaImageId     String? @db.Uuid
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -167,7 +172,7 @@ model PageComponent {
   metaTitle       String?
   metaDescription String?
   metaKeywords    String?
-  metaImage       String?
+  metaImage       File?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
