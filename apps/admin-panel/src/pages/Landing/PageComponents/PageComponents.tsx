@@ -106,7 +106,7 @@ const PageComponents = () => {
         <Button
           size="lg"
           className="premium-button floating-action flex items-center gap-2 shadow-md transition-all hover:shadow-lg"
-          onClick={() => navigate("/landing/pageComponents/create")}
+          onClick={() => navigate("/landing/page-components/create")}
         >
           <Plus className="h-5 w-5" />
           {toUpperCase(t("pageComponents.addPageComponent"))}
@@ -121,7 +121,7 @@ const PageComponents = () => {
         deleteEndpoint="pageComponent"
         filters={filters}
         total={data?.count}
-        editUrl="/landing/pageComponents/edit"
+        editUrl="/landing/page-components/edit"
         emptyMessage={toUpperCase(t("pageComponents.noPageComponentsFound"))}
         mobileCardRender={(item) => {
           return (
