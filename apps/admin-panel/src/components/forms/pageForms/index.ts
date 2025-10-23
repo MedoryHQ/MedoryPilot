@@ -7,3 +7,4 @@ export * from "./SocialForm";
 export * from "./ContactForm";
 export * from "./FooterForm";
 export * from "./NewsForm";
+export * from "./PageComponentForm";
