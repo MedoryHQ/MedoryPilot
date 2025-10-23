@@ -9,7 +9,7 @@ import { newsSchema } from "@/validations/website/news.validation";
 
 export interface NewsFormProps {
   mode: "create" | "edit" | "readonly";
-  id?: string | null;
+  slug?: string | null;
   onSuccessNavigate?: string;
 }
 
@@ -30,7 +30,7 @@ const defaultValues: NewsFormValues = {
 
 export const NewsForm: React.FC<NewsFormProps> = ({
   mode,
-  id = null,
+  slug = null,
   onSuccessNavigate = "/landing/newses"
 }) => {
   const { t, i18n } = useTranslation();
@@ -207,7 +207,7 @@ export const NewsForm: React.FC<NewsFormProps> = ({
     <GenericEntityForm<NewsFormValues, any>
       resourceName="newses"
       mode={mode}
-      id={id ?? undefined}
+      id={slug ?? undefined}
       schema={newsSchema(t, i18n.language as "en" | "ka")}
       defaultValues={defaultValues}
       fetchEntity={fetchEntity}
