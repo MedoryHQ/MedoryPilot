@@ -85,10 +85,10 @@ model Blog {
   slug          String  @unique
   showInLanding Boolean @default(false)
   landingOrder  Int     @default(autoincrement())
+  averageStar   Int     @default(0)
 
-  categories Category[]
-  stars      BlogStar[]
-
+  categories   Category[]
+  stars        BlogStar[]
   translations BlogTranslation[]
 
   metaTitle       String?

@@ -71,9 +71,9 @@ export const fetchBlogs = async (
             : {},
           starredUsers
             ? {
-                starredUsers: {
+                stars: {
                   some: {
-                    id: { in: starredUsers },
+                    userId: { in: starredUsers },
                   },
                 },
               }
@@ -112,14 +112,14 @@ export const fetchBlogs = async (
             : {},
           applyMinStars
             ? {
-                stars: {
+                averageStar: {
                   gte: Number(stars.min),
                 },
               }
             : {},
           applyMaxStars
             ? {
-                stars: {
+                averageStar: {
                   lte: Number(stars.max),
                 },
               }
@@ -137,6 +137,18 @@ export const fetchBlogs = async (
         include: {
           background: true,
           metaImage: true,
+          stars: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  fullName: true,
+                },
+              },
+            },
+          },
           categories: {
             include: {
               translations: {
@@ -268,6 +280,18 @@ export const fetchBlog = async (
       include: {
         background: true,
         metaImage: true,
+        stars: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                fullName: true,
+              },
+            },
+          },
+        },
         categories: {
           include: {
             translations: {
