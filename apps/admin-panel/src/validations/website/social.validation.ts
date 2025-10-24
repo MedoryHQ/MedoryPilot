@@ -7,9 +7,12 @@ export const socialSchema = (
   lang: "en" | "ka" = "en"
 ) =>
   z.object({
-    icon: FileSchema.nullable().refine((file) => file !== null, {
-      message: t("socials.errors.iconRequired", lang)
-    }),
+    icon: FileSchema.nullable().refine(
+      (file) => file === null || typeof file === "object",
+      {
+        message: t("socials.errors.iconRequired", lang)
+      }
+    ),
     name: z
       .string()
       .min(1, { message: t("socials.errors.nameRequired", lang) }),

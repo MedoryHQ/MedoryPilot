@@ -10,9 +10,12 @@ export const blogSchema = (
     categories: z
       .array(z.string())
       .min(1, { message: t("blogs.errors.categoriesRequired", lang) }),
-    background: FileSchema.nullable().refine((file) => file !== null, {
-      message: t("blogs.errors.backgroundRequired", lang)
-    }),
+    background: FileSchema.nullable().refine(
+      (file) => file === null || typeof file === "object",
+      {
+        message: t("blogs.errors.backgroundRequired", lang)
+      }
+    ),
     slug: z.string().min(1, { message: t("blogs.errors.slugRequired", lang) }),
     showInLanding: z.boolean(),
     landingOrder: z

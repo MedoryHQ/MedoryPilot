@@ -7,9 +7,12 @@ export const newsSchema = (
   lang: "en" | "ka" = "en"
 ) =>
   z.object({
-    background: FileSchema.nullable().refine((file) => file !== null, {
-      message: t("newses.errors.backgroundRequired", lang)
-    }),
+    background: FileSchema.nullable().refine(
+      (file) => file === null || typeof file === "object",
+      {
+        message: t("newses.errors.backgroundRequired", lang)
+      }
+    ),
     slug: z.string().min(1, { message: t("newses.errors.slugRequired", lang) }),
     showInLanding: z.boolean(),
     order: z

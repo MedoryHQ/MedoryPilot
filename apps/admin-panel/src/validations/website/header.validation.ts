@@ -7,9 +7,12 @@ export const headerSchema = (
   lang: "en" | "ka" = "en"
 ) =>
   z.object({
-    logo: FileSchema.nullable().refine((file) => file !== null, {
-      message: t("headers.errors.logoRequired", lang)
-    }),
+    logo: FileSchema.nullable().refine(
+      (file) => file === null || typeof file === "object",
+      {
+        message: t("headers.errors.logoRequired", lang)
+      }
+    ),
     active: z
       .boolean()
       .nullable()

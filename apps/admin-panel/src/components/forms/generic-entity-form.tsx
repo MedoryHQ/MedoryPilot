@@ -408,6 +408,7 @@ export function GenericEntityForm<
             value={watchedValue ?? null}
             key={name}
             disabled={internalMode === "readonly"}
+            error={(form.formState.errors as any)[name]?.message}
             onChange={(v) =>
               form.setValue(
                 name as Path<TForm>,
