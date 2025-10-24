@@ -14,7 +14,12 @@ import {
   SelectContent,
   SelectItem,
   SelectValue,
-  Separator
+  Separator,
+  TableCell,
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem
 } from "@/components/ui";
 import {
   Search,
@@ -25,7 +30,8 @@ import {
   Filter,
   Edit,
   Trash2,
-  Loader2
+  Loader2,
+  MoreHorizontal
 } from "lucide-react";
 import Highlight from "react-highlight-words";
 import {
@@ -150,7 +156,7 @@ export function DataTable<T extends Record<string, any>>({
   const internalActions: Action<T>[] = [
     {
       label: toUpperCase(t("dataTable.edit") || "Edit"),
-      icon: <Edit className="h-4 w-4" />,
+      icon: <Edit className="h-4 w-4 group-hover:text-white" />,
       onClick: (item: any) =>
         navigate(
           `${editUrl}?${editKey === "slug" ? `slug=${item.slug}` : `id=${item.id}`}`
@@ -160,7 +166,7 @@ export function DataTable<T extends Record<string, any>>({
     },
     {
       label: toUpperCase(t("dataTable.delete") || "Delete"),
-      icon: <Trash2 className="h-4 w-4" />,
+      icon: <Trash2 className="h-4 w-4 group-hover:text-white" />,
       onClick: (item: any) =>
         setDeleteId(editKey === "slug" ? item.slug : item.id),
       variant: "destructive",
@@ -338,11 +344,11 @@ export function DataTable<T extends Record<string, any>>({
           )}
         </div>
 
-        <Card className="border-border/50 hidden shadow-sm md:block">
+        <Card className="border-border/50 hidden md:block">
           <CardContent className="p-0">
-            <div className="overflow-x-auto">
+            <div className="border-border overflow-x-auto rounded-[14px] border-1">
               <table className="w-full">
-                <thead className="bg-secondary/50 border-border border-b-2">
+                <thead className="bg-secondary/50 border-border border-b-1">
                   <tr>
                     {columns.map((col) => (
                       <th
@@ -360,7 +366,7 @@ export function DataTable<T extends Record<string, any>>({
                       </th>
                     ))}
                     {effectiveActions.length > 0 && (
-                      <th className="px-6 py-3 text-center text-sm font-medium">
+                      <th className="px-6 py-3 text-end text-sm font-medium">
                         {toUpperCase(t("dataTable.actions"))}
                       </th>
                     )}
@@ -417,20 +423,38 @@ export function DataTable<T extends Record<string, any>>({
                           </td>
                         ))}
                         {effectiveActions.length > 0 && (
-                          <td className="px-6 py-4 text-center">
-                            <div className="flex items-center justify-center gap-2">
-                              {effectiveActions.map((a, i) => (
-                                <Button
-                                  key={i}
-                                  variant={a.variant || "outline"}
-                                  size="sm"
-                                  onClick={() => a.onClick(row)}
-                                >
-                                  {a.icon}
-                                  <span className="ml-2">{a.label}</span>
-                                </Button>
-                              ))}
-                            </div>
+                          <td className="flex justify-end px-6 py-4">
+                            <TableCell onClick={(e) => e.stopPropagation()}>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    className="group transition-all duration-200"
+                                    variant="ghost"
+                                    size="sm"
+                                  >
+                                    <MoreHorizontal className="h-4 w-4 group-hover:text-white" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  {actions.map((action, actionIndex) => (
+                                    <DropdownMenuItem
+                                      key={actionIndex}
+                                      onClick={() => action.onClick(row)}
+                                      className={cn(
+                                        "group min-w-[120px]",
+                                        action.variant === "destructive" &&
+                                          "text-destructive"
+                                      )}
+                                    >
+                                      {action.icon}
+                                      <span className="ml-2">
+                                        {action.label}
+                                      </span>
+                                    </DropdownMenuItem>
+                                  ))}
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </TableCell>
                           </td>
                         )}
                       </motion.tr>
@@ -444,7 +468,7 @@ export function DataTable<T extends Record<string, any>>({
 
         <div className="space-y-4 md:hidden">
           {data.length === 0 ? (
-            <Card className="border-border/50 shadow-sm">
+            <Card className="border-border/50">
               <CardContent className="p-4">
                 <div className="flex flex-col items-center gap-3 text-center">
                   <AlertCircle className="text-secondary-foreground/50 h-12 w-12" />
@@ -462,7 +486,7 @@ export function DataTable<T extends Record<string, any>>({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.03 }}
               >
-                <Card className="border-border/50 shadow-sm transition-shadow hover:shadow-md">
+                <Card className="border-border/50">
                   <CardContent className="p-5">
                     <div className="space-y-4">
                       {mobileCardRender

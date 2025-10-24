@@ -7,12 +7,18 @@ export const serviceSchema = (
   lang: "en" | "ka" = "en"
 ) =>
   z.object({
-    icon: FileSchema.nullable().refine((file) => file !== null, {
-      message: t("headers.errors.iconRequired", lang)
-    }),
-    background: FileSchema.nullable().refine((file) => file !== null, {
-      message: t("headers.errors.backgroundRequired", lang)
-    }),
+    icon: FileSchema.nullable().refine(
+      (file) => file === null || typeof file === "object",
+      {
+        message: t("headers.errors.iconRequired", lang)
+      }
+    ),
+    background: FileSchema.nullable().refine(
+      (file) => file === null || typeof file === "object",
+      {
+        message: t("headers.errors.backgroundRequired", lang)
+      }
+    ),
     translations: z.object({
       en: z.object({
         title: z

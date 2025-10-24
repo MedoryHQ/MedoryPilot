@@ -290,8 +290,10 @@ export const relationArrayValidation = (
       );
     }
 
-    const invalid = ids.filter((id) => !isUuid(id));
-    if (invalid.length > 0) {
+    const invalid = ids.filter((id) => {
+      return !isUuid(id);
+    });
+    if (invalid?.length > 0) {
       throw new Error(
         JSON.stringify({
           en: `Invalid ${field} IDs: ${invalid.join(", ")}`,

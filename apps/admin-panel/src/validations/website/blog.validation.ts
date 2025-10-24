@@ -9,35 +9,38 @@ export const blogSchema = (
   z.object({
     categories: z
       .array(z.string())
-      .min(1, { message: t("blog.errors.categoriesRequired", lang) }),
-    background: FileSchema.nullable().refine((file) => file !== null, {
-      message: t("blog.errors.backgroundRequired", lang)
-    }),
-    slug: z.string().min(1, { message: t("blog.errors.slugRequired", lang) }),
+      .min(1, { message: t("blogs.errors.categoriesRequired", lang) }),
+    background: FileSchema.nullable().refine(
+      (file) => file === null || typeof file === "object",
+      {
+        message: t("blogs.errors.backgroundRequired", lang)
+      }
+    ),
+    slug: z.string().min(1, { message: t("blogs.errors.slugRequired", lang) }),
     showInLanding: z.boolean(),
     landingOrder: z
       .number()
       .nullable()
       .refine((val) => val !== null, {
-        message: t("blog.errors.landingOrderRequired", lang)
+        message: t("blogs.errors.landingOrderRequired", lang)
       }),
     ...metaSchema,
     translations: z.object({
       en: z.object({
         title: z
           .string()
-          .min(1, { message: t("blog.errors.titleRequired", "en") }),
+          .min(1, { message: t("blogs.errors.titleRequired", "en") }),
         content: z
           .string()
-          .min(1, { message: t("blog.errors.contentRequired", "en") })
+          .min(1, { message: t("blogs.errors.contentRequired", "en") })
       }),
       ka: z.object({
         title: z
           .string()
-          .min(1, { message: t("blog.errors.titleRequired", "ka") }),
+          .min(1, { message: t("blogs.errors.titleRequired", "ka") }),
         content: z
           .string()
-          .min(1, { message: t("blog.errors.contentRequired", "ka") })
+          .min(1, { message: t("blogs.errors.contentRequired", "ka") })
       })
     })
   });

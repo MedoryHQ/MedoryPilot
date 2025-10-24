@@ -8,9 +8,12 @@ export const contactSchema = (
 ) =>
   z.object({
     location: z.string().optional(),
-    background: FileSchema.nullable().refine((file) => file !== null, {
-      message: t("contact.errors.backgroundRequired", lang)
-    }),
+    background: FileSchema.nullable().refine(
+      (file) => file === null || typeof file === "object",
+      {
+        message: t("contact.errors.backgroundRequired", lang)
+      }
+    ),
     translations: z.object({
       en: z.object({
         title: z

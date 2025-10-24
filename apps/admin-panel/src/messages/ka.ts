@@ -544,6 +544,7 @@ export const ka = {
         contentPlaceholder: "შეიყვანეთ კონტენტი ამ სიახლისთვის...",
         settings: "პარამეტრები",
         showInLanding: "მთავარ გვერდზე ჩვენება",
+        notShowInLanding: "მთავარ გვერდზზე არ ჩვენება",
         showInLandingDescription: "გამოჩნდება თუ არა მთავარ გვერდზე",
         order: "რიგი",
         orderPlaceholder: "მაგ., 1",
@@ -583,16 +584,7 @@ export const ka = {
         contentRequired: "კონტენტი სავალდებულოა"
       }
     },
-    blog: {
-      errors: {
-        categoriesRequired: "მინიმუმ ერთი კატეგორია სავალდებულოა",
-        backgroundRequired: "ფონი სავალდებულოა",
-        slugRequired: "სლაგი სავალდებულოა",
-        landingOrderRequired: "ლენდინგის რიგი სავალდებულოა",
-        titleRequired: "სათაური სავალდებულოა",
-        contentRequired: "კონტენტი სავალდებულოა"
-      }
-    },
+
     contact: {
       form: {
         management: "საკ. ინფორმაციის მენეჯმენტი",
@@ -855,6 +847,41 @@ export const ka = {
       inLanding: "ჩანს ლენდინგზე",
       yes: "დიახ",
       no: "არა",
+      form: {
+        createTitle: "ბლოგის შექმნა",
+        editTitle: "ბლოგის რედაქტირება",
+        subtitle: "კონფიგურაცია ვებსაიტის ბლოგის და ნავიგაციისთვის",
+        contentTranslations: "კონტენტი და თარგმანები",
+        contentTranslationsDescription:
+          "შეავსეთ ბლოგის დეტალები თითოეული ენისთვის",
+        title: "სათაური",
+        titlePlaceholder: "მაგ., ჩემი პირველი ბლოგი",
+        content: "კონტენტი",
+        contentPlaceholder: "შეიყვანეთ კონტენტი ამ ბლოგისთვის...",
+        settings: "პარამეტრები",
+        showInLanding: "მთავარ გვერდზე ჩვენება",
+        notShowInLanding: "მთავარ გვერდზზე არ ჩვენება",
+        showInLandingDescription: "გამოჩნდება თუ არა მთავარ გვერდზე",
+        landingOrder: "მთავარი გვერდზე რიგი",
+        landingOrderPlaceholder: "მაგ., 1",
+        slug: "სლაგი",
+        slugPlaceholder: "მაგ., news-1",
+        background: "ფონი",
+        backgroundLabel: "ჩააგდეთ ფონი აქ",
+        backgroundDescription: "ან დააჭირეთ არჩევისთვის",
+        metaInformation: "მეტა ინფორმაცია",
+        metaTitleLabel: "მეტა სათაური",
+        metaTitlePlaceholder: "მაგ., blog",
+        metaDescriptionLabel: "მეტა აღწერა",
+        metaDescriptionPlaceholder: "შეიყვანეთ მეტა აღწერა ამ ბლოგისთვის...",
+        metaKeywordsLabel: "მეტა სიტყვები",
+        metaKeywordsPlaceholder: "მაგ., blog, page",
+        metaImageLabel: "მეტა სურათი",
+        news: "ბლოგი",
+        createdSuccessfully: "ბლოგი წარმატებით შეიქმნა",
+        updatedSuccessfully: "ბლოგი წარმატებით განახლდა",
+        deletedSuccessfully: "ბლოგი წარმატებით წაიშალა"
+      },
       filters: {
         showInLanding: "ჩვენების ლანდინგზე",
         withMeta: "მეტა-ინფორმაციით",
@@ -865,10 +892,18 @@ export const ka = {
         noBackground: "უფონოდ",
         users: "მომხმარებლები"
       },
+      errors: {
+        categoriesRequired: "მინიმუმ ერთი კატეგორია სავალდებულოა",
+        backgroundRequired: "ფონი სავალდებულოა",
+        slugRequired: "სლაგი სავალდებულოა",
+        landingOrderRequired: "ლენდინგის რიგი სავალდებულოა",
+        titleRequired: "სათაური სავალდებულოა",
+        contentRequired: "კონტენტი სავალდებულოა"
+      },
       managementSummary: "მართეთ და დაალაგეთ ლანდინგზე გამოჩენილი ბლოგ პოსტები",
-      add: "დაამატე",
-      edit: "რედაქტირება",
-      delete: "წაშლა"
+      add: "დაამატე ბლოგი",
+      edit: "ბლოგის რედაქტირება",
+      delete: "ბლოგის წაშლა"
     }
   }
 };

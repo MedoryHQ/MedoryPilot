@@ -1,5 +1,5 @@
-import { validate, version } from "uuid";
+import { validate } from "uuid";
 
 export const isUuid = (uuid: string) => {
-  return validate(uuid) && version(uuid) === 7;
+  return validate(uuid);
 };

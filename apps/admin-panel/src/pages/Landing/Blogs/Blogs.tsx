@@ -101,7 +101,7 @@ const Blogs = () => {
           : []
       },
       {
-        key: "users",
+        key: "starredUsers",
         label: toUpperCase(t("blogs.filters.users")),
         type: "multiple-select",
         withSearch: true,
@@ -214,7 +214,7 @@ const Blogs = () => {
                 key={i}
                 className={cn(
                   "h-3 w-3",
-                  i < item.stars
+                  i < item.averageStar
                     ? "fill-current text-yellow-500"
                     : "text-muted-foreground"
                 )}
@@ -262,6 +262,7 @@ const Blogs = () => {
         filters={filters}
         total={data?.count}
         editUrl="/landing/blogs/edit"
+        editKey="slug"
         emptyMessage={toUpperCase(t("blogs.noBlogsFound"))}
         mobileCardRender={(item) => {
           return (
@@ -309,7 +310,7 @@ const Blogs = () => {
                         key={i}
                         className={cn(
                           "h-4 w-4",
-                          i < item.stars
+                          i < item.averageStar
                             ? "text-yellow-500"
                             : "text-muted-foreground"
                         )}

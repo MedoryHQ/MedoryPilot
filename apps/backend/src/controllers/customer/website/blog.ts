@@ -67,8 +67,8 @@ export const fetchBlogs = async (
           metaKeywords: true,
           metaTitle: true,
           slug: true,
-          stars: true,
           showInLanding: true,
+          averageStar: true,
           categories: {
             select: {
               translations: {
@@ -130,7 +130,7 @@ export const fetchBlog = async (
         metaKeywords: true,
         metaTitle: true,
         slug: true,
-        stars: true,
+        averageStar: true,
         showInLanding: true,
         categories: {
           select: {

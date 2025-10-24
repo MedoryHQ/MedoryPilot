@@ -544,6 +544,7 @@ export const en = {
         contentPlaceholder: "Enter a brief content for this news...",
         settings: "Settings",
         showInLanding: "Show in landing",
+        notShowInLanding: "Not Show in landing",
         showInLandingDescription: "Show or not in landing page",
         order: "Order",
         orderPlaceholder: "e.g., 1",
@@ -582,16 +583,6 @@ export const en = {
         backgroundRequired: "Background is required",
         slugRequired: "Slug is required",
         orderRequired: "Order is required",
-        contentRequired: "Content is required"
-      }
-    },
-    blog: {
-      errors: {
-        categoriesRequired: "At least one category is required",
-        backgroundRequired: "Background is required",
-        slugRequired: "Slug is required",
-        landingOrderRequired: "Landing order is required",
-        titleRequired: "Title is required",
         contentRequired: "Content is required"
       }
     },
@@ -853,6 +844,42 @@ export const en = {
       inLanding: "In Landing",
       yes: "Yes",
       no: "No",
+      form: {
+        createTitle: "Create Blog",
+        editTitle: "Edit Blog",
+        subtitle: "Configure your website blog and navigation",
+        contentTranslations: "Content & Translations",
+        contentTranslationsDescription:
+          "Fill in blog details for each language",
+        title: "Title",
+        titlePlaceholder: "e.g., blog title",
+        content: "Content",
+        contentPlaceholder: "Enter a brief content for this blog...",
+        settings: "Settings",
+        showInLanding: "Show in landing",
+        notShowInLanding: "Not Show in landing",
+        showInLandingDescription: "Show or not in landing page",
+        landingOrder: "Landing Order",
+        landingOrderPlaceholder: "e.g., 1",
+        slug: "Slug",
+        slugPlaceholder: "e.g., blog-1",
+        background: "Background",
+        backgroundLabel: "Drop your background here",
+        backgroundDescription: "or click to browse",
+        metaInformation: "Meta Information",
+        metaTitleLabel: "Meta Title",
+        metaTitlePlaceholder: "e.g., blog",
+        metaDescriptionLabel: "Meta Description",
+        metaDescriptionPlaceholder:
+          "Enter a brief description for this blog page...",
+        metaKeywordsLabel: "Meta Keywords",
+        metaKeywordsPlaceholder: "e.g., blog, page",
+        metaImageLabel: "Meta Image",
+        blog: "Blog",
+        createdSuccessfully: "Blog created successfully",
+        updatedSuccessfully: "Blog updated successfully",
+        deletedSuccessfully: "Blog deleted successfully"
+      },
       filters: {
         showInLanding: "Show in Landing",
         withMeta: "With Meta",
@@ -865,9 +892,17 @@ export const en = {
       },
       managementSummary:
         "Manage and order blog posts shown on the landing page",
-      add: "Add",
-      edit: "Edit",
-      delete: "Delete"
+      add: "Add Blog",
+      edit: "Edit Blog",
+      delete: "Delete Blog",
+      errors: {
+        categoriesRequired: "At least one category is required",
+        backgroundRequired: "Background is required",
+        slugRequired: "Slug is required",
+        landingOrderRequired: "Landing order is required",
+        titleRequired: "Title is required",
+        contentRequired: "Content is required"
+      }
     }
   }
 };

@@ -47,7 +47,8 @@ export const fetchBlogs = async (
     const meta = parseBooleanQuery(withMeta);
     const hasBackground = parseBooleanQuery(background);
     const applyMinStars =
-      stars?.min && Number(stars.min) > 0 && Number(stars.max) <= 5;
+      stars?.min && Number(stars.min) > 0 && Number(stars?.min) <= 5;
+
     const applyMaxStars =
       stars?.max && Number(stars.max) > 0 && Number(stars.max) <= 5;
 
@@ -71,9 +72,9 @@ export const fetchBlogs = async (
             : {},
           starredUsers
             ? {
-                starredUsers: {
+                stars: {
                   some: {
-                    id: { in: starredUsers },
+                    userId: { in: starredUsers },
                   },
                 },
               }
@@ -112,14 +113,14 @@ export const fetchBlogs = async (
             : {},
           applyMinStars
             ? {
-                stars: {
+                averageStar: {
                   gte: Number(stars.min),
                 },
               }
             : {},
           applyMaxStars
             ? {
-                stars: {
+                averageStar: {
                   lte: Number(stars.max),
                 },
               }
@@ -137,6 +138,18 @@ export const fetchBlogs = async (
         include: {
           background: true,
           metaImage: true,
+          stars: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  fullName: true,
+                },
+              },
+            },
+          },
           categories: {
             include: {
               translations: {
@@ -268,6 +281,18 @@ export const fetchBlog = async (
       include: {
         background: true,
         metaImage: true,
+        stars: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                fullName: true,
+              },
+            },
+          },
+        },
         categories: {
           include: {
             translations: {

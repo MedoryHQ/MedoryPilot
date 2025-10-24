@@ -4,38 +4,40 @@ import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
 import type { FieldConfig } from "@/types";
-import type { NewsFormValues } from "@/validations/website/news.validation";
-import { newsSchema } from "@/validations/website/news.validation";
+import type { BlogFormValues } from "@/validations/website/blog.validation";
+import { blogSchema } from "@/validations/website/blog.validation";
+import { Blog } from "@/types/website";
 
-export interface NewsFormProps {
+export interface BlogFormProps {
   mode: "create" | "edit" | "readonly";
   slug?: string | null;
   onSuccessNavigate?: string;
 }
 
-const defaultValues: NewsFormValues = {
+const defaultValues: BlogFormValues = {
   background: null,
   showInLanding: false,
-  order: null,
+  categories: [],
+  landingOrder: 0,
   metaTitle: "",
   metaDescription: "",
   metaKeywords: "",
   metaImage: null,
   slug: "",
   translations: {
-    en: { content: "" },
-    ka: { content: "" }
+    en: { title: "", content: "" },
+    ka: { title: "", content: "" }
   }
 };
 
-export const NewsForm: React.FC<NewsFormProps> = ({
+export const BlogForm: React.FC<BlogFormProps> = ({
   mode,
   slug = null,
-  onSuccessNavigate = "/landing/newses"
+  onSuccessNavigate = "/landing/blogs"
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<NewsFormValues> => {
+  const mapFetchedToForm = (entity: Blog): Partial<BlogFormValues> => {
     if (!entity) return {};
     const {
       metaTitle,
@@ -45,17 +47,20 @@ export const NewsForm: React.FC<NewsFormProps> = ({
       background,
       slug,
       translations,
+      categories,
       showInLanding,
-      order
+      landingOrder
     } = entity;
-    const en =
-      translations?.find((tr: any) => tr?.language?.code === "en") ?? {};
-    const ka =
-      translations?.find((tr: any) => tr?.language?.code === "ka") ?? {};
+    const en = translations?.find((tr) => tr?.language?.code === "en");
+    const ka = translations?.find((tr) => tr?.language?.code === "ka");
+
+    const filteredCategories = (categories || []).map(
+      (category) => category.id
+    );
 
     const formBackground = background
       ? {
-          path: background.path ?? background.url ?? "",
+          path: background.path ?? "",
           name: background.name ?? "",
           size: background.size ?? undefined
         }
@@ -63,7 +68,7 @@ export const NewsForm: React.FC<NewsFormProps> = ({
 
     const formMetaImage = metaImage
       ? {
-          path: metaImage.path ?? metaImage.url ?? "",
+          path: metaImage.path ?? "",
           name: metaImage.name ?? "",
           size: metaImage.size ?? undefined
         }
@@ -77,83 +82,100 @@ export const NewsForm: React.FC<NewsFormProps> = ({
       metaImage: formMetaImage,
       slug,
       showInLanding,
-      order,
+      landingOrder,
+      categories: filteredCategories,
       translations: {
         en: {
-          content: en.content ?? ""
+          content: en?.content ?? "",
+          title: en?.title ?? ""
         },
         ka: {
-          content: ka.content ?? ""
+          content: ka?.content ?? "",
+          title: ka?.title ?? ""
         }
       }
     };
   };
 
   const fetchEntity = async (entityId?: string) => {
-    const res = await axios.get(`/news/${entityId}`);
+    const res = await axios.get(`/blog/${entityId}`);
     return res.data?.data ?? res.data;
   };
 
-  const createEntity = async (payload: NewsFormValues) => {
-    await axios.post("/news", payload);
+  const createEntity = async (payload: BlogFormValues) => {
+    await axios.post("/blog", payload);
   };
 
-  const updateEntity = async (entityId: string, payload: NewsFormValues) => {
-    await axios.put(`/news/${entityId}`, payload);
+  const updateEntity = async (entityId: string, payload: BlogFormValues) => {
+    await axios.put(`/blog/${entityId}`, payload);
   };
 
   const deleteEntity = async (entityId: string) => {
-    await axios.delete(`/news/${entityId}`);
+    await axios.delete(`/blog/${entityId}`);
   };
 
   const rightSections = [
     {
       key: "settings",
-      title: toUpperCase(t("newses.form.settings")),
+      title: toUpperCase(t("blogs.form.settings")),
       description: undefined,
       fields: [
         {
           kind: "simple",
           name: "showInLanding",
-          label: "newses.form.showInLanding",
-          description: "newses.form.showInLandingDescription",
-          activeLabel: "newses.form.showInLanding",
-          inactiveLabel: "newses.form.notShowInLanding",
+          label: "blogs.form.showInLanding",
+          description: "blogs.form.showInLandingDescription",
+          activeLabel: "blogs.form.showInLanding",
+          inactiveLabel: "blogs.form.notShowInLanding",
           type: "toggle"
         },
         {
           kind: "simple",
-          name: "order",
-          label: toUpperCase(t("newses.form.order")),
+          name: "landingOrder",
+          label: toUpperCase(t("blogs.form.landingOrder")),
           type: "number",
           props: {
             min: 0,
             max: 100,
             step: 1,
-            placeholder: t("newses.form.orderPlaceholder"),
+            placeholder: t("blogs.form.landingOrderPlaceholder"),
             fullWidth: true
           }
         },
         {
           kind: "simple",
           name: "slug",
-          label: toUpperCase(t("newses.form.slug")),
+          label: toUpperCase(t("blogs.form.slug")),
           type: "text",
           props: {
-            placeholder: t("newses.form.slugPlaceholder"),
+            placeholder: t("blogs.form.slugPlaceholder"),
             fullWidth: true
           }
+        },
+        {
+          kind: "simple",
+          name: "categories",
+          label: toUpperCase(t("blogs.form.categories")),
+          type: "translated-select",
+
+          props: {
+            endpoints: "/category/list",
+            mode: "multiple",
+            translationKey: "name",
+            placeholder: t("blogs.form.categoriesPlaceholder"),
+            required: true
+          }
         }
-      ] as FieldConfig<NewsFormValues>[]
+      ] as FieldConfig<BlogFormValues>[]
     },
     {
       key: "background",
-      title: toUpperCase(t("newses.form.background")),
+      title: toUpperCase(t("blogs.form.background")),
       fields: [
         {
           kind: "simple",
           name: "background",
-          label: toUpperCase(t("newses.form.backgroundLabel")),
+          label: toUpperCase(t("blogs.form.backgroundLabel")),
           type: "media",
           props: {
             maxSizeMB: 5,
@@ -161,29 +183,29 @@ export const NewsForm: React.FC<NewsFormProps> = ({
             previewHeight: "h-[248px]"
           }
         }
-      ] as FieldConfig<NewsFormValues>[]
+      ] as FieldConfig<BlogFormValues>[]
     },
     {
       key: "metaInformation",
-      title: toUpperCase(t("newses.form.metaInformation")),
+      title: toUpperCase(t("blogs.form.metaInformation")),
       fields: [
         {
           kind: "simple",
           name: "metaTitle",
-          label: toUpperCase(t("newses.form.metaTitleLabel")),
+          label: toUpperCase(t("blogs.form.metaTitleLabel")),
           type: "text",
           props: {
-            placeholder: t("newses.form.metaTitlePlaceholder"),
+            placeholder: t("blogs.form.metaTitlePlaceholder"),
             fullWidth: true
           }
         },
         {
           kind: "simple",
           name: "metaDescription",
-          label: toUpperCase(t("newses.form.metaDescriptionLabel")),
+          label: toUpperCase(t("blogs.form.metaDescriptionLabel")),
           type: "textarea",
           props: {
-            placeholder: t("newses.form.metaDescriptionPlaceholder"),
+            placeholder: t("blogs.form.metaDescriptionPlaceholder"),
             rows: 5,
             maxLength: 500
           }
@@ -191,17 +213,17 @@ export const NewsForm: React.FC<NewsFormProps> = ({
         {
           kind: "simple",
           name: "metaKeywords",
-          label: toUpperCase(t("newses.form.metaKeywordsLabel")),
+          label: toUpperCase(t("blogs.form.metaKeywordsLabel")),
           type: "text",
           props: {
-            placeholder: t("newses.form.metaKeywordsPlaceholder"),
+            placeholder: t("blogs.form.metaKeywordsPlaceholder"),
             fullWidth: true
           }
         },
         {
           kind: "simple",
           name: "metaImage",
-          label: toUpperCase(t("newses.form.metaImageLabel")),
+          label: toUpperCase(t("blogs.form.metaImageLabel")),
           type: "media",
           props: {
             maxSizeMB: 5,
@@ -209,16 +231,16 @@ export const NewsForm: React.FC<NewsFormProps> = ({
             previewHeight: "h-[248px]"
           }
         }
-      ] as FieldConfig<NewsFormValues>[]
+      ] as FieldConfig<BlogFormValues>[]
     }
   ];
 
   return (
-    <GenericEntityForm<NewsFormValues, any>
-      resourceName="newses"
+    <GenericEntityForm<BlogFormValues, any>
+      resourceName="blogs"
       mode={mode}
       id={slug ?? undefined}
-      schema={newsSchema(t, i18n.language as "en" | "ka")}
+      schema={blogSchema(t, i18n.language as "en" | "ka")}
       defaultValues={defaultValues}
       fetchEntity={fetchEntity}
       createEntity={createEntity}
@@ -228,8 +250,15 @@ export const NewsForm: React.FC<NewsFormProps> = ({
       translationFields={
         [
           {
+            name: "title",
+            label: toUpperCase(t("blogs.form.title")),
+            required: true,
+            fullWidth: true,
+            type: "text"
+          },
+          {
             name: "content",
-            label: toUpperCase(t("newses.form.content")),
+            label: toUpperCase(t("blogs.form.content")),
             required: true,
             fullWidth: true,
             type: "markdown"
@@ -244,4 +273,4 @@ export const NewsForm: React.FC<NewsFormProps> = ({
   );
 };
 
-export default NewsForm;
+export default BlogForm;
