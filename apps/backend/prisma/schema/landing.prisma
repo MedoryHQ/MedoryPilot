@@ -82,14 +82,14 @@ model Blog {
   background   File?   @relation("BlogBackground", fields: [backgroundId], references: [id], onDelete: SetNull)
   backgroundId String? @db.Uuid
 
-  categories   Category[]
-  starredUsers User[]            @relation("BlogStars")
-  stars        Int               @default(0)
-  translations BlogTranslation[]
-
   slug          String  @unique
   showInLanding Boolean @default(false)
   landingOrder  Int     @default(autoincrement())
+
+  categories Category[]
+  stars      BlogStar[]
+
+  translations BlogTranslation[]
 
   metaTitle       String?
   metaDescription String?
@@ -101,6 +101,23 @@ model Blog {
   updatedAt DateTime @updatedAt
 
   @@map("blogs")
+}
+
+model BlogStar {
+  id String @id @default(uuid(7)) @db.Uuid
+
+  blog   Blog   @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  blogId String @unique @db.Uuid
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique @db.Uuid
+
+  star Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("blog_stars")
 }
 
 model Category {
