@@ -117,6 +117,8 @@ export const NewsForm: React.FC<NewsFormProps> = ({
           name: "showInLanding",
           label: "newses.form.showInLanding",
           description: "newses.form.showInLandingDescription",
+          activeLabel: "newses.form.showInLanding",
+          inactiveLabel: "newses.form.notShowInLanding",
           type: "toggle"
         },
         {

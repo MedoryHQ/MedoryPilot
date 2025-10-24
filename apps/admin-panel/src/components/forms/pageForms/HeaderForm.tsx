@@ -91,7 +91,7 @@ export const HeaderForm: React.FC<HeaderFormProps> = ({
           name: "active",
           label: "headers.form.status",
           description: "headers.form.statusDescription",
-          type: "status"
+          type: "toggle"
         }
       ] as FieldConfig<HeaderFormValues>[]
     },
