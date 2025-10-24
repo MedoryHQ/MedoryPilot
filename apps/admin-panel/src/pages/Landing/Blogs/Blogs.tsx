@@ -101,7 +101,7 @@ const Blogs = () => {
           : []
       },
       {
-        key: "users",
+        key: "starredUsers",
         label: toUpperCase(t("blogs.filters.users")),
         type: "multiple-select",
         withSearch: true,

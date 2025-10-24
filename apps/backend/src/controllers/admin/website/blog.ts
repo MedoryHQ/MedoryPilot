@@ -47,7 +47,8 @@ export const fetchBlogs = async (
     const meta = parseBooleanQuery(withMeta);
     const hasBackground = parseBooleanQuery(background);
     const applyMinStars =
-      stars?.min && Number(stars.min) > 0 && Number(stars.max) <= 5;
+      stars?.min && Number(stars.min) > 0 && Number(stars?.min) <= 5;
+
     const applyMaxStars =
       stars?.max && Number(stars.max) > 0 && Number(stars.max) <= 5;
 
