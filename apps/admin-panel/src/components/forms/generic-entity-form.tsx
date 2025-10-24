@@ -381,29 +381,11 @@ export function GenericEntityForm<
         );
       case "toggle":
         return (
-          <div key={name}>
-            <FieldGroup
-              key={name}
-              label={toUpperCase(t(label as string))}
-              value={String(watchedValue ?? "")}
-              className="mb-5"
-              disabled={internalMode === "readonly"}
-              onChange={(v) =>
-                form.setValue(
-                  name as Path<TForm>,
-                  toBool(v) as unknown as PathValue<TForm, Path<TForm>>
-                )
-              }
-            />
-          </div>
-        );
-      case "status":
-        return (
           <div className="mb-5 flex flex-col gap-6" key={name}>
             <StatusToggle
               label={toUpperCase(t(label as string))}
               description={toUpperCase(t(description as string))}
-              value={(form.getValues() as any).active ?? false}
+              value={(form.getValues() as any)[name] ?? false}
               disabled={internalMode === "readonly"}
               onChange={(v) =>
                 form.setValue(
@@ -411,8 +393,12 @@ export function GenericEntityForm<
                   toBool(v) as unknown as PathValue<TForm, Path<TForm>>
                 )
               }
-              activeLabel={toUpperCase(t("headers.form.active"))}
-              inactiveLabel={toUpperCase(t("headers.form.inactive"))}
+              activeLabel={toUpperCase(
+                t(f?.activeLabel ?? "headers.form.active")
+              )}
+              inactiveLabel={toUpperCase(
+                t(f?.inactiveLabel ?? "headers.form.inactive")
+              )}
             />
           </div>
         );

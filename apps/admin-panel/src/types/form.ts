@@ -31,7 +31,6 @@ export type FieldType =
   | "toggle"
   | "media"
   | "custom"
-  | "status"
   | "number"
   | "email"
   | "translated-select";
@@ -43,6 +42,8 @@ export type FieldConfig<TForm extends FieldValues = FieldValues> =
       label: string;
       type: FieldType;
       description?: string;
+      activeLabel?: string;
+      inactiveLabel?: string;
       props?: any;
     }
   | {
