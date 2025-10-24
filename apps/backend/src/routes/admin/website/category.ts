@@ -25,6 +25,18 @@ adminCategoryRouter.get(
 );
 
 adminCategoryRouter.get(
+  "/list",
+  adminAuthenticate,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return categoryController.fetchCategoriesList(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
+
+adminCategoryRouter.get(
   "/:id",
   adminAuthenticate,
   fetchCategoryValidation,
