@@ -62,6 +62,55 @@ export const fetchCategories = async (
   }
 };
 
+export const fetchCategoriesList = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { skip, take, orderBy, search } = getPaginationAndFilters(req);
+    const where = generateWhereInput<Prisma.CategoryWhereInput>(search, {
+      "translations.some.name": "insensitive",
+    });
+    const [categories] = await Promise.all([
+      prisma.category.findMany({
+        skip,
+        take,
+        orderBy,
+        where,
+        select: {
+          id: true,
+          translations: {
+            select: {
+              language: {
+                select: {
+                  code: true,
+                },
+              },
+              name: true,
+            },
+          },
+        },
+      }),
+      prisma.category.count({ where }),
+    ]);
+
+    const categoriesOptions = categories.map((category) => ({
+      label: category?.translations[0]?.name,
+      value: category.id,
+    }));
+
+    return res.status(200).json({ data: categoriesOptions });
+  } catch (error) {
+    logCatchyError("Fetch categories_list_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_fetch_categories_list_exception",
+    });
+    next(error);
+  }
+};
+
 export const fetchCategory = async (
   req: Request,
   res: Response,
