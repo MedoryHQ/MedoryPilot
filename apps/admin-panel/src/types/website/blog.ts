@@ -26,13 +26,24 @@ export interface Blog {
   landingOrder: number;
   background: File | null;
   categories: Category[];
-  starredUsers: User[];
-  stars: number;
+  stars: BlogStar[];
+  averageStar: number;
   translations: BlogTranslation[];
   metaTitle: string | null;
   metaDescription: string | null;
   metaKeywords: string | null;
   metaImage: File | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BlogStar {
+  id: string;
+  blog: Blog;
+  blogId: string;
+  user: User;
+  userId: string;
+  star: number;
   createdAt: string;
   updatedAt: string;
 }
