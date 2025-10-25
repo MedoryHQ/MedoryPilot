@@ -52,7 +52,7 @@ export interface DataTableProps<T> {
   total: number | undefined;
   keyExtractor?: (item: T) => string;
   emptyMessage?: string;
-  mobileCardRender?: (item: T, actions?: Action<T>[]) => React.ReactNode;
+  mobileCardRender?: (item?: T, actions?: Action<T>[]) => React.ReactNode;
   onSearch?: (q: string) => void;
   onFilter?: (filters: Record<string, any>) => void;
   onSort?: (sort: { key: string; direction: "asc" | "desc" | null }) => void;
