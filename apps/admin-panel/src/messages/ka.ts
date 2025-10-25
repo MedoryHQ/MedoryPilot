@@ -437,6 +437,7 @@ export const ka = {
       noPageComponentsFound: "გვერდები ვერ მოიძებნა",
       slug: "სლაგი",
       translations: "თარგმანები",
+      created: "შეიქმნა",
       showInFooter: "ჩვენების footer-ში",
       footerOrder: "footer-ის რიგი",
       yes: "დიახ",

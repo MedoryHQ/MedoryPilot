@@ -437,6 +437,7 @@ export const en = {
       slug: "Slug",
       translations: "Translations",
       showInFooter: "Show in Footer",
+      created: "Created At",
       footerOrder: "Footer Order",
       yes: "Yes",
       no: "No",
