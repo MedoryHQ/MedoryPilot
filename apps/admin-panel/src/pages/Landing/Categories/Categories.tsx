@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Badge, Button, DataTable } from "@/components/ui";
+import { Badge, Button, DataTable, Skeleton } from "@/components/ui";
 import { useGetCategories } from "@/libs/queries";
 import {
   formatDate,
@@ -19,7 +19,6 @@ const Categories = () => {
   const [searchParams] = useSearchParams();
   const { filledSearchParams } = getPaginationFields(searchParams);
   const { data, refetch, isFetching } = useGetCategories(filledSearchParams);
-
   const columns: Column<Category>[] = [
     {
       key: "name",
@@ -90,11 +89,49 @@ const Categories = () => {
         total={data?.count}
         emptyMessage={toUpperCase(t("categories.noCategoriesFound"))}
         mobileCardRender={(item) => {
-          const tr = getTranslatedObject(item.translations, i18n.language);
+          if (isFetching || !item) {
+            return (
+              <div>
+                <div className="border-border mb-4 border-b">
+                  <Skeleton className="mb-2 h-8 w-full" />
+                </div>
+
+                <div className="mb-2 grid grid-cols-2 gap-3">
+                  <div>
+                    <span className="text-muted-foreground text-sm">
+                      {toUpperCase(t("categories.translations"))}
+                    </span>
+                    <div className="mt-1">
+                      <Skeleton className="h-6 w-12" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-muted-foreground text-sm">
+                      {toUpperCase(t("categories.blogs"))}
+                    </span>
+                    <div className="mt-1">
+                      <Skeleton className="h-6 w-12" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-muted-foreground text-sm">
+                      {toUpperCase(t("categories.created"))}
+                    </span>
+                    <p className="mt-1 text-sm">
+                      <Skeleton className="h-4 w-32" />
+                    </p>
+                  </div>
+                </div>
+              </div>
+            );
+          }
+          const tr = getTranslatedObject(item?.translations, i18n.language);
           return (
             <div>
               <div className="border-border mb-4 border-b">
-                <h5 className="mb-2 text-[14px]">{toUpperCase(tr.name)}</h5>
+                <h5 className="mb-2 text-[14px]">{toUpperCase(tr?.name)}</h5>
               </div>
               <div className="mb-2 grid grid-cols-2 gap-3">
                 <div>
@@ -103,7 +140,7 @@ const Categories = () => {
                   </span>
                   <div className="mt-1">
                     <Badge variant="secondary">
-                      {item.translations?.length}
+                      {item?.translations?.length}
                     </Badge>
                   </div>
                 </div>
@@ -112,7 +149,7 @@ const Categories = () => {
                     {toUpperCase(t("categories.blogs"))}
                   </span>
                   <div className="mt-1">
-                    <Badge variant="secondary">{item._count.blogs}</Badge>
+                    <Badge variant="secondary">{item?._count.blogs}</Badge>
                   </div>
                 </div>
                 <div>
@@ -120,7 +157,7 @@ const Categories = () => {
                     {toUpperCase(t("categories.created"))}
                   </span>
                   <p className="mt-1 text-sm">
-                    {formatDate(item.createdAt, i18n.language, true)}
+                    {formatDate(item?.createdAt, i18n.language, true)}
                   </p>
                 </div>
               </div>
