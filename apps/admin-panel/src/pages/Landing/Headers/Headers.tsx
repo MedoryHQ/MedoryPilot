@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Badge, Button, DataTable } from "@/components/ui";
+import { Badge, Button, DataTable, Skeleton } from "@/components/ui";
 import { useGetHeaders } from "@/libs/queries";
 import {
   formatDate,
@@ -146,6 +146,61 @@ const Headers = () => {
         editUrl="/landing/headers/edit"
         emptyMessage={toUpperCase(t("headers.noHeadersFound"))}
         mobileCardRender={(item) => {
+          if (isFetching || !item) {
+            return (
+              <div>
+                <div className="flex items-start gap-3">
+                  <div className="border-border bg-muted/10 mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg">
+                    <Skeleton className="h-12 w-12" />
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <Skeleton className="mb-2 h-5 w-1/2" />
+                    <Skeleton className="h-4 w-full" />
+                  </div>
+                </div>
+
+                <div className="border-border grid grid-cols-2 gap-3 border-t pt-3">
+                  <div>
+                    <span className="text-muted-foreground text-sm">
+                      {" "}
+                      {toUpperCase(t("headers.position"))}
+                    </span>
+                    <div className="mt-1">
+                      <Skeleton className="h-5 w-20" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-muted-foreground text-sm">
+                      {toUpperCase(t("headers.status"))}
+                    </span>
+                    <div className="mt-1 flex justify-end">
+                      <Skeleton className="h-6 w-16" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-muted-foreground text-sm">
+                      {toUpperCase(t("headers.translations"))}
+                    </span>
+                    <div className="mt-1">
+                      <Skeleton className="h-6 w-12" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-muted-foreground text-sm">
+                      {toUpperCase(t("headers.created"))}
+                    </span>
+                    <p className="mt-1 text-sm">
+                      <Skeleton className="h-4 w-28" />
+                    </p>
+                  </div>
+                </div>
+              </div>
+            );
+          }
           const tr = getTranslatedObject(item.translations, i18n.language);
           return (
             <div>
