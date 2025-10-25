@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Badge, Button, DataTable } from "@/components/ui";
+import { Badge, Button, DataTable, Skeleton } from "@/components/ui";
 import { useGetHeaders } from "@/libs/queries";
 import {
   formatDate,
@@ -146,15 +146,70 @@ const Headers = () => {
         editUrl="/landing/headers/edit"
         emptyMessage={toUpperCase(t("headers.noHeadersFound"))}
         mobileCardRender={(item) => {
-          const tr = getTranslatedObject(item.translations, i18n.language);
+          if (isFetching || !item) {
+            return (
+              <div>
+                <div className="flex items-start gap-3">
+                  <div className="border-border bg-muted/10 mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg">
+                    <Skeleton className="h-12 w-12" />
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <Skeleton className="mb-2 h-5 w-1/2" />
+                    <Skeleton className="h-4 w-full" />
+                  </div>
+                </div>
+
+                <div className="border-border grid grid-cols-2 gap-3 border-t pt-3">
+                  <div>
+                    <span className="text-muted-foreground text-sm">
+                      {" "}
+                      {toUpperCase(t("headers.position"))}
+                    </span>
+                    <div className="mt-1">
+                      <Skeleton className="h-5 w-20" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-muted-foreground text-sm">
+                      {toUpperCase(t("headers.status"))}
+                    </span>
+                    <div className="mt-1 flex justify-end">
+                      <Skeleton className="h-6 w-16" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-muted-foreground text-sm">
+                      {toUpperCase(t("headers.translations"))}
+                    </span>
+                    <div className="mt-1">
+                      <Skeleton className="h-6 w-12" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-muted-foreground text-sm">
+                      {toUpperCase(t("headers.created"))}
+                    </span>
+                    <p className="mt-1 text-sm">
+                      <Skeleton className="h-4 w-28" />
+                    </p>
+                  </div>
+                </div>
+              </div>
+            );
+          }
+          const tr = getTranslatedObject(item?.translations, i18n.language);
           return (
             <div>
               <div className="flex items-start gap-3">
                 <div className="border-border bg-muted/10 mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg">
-                  {item.logo ? (
+                  {item?.logo ? (
                     <img
-                      src={getFileUrl(item.logo.path)}
-                      alt={tr.name}
+                      src={getFileUrl(item?.logo.path)}
+                      alt={tr?.name}
                       className="h-full w-full object-cover"
                     />
                   ) : (
@@ -162,9 +217,9 @@ const Headers = () => {
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-foreground font-semibold">{tr.name}</h3>
+                  <h3 className="text-foreground font-semibold">{tr?.name}</h3>
                   <p className="text-muted-foreground mt-1 text-sm">
-                    {tr.headline}
+                    {tr?.headline}
                   </p>
                 </div>
               </div>
@@ -173,15 +228,15 @@ const Headers = () => {
                   <span className="text-muted-foreground text-sm">
                     {toUpperCase(t("headers.position"))}
                   </span>
-                  <p className="mt-1 font-medium">{tr.position}</p>
+                  <p className="mt-1 font-medium">{tr?.position}</p>
                 </div>
                 <div>
                   <span className="text-muted-foreground text-sm">
                     {toUpperCase(t("headers.status"))}
                   </span>
                   <div className="mt-1">
-                    <Badge variant={item.active ? "default" : "outline"}>
-                      {item.active
+                    <Badge variant={item?.active ? "default" : "outline"}>
+                      {item?.active
                         ? toUpperCase(t("headers.active"))
                         : toUpperCase(t("headers.inactive"))}
                     </Badge>
@@ -193,7 +248,7 @@ const Headers = () => {
                   </span>
                   <div className="mt-1">
                     <Badge variant="secondary">
-                      {item.translations?.length}
+                      {item?.translations?.length}
                     </Badge>
                   </div>
                 </div>
@@ -202,7 +257,7 @@ const Headers = () => {
                     {toUpperCase(t("headers.created"))}
                   </span>
                   <p className="mt-1 text-sm">
-                    {formatDate(item.createdAt, i18n.language, true)}
+                    {formatDate(item?.createdAt, i18n.language, true)}
                   </p>
                 </div>
               </div>

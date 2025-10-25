@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui";
+import { Button, Skeleton } from "@/components/ui";
 import { useGetSocials } from "@/libs/queries";
 import {
   formatDate,
@@ -105,14 +105,40 @@ const Socials = () => {
         total={data?.count}
         emptyMessage={toUpperCase(t("socials.noSocialsFound"))}
         mobileCardRender={(item) => {
+          if (isFetching || !item) {
+            return (
+              <div>
+                <div className="flex items-start gap-3">
+                  <div className="border-border bg-muted/10 mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg">
+                    <Skeleton className="h-full w-full" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <Skeleton className="mb-2 h-15 w-1/2" />
+                  </div>
+                </div>
+
+                <div className="border-border grid grid-cols-2 gap-3 border-t pt-3">
+                  <div>
+                    <span className="text-muted-foreground text-sm">
+                      {toUpperCase(t("socials.created"))}
+                    </span>
+                    <p className="mt-1 text-sm">
+                      <Skeleton className="h-4 w-3/4" />
+                    </p>
+                  </div>
+                </div>
+              </div>
+            );
+          }
+
           return (
             <div>
               <div className="flex items-start gap-3">
                 <div className="border-border bg-muted/10 mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg">
-                  {item.icon ? (
+                  {item?.icon ? (
                     <img
-                      src={getFileUrl(item.icon.path)}
-                      alt={item.icon.name}
+                      src={getFileUrl(item?.icon.path)}
+                      alt={item?.icon.name}
                       className="h-full w-full object-cover"
                     />
                   ) : (
@@ -122,10 +148,10 @@ const Socials = () => {
                 <div className="min-w-0 flex-1">
                   <a
                     className="text-accent !underline"
-                    href={item.url}
+                    href={item?.url}
                     target="_blank"
                   >
-                    {item.name}
+                    {item?.name}
                   </a>
                 </div>
               </div>
@@ -135,7 +161,7 @@ const Socials = () => {
                     {toUpperCase(t("socials.created"))}
                   </span>
                   <p className="mt-1 text-sm">
-                    {formatDate(item.createdAt, i18n.language, true)}
+                    {formatDate(item?.createdAt, i18n.language, true)}
                   </p>
                 </div>
               </div>

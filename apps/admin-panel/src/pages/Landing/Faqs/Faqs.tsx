@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Badge, Button, DataTable } from "@/components/ui";
+import { Badge, Button, DataTable, Skeleton } from "@/components/ui";
 import { useGetFaqs } from "@/libs/queries";
 import {
   formatDate,
@@ -102,19 +102,66 @@ const Faqs = () => {
         total={data?.count}
         emptyMessage={toUpperCase(t("faqs.noFaqsFound"))}
         mobileCardRender={(item) => {
-          const tr = getTranslatedObject(item.translations, i18n.language);
+          if (isFetching || !item) {
+            return (
+              <div>
+                <div className="border-border mb-4 border-b">
+                  <span className="text-muted-foreground text-sm">
+                    {toUpperCase(t("faqs.question"))}
+                  </span>
+
+                  <div className="mb-2">
+                    <Skeleton className="mb-2 h-5 w-3/4" />
+                  </div>
+
+                  <span className="text-muted-foreground text-sm">
+                    {toUpperCase(t("faqs.answer"))}
+                  </span>
+
+                  <div className="mt-2 mb-3">
+                    <Skeleton className="mb-2 h-4 w-full" />
+                    <Skeleton className="mb-2 h-4 w-full" />
+                    <Skeleton className="h-4 w-3/4" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <span className="text-muted-foreground text-sm">
+                      {toUpperCase(t("faqs.translations"))}
+                    </span>
+                    <div className="mt-1">
+                      <Skeleton className="h-6 w-12" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-muted-foreground text-sm">
+                      {toUpperCase(t("faqs.created"))}
+                    </span>
+                    <p className="mt-1 text-sm">
+                      <Skeleton className="h-4 w-32" />
+                    </p>
+                  </div>
+                </div>
+              </div>
+            );
+          }
+          const tr = getTranslatedObject(item?.translations, i18n.language);
           return (
             <div>
               <div className="border-border mb-4 border-b">
                 <span className="text-muted-foreground text-sm">
                   {toUpperCase(t("faqs.question"))}
                 </span>
-                <h5 className="mb-2 text-[14px]">{toUpperCase(tr.question)}</h5>
+                <h5 className="mb-2 text-[14px]">
+                  {toUpperCase(tr?.question)}
+                </h5>
                 <span className="text-muted-foreground text-sm">
                   {toUpperCase(t("faqs.answer"))}
                 </span>
                 <p className="text-foreground mb-3 line-clamp-4 text-[10px]">
-                  {toUpperCase(tr.answer)}
+                  {toUpperCase(tr?.answer)}
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -124,7 +171,7 @@ const Faqs = () => {
                   </span>
                   <div className="mt-1">
                     <Badge variant="secondary">
-                      {item.translations?.length}
+                      {item?.translations?.length}
                     </Badge>
                   </div>
                 </div>
@@ -133,7 +180,7 @@ const Faqs = () => {
                     {toUpperCase(t("faqs.created"))}
                   </span>
                   <p className="mt-1 text-sm">
-                    {formatDate(item.createdAt, i18n.language, true)}
+                    {formatDate(item?.createdAt, i18n.language, true)}
                   </p>
                 </div>
               </div>

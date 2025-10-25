@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Badge, Button, DataTable } from "@/components/ui";
+import { Badge, Button, DataTable, Skeleton } from "@/components/ui";
 import { useGetNewses } from "@/libs/queries";
 import {
   formatDate,
@@ -19,7 +19,6 @@ const Newses = () => {
   const [searchParams] = useSearchParams();
   const { filledSearchParams } = getPaginationFields(searchParams);
   const { data, refetch, isFetching } = useGetNewses(filledSearchParams);
-
   const filters: FilterConfig[] = [
     {
       key: "showInLanding",
@@ -156,13 +155,46 @@ const Newses = () => {
         editUrl="/landing/newses/edit"
         emptyMessage={toUpperCase(t("newses.noNewsesFound"))}
         mobileCardRender={(item) => {
+          if (isFetching || !item) {
+            return (
+              <article className="flex flex-col gap-3">
+                <div className="relative w-full overflow-hidden rounded-md">
+                  <Skeleton className="h-40 w-full" />
+                </div>
+
+                <div className="mt-2 min-w-0 flex-1">
+                  <Skeleton className="h-5 w-3/4" />
+                </div>
+
+                <div className="grid grid-cols-2 items-start gap-2">
+                  <div>
+                    <span className="text-muted-foreground text-sm">
+                      {toUpperCase(t("newses.translations"))}
+                    </span>
+                    <div className="mt-1">
+                      <Skeleton className="inline-block h-6 w-12 rounded-md" />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col items-end">
+                    <span className="text-muted-foreground mb-[10px] text-sm">
+                      {toUpperCase(t("newses.created") || "Created")}
+                    </span>
+                    <p className="mt-1 text-sm">
+                      <Skeleton className="h-4 w-28" />
+                    </p>
+                  </div>
+                </div>
+              </article>
+            );
+          }
           return (
             <article className="flex flex-col gap-3">
               <div className="bg-muted/10 relative w-full overflow-hidden rounded-md">
-                {item.background ? (
+                {item?.background ? (
                   <img
-                    src={getFileUrl(item.background.path)}
-                    alt={item.background.name}
+                    src={getFileUrl(item?.background.path)}
+                    alt={item?.background.name}
                     className="h-40 w-full object-cover"
                   />
                 ) : (
@@ -171,13 +203,13 @@ const Newses = () => {
                   </div>
                 )}
 
-                {item.showInLanding && (
+                {item?.showInLanding && (
                   <span className="absolute top-2 left-2 rounded-md bg-yellow-500/95 px-2 py-0.5 text-xs font-medium text-white">
                     {toUpperCase(t("newses.inLanding") || "In Landing")}
                   </span>
                 )}
                 <div className="mt-2 min-w-0 flex-1">
-                  <h3 className="text-foreground font-normal">{item.slug}</h3>
+                  <h3 className="text-foreground font-normal">{item?.slug}</h3>
                 </div>
               </div>
               <div>
@@ -185,7 +217,9 @@ const Newses = () => {
                   {toUpperCase(t("headers.translations"))}
                 </span>
                 <div className="mt-1">
-                  <Badge variant="secondary">{item.translations?.length}</Badge>
+                  <Badge variant="secondary">
+                    {item?.translations?.length}
+                  </Badge>
                 </div>
               </div>
               <div>
@@ -193,7 +227,7 @@ const Newses = () => {
                   {toUpperCase(t("headers.created"))}
                 </span>
                 <p className="mt-1 text-sm">
-                  {formatDate(item.createdAt, i18n.language, true)}
+                  {formatDate(item?.createdAt, i18n.language, true)}
                 </p>
               </div>
             </article>

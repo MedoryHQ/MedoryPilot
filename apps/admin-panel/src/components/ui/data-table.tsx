@@ -19,7 +19,8 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuItem
+  DropdownMenuItem,
+  Skeleton
 } from "@/components/ui";
 import {
   Search,
@@ -467,7 +468,45 @@ export function DataTable<T extends Record<string, any>>({
         </Card>
 
         <div className="space-y-4 md:hidden">
-          {data.length === 0 ? (
+          {isLoading ? (
+            Array.from({ length: 10 }).map((_, sIdx) => (
+              <motion.div
+                key={`skeleton-${sIdx}`}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: sIdx * 0.03 }}
+              >
+                <Card className="border-border/50" aria-busy="true">
+                  <CardContent className="p-5">
+                    <div className="space-y-4">
+                      {mobileCardRender
+                        ? mobileCardRender()
+                        : Array.from({
+                            length: Math.max(3, columns?.length ?? 3)
+                          }).map((_, rowIdx) => (
+                            <div
+                              key={`s-row-${rowIdx}`}
+                              className="flex items-start justify-between"
+                            >
+                              <Skeleton className="h-4 w-1/3 rounded-md" />
+                              <Skeleton className="h-4 w-1/2 rounded-md" />
+                            </div>
+                          ))}
+
+                      {effectiveActions && effectiveActions.length > 0 && (
+                        <div className="border-border flex gap-2 border-t pt-3">
+                          <div className="flex w-full gap-2">
+                            <Skeleton className="h-9 flex-1 rounded-md" />
+                            <Skeleton className="h-9 flex-1 rounded-md" />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))
+          ) : data.length === 0 ? (
             <Card className="border-border/50">
               <CardContent className="p-4">
                 <div className="flex flex-col items-center gap-3 text-center">
@@ -508,18 +547,25 @@ export function DataTable<T extends Record<string, any>>({
                           ))}
                       {effectiveActions && effectiveActions.length > 0 && (
                         <div className="border-border flex gap-2 border-t pt-3">
-                          {effectiveActions.map((action, idx) => (
-                            <Button
-                              key={idx}
-                              variant={action.variant || "outline"}
-                              size="sm"
-                              onClick={() => action.onClick(row)}
-                              className={cn("flex-1", action.className)}
-                            >
-                              {action.icon}
-                              <span className="ml-2">{action.label}</span>
-                            </Button>
-                          ))}
+                          {isLoading ? (
+                            <div className="flex w-full gap-2">
+                              <Skeleton className="h-9 flex-1 rounded-md" />
+                              <Skeleton className="h-9 flex-1 rounded-md" />
+                            </div>
+                          ) : (
+                            effectiveActions.map((action, idx) => (
+                              <Button
+                                key={idx}
+                                variant={action.variant || "outline"}
+                                size="sm"
+                                onClick={() => action.onClick(row)}
+                                className={cn("flex-1", action.className)}
+                              >
+                                {action.icon}
+                                <span className="ml-2">{action.label}</span>
+                              </Button>
+                            ))
+                          )}
                         </div>
                       )}
                     </div>

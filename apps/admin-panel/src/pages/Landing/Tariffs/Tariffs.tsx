@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Badge, Button, DataTable } from "@/components/ui";
+import { Badge, Button, DataTable, Skeleton } from "@/components/ui";
 import { formatDate, getPaginationFields, toUpperCase } from "@/utils";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -16,6 +16,7 @@ const Tariffs = () => {
   const { filledSearchParams } = getPaginationFields(searchParams);
 
   const { data, refetch, isFetching } = useGetTariffs(filledSearchParams);
+
   const items = data?.data ?? [];
   const total = data?.count;
 
@@ -146,21 +147,59 @@ const Tariffs = () => {
         sortable
         keyExtractor={(it) => it.id}
         mobileCardRender={(item) => {
+          if (isFetching || !item) {
+            return (
+              <div>
+                <div className="mb-3 flex items-center justify-between">
+                  <div>
+                    <div className="text-sm font-medium">
+                      <Skeleton className="mb-1 h-4 w-20" />
+                    </div>
+                    <div className="text-foreground mt-1 text-lg font-semibold">
+                      <Skeleton className="h-6 w-16" />
+                    </div>
+                  </div>
+                  <div className="text-muted-foreground text-sm">
+                    <Skeleton className="h-4 w-24" />
+                  </div>
+                </div>
+
+                <div className="border-border grid grid-cols-2 gap-3 border-t pt-3">
+                  <div>
+                    <span className="text-muted-foreground text-sm">
+                      {toUpperCase(t("tariffs.from"))}
+                    </span>
+                    <p className="mt-1 text-sm">
+                      <Skeleton className="h-4 w-3/4" />
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground text-sm">
+                      {toUpperCase(t("tariffs.to"))}
+                    </span>
+                    <p className="mt-1 text-sm">
+                      <Skeleton className="h-4 w-3/4" />
+                    </p>
+                  </div>
+                </div>
+              </div>
+            );
+          }
           return (
             <div>
               <div className="mb-3 flex items-center justify-between">
                 <div>
                   <div className="text-sm font-medium">
                     {toUpperCase(
-                      t(item.isCurrent ? "tariffs.tariff" : "tariffs.history")
+                      t(item?.isCurrent ? "tariffs.tariff" : "tariffs.history")
                     )}
                   </div>
                   <div className="text-foreground mt-1 text-lg font-semibold">
-                    {String(item.price)}
+                    {String(item?.price)}
                   </div>
                 </div>
                 <div className="text-muted-foreground text-sm">
-                  {formatDate(item.createdAt, i18n.language, true)}
+                  {formatDate(item?.createdAt, i18n.language, true)}
                 </div>
               </div>
 
@@ -170,8 +209,8 @@ const Tariffs = () => {
                     {toUpperCase(t("tariffs.from"))}
                   </span>
                   <p className="mt-1 text-sm">
-                    {item.fromDate
-                      ? formatDate(item.fromDate, i18n.language)
+                    {item?.fromDate
+                      ? formatDate(item?.fromDate, i18n.language)
                       : ""}
                   </p>
                 </div>
@@ -180,8 +219,8 @@ const Tariffs = () => {
                     {toUpperCase(t("tariffs.to"))}
                   </span>
                   <p className="mt-1 text-sm">
-                    {item.endDate
-                      ? formatDate(item.endDate, i18n.language)
+                    {item?.endDate
+                      ? formatDate(item?.endDate, i18n.language)
                       : ""}
                   </p>
                 </div>

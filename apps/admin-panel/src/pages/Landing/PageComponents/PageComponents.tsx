@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Badge, Button, DataTable } from "@/components/ui";
+import { Badge, Button, DataTable, Skeleton } from "@/components/ui";
 import { useGetPageComponents } from "@/libs/queries";
 import { formatDate, getPaginationFields, toUpperCase } from "@/utils";
 import { useTranslation } from "react-i18next";
@@ -124,13 +124,56 @@ const PageComponents = () => {
         editUrl="/landing/page-components/edit"
         emptyMessage={toUpperCase(t("pageComponents.noPageComponentsFound"))}
         mobileCardRender={(item) => {
+          if (isFetching || !item) {
+            return (
+              <article className="flex flex-col gap-3">
+                <div className="relative w-full overflow-hidden rounded-md">
+                  <Skeleton className="h-40 w-full" />
+                </div>
+
+                <div className="mb-2 min-w-0 flex-1">
+                  <Skeleton className="h-5 w-full" />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <span className="text-muted-foreground text-sm">
+                      {toUpperCase(t("pageComponents.translations"))}
+                    </span>
+                    <div className="mt-1">
+                      <Skeleton className="inline-block h-6 w-full rounded-md" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-muted-foreground text-sm">
+                      {toUpperCase(t("pageComponents.footerOrder"))}
+                    </span>
+                    <div className="mt-1">
+                      <Skeleton className="inline-block h-6 w-full rounded-md" />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <span className="text-muted-foreground text-sm">
+                    {toUpperCase(t("pageComponents.created"))}
+                  </span>
+                  <p className="mt-1 text-sm">
+                    <Skeleton className="h-4 w-[50%]" />
+                  </p>
+                </div>
+              </article>
+            );
+          }
+
           return (
             <article className="flex flex-col gap-3">
               <div className="bg-muted/10 relative w-full overflow-hidden rounded-md">
                 <div className="mb-2 min-w-0 flex-1">
-                  <h3 className="text-foreground font-normal">{item.slug}</h3>
+                  <h3 className="text-foreground font-normal">{item?.slug}</h3>
                 </div>
-                {item.footer && (
+                {item?.footer && (
                   <span className="absolute top-2 left-2 rounded-md bg-yellow-500/95 px-2 py-0.5 text-xs font-medium text-white">
                     {toUpperCase(
                       t("pageComponents.showInFooter") || "In Footer"
@@ -141,29 +184,29 @@ const PageComponents = () => {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <span className="text-muted-foreground text-sm">
-                    {toUpperCase(t("headers.translations"))}
+                    {toUpperCase(t("pageComponents.translations"))}
                   </span>
                   <div className="mt-1">
                     <Badge variant="secondary">
-                      {item.translations?.length}
+                      {item?.translations?.length}
                     </Badge>
                   </div>
                 </div>
                 <div>
                   <span className="text-muted-foreground text-sm">
-                    {toUpperCase(t("headers.footerOrder"))}
+                    {toUpperCase(t("pageComponents.footerOrder"))}
                   </span>
                   <div className="mt-1">
-                    <Badge variant="secondary">{item.footerOrder}</Badge>
+                    <Badge variant="secondary">{item?.footerOrder}</Badge>
                   </div>
                 </div>
               </div>
               <div>
                 <span className="text-muted-foreground text-sm">
-                  {toUpperCase(t("headers.created"))}
+                  {toUpperCase(t("pageComponents.created"))}
                 </span>
                 <p className="mt-1 text-sm">
-                  {formatDate(item.createdAt, i18n.language, true)}
+                  {formatDate(item?.createdAt, i18n.language, true)}
                 </p>
               </div>
             </article>
