@@ -171,9 +171,9 @@ const PageComponents = () => {
             <article className="flex flex-col gap-3">
               <div className="bg-muted/10 relative w-full overflow-hidden rounded-md">
                 <div className="mb-2 min-w-0 flex-1">
-                  <h3 className="text-foreground font-normal">{item.slug}</h3>
+                  <h3 className="text-foreground font-normal">{item?.slug}</h3>
                 </div>
-                {item.footer && (
+                {item?.footer && (
                   <span className="absolute top-2 left-2 rounded-md bg-yellow-500/95 px-2 py-0.5 text-xs font-medium text-white">
                     {toUpperCase(
                       t("pageComponents.showInFooter") || "In Footer"
@@ -188,7 +188,7 @@ const PageComponents = () => {
                   </span>
                   <div className="mt-1">
                     <Badge variant="secondary">
-                      {item.translations?.length}
+                      {item?.translations?.length}
                     </Badge>
                   </div>
                 </div>
@@ -197,7 +197,7 @@ const PageComponents = () => {
                     {toUpperCase(t("pageComponents.footerOrder"))}
                   </span>
                   <div className="mt-1">
-                    <Badge variant="secondary">{item.footerOrder}</Badge>
+                    <Badge variant="secondary">{item?.footerOrder}</Badge>
                   </div>
                 </div>
               </div>
@@ -206,7 +206,7 @@ const PageComponents = () => {
                   {toUpperCase(t("pageComponents.created"))}
                 </span>
                 <p className="mt-1 text-sm">
-                  {formatDate(item.createdAt, i18n.language, true)}
+                  {formatDate(item?.createdAt, i18n.language, true)}
                 </p>
               </div>
             </article>

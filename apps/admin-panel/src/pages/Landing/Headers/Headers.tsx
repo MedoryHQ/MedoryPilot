@@ -201,15 +201,15 @@ const Headers = () => {
               </div>
             );
           }
-          const tr = getTranslatedObject(item.translations, i18n.language);
+          const tr = getTranslatedObject(item?.translations, i18n.language);
           return (
             <div>
               <div className="flex items-start gap-3">
                 <div className="border-border bg-muted/10 mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg">
-                  {item.logo ? (
+                  {item?.logo ? (
                     <img
-                      src={getFileUrl(item.logo.path)}
-                      alt={tr.name}
+                      src={getFileUrl(item?.logo.path)}
+                      alt={tr?.name}
                       className="h-full w-full object-cover"
                     />
                   ) : (
@@ -217,9 +217,9 @@ const Headers = () => {
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-foreground font-semibold">{tr.name}</h3>
+                  <h3 className="text-foreground font-semibold">{tr?.name}</h3>
                   <p className="text-muted-foreground mt-1 text-sm">
-                    {tr.headline}
+                    {tr?.headline}
                   </p>
                 </div>
               </div>
@@ -228,15 +228,15 @@ const Headers = () => {
                   <span className="text-muted-foreground text-sm">
                     {toUpperCase(t("headers.position"))}
                   </span>
-                  <p className="mt-1 font-medium">{tr.position}</p>
+                  <p className="mt-1 font-medium">{tr?.position}</p>
                 </div>
                 <div>
                   <span className="text-muted-foreground text-sm">
                     {toUpperCase(t("headers.status"))}
                   </span>
                   <div className="mt-1">
-                    <Badge variant={item.active ? "default" : "outline"}>
-                      {item.active
+                    <Badge variant={item?.active ? "default" : "outline"}>
+                      {item?.active
                         ? toUpperCase(t("headers.active"))
                         : toUpperCase(t("headers.inactive"))}
                     </Badge>
@@ -248,7 +248,7 @@ const Headers = () => {
                   </span>
                   <div className="mt-1">
                     <Badge variant="secondary">
-                      {item.translations?.length}
+                      {item?.translations?.length}
                     </Badge>
                   </div>
                 </div>
@@ -257,7 +257,7 @@ const Headers = () => {
                     {toUpperCase(t("headers.created"))}
                   </span>
                   <p className="mt-1 text-sm">
-                    {formatDate(item.createdAt, i18n.language, true)}
+                    {formatDate(item?.createdAt, i18n.language, true)}
                   </p>
                 </div>
               </div>
