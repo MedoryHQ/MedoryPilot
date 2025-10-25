@@ -528,6 +528,7 @@ export const en = {
       background: "Background",
       slug: "Slug",
       translations: "Translations",
+      created: "Created At",
       showInLanding: "Show in Landing",
       order: "Order",
       inLanding: "In Landing",
