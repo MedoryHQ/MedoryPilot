@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Badge, Button } from "@/components/ui";
+import { Badge, Button, Skeleton } from "@/components/ui";
 import { useGetServices } from "@/libs/queries";
 import {
   formatDate,
@@ -143,18 +143,71 @@ const Services = () => {
         editUrl="/landing/services/edit"
         emptyMessage={toUpperCase(t("services.noServicesFound"))}
         mobileCardRender={(item) => {
+          if (isFetching || !item) {
+            return (
+              <div>
+                <div className="flex items-start gap-3">
+                  <div className="border-border bg-muted/10 mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg">
+                    <Skeleton className="h-full w-full" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <Skeleton className="mb-2 h-15 w-3/4" />
+                  </div>
+                </div>
+
+                <div className="border-border grid grid-cols-2 gap-3 border-t pt-3">
+                  <div>
+                    <span className="text-muted-foreground text-sm">
+                      {toUpperCase(t("services.title"))}
+                    </span>
+                    <div className="mt-1">
+                      <Skeleton className="h-4 w-32" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-muted-foreground text-sm">
+                      {toUpperCase(t("services.translations"))}
+                    </span>
+                    <div className="mt-1">
+                      <Skeleton className="h-6 w-12" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-muted-foreground text-sm">
+                      {toUpperCase(t("services.visits"))}
+                    </span>
+                    <div className="mt-1">
+                      <Skeleton className="h-6 w-14" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-muted-foreground text-sm">
+                      {toUpperCase(t("services.created"))}
+                    </span>
+                    <p className="mt-1 text-sm">
+                      <Skeleton className="h-4 w-32" />
+                    </p>
+                  </div>
+                </div>
+              </div>
+            );
+          }
+
           const translation = getTranslatedObject(
-            item.translations,
+            item?.translations,
             i18n.language
           );
           return (
             <div>
               <div className="flex items-start gap-3">
                 <div className="border-border bg-muted/10 mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg">
-                  {item.icon ? (
+                  {item?.icon ? (
                     <img
-                      src={getFileUrl(item.icon.path)}
-                      alt={item.icon.name}
+                      src={getFileUrl(item?.icon.path)}
+                      alt={item?.icon.name}
                       className="h-full w-full object-cover"
                     />
                   ) : (
@@ -163,7 +216,7 @@ const Services = () => {
                 </div>
                 <div className="min-w-0 flex-1">
                   <h3 className="text-foreground font-semibold">
-                    {translation.title}
+                    {translation?.title}
                   </h3>
                 </div>
               </div>
@@ -172,7 +225,7 @@ const Services = () => {
                   <span className="text-muted-foreground text-sm">
                     {toUpperCase(t("services.title"))}
                   </span>
-                  <p className="mt-1 font-medium">{translation.title}</p>
+                  <p className="mt-1 font-medium">{translation?.title}</p>
                 </div>
                 <div>
                   <span className="text-muted-foreground text-sm">
@@ -180,7 +233,7 @@ const Services = () => {
                   </span>
                   <div className="mt-1">
                     <Badge variant="secondary">
-                      {item.translations?.length}
+                      {item?.translations?.length}
                     </Badge>
                   </div>
                 </div>
@@ -190,7 +243,7 @@ const Services = () => {
                   </span>
                   <div className="mt-1">
                     <Badge variant="default" className="px-3 py-1">
-                      {item._count.visits}
+                      {item?._count.visits}
                     </Badge>
                   </div>
                 </div>
@@ -199,7 +252,7 @@ const Services = () => {
                     {toUpperCase(t("services.created"))}
                   </span>
                   <p className="mt-1 text-sm">
-                    {formatDate(item.createdAt, i18n.language, true)}
+                    {formatDate(item?.createdAt, i18n.language, true)}
                   </p>
                 </div>
               </div>
