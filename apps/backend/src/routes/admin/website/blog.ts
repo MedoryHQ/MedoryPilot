@@ -29,6 +29,7 @@ adminBlogRouter.get(
   "/filter-options",
   adminAuthenticate,
   fetchBlogsFilterOptions,
+  validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return blogController.fetchBlogsFilterOptions(req, res, next);

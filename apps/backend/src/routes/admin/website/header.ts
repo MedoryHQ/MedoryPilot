@@ -28,6 +28,7 @@ adminHeaderRouter.get(
   "/:id",
   adminAuthenticate,
   fetchHeaderValidation,
+  validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return headerController.fetchHeader(req, res, next);

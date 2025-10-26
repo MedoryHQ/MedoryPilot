@@ -40,6 +40,7 @@ adminCategoryRouter.get(
   "/:id",
   adminAuthenticate,
   fetchCategoryValidation,
+  validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       return categoryController.fetchCategory(req, res, next);
