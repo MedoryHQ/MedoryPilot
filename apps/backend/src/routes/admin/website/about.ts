@@ -21,3 +21,15 @@ adminAboutRouter.get(
     }
   }
 );
+
+adminAboutRouter.delete(
+  "/",
+  adminAuthenticate,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return AboutController.deleteAbout(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);

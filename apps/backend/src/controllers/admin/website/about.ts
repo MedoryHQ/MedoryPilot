@@ -53,3 +53,49 @@ export const fetchAbout = async (
     next(error);
   }
 };
+
+export const deleteAbout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    logInfo("About delete attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "about_delete_attempt",
+    });
+
+    const about = await prisma.about.deleteMany();
+
+    if (!about.count) {
+      logWarn("About delete failed: about not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "about_delete_failed",
+      });
+      return sendError(req, res, 404, "aboutNotFound");
+    }
+
+    logInfo("About deleted successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "about_deleted",
+    });
+
+    return res.status(200).json({
+      message: getResponseMessage("aboutDeleted"),
+    });
+  } catch (error) {
+    logCatchyError("delete_about_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_delete_about_exception",
+    });
+    next(error);
+  }
+};
