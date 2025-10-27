@@ -47,3 +47,17 @@ adminAboutRouter.post(
     }
   }
 );
+
+adminAboutRouter.put(
+  "/:id",
+  adminAuthenticate,
+  updateAboutValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return AboutController.updateAbout(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);

@@ -167,3 +167,91 @@ export const createAbout = async (
     next(error);
   }
 };
+
+export const updateAbout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    const { translations, image } = req.body as UpdateAboutDTO;
+
+    logInfo("About update attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "about_update_attempt",
+    });
+
+    const translationsToCreate = Prisma.validator<
+      Prisma.AboutTranslationCreateWithoutAboutInput[]
+    >()(createTranslations(translations) as any);
+    const imageToCreate = image
+      ? {
+          path: image.path,
+          name: image.name,
+          size: image.size,
+        }
+      : undefined;
+
+    const findAbout = await prisma.about.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        image: true,
+      },
+    });
+
+    if (!findAbout) {
+      logWarn("About update failed: about not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "about_update_failed",
+      });
+      return sendError(req, res, 404, "aboutNotFound");
+    }
+
+    const about = await prisma.about.update({
+      where: {
+        id,
+      },
+      data: {
+        translations: {
+          deleteMany: {},
+          create: translationsToCreate,
+        },
+        image: imageToCreate
+          ? {
+              delete: findAbout.image ? {} : undefined,
+              create: imageToCreate,
+            }
+          : findAbout.image
+          ? { delete: {} }
+          : undefined,
+      },
+    });
+
+    logInfo("About updated successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "about_updated",
+    });
+
+    return res.json({
+      data: about,
+    });
+  } catch (error) {
+    logCatchyError("Update about exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_update_about_exception",
+    });
+    next(error);
+  }
+};
