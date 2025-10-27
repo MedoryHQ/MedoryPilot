@@ -1,4 +1,4 @@
-import { toUpperCase } from "@/lib/utils";
+import { toUpperCase } from "@/utils";
 
 type TranslationItem = {
   language?: { code: string };

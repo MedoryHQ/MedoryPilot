@@ -9,7 +9,7 @@ import {
 import { addToast } from "@heroui/toast";
 import { useLocale } from "next-intl";
 import { handleError } from "@/lib/handle-error";
-import { toUpperCase } from "@/lib/utils";
+import { toUpperCase } from "@/utils";
 
 interface ReactQueryProviderProps {
   children: React.ReactNode;

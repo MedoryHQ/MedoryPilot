@@ -4,7 +4,7 @@ import { Locale, routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { getMessages, getTranslations } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import type { Viewport } from "next";
 import ReactQueryProvider from "@/components/QueryProvider";
