@@ -6,8 +6,8 @@ import {
   Visit,
   File,
   RefreshToken,
+  BlogStar,
 } from ".";
-import { BlogStar } from "./website";
 
 export interface User {
   id: string;

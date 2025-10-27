@@ -20,8 +20,8 @@ import {
   RecipeUnitUsageInterval,
   RecipeUnitUsagePeriod,
   EatingRule,
+  Service,
 } from ".";
-import { Service } from "./website";
 
 export interface Visit {
   id: string;
