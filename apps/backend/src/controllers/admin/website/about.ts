@@ -99,3 +99,71 @@ export const deleteAbout = async (
     next(error);
   }
 };
+
+export const createAbout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { translations, image } = req.body as CreateAboutDTO;
+
+    logInfo("About create attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "about_create_attempt",
+    });
+
+    const aboutExistance = await prisma.about.count();
+
+    if (aboutExistance) {
+      logWarn("About create failed: about already exist", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+        event: "about_create_failed",
+      });
+      return sendError(req, res, 400, "aboutAlreadyExists");
+    }
+
+    const translationsToCreate = Prisma.validator<
+      Prisma.AboutTranslationCreateWithoutAboutInput[]
+    >()(createTranslations(translations) as any);
+
+    const imageToCreate = image
+      ? {
+          path: image.path,
+          name: image.name,
+          size: image.size,
+        }
+      : undefined;
+
+    const about = await prisma.about.create({
+      data: {
+        translations: { create: translationsToCreate },
+        image: {
+          create: imageToCreate,
+        },
+      },
+    });
+
+    logInfo("About created successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "about_created",
+    });
+
+    return res.status(201).json({
+      data: about,
+    });
+  } catch (error) {
+    logCatchyError("Create about exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_create_about_exception",
+    });
+    next(error);
+  }
+};
