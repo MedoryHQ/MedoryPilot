@@ -42,7 +42,7 @@ export const useAuthStore = create<AuthStore>()(
             otpExpiresIso = null;
           }
         }
-        if (!otpSentIso && otpExpiresIso) {
+        if (otpExpiresIso) {
           const expiresTs = new Date(otpExpiresIso).getTime();
           const sentTs = expiresTs - DEFAULT_OTP_TTL_MS;
           otpSentIso = new Date(sentTs).toISOString();
