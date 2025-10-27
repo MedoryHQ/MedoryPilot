@@ -7,6 +7,8 @@ import { NextIntlClientProvider } from "next-intl";
 import { cn } from "@/lib/utils";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import type { Viewport } from "next";
+import ReactQueryProvider from "@/components/QueryProvider";
+import HeroProvider from "@/contexts/HeroProvider";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -52,7 +54,13 @@ export default async function RootLayout({
     <html lang={locale} suppressHydrationWarning>
       <body className={cn(notoSans.className)}>
         <NextIntlClientProvider messages={messages}>
-          <NuqsAdapter>{children}</NuqsAdapter>
+          <ReactQueryProvider>
+            <HeroProvider>
+              <NuqsAdapter>
+                <div className="min-h-mobile md:min-h-desktop">{children}</div>
+              </NuqsAdapter>
+            </HeroProvider>
+          </ReactQueryProvider>
         </NextIntlClientProvider>
       </body>
     </html>

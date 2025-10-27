@@ -1,5 +1,5 @@
 type ErrorType = {
-  message: { en: string; ka: string } | string;
+  message: string;
   status: number;
 };
 
@@ -24,7 +24,9 @@ export const handleError = (error: unknown, locale: string): ErrorType[] => {
 
   const getMessage = (msg: { en: string; ka: string } | string): string =>
     typeof msg === "object"
-      ? msg[locale as "ka" | "en"] || defaultMessage[locale as "ka" | "en"]
+      ? msg[locale as "ka" | "en"] ||
+        msg.en ||
+        defaultMessage[locale as "ka" | "en"]
       : msg || defaultMessage[locale as "ka" | "en"];
 
   if (apiError.response?.data.errors?.length) {
