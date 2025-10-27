@@ -69,3 +69,8 @@ export interface RefreshToken {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface Option {
+  label: string;
+  value: any;
+}

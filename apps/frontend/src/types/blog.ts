@@ -1,4 +1,4 @@
-import { File, Language, User, Category } from ".";
+import { File, Language, User, Category, Option } from ".";
 
 export interface BlogsResponse {
   data: Blog[];
@@ -46,4 +46,10 @@ export interface BlogStar {
   blogId: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface BlogsFilterOptions {
+  data: {
+    categories: Option[];
+  };
 }
