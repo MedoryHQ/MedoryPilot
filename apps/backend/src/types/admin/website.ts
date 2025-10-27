@@ -125,3 +125,10 @@ export interface CreateCategoryDTO {
 }
 
 export type UpdateCategoryDTO = CreateCategoryDTO;
+
+export interface CreateAboutDTO {
+  image?: File | null;
+  translations: Translations;
+}
+
+export type UpdateAboutDTO = CreateAboutDTO;

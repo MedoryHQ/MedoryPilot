@@ -80,5 +80,5 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((en|ka)(/.*)?)", "/"],
+  matcher: ["/", "/(en|ka)/:path*"],
 };

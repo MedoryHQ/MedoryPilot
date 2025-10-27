@@ -84,6 +84,10 @@ export const errorMessages = {
     en: "Contact not found",
     ka: "კონტაქტი ვერ მოიძებნა",
   },
+  aboutNotFound: {
+    en: "About not found",
+    ka: "ჩემს შესახებ ინფორმაცია ვერ მოიძებნა",
+  },
   categoryNotFound: {
     en: "Category not found",
     ka: "კატეგორია ვერ მოიძებნა",
@@ -182,6 +186,10 @@ export const errorMessages = {
     en: "Contact deleted successfully",
     ka: "კონტაქტი წარმატებით წაიშალა",
   },
+  aboutDeleted: {
+    en: "About deleted successfully",
+    ka: "ჩემს შესახებ ინფორმაცია წარმატებით წაიშალა",
+  },
   newsDeleted: {
     en: "News deleted successfully",
     ka: "სიახლე წარმატებით წაიშალა",
@@ -205,6 +213,10 @@ export const errorMessages = {
   footerAlreadyExists: {
     en: "Footer already exists",
     ka: "Footer უკვე არსებობს",
+  },
+  aboutAlreadyExists: {
+    en: "About already exists",
+    ka: "ჩემს შესახებ ინფორმაცია უკვე არსებობს",
   },
   categoryDeleted: {
     en: "Category deleted successfully",

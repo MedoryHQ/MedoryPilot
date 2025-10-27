@@ -20,6 +20,7 @@ const adminRouteList = [
   { path: "/social", router: AdminRoutes.adminSocialRouter },
   { path: "/footer", router: AdminRoutes.adminFooterRouter },
   { path: "/category", router: AdminRoutes.adminCategoryRouter },
+  { path: "/about", router: AdminRoutes.adminAboutRouter },
   { path: "/upload", router: AdminRoutes.uploadRouter },
 ];
 
@@ -35,6 +36,7 @@ const customerRouteList = [
   { path: "/page-component", router: CustomerRoutes.pageComponentRouter },
   { path: "/social", router: CustomerRoutes.socialRouter },
   { path: "/footer", router: CustomerRoutes.footerRouter },
+  { path: "/about", router: CustomerRoutes.aboutRouter },
 ];
 
 export const generateRoutes = (app: Express) => {

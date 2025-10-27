@@ -7,3 +7,4 @@ export * from "./news";
 export * from "./blog";
 export * from "./social";
 export * from "./footer";
+export * from "./about";
