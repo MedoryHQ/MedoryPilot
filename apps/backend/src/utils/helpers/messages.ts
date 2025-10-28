@@ -104,6 +104,10 @@ export const errorMessages = {
     en: "Page not found",
     ka: "გვერდი ვერ მოიძებნა",
   },
+  educationNotFound: {
+    en: "Education not found",
+    ka: "განათლება ვერ მოიძებნა",
+  },
   socialNotFound: {
     en: "Social not found",
     ka: "სოციალური ქსელი ვერ მოიძებნა",
@@ -169,6 +173,10 @@ export const errorMessages = {
   tariffDeleted: {
     en: "Tariff deleted successfully",
     ka: "ტარიფი წარმატებით წაიშალა",
+  },
+  educationDeleted: {
+    en: "Education deleted successfully",
+    ka: "განათლება წარმატებით წაიშალა",
   },
   FAQDeleted: {
     en: "FAQ deleted successfully",

@@ -21,6 +21,7 @@ const adminRouteList = [
   { path: "/footer", router: AdminRoutes.adminFooterRouter },
   { path: "/category", router: AdminRoutes.adminCategoryRouter },
   { path: "/about", router: AdminRoutes.adminAboutRouter },
+  { path: "/education", router: AdminRoutes.adminEducationRouter },
   { path: "/upload", router: AdminRoutes.uploadRouter },
 ];
 
