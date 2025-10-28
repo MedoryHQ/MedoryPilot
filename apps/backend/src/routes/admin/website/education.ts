@@ -37,3 +37,17 @@ adminEducationRouter.get(
     }
   }
 );
+
+adminEducationRouter.delete(
+  "/:id",
+  adminAuthenticate,
+  deleteEducationValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return EducationController.deleteEducation(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);

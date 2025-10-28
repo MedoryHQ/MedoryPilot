@@ -143,3 +143,55 @@ export const fetchEducation = async (
     next(error);
   }
 };
+
+export const deleteEducation = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    logInfo("Education delete attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "education_delete_attempt",
+    });
+
+    const education = await prisma.education.delete({
+      where: {
+        id,
+      },
+    });
+
+    if (!education) {
+      logWarn("Education delete failed: education not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "education_delete_failed",
+      });
+      return sendError(req, res, 404, "educationNotFound");
+    }
+
+    logInfo("Education deleted successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "education_deleted",
+    });
+
+    return res.status(200).json({
+      message: getResponseMessage("educationDeleted"),
+    });
+  } catch (error) {
+    logCatchyError("delete_education_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_delete_education_exception",
+    });
+    next(error);
+  }
+};
