@@ -11,3 +11,4 @@ export * from "./social.validations";
 export * from "./footer.validations";
 export * from "./category.validations";
 export * from "./about.validations";
+export * from "./education.validations";
