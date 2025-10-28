@@ -65,3 +65,17 @@ adminExperienceRouter.post(
     }
   }
 );
+
+adminExperienceRouter.put(
+  "/:id",
+  adminAuthenticate,
+  updateExperienceValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return ExperienceController.updateExperience(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);

@@ -261,3 +261,100 @@ export const createExperience = async (
     next(error);
   }
 };
+
+export const updateExperience = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+    const { translations, icon, link, fromDate, endDate, location } =
+      req.body as UpdateExperienceDTO;
+
+    logInfo("Experience update attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "experience_update_attempt",
+    });
+
+    const translationsToCreate = Prisma.validator<
+      Prisma.ExperienceTranslationCreateWithoutExperienceInput[]
+    >()(createTranslations(translations) as any);
+
+    const iconToCreate = icon
+      ? {
+          path: icon.path,
+          name: icon.name,
+          size: icon.size,
+        }
+      : undefined;
+
+    const findExperience = await prisma.experience.findUnique({
+      where: { id },
+      include: { icon: true },
+    });
+
+    if (!findExperience) {
+      logWarn("Experience update failed: experience not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+        event: "experience_update_failed",
+      });
+      return sendError(req, res, 404, "experienceNotFound");
+    }
+
+    let newIconFile: { id: string } | null = null;
+
+    if (iconToCreate) {
+      newIconFile = await prisma.file.create({
+        data: { ...iconToCreate },
+        select: { id: true },
+      });
+    }
+
+    const updateData: any = {
+      translations: {
+        deleteMany: {},
+        create: translationsToCreate,
+      },
+      fromDate,
+      ...(link && { link }),
+      ...(location && { location }),
+      ...(endDate && { endDate }),
+    };
+
+    if (newIconFile) {
+      updateData.iconId = newIconFile.id;
+    } else if (
+      Object.prototype.hasOwnProperty.call(req.body, "icon") &&
+      icon === null
+    ) {
+      updateData.iconId = null;
+    }
+
+    const experience = await prisma.experience.update({
+      where: { id },
+      data: updateData,
+      include: { translations: true, icon: true },
+    });
+
+    logInfo("Experience updated successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "experience_updated",
+    });
+
+    return res.json({ data: experience });
+  } catch (error) {
+    logCatchyError("Update experience exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_update_experience_exception",
+    });
+    next(error);
+  }
+};
