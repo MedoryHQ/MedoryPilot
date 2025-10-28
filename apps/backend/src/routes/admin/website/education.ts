@@ -51,3 +51,17 @@ adminEducationRouter.delete(
     }
   }
 );
+
+adminEducationRouter.post(
+  "/",
+  adminAuthenticate,
+  createEducationValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return EducationController.createEducation(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);

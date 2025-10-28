@@ -195,3 +195,63 @@ export const deleteEducation = async (
     next(error);
   }
 };
+
+export const createEducation = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { translations, icon, link, fromDate, endDate } =
+      req.body as CreateEducationDTO;
+
+    logInfo("Education create attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "education_create_attempt",
+    });
+
+    const translationsToCreate = Prisma.validator<
+      Prisma.EducationTranslationCreateWithoutEducationInput[]
+    >()(createTranslations(translations) as any);
+
+    const iconToCreate = icon
+      ? {
+          path: icon.path,
+          name: icon.name,
+          size: icon.size,
+        }
+      : undefined;
+
+    const education = await prisma.education.create({
+      data: {
+        translations: { create: translationsToCreate },
+        icon: {
+          create: iconToCreate,
+        },
+        ...(link && { link }),
+        ...(endDate && { endDate }),
+        fromDate,
+      },
+    });
+
+    logInfo("Education created successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "education_created",
+    });
+
+    return res.status(201).json({
+      data: education,
+    });
+  } catch (error) {
+    logCatchyError("Create education exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_create_education_exception",
+    });
+    next(error);
+  }
+};
