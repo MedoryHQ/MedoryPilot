@@ -13,4 +13,5 @@ export * from "./footer";
 export * from "./category";
 export * from "./about";
 export * from "./education";
+export * from "./experience";
 export * from "./video";

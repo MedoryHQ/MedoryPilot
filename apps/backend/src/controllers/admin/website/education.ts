@@ -10,6 +10,7 @@ import {
   logAdminInfo as logInfo,
   logAdminWarn as logWarn,
   parseFilters,
+  parseDate,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
 import { CreateEducationDTO, UpdateEducationDTO } from "@/types/admin";
@@ -24,18 +25,13 @@ export const fetchEducations = async (
     const filters = parseFilters(req);
     const { icon, fromDate, endDate, link } = filters;
 
-    const parseDate = (v: any): Date | null => {
-      if (v === undefined || v === null || v === "") return null;
-      const d = new Date(v);
-      return isNaN(d.getTime()) ? null : d;
-    };
-
     const parsedFrom = parseDate(fromDate);
     const parsedEnd = parseDate(endDate);
 
     const where = generateWhereInput<Prisma.EducationWhereInput>(
       search,
       {
+        link: "insensitive",
         "translations.some.title": "insensitive",
         "translations.some.degree": "insensitive",
         "translations.some.description": "insensitive",

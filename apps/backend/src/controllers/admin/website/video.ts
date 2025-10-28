@@ -27,6 +27,7 @@ export const fetchVideos = async (
     const where = generateWhereInput<Prisma.VideoWhereInput>(
       search,
       {
+        link: "insensitive",
         "translations.some.title": "insensitive",
       },
       {

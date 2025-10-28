@@ -108,6 +108,10 @@ export const errorMessages = {
     en: "Education not found",
     ka: "განათლება ვერ მოიძებნა",
   },
+  experienceNotFound: {
+    en: "Experience not found",
+    ka: "გამოცდილება ვერ მოიძებნა",
+  },
   videoNotFound: {
     en: "Video not found",
     ka: "ვიდეო ვერ მოიძებნა",
@@ -181,6 +185,10 @@ export const errorMessages = {
   educationDeleted: {
     en: "Education deleted successfully",
     ka: "განათლება წარმატებით წაიშალა",
+  },
+  experienceDeleted: {
+    en: "Experience deleted successfully",
+    ka: "გამოცდილება წარმატებით წაიშალა",
   },
   videoDeleted: {
     en: "Video deleted successfully",
