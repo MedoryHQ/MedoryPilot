@@ -255,3 +255,99 @@ export const createEducation = async (
     next(error);
   }
 };
+
+export const updateEducation = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+    const { translations, icon, link, fromDate, endDate } =
+      req.body as UpdateEducationDTO;
+
+    logInfo("Education update attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "education_update_attempt",
+    });
+
+    const translationsToCreate = Prisma.validator<
+      Prisma.EducationTranslationCreateWithoutEducationInput[]
+    >()(createTranslations(translations) as any);
+
+    const iconToCreate = icon
+      ? {
+          path: icon.path,
+          name: icon.name,
+          size: icon.size,
+        }
+      : undefined;
+
+    const findEducation = await prisma.education.findUnique({
+      where: { id },
+      include: { icon: true },
+    });
+
+    if (!findEducation) {
+      logWarn("Education update failed: education not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+        event: "education_update_failed",
+      });
+      return sendError(req, res, 404, "educationNotFound");
+    }
+
+    let newIconFile: { id: string } | null = null;
+
+    if (iconToCreate) {
+      newIconFile = await prisma.file.create({
+        data: { ...iconToCreate },
+        select: { id: true },
+      });
+    }
+
+    const updateData: any = {
+      translations: {
+        deleteMany: {},
+        create: translationsToCreate,
+      },
+      fromDate,
+      ...(link && { link }),
+      ...(endDate && { endDate }),
+    };
+
+    if (newIconFile) {
+      updateData.iconId = newIconFile.id;
+    } else if (
+      Object.prototype.hasOwnProperty.call(req.body, "icon") &&
+      icon === null
+    ) {
+      updateData.iconId = null;
+    }
+
+    const education = await prisma.education.update({
+      where: { id },
+      data: updateData,
+      include: { translations: true, icon: true },
+    });
+
+    logInfo("Education updated successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "education_updated",
+    });
+
+    return res.json({ data: education });
+  } catch (error) {
+    logCatchyError("Update education exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_update_education_exception",
+    });
+    next(error);
+  }
+};
