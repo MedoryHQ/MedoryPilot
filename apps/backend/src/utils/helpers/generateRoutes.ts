@@ -40,6 +40,7 @@ const customerRouteList = [
   { path: "/social", router: CustomerRoutes.socialRouter },
   { path: "/footer", router: CustomerRoutes.footerRouter },
   { path: "/about", router: CustomerRoutes.aboutRouter },
+  { path: "/experience", router: CustomerRoutes.experienceRouter },
 ];
 
 export const generateRoutes = (app: Express) => {
