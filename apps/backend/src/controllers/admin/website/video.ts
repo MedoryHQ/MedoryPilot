@@ -74,3 +74,51 @@ export const fetchVideos = async (
     next(error);
   }
 };
+
+export const fetchVideo = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    const video = await prisma.video.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        thumbnail: true,
+        translations: {
+          include: {
+            language: {
+              select: {
+                code: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!video) {
+      logWarn("Video fetch failed: video not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "video_fetch_failed",
+      });
+      return sendError(req, res, 404, "videoNotFound");
+    }
+
+    return res.status(200).json({ data: video });
+  } catch (error) {
+    logCatchyError("fetch_video_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_fetch_video_exception",
+    });
+    next(error);
+  }
+};

@@ -23,3 +23,17 @@ adminVideoRouter.get(
     }
   }
 );
+
+adminVideoRouter.get(
+  "/:id",
+  adminAuthenticate,
+  fetchVideoValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return VideoController.fetchVideo(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
