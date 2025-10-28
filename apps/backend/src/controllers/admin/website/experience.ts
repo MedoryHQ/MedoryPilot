@@ -100,3 +100,51 @@ export const fetchExperiences = async (
     next(error);
   }
 };
+
+export const fetchExperience = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    const experience = await prisma.experience.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        icon: true,
+        translations: {
+          include: {
+            language: {
+              select: {
+                code: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!experience) {
+      logWarn("Experience fetch failed: experience not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "experience_fetch_failed",
+      });
+      return sendError(req, res, 404, "experienceNotFound");
+    }
+
+    return res.status(200).json({ data: experience });
+  } catch (error) {
+    logCatchyError("fetch_experience_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_fetch_experience_exception",
+    });
+    next(error);
+  }
+};

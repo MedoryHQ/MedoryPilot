@@ -23,3 +23,17 @@ adminExperienceRouter.get(
     }
   }
 );
+
+adminExperienceRouter.get(
+  "/:id",
+  adminAuthenticate,
+  fetchExperienceValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return ExperienceController.fetchExperience(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
