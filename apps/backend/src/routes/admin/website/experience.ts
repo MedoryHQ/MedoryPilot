@@ -51,3 +51,17 @@ adminExperienceRouter.delete(
     }
   }
 );
+
+adminExperienceRouter.post(
+  "/",
+  adminAuthenticate,
+  createExperienceValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return ExperienceController.createExperience(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);

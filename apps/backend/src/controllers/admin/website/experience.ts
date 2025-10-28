@@ -200,3 +200,64 @@ export const deleteExperience = async (
     next(error);
   }
 };
+
+export const createExperience = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { translations, icon, link, fromDate, endDate, location } =
+      req.body as CreateExperienceDTO;
+
+    logInfo("Experience create attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "experience_create_attempt",
+    });
+
+    const translationsToCreate = Prisma.validator<
+      Prisma.ExperienceTranslationCreateWithoutExperienceInput[]
+    >()(createTranslations(translations) as any);
+
+    const iconToCreate = icon
+      ? {
+          path: icon.path,
+          name: icon.name,
+          size: icon.size,
+        }
+      : undefined;
+
+    const experience = await prisma.experience.create({
+      data: {
+        translations: { create: translationsToCreate },
+        icon: {
+          create: iconToCreate,
+        },
+        ...(link && { link }),
+        ...(location && { location }),
+        ...(endDate && { endDate }),
+        fromDate,
+      },
+    });
+
+    logInfo("Experience created successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "experience_created",
+    });
+
+    return res.status(201).json({
+      data: experience,
+    });
+  } catch (error) {
+    logCatchyError("Create experience exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_create_experience_exception",
+    });
+    next(error);
+  }
+};
