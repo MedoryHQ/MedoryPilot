@@ -174,3 +174,61 @@ export const deleteVideo = async (
     next(error);
   }
 };
+
+export const createVideo = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { translations, thumbnail, date, link } = req.body as CreateVideoDTO;
+
+    logInfo("Video create attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "video_create_attempt",
+    });
+
+    const translationsToCreate = Prisma.validator<
+      Prisma.VideoTranslationCreateWithoutVideoInput[]
+    >()(createTranslations(translations) as any);
+
+    const thumbnailToCreate = thumbnail
+      ? {
+          path: thumbnail.path,
+          name: thumbnail.name,
+          size: thumbnail.size,
+        }
+      : undefined;
+
+    const video = await prisma.video.create({
+      data: {
+        translations: { create: translationsToCreate },
+        thumbnail: {
+          create: thumbnailToCreate,
+        },
+        link,
+        ...(date && { date }),
+      },
+    });
+
+    logInfo("Video created successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "video_created",
+    });
+
+    return res.status(201).json({
+      data: video,
+    });
+  } catch (error) {
+    logCatchyError("Create video exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_create_video_exception",
+    });
+    next(error);
+  }
+};
