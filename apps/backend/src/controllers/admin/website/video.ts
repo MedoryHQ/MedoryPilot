@@ -232,3 +232,97 @@ export const createVideo = async (
     next(error);
   }
 };
+
+export const updateVideo = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+    const { translations, thumbnail, link, date } = req.body as UpdateVideoDTO;
+
+    logInfo("Video update attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "video_update_attempt",
+    });
+
+    const translationsToCreate = Prisma.validator<
+      Prisma.VideoTranslationCreateWithoutVideoInput[]
+    >()(createTranslations(translations) as any);
+
+    const thumbnailToCreate = thumbnail
+      ? {
+          path: thumbnail.path,
+          name: thumbnail.name,
+          size: thumbnail.size,
+        }
+      : undefined;
+
+    const findVideo = await prisma.video.findUnique({
+      where: { id },
+      include: { thumbnail: true },
+    });
+
+    if (!findVideo) {
+      logWarn("Video update failed: video not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+        event: "video_update_failed",
+      });
+      return sendError(req, res, 404, "videoNotFound");
+    }
+
+    let newThumbnailFile: { id: string } | null = null;
+
+    if (thumbnailToCreate) {
+      newThumbnailFile = await prisma.file.create({
+        data: { ...thumbnailToCreate },
+        select: { id: true },
+      });
+    }
+
+    const updateData: any = {
+      translations: {
+        deleteMany: {},
+        create: translationsToCreate,
+      },
+      link,
+      ...(date && { date }),
+    };
+
+    if (newThumbnailFile) {
+      updateData.thumbnailId = newThumbnailFile.id;
+    } else if (
+      Object.prototype.hasOwnProperty.call(req.body, "thumbnail") &&
+      thumbnail === null
+    ) {
+      updateData.thumbnailId = null;
+    }
+
+    const video = await prisma.video.update({
+      where: { id },
+      data: updateData,
+      include: { translations: true, thumbnail: true },
+    });
+
+    logInfo("Video updated successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "video_updated",
+    });
+
+    return res.json({ data: video });
+  } catch (error) {
+    logCatchyError("Update video exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_update_video_exception",
+    });
+    next(error);
+  }
+};

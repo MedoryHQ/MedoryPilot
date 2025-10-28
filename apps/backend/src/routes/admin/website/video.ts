@@ -65,3 +65,17 @@ adminVideoRouter.post(
     }
   }
 );
+
+adminVideoRouter.put(
+  "/:id",
+  adminAuthenticate,
+  updateVideoValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return VideoController.updateVideo(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
