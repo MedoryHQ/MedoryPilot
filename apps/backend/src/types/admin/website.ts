@@ -132,3 +132,33 @@ export interface CreateAboutDTO {
 }
 
 export type UpdateAboutDTO = CreateAboutDTO;
+
+export interface CreateEducationDTO {
+  icon?: File;
+  link?: string;
+  fromDate: string;
+  endDate?: string;
+  translations: Translations;
+}
+
+export type UpdateEducationDTO = CreateEducationDTO;
+
+export interface CreateExperienceDTO {
+  icon?: File;
+  link?: string;
+  location?: string;
+  fromDate: string;
+  endDate?: string;
+  translations: Translations;
+}
+
+export type UpdateExperienceDTO = CreateExperienceDTO;
+
+export interface CreateVideoDTO {
+  thumbnail?: File;
+  link: string;
+  date?: string;
+  translations: Translations;
+}
+
+export type UpdateVideoDTO = CreateVideoDTO;

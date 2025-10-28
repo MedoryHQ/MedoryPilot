@@ -21,6 +21,9 @@ const adminRouteList = [
   { path: "/footer", router: AdminRoutes.adminFooterRouter },
   { path: "/category", router: AdminRoutes.adminCategoryRouter },
   { path: "/about", router: AdminRoutes.adminAboutRouter },
+  { path: "/education", router: AdminRoutes.adminEducationRouter },
+  { path: "/experience", router: AdminRoutes.adminExperienceRouter },
+  { path: "/video", router: AdminRoutes.adminVideoRouter },
   { path: "/upload", router: AdminRoutes.uploadRouter },
 ];
 
@@ -37,6 +40,9 @@ const customerRouteList = [
   { path: "/social", router: CustomerRoutes.socialRouter },
   { path: "/footer", router: CustomerRoutes.footerRouter },
   { path: "/about", router: CustomerRoutes.aboutRouter },
+  { path: "/experience", router: CustomerRoutes.experienceRouter },
+  { path: "/education", router: CustomerRoutes.educationRouter },
+  { path: "/video", router: CustomerRoutes.videoRouter },
 ];
 
 export const generateRoutes = (app: Express) => {

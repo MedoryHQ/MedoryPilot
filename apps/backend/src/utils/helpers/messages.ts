@@ -104,6 +104,18 @@ export const errorMessages = {
     en: "Page not found",
     ka: "გვერდი ვერ მოიძებნა",
   },
+  educationNotFound: {
+    en: "Education not found",
+    ka: "განათლება ვერ მოიძებნა",
+  },
+  experienceNotFound: {
+    en: "Experience not found",
+    ka: "გამოცდილება ვერ მოიძებნა",
+  },
+  videoNotFound: {
+    en: "Video not found",
+    ka: "ვიდეო ვერ მოიძებნა",
+  },
   socialNotFound: {
     en: "Social not found",
     ka: "სოციალური ქსელი ვერ მოიძებნა",
@@ -169,6 +181,18 @@ export const errorMessages = {
   tariffDeleted: {
     en: "Tariff deleted successfully",
     ka: "ტარიფი წარმატებით წაიშალა",
+  },
+  educationDeleted: {
+    en: "Education deleted successfully",
+    ka: "განათლება წარმატებით წაიშალა",
+  },
+  experienceDeleted: {
+    en: "Experience deleted successfully",
+    ka: "გამოცდილება წარმატებით წაიშალა",
+  },
+  videoDeleted: {
+    en: "Video deleted successfully",
+    ka: "ვიდეო წარმატებით წაიშალა",
   },
   FAQDeleted: {
     en: "FAQ deleted successfully",
@@ -240,9 +264,21 @@ export const errorMessages = {
     en: "Invalid email",
     ka: "ელ-ფოსტა არასწორია",
   },
+  invalidLink: {
+    en: "Invalid link",
+    ka: "ლინკი არასწორია",
+  },
+  invalidActiveType: {
+    en: "Invalid active type",
+    ka: "აქტიურობის ტიპი არასწორია",
+  },
   emailAlreadyExists: {
     en: "User with this email already exists",
     ka: "მომხმარებელი ამ ელ-ფოსტით უკვე არსებობს",
+  },
+  languageCodeNotProvided: {
+    en: "Language code not provided",
+    ka: "ენის კოდი არ გამოგზავნილა",
   },
   invalidFirstName: {
     en: "Invalid first name",
@@ -255,6 +291,22 @@ export const errorMessages = {
   invalidDateOfBirth: {
     en: "Invalid date of birth",
     ka: "დაბადების თარიღი არასწორია",
+  },
+  invalidDate: {
+    en: "Invalid date",
+    ka: "თარიღი არასწორია",
+  },
+  invalidFromDate: {
+    en: "Invalid from date",
+    ka: "დაწყების თარიღი არასწორია",
+  },
+  invalidEndDate: {
+    en: "Invalid end date",
+    ka: "დამთავრების თარიღი არასწორია",
+  },
+  invalidThumbnail: {
+    en: "Invalid Thumbnail",
+    ka: "გარეკანის ფოტო არასწორია",
   },
   invalidPersonalId: {
     en: "Invalid personal ID",
@@ -315,6 +367,10 @@ export const errorMessages = {
   invalidIcon: {
     en: "Invalid Icon",
     ka: "არასწორი Icon",
+  },
+  invalidLogo: {
+    en: "Invalid Logo",
+    ka: "არასწორი ლოგო",
   },
   invalidBackground: {
     en: "Invalid Background",

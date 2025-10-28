@@ -23,3 +23,9 @@ export const inMinutes = (minutes: number): Date => {
   // TODO: change 0.5 with minutes after development
   return new Date(Date.now() + 0.5 * 60 * 1000);
 };
+
+export const parseDate = (v: any): Date | null => {
+  if (v === undefined || v === null || v === "") return null;
+  const d = new Date(v);
+  return isNaN(d.getTime()) ? null : d;
+};

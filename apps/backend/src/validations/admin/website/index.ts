@@ -11,3 +11,6 @@ export * from "./social.validations";
 export * from "./footer.validations";
 export * from "./category.validations";
 export * from "./about.validations";
+export * from "./education.validations";
+export * from "./video.validations";
+export * from "./experience.validations";
