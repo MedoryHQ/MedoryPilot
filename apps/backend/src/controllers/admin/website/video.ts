@@ -122,3 +122,55 @@ export const fetchVideo = async (
     next(error);
   }
 };
+
+export const deleteVideo = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    logInfo("Video delete attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "video_delete_attempt",
+    });
+
+    const video = await prisma.video.delete({
+      where: {
+        id,
+      },
+    });
+
+    if (!video) {
+      logWarn("Video delete failed: video not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "video_delete_failed",
+      });
+      return sendError(req, res, 404, "videoNotFound");
+    }
+
+    logInfo("Video deleted successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "video_deleted",
+    });
+
+    return res.status(200).json({
+      message: getResponseMessage("videoDeleted"),
+    });
+  } catch (error) {
+    logCatchyError("delete_video_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_delete_video_exception",
+    });
+    next(error);
+  }
+};

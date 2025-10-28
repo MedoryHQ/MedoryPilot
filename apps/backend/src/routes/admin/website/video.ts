@@ -37,3 +37,17 @@ adminVideoRouter.get(
     }
   }
 );
+
+adminVideoRouter.delete(
+  "/:id",
+  adminAuthenticate,
+  deleteVideoValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return VideoController.deleteVideo(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
