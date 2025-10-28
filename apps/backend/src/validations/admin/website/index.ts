@@ -12,3 +12,4 @@ export * from "./footer.validations";
 export * from "./category.validations";
 export * from "./about.validations";
 export * from "./education.validations";
+export * from "./experience.validations";
