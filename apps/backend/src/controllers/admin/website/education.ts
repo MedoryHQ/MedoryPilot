@@ -95,3 +95,51 @@ export const fetchEducations = async (
     next(error);
   }
 };
+
+export const fetchEducation = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    const education = await prisma.education.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        icon: true,
+        translations: {
+          include: {
+            language: {
+              select: {
+                code: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!education) {
+      logWarn("Education fetch failed: education not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "education_fetch_failed",
+      });
+      return sendError(req, res, 404, "educationNotFound");
+    }
+
+    return res.status(200).json({ data: education });
+  } catch (error) {
+    logCatchyError("fetch_education_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_fetch_education_exception",
+    });
+    next(error);
+  }
+};

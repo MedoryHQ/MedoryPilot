@@ -23,3 +23,17 @@ adminEducationRouter.get(
     }
   }
 );
+
+adminEducationRouter.get(
+  "/:id",
+  adminAuthenticate,
+  fetchEducationValidation,
+  validationHandler,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return EducationController.fetchEducation(req, res, next);
+    } catch {
+      res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
+    }
+  }
+);
