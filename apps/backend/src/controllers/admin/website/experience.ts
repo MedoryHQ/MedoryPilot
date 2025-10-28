@@ -148,3 +148,55 @@ export const fetchExperience = async (
     next(error);
   }
 };
+
+export const deleteExperience = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    logInfo("Experience delete attempt", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "experience_delete_attempt",
+    });
+
+    const experience = await prisma.experience.delete({
+      where: {
+        id,
+      },
+    });
+
+    if (!experience) {
+      logWarn("Experience delete failed: experience not found", {
+        ip: (req as any).hashedIp,
+        id: (req as any).userId,
+        path: req.path,
+
+        event: "experience_delete_failed",
+      });
+      return sendError(req, res, 404, "experienceNotFound");
+    }
+
+    logInfo("Experience deleted successfully", {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      path: req.path,
+      event: "experience_deleted",
+    });
+
+    return res.status(200).json({
+      message: getResponseMessage("experienceDeleted"),
+    });
+  } catch (error) {
+    logCatchyError("delete_experience_exception", error, {
+      ip: (req as any).hashedIp,
+      id: (req as any).userId,
+      event: "admin_delete_experience_exception",
+    });
+    next(error);
+  }
+};
