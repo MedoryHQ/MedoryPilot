@@ -1,11 +1,11 @@
 import { uuidValidation, validateTranslations } from "@/validations/shared";
 import { body } from "express-validator";
 
-export const fetchExperienceValidation = [uuidValidation()];
+export const fetchVideoValidation = [uuidValidation()];
 
-export const deleteExperienceValidation = [uuidValidation()];
+export const deleteVideoValidation = [uuidValidation()];
 
-export const createExperienceValidation = [
+export const createVideoValidation = [
   body("thumbnail")
     .optional({ nullable: true })
     .isObject()
@@ -19,7 +19,7 @@ export const createExperienceValidation = [
     ),
 ];
 
-export const updateExperienceValidation = [
+export const updateVideoValidation = [
   uuidValidation(),
-  ...createExperienceValidation,
+  ...createVideoValidation,
 ];

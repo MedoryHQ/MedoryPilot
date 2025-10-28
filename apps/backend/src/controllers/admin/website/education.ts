@@ -37,6 +37,7 @@ export const fetchEducations = async (
       search,
       {
         "translations.some.title": "insensitive",
+        "translations.some.degree": "insensitive",
         "translations.some.description": "insensitive",
       },
       {

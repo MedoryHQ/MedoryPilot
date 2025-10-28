@@ -142,3 +142,12 @@ export interface CreateEducationDTO {
 }
 
 export type UpdateEducationDTO = CreateEducationDTO;
+
+export interface CreateVideoDTO {
+  thumbnail?: File;
+  link: string;
+  date?: string;
+  translations: Translations;
+}
+
+export type UpdateVideoDTO = CreateVideoDTO;

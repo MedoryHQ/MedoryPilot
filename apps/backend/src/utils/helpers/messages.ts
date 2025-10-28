@@ -108,6 +108,10 @@ export const errorMessages = {
     en: "Education not found",
     ka: "განათლება ვერ მოიძებნა",
   },
+  videoNotFound: {
+    en: "Video not found",
+    ka: "ვიდეო ვერ მოიძებნა",
+  },
   socialNotFound: {
     en: "Social not found",
     ka: "სოციალური ქსელი ვერ მოიძებნა",
@@ -177,6 +181,10 @@ export const errorMessages = {
   educationDeleted: {
     en: "Education deleted successfully",
     ka: "განათლება წარმატებით წაიშალა",
+  },
+  videoDeleted: {
+    en: "Video deleted successfully",
+    ka: "ვიდეო წარმატებით წაიშალა",
   },
   FAQDeleted: {
     en: "FAQ deleted successfully",
