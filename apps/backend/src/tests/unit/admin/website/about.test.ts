@@ -182,4 +182,165 @@ describe("Admin About routes — /admin/about", () => {
       expect(res.statusCode).toBe(500);
     });
   });
+
+  describe("POST /admin/about", () => {
+    it("creates about successfully when none exists", async () => {
+      (prisma.about.count as jest.Mock).mockResolvedValueOnce(0);
+      (prisma.about.create as jest.Mock).mockResolvedValueOnce(mockAbout);
+
+      const payload = {
+        translations: {
+          en: { headline: "Hello", description: "Desc" },
+          ka: { headline: "გამარჯობა", description: "აღწერა" },
+        },
+        image: null,
+      };
+
+      const res = await request(app).post("/admin/about").send(payload);
+
+      expect(res.statusCode).toBe(201);
+      expect(res.body).toHaveProperty("data");
+      expect(prisma.about.count).toHaveBeenCalled();
+      expect(prisma.about.create).toHaveBeenCalled();
+    });
+
+    it("returns 400 when about already exists", async () => {
+      (prisma.about.count as jest.Mock).mockResolvedValueOnce(1);
+
+      const payload = {
+        translations: {
+          en: { headline: "Hello", description: "Desc" },
+          ka: { headline: "გამარჯობა", description: "აღწერა" },
+        },
+        image: null,
+      };
+
+      const res = await request(app).post("/admin/about").send(payload);
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 when translations invalid/missing (validation)", async () => {
+      const res = await request(app)
+        .post("/admin/about")
+        .send({ translations: {} });
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+
+    it("handles DB error with 500", async () => {
+      (prisma.about.count as jest.Mock).mockResolvedValueOnce(0);
+      (prisma.about.create as jest.Mock).mockRejectedValueOnce(
+        new Error("DB err")
+      );
+
+      const payload = {
+        translations: {
+          en: { headline: "Hello", description: "Desc" },
+          ka: { headline: "გამარჯობა", description: "აღწერა" },
+        },
+        image: null,
+      };
+
+      const res = await request(app).post("/admin/about").send(payload);
+
+      expect(res.statusCode).toBe(500);
+    });
+  });
+
+  describe("PUT /admin/about/:id", () => {
+    it("updates about successfully", async () => {
+      const id = mockAbout.id;
+      (prisma.about.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockAbout,
+        image: null,
+      });
+      (prisma.about.update as jest.Mock).mockResolvedValueOnce({
+        ...mockAbout,
+        translations: [
+          {
+            id: "t1",
+            headline: "Updated",
+            description: "D",
+            language: { code: "en" },
+          },
+        ],
+      });
+
+      const payload = {
+        translations: {
+          en: { headline: "Updated", description: "D" },
+          ka: { headline: "განახლება", description: "dka" },
+        },
+        image: null,
+      };
+
+      const res = await request(app).put(`/admin/about/${id}`).send(payload);
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toHaveProperty("data");
+      expect(prisma.about.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id },
+          include: { image: true },
+        })
+      );
+      expect(prisma.about.update).toHaveBeenCalled();
+    });
+
+    it("returns 404 when updating non-existing about", async () => {
+      const id = mockAbout.id;
+      (prisma.about.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .put(`/admin/about/${id}`)
+        .send({
+          translations: {
+            en: { headline: "x", description: "d" },
+            ka: { headline: "x", description: "d" },
+          },
+        });
+
+      expect(res.statusCode).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid UUID param", async () => {
+      const res = await request(app)
+        .put("/admin/about/not-a-uuid")
+        .send({
+          translations: {
+            en: { headline: "x", description: "d" },
+            ka: { headline: "x", description: "d" },
+          },
+        });
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+
+    it("handles DB error with 500", async () => {
+      const id = mockAbout.id;
+      (prisma.about.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockAbout,
+        image: null,
+      });
+      (prisma.about.update as jest.Mock).mockRejectedValueOnce(
+        new Error("DB err")
+      );
+
+      const res = await request(app)
+        .put(`/admin/about/${id}`)
+        .send({
+          translations: {
+            en: { headline: "x", description: "d" },
+            ka: { headline: "x", description: "d" },
+          },
+        });
+
+      expect(res.statusCode).toBe(500);
+    });
+  });
 });
