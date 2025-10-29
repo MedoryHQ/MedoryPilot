@@ -71,8 +71,8 @@ export const AboutForm: React.FC<AboutFormProps> = ({
     await axios.put(`/about/${entityId}`, payload);
   };
 
-  const deleteEntity = async (entityId: string) => {
-    await axios.delete(`/about/${entityId}`);
+  const deleteEntity = async () => {
+    await axios.delete("/about");
   };
 
   const rightSections = [

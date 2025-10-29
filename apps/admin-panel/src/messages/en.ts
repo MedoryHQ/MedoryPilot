@@ -108,6 +108,9 @@ export const en = {
       services: "Services",
       news: "News",
       blogs: "Blogs",
+      educations: "Educations",
+      experiences: "Experiences",
+      videos: "Videos",
       analytics: "Analytics",
       settings: "Settings",
       menu: "Menu",
@@ -122,6 +125,7 @@ export const en = {
       newses: "Newses",
       categories: "Categories",
       footer: "Footer",
+      about: "About",
       socials: "Socials",
       tariffs: "Tariffs",
       pages: "Page components",
@@ -217,6 +221,10 @@ export const en = {
       contact: "Contact Info",
       contactsDescription: "Update contacts information",
       footer: "Footer",
+      about: "About",
+      educations: "Educations",
+      experiences: "Experiences",
+      videos: "Videos",
       footerDescription: "Configure website footer and links",
       socials: "Socials",
       socialsDescription: "Manage social media links and icons",
@@ -519,6 +527,38 @@ export const en = {
         emailInvalid: "Email is invalid",
         socialsRequired: "At least one social is required",
         pagesRequired: "At least one page is required"
+      }
+    },
+    about: {
+      form: {
+        management: "About Management",
+        managementDescription: "Manage website about and navigation elements",
+        contentTranslations: "Content & Translations",
+        contentTranslationsDescription:
+          "Fill in about details for each language",
+        createTitle: "Create About",
+        headline: "Headline",
+        headlinePlaceholder: "e.g., Who i am",
+        description: "Description",
+        descriptionPlaceholder: "Enter a brief description for this about...",
+        editTitle: "Edit About",
+        readonlyTitle: "About",
+        image: "Image",
+        imageLabel: "Drop your image here",
+        imageDescription: "or click to browse",
+        edit: "Edit About",
+        read: "Read About",
+        subtitle: "Configure your website about and navigation",
+        settings: "Settings",
+        about: "About",
+        createdSuccessfully: "About created successfully",
+        updatedSuccessfully: "About updated successfully",
+        deletedSuccessfully: "About deleted successfully"
+      },
+      errors: {
+        imageRequired: "Image is required",
+        headlineRequired: "Headline is required",
+        descriptionRequired: "Description is required"
       }
     },
     newses: {
