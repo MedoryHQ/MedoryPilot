@@ -104,7 +104,11 @@ export const ka = {
       messages: "შეტყობინებები",
       website: "ვებ საიტი",
       overview: "მიმოხილვა",
+      educations: "განათლებები",
+      experiences: "გამოცდილებები",
+      videos: "ვიდეოები",
       services: "სერვისები",
+      about: "ჩემს შესახებ",
       menu: "მენიუ",
       news: "სიახლეები",
       blogs: "ბლოგები",
@@ -212,6 +216,9 @@ export const ka = {
       faqs: "ხშირად დასმული კითხვები",
       faqsDescription: "ხშირად დასმული კითხვების განახლება და მართვა",
       blogs: "ბლოგები",
+      educations: "განათლებები",
+      experiences: "გამოცდილებები",
+      videos: "ვიდეოები",
       blogsDescription: "ბლოგების წერა და მართვა",
       categories: "კატეგორიები",
       categoriesDescription: "ბლოგებისა და კონტენტის კატეგორიების მართვა",
@@ -219,6 +226,7 @@ export const ka = {
       contact: "საკონტაქტო ინფორმაცია",
       contactsDescription: "საკონტაქტო ინფორმაციების განახლება",
       footer: "Footer",
+      about: "ჩემს შესახებ",
       footerDescription: "ვებსაიტის footer-ის კონფიგურაცია და ბმულები",
       socials: "სოციალური ქსელები",
       socialsDescription: "სოციალური ქსელების ბმულებისა და იკონების მართვა",
@@ -518,6 +526,37 @@ export const ka = {
         emailInvalid: "ელ.ფოსტა არასწორია",
         socialsRequired: "მინიმუმ ერთი სოციალური ბმული სავალდებულოა",
         pagesRequired: "მინიმუმ ერთი გვერდი სავალდებულოა"
+      }
+    },
+    about: {
+      form: {
+        management: "ჩემს შესახებ ინფორმაციის მართვა",
+        managementDescription: "მართეთ ვებსაიტის About სექცია და ნავიგაცია",
+        contentTranslations: "კონტენტი და თარგმანები",
+        contentTranslationsDescription:
+          "შეავსეთ გვერდის დეტალები თითოეული ენისთვის",
+        createTitle: "ჩემს შესახებ-ის შექმნა",
+        editTitle: "შემს შესახებ-ის რედაქტირება",
+        readonlyTitle: "ჩემს შესახებ",
+        headline: "სათაური",
+        headlinePlaceholder: "მაგ., ვინ ვარ მე",
+        description: "აღწერა",
+        descriptionPlaceholder:
+          "შეიყვანეთ მეტა აღწერა ჩემს შესახებ ინფორმაციის...",
+        image: "სურათი",
+        imageLabel: "ჩააგდეთ სურათი აქ",
+        imageDescription: "ან დააჭირეთ არჩევისთვის",
+        subtitle: "ვებსაიტის ჩემს შესახებ ინფორმაციის კონფიგურაცია",
+        settings: "პარამეტრები",
+        about: "ჩემს შესახებ",
+        createdSuccessfully: "ჩემს შესახებ ინფორმაცია წარმატებით შეიქმნა",
+        updatedSuccessfully: "ჩემს შესახებ ინფორმაცია წარმატებით განახლდა",
+        deletedSuccessfully: "ჩემს შესახებ ინფორმაცია წარმატებით წაიშალა"
+      },
+      errors: {
+        iconRequired: "Icon is required",
+        headlineRequired: "Headline is required",
+        descriptionRequired: "Description is required"
       }
     },
     newses: {

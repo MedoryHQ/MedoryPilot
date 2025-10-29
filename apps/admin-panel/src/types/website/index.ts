@@ -11,3 +11,7 @@ export * from "./footer";
 export * from "./faq";
 export * from "./contact";
 export * from "./tariffs";
+export * from "./about";
+export * from "./education";
+export * from "./experience";
+export * from "./video";

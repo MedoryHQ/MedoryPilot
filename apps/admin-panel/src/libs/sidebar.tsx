@@ -17,7 +17,10 @@ import {
   Layout,
   Copy,
   Package,
-  FolderTree
+  FolderTree,
+  Video,
+  GraduationCap,
+  Briefcase
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -157,6 +160,30 @@ export const useMenuItems = (): SidebarItem[] => {
           label: toUpperCase(t("overview.tariffs")),
           href: "landing/tariffs",
           icon: <Package className="h-4 w-4" />
+        },
+        {
+          key: "about",
+          label: toUpperCase(t("overview.about")),
+          href: "landing/about",
+          icon: <User className="h-4 w-4" />
+        },
+        {
+          key: "educations",
+          label: toUpperCase(t("overview.educations")),
+          href: "landing/educations",
+          icon: <GraduationCap className="h-4 w-4" />
+        },
+        {
+          key: "experiences",
+          label: toUpperCase(t("overview.experiences")),
+          href: "landing/experiences",
+          icon: <Briefcase className="h-4 w-4" />
+        },
+        {
+          key: "videos",
+          label: toUpperCase(t("overview.videos")),
+          href: "landing/videos",
+          icon: <Video className="h-4 w-4" />
         }
       ]
     },

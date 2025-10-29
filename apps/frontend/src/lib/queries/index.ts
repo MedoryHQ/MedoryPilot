@@ -8,3 +8,7 @@ export * from "./news";
 export * from "./page-component";
 export * from "./services";
 export * from "./tariff";
+export * from "./about";
+export * from "./education";
+export * from "./experience";
+export * from "./video";

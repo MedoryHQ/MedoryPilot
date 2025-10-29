@@ -10,3 +10,7 @@ export * from "./blog";
 export * from "./page-component";
 export * from "./social";
 export * from "./categories";
+export * from "./about";
+export * from "./video";
+export * from "./experience";
+export * from "./education";
