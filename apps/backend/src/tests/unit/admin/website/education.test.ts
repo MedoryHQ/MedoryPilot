@@ -249,4 +249,162 @@ describe("Admin Education routes — /admin/education", () => {
       expect(res.body).toHaveProperty("errors");
     });
   });
+
+  describe("POST /admin/education", () => {
+    it("creates education successfully", async () => {
+      (prisma.education.create as jest.Mock).mockResolvedValueOnce(
+        mockEducation
+      );
+
+      const payload = {
+        translations: {
+          en: { name: "New Uni", degree: "MSc", description: "desc" },
+          ka: { name: "უნიში", degree: "მაგისტრატი", description: "desc ka" },
+        },
+        icon: null,
+        link: "https://example.com",
+        fromDate: "2020-01-01",
+      };
+
+      const res = await request(app).post("/admin/education").send(payload);
+
+      expect(res.statusCode).toBe(201);
+      expect(res.body.data).toBeDefined();
+      expect(prisma.education.create).toHaveBeenCalled();
+    });
+
+    it("returns 400 when translations missing/invalid", async () => {
+      const res = await request(app)
+        .post("/admin/education")
+        .send({ translations: {} });
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+
+    it("handles DB error with 500", async () => {
+      (prisma.education.create as jest.Mock).mockRejectedValueOnce(
+        new Error("DB err")
+      );
+
+      const payload = {
+        translations: {
+          en: { name: "New Uni", degree: "MSc", description: "desc" },
+          ka: { name: "უნიში", degree: "მაგისტრატი", description: "desc ka" },
+        },
+        icon: null,
+        link: "https://example.com",
+        fromDate: "2020-01-01",
+      };
+
+      const res = await request(app).post("/admin/education").send(payload);
+
+      expect(res.statusCode).toBe(500);
+    });
+  });
+
+  describe("PUT /admin/education/:id", () => {
+    it("updates education successfully with new icon", async () => {
+      const id = mockEducation.id;
+      (prisma.education.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockEducation,
+        icon: null,
+      });
+      (prisma.file.create as jest.Mock).mockResolvedValueOnce({
+        id: "file-id",
+      });
+      (prisma.education.update as jest.Mock).mockResolvedValueOnce({
+        ...mockEducation,
+        translations: [
+          {
+            id: "t1",
+            name: "Updated",
+            degree: "X",
+            description: "D",
+            language: { code: "en" },
+          },
+        ],
+      });
+
+      const payload = {
+        translations: {
+          en: { name: "Updated", degree: "X", description: "D" },
+          ka: { name: "განახლება", degree: "Xka", description: "Dka" },
+        },
+        icon: { path: "/i.png", name: "i.png", size: 50 },
+        link: "https://example.com",
+        fromDate: "2020-01-01",
+      };
+
+      const res = await request(app)
+        .put(`/admin/education/${id}`)
+        .send(payload);
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toHaveProperty("data");
+      expect(prisma.education.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id },
+          include: { icon: true },
+        })
+      );
+      expect(prisma.file.create).toHaveBeenCalled();
+      expect(prisma.education.update).toHaveBeenCalled();
+    });
+
+    it("returns 404 when updating non-existing education", async () => {
+      const id = mockEducation.id;
+      (prisma.education.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .put(`/admin/education/${id}`)
+        .send({
+          translations: {
+            en: { name: "x", degree: "d", description: "d" },
+            ka: { name: "x", degree: "d", description: "d" },
+          },
+          fromDate: "2020-01-01",
+        });
+
+      expect(res.statusCode).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid UUID param", async () => {
+      const res = await request(app)
+        .put("/admin/education/not-a-uuid")
+        .send({
+          translations: {
+            en: { name: "x", degree: "d", description: "d" },
+            ka: { name: "x", degree: "d", description: "d" },
+          },
+          fromDate: "2020-01-01",
+        });
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+
+    it("handles DB error with 500 on update", async () => {
+      const id = mockEducation.id;
+      (prisma.education.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockEducation,
+        icon: null,
+      });
+      (prisma.education.update as jest.Mock).mockRejectedValueOnce(
+        new Error("DB err")
+      );
+
+      const res = await request(app)
+        .put(`/admin/education/${id}`)
+        .send({
+          translations: {
+            en: { name: "x", degree: "d", description: "d" },
+            ka: { name: "x", degree: "d", description: "d" },
+          },
+          fromDate: "2020-01-01",
+        });
+
+      expect(res.statusCode).toBe(500);
+    });
+  });
 });
