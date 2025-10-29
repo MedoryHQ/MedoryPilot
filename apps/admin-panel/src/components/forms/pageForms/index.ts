@@ -9,3 +9,4 @@ export * from "./FooterForm";
 export * from "./NewsForm";
 export * from "./PageComponentForm";
 export * from "./BlogForm";
+export * from "./AboutForm";
