@@ -217,4 +217,153 @@ describe("Admin Video routes — /admin/video", () => {
       expect(res.body).toHaveProperty("errors");
     });
   });
+
+  describe("POST /admin/video", () => {
+    it("creates video successfully", async () => {
+      (prisma.video.create as jest.Mock).mockResolvedValueOnce(mockVideo);
+
+      const payload = {
+        translations: {
+          en: { name: "New Video" },
+          ka: { name: "ახალი ვიდეო" },
+        },
+        thumbnail: null,
+        link: "https://example.com/video",
+        date: "2024-01-01",
+      };
+
+      const res = await request(app).post("/admin/video").send(payload);
+
+      expect(res.statusCode).toBe(201);
+      expect(res.body.data).toBeDefined();
+      expect(prisma.video.create).toHaveBeenCalled();
+    });
+
+    it("returns 400 when translations missing/invalid", async () => {
+      const res = await request(app)
+        .post("/admin/video")
+        .send({ translations: {} });
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+
+    it("handles DB error with 500", async () => {
+      (prisma.video.create as jest.Mock).mockRejectedValueOnce(
+        new Error("DB err")
+      );
+
+      const payload = {
+        translations: {
+          en: { name: "New Video" },
+          ka: { name: "ახალი ვიდეო" },
+        },
+        thumbnail: null,
+        link: "https://example.com/video",
+        date: "2024-01-01",
+      };
+
+      const res = await request(app).post("/admin/video").send(payload);
+
+      expect(res.statusCode).toBe(500);
+    });
+  });
+
+  describe("PUT /admin/video/:id", () => {
+    it("updates video successfully with new thumbnail", async () => {
+      const id = mockVideo.id;
+      (prisma.video.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockVideo,
+        thumbnail: null,
+      });
+      (prisma.file.create as jest.Mock).mockResolvedValueOnce({
+        id: "file-id",
+      });
+      (prisma.video.update as jest.Mock).mockResolvedValueOnce({
+        ...mockVideo,
+        translations: [{ id: "t1", name: "Updated", language: { code: "en" } }],
+      });
+
+      const payload = {
+        translations: {
+          en: { name: "Updated" },
+          ka: { name: "განახლებული" },
+        },
+        thumbnail: { path: "/thumb.png", name: "thumb.png", size: 123 },
+        link: "https://example.com/video",
+        date: "2024-01-01",
+      };
+
+      const res = await request(app).put(`/admin/video/${id}`).send(payload);
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toHaveProperty("data");
+      expect(prisma.video.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id },
+          include: { thumbnail: true },
+        })
+      );
+      expect(prisma.file.create).toHaveBeenCalled();
+      expect(prisma.video.update).toHaveBeenCalled();
+    });
+
+    it("returns 404 when updating non-existing video", async () => {
+      const id = mockVideo.id;
+      (prisma.video.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .put(`/admin/video/${id}`)
+        .send({
+          translations: {
+            en: { name: "x" },
+            ka: { name: "xka" },
+          },
+          date: "2024-01-01",
+          link: "https://video.com",
+        });
+
+      expect(res.statusCode).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid UUID param", async () => {
+      const res = await request(app)
+        .put("/admin/video/not-a-uuid")
+        .send({
+          translations: {
+            en: { name: "x" },
+            ka: { name: "xka" },
+          },
+          date: "2024-01-01",
+          link: "https://video.com",
+        });
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+
+    it("handles DB error with 500 on update", async () => {
+      const id = mockVideo.id;
+      (prisma.video.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockVideo,
+        thumbnail: null,
+      });
+      (prisma.video.update as jest.Mock).mockRejectedValueOnce(
+        new Error("DB err")
+      );
+
+      const res = await request(app)
+        .put(`/admin/video/${id}`)
+        .send({
+          translations: {
+            en: { name: "x" },
+            ka: { name: "xka" },
+          },
+          date: "2024-01-01",
+          link: "https://video.com",
+        });
+
+      expect(res.statusCode).toBe(500);
+    });
+  });
 });
