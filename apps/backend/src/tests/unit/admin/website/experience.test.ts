@@ -249,4 +249,165 @@ describe("Admin Experience routes — /admin/experience", () => {
       expect(res.body).toHaveProperty("errors");
     });
   });
+
+  describe("POST /admin/experience", () => {
+    it("creates experience successfully", async () => {
+      (prisma.experience.create as jest.Mock).mockResolvedValueOnce(
+        mockExperience
+      );
+
+      const payload = {
+        translations: {
+          en: { name: "New Co", position: "Engineer", description: "desc" },
+          ka: { name: "ახალი", position: "ინჟინისერი", description: "desc ka" },
+        },
+        icon: null,
+        link: "https://example.com",
+        location: "Tbilisi",
+        fromDate: "2019-01-01",
+      };
+
+      const res = await request(app).post("/admin/experience").send(payload);
+
+      expect(res.statusCode).toBe(201);
+      expect(res.body.data).toBeDefined();
+      expect(prisma.experience.create).toHaveBeenCalled();
+    });
+
+    it("returns 400 when translations missing/invalid", async () => {
+      const res = await request(app)
+        .post("/admin/experience")
+        .send({ translations: {} });
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+
+    it("handles DB error with 500", async () => {
+      (prisma.experience.create as jest.Mock).mockRejectedValueOnce(
+        new Error("DB err")
+      );
+
+      const payload = {
+        translations: {
+          en: { name: "New Co", position: "Engineer", description: "desc" },
+          ka: { name: "ახალი", position: "ინჟინისერი", description: "desc ka" },
+        },
+        icon: null,
+        link: "https://example.com",
+        location: "Tbilisi",
+        fromDate: "2019-01-01",
+      };
+
+      const res = await request(app).post("/admin/experience").send(payload);
+
+      expect(res.statusCode).toBe(500);
+    });
+  });
+
+  describe("PUT /admin/experience/:id", () => {
+    it("updates experience successfully with new icon", async () => {
+      const id = mockExperience.id;
+      (prisma.experience.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockExperience,
+        icon: null,
+      });
+      (prisma.file.create as jest.Mock).mockResolvedValueOnce({
+        id: "file-id",
+      });
+      (prisma.experience.update as jest.Mock).mockResolvedValueOnce({
+        ...mockExperience,
+        translations: [
+          {
+            id: "t1",
+            name: "Updated",
+            position: "Lead",
+            description: "D",
+            language: { code: "en" },
+          },
+        ],
+      });
+
+      const payload = {
+        translations: {
+          en: { name: "Updated", position: "Lead", description: "D" },
+          ka: { name: "განახლება", position: "LeadKa", description: "Dka" },
+        },
+        icon: { path: "/i.png", name: "i.png", size: 50 },
+        link: "https://example.com",
+        location: "Tbilisi",
+        fromDate: "2019-01-01",
+      };
+
+      const res = await request(app)
+        .put(`/admin/experience/${id}`)
+        .send(payload);
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toHaveProperty("data");
+      expect(prisma.experience.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id },
+          include: { icon: true },
+        })
+      );
+      expect(prisma.file.create).toHaveBeenCalled();
+      expect(prisma.experience.update).toHaveBeenCalled();
+    });
+
+    it("returns 404 when updating non-existing experience", async () => {
+      const id = mockExperience.id;
+      (prisma.experience.findUnique as jest.Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app)
+        .put(`/admin/experience/${id}`)
+        .send({
+          translations: {
+            en: { name: "x", position: "d", description: "d" },
+            ka: { name: "x", position: "d", description: "d" },
+          },
+          fromDate: "2019-01-01",
+        });
+
+      expect(res.statusCode).toBe(404);
+      expect(res.body).toHaveProperty("error");
+    });
+
+    it("returns 400 for invalid UUID param", async () => {
+      const res = await request(app)
+        .put("/admin/experience/not-a-uuid")
+        .send({
+          translations: {
+            en: { name: "x", position: "d", description: "d" },
+            ka: { name: "x", position: "d", description: "d" },
+          },
+          fromDate: "2019-01-01",
+        });
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toHaveProperty("errors");
+    });
+
+    it("handles DB error with 500 on update", async () => {
+      const id = mockExperience.id;
+      (prisma.experience.findUnique as jest.Mock).mockResolvedValueOnce({
+        ...mockExperience,
+        icon: null,
+      });
+      (prisma.experience.update as jest.Mock).mockRejectedValueOnce(
+        new Error("DB err")
+      );
+
+      const res = await request(app)
+        .put(`/admin/experience/${id}`)
+        .send({
+          translations: {
+            en: { name: "x", position: "d", description: "d" },
+            ka: { name: "x", position: "d", description: "d" },
+          },
+          fromDate: "2019-01-01",
+        });
+
+      expect(res.statusCode).toBe(500);
+    });
+  });
 });
