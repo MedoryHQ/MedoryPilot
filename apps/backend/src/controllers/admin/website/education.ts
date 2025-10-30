@@ -32,7 +32,7 @@ export const fetchEducations = async (
       search,
       {
         link: "insensitive",
-        "translations.some.title": "insensitive",
+        "translations.some.name": "insensitive",
         "translations.some.degree": "insensitive",
         "translations.some.description": "insensitive",
       },
