@@ -997,6 +997,49 @@ export const en = {
         hasLink: "With Link",
         noLink: "Without Link"
       }
+    },
+    videos: {
+      management: "Video Management",
+      managementDescription: "Manage website video and navigation elements",
+      addEducation: "Add Video",
+      search: "Search video...",
+      noVideoFound: "No video found",
+      video: "Video",
+      name: "Name",
+      degree: "Degree",
+      translations: "Translations",
+      link: "Link",
+      created: "Created",
+      from: "From Date",
+      to: "End Date",
+      present: "Present",
+      form: {
+        createTitle: "Create Video",
+        editTitle: "Edit Video",
+        subtitle: "Configure your website video and navigation",
+        contentTranslations: "Content & Translations",
+        contentTranslationsDescription:
+          "Fill in video details for each language",
+        name: "Name",
+        namePlaceholder: "e.g.",
+        settings: "Settings",
+        translations: "Translations",
+        link: "Link",
+        icon: "Icon",
+        iconLabel: "Drop your icon here",
+        iconDescription: "or click to browse",
+        background: "Background",
+        backgroundLabel: "Drop your background here",
+        backgroundDescription: "or click to browse",
+        video: "Video",
+        createdSuccessfully: "Video created successfully",
+        updatedSuccessfully: "Video updated successfully",
+        deletedSuccessfully: "Video deleted successfully"
+      },
+      filters: {
+        hasThumbnail: "გარეკანის ფოტოთი",
+        noThumbnail: "გარეკანის ფოტოს გარეშე"
+      }
     }
   }
 };

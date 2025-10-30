@@ -993,6 +993,38 @@ export const ka = {
         hasBackground: "ფონით",
         noBackground: "უფონოდ"
       }
+    },
+    videos: {
+      management: "ვიდეო მენეჯმენტი",
+      managementDescription: "მართეთ ვებსაიტის ვიდეო და ნავიგაცია",
+      addEducation: "ვიდეოს დამატება",
+      search: "ვიდეოს ძიება...",
+      noEducationsFound: "ვიდეო ვერ მოიძებნა",
+      video: "ვიდეო",
+      name: "სახელი",
+      link: "ლინკი",
+      from: "დაწყების თარიღი",
+      to: "დასრულების თარიღი",
+      present: "დღემდე",
+      translations: "თარგმანები",
+      created: "შეიქმნა",
+      form: {
+        createTitle: "ვიდეო შექმნა",
+        editTitle: "ვიდეო რედაქტირება",
+        subtitle: "ვებსაიტის ვიდეო კონფიგურაცია",
+        contentTranslations: "კონტენტი და თარგმანები",
+        contentTranslationsDescription:
+          "შეავსეთ ვიდეო დეტალები თითოეული ენისთვის",
+        thumbnail: "სახელი",
+        thumbnailPlaceholder: "მაგ., ონლაინ ჯავშანი",
+        createdSuccessfully: "ვიდეო წარმატებით შეიქმნა",
+        updatedSuccessfully: "ვიდეო წარმატებით განახლდა",
+        deletedSuccessfully: "ვიდეო წარმატებით წაიშალა"
+      },
+      filters: {
+        hasThumbnail: "Thumbnail-ით",
+        noThumbnail: "Thumbnail-ის გარეშე"
+      }
     }
   }
 };
