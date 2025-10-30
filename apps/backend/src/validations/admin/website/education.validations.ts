@@ -12,8 +12,7 @@ export const createEducationValidation = [
     .withMessage("invalidIcon"),
   body("link")
     .optional()
-    .isString()
-    .isLength({ min: 1 })
+    .isURL({ protocols: ["http", "https"], require_protocol: true })
     .withMessage("invalidLink"),
   body("fromDate").isISO8601().withMessage("invalidFromDate"),
   body("endDate")

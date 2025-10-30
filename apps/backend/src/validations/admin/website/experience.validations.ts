@@ -12,9 +12,9 @@ export const createExperienceValidation = [
     .withMessage("invalidIcon"),
   body("link")
     .optional()
-    .isString()
-    .isLength({ min: 1 })
+    .isURL({ protocols: ["http", "https"], require_protocol: true })
     .withMessage("invalidLink"),
+
   body("location")
     .optional()
     .isString()
