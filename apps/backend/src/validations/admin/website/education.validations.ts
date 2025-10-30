@@ -16,7 +16,17 @@ export const createEducationValidation = [
     .isLength({ min: 1 })
     .withMessage("invalidLink"),
   body("fromDate").isISO8601().withMessage("invalidFromDate"),
-  body("endDate").optional().isISO8601().withMessage("invalidEndDate"),
+  body("endDate")
+    .optional()
+    .isISO8601()
+    .withMessage("invalidEndDate")
+    .bail()
+    .custom(
+      (v, { req }) =>
+        !req.body.fromDate || new Date(v) >= new Date(req.body.fromDate)
+    )
+    .withMessage("invalidEndDate"),
+
   body("translations")
     .isObject()
     .custom((translations) =>
