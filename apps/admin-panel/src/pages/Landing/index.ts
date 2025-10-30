@@ -13,3 +13,4 @@ export * from "./PageComponents";
 export * from "./Introduce";
 export * from "./About";
 export * from "./Educations";
+export * from "./Videos";
