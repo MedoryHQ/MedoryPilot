@@ -947,6 +947,99 @@ export const en = {
         titleRequired: "Title is required",
         contentRequired: "Content is required"
       }
+    },
+    educations: {
+      management: "Educations Management",
+      managementDescription:
+        "Manage website educations and navigation elements",
+      addEducation: "Add Education",
+      search: "Search educations...",
+      noEducationsFound: "No educations found",
+      education: "Education",
+      name: "Name",
+      degree: "Degree",
+      translations: "Translations",
+      link: "Link",
+      created: "Created",
+      from: "From Date",
+      to: "End Date",
+      present: "Present",
+      form: {
+        createTitle: "Create Education",
+        editTitle: "Edit Education",
+        subtitle: "Configure your website education and navigation",
+        contentTranslations: "Content & Translations",
+        contentTranslationsDescription:
+          "Fill in education details for each language",
+        title: "Title",
+        titlePlaceholder: "e.g., Online Appointments",
+        description: "Description",
+        descriptionPlaceholder:
+          "Enter a brief description for this education...",
+        settings: "Settings",
+        translations: "Translations",
+        link: "Link",
+        degree: "Degree",
+        icon: "Icon",
+        iconLabel: "Drop your icon here",
+        iconDescription: "or click to browse",
+        background: "Background",
+        backgroundLabel: "Drop your background here",
+        backgroundDescription: "or click to browse",
+        education: "Education",
+        createdSuccessfully: "Education created successfully",
+        updatedSuccessfully: "Education updated successfully",
+        deletedSuccessfully: "Education deleted successfully"
+      },
+      filters: {
+        hasIcon: "With Icon",
+        noIcon: "Without Icon",
+        hasLink: "With Link",
+        noLink: "Without Link"
+      }
+    },
+    videos: {
+      management: "Video Management",
+      managementDescription: "Manage website video and navigation elements",
+      addEducation: "Add Video",
+      search: "Search video...",
+      noVideoFound: "No video found",
+      video: "Video",
+      name: "Name",
+      degree: "Degree",
+      translations: "Translations",
+      link: "Link",
+      created: "Created",
+      from: "From Date",
+      to: "End Date",
+      present: "Present",
+      form: {
+        createTitle: "Create Video",
+        editTitle: "Edit Video",
+        subtitle: "Configure your website video and navigation",
+        contentTranslations: "Content & Translations",
+        contentTranslationsDescription:
+          "Fill in video details for each language",
+        name: "Name",
+        namePlaceholder: "e.g.",
+        settings: "Settings",
+        translations: "Translations",
+        link: "Link",
+        icon: "Icon",
+        iconLabel: "Drop your icon here",
+        iconDescription: "or click to browse",
+        background: "Background",
+        backgroundLabel: "Drop your background here",
+        backgroundDescription: "or click to browse",
+        video: "Video",
+        createdSuccessfully: "Video created successfully",
+        updatedSuccessfully: "Video updated successfully",
+        deletedSuccessfully: "Video deleted successfully"
+      },
+      filters: {
+        hasThumbnail: "გარეკანის ფოტოთი",
+        noThumbnail: "გარეკანის ფოტოს გარეშე"
+      }
     }
   }
 };

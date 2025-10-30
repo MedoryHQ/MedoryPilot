@@ -12,11 +12,20 @@ export const createEducationValidation = [
     .withMessage("invalidIcon"),
   body("link")
     .optional()
-    .isString()
-    .isLength({ min: 1 })
+    .isURL({ protocols: ["http", "https"], require_protocol: true })
     .withMessage("invalidLink"),
   body("fromDate").isISO8601().withMessage("invalidFromDate"),
-  body("endDate").optional().isISO8601().withMessage("invalidEndDate"),
+  body("endDate")
+    .optional()
+    .isISO8601()
+    .withMessage("invalidEndDate")
+    .bail()
+    .custom(
+      (v, { req }) =>
+        !req.body.fromDate || new Date(v) >= new Date(req.body.fromDate)
+    )
+    .withMessage("invalidEndDate"),
+
   body("translations")
     .isObject()
     .custom((translations) =>

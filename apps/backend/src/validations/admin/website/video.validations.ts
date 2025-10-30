@@ -10,7 +10,11 @@ export const createVideoValidation = [
     .optional({ nullable: true })
     .isObject()
     .withMessage("invalidThumbnail"),
-  body("link").isString().isLength({ min: 1 }).withMessage("invalidLink"),
+  body("link")
+    .optional()
+    .isURL({ protocols: ["http", "https"], require_protocol: true })
+    .withMessage("invalidLink"),
+
   body("date").optional().isISO8601().withMessage("invalidDate"),
   body("translations")
     .isObject()

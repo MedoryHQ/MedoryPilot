@@ -32,7 +32,7 @@ export const fetchEducations = async (
       search,
       {
         link: "insensitive",
-        "translations.some.title": "insensitive",
+        "translations.some.name": "insensitive",
         "translations.some.degree": "insensitive",
         "translations.some.description": "insensitive",
       },
@@ -54,7 +54,7 @@ export const fetchEducations = async (
           },
           {
             ...(parsedFrom ? { fromDate: { gte: parsedFrom } } : {}),
-            ...(parsedEnd ? { endDate: { gte: parsedEnd } } : {}),
+            ...(parsedEnd ? { endDate: { lte: parsedEnd } } : {}),
           },
         ],
       }
@@ -224,9 +224,7 @@ export const createEducation = async (
     const education = await prisma.education.create({
       data: {
         translations: { create: translationsToCreate },
-        icon: {
-          create: iconToCreate,
-        },
+        ...(iconToCreate && { icon: { create: iconToCreate } }),
         ...(link && { link }),
         ...(endDate && { endDate }),
         fromDate,
@@ -312,9 +310,14 @@ export const updateEducation = async (
         create: translationsToCreate,
       },
       fromDate,
-      ...(link && { link }),
-      ...(endDate && { endDate }),
     };
+
+    if (Object.prototype.hasOwnProperty.call(req.body, "link")) {
+      updateData.link = link ?? null;
+    }
+    if (Object.prototype.hasOwnProperty.call(req.body, "endDate")) {
+      updateData.endDate = endDate ?? null;
+    }
 
     if (newIconFile) {
       updateData.iconId = newIconFile.id;

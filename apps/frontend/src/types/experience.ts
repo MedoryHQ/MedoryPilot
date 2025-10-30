@@ -1,7 +1,7 @@
 import { File, Language } from ".";
 
 export interface ExperiencesResponse {
-  data: Experience;
+  data: Experience[];
   count: number;
 }
 

@@ -947,6 +947,84 @@ export const ka = {
       add: "დაამატე ბლოგი",
       edit: "ბლოგის რედაქტირება",
       delete: "ბლოგის წაშლა"
+    },
+    educations: {
+      management: "განათლების მენეჯმენტი",
+      managementDescription: "მართეთ ვებსაიტის განათლება და ნავიგაცია",
+      addEducation: "განათლების დამატება",
+      search: "განათლების ძიება...",
+      noEducationsFound: "განათლება ვერ მოიძებნა",
+      education: "განათლება",
+      name: "სახელი",
+      degree: "ხარისხი",
+      link: "ლინკი",
+      from: "დაწყების თარიღი",
+      to: "დასრულების თარიღი",
+      present: "დღემდე",
+      translations: "თარგმანები",
+      visits: "ვიზიტები",
+      created: "შეიქმნა",
+      form: {
+        createTitle: "განათლების შექმნა",
+        editTitle: "განათლების რედაქტირება",
+        subtitle: "ვებსაიტის განათლების კონფიგურაცია",
+        contentTranslations: "კონტენტი და თარგმანები",
+        contentTranslationsDescription:
+          "შეავსეთ განათლების დეტალები თითოეული ენისთვის",
+        title: "სახელი",
+        titlePlaceholder: "მაგ., ონლაინ ჯავშანი",
+        description: "აღწერა",
+        descriptionPlaceholder: "შეიყვანეთ მოკლე აღწერა ამ განათლებისთვის...",
+        settings: "პარამეტრები",
+        icon: "სურათი",
+        iconLabel: "ჩააგდეთ სურათი აქ",
+        iconDescription: "ან დააჭირეთ არჩევისთვის",
+        background: "ფონი",
+        backgroundLabel: "ჩააგდეთ ფონი აქ",
+        backgroundDescription: "ან დააჭირეთ არჩევისთვის",
+        service: "განათლება",
+        createdSuccessfully: "განათლება წარმატებით შეიქმნა",
+        updatedSuccessfully: "განათლება წარმატებით განახლდა",
+        deletedSuccessfully: "განათლება წარმატებით წაიშალა"
+      },
+      filters: {
+        hasIcon: "Icon-ით",
+        noIcon: "Icon-ის გარეშე",
+        hasBackground: "ფონით",
+        noBackground: "უფონოდ"
+      }
+    },
+    videos: {
+      management: "ვიდეო მენეჯმენტი",
+      managementDescription: "მართეთ ვებსაიტის ვიდეო და ნავიგაცია",
+      addEducation: "ვიდეოს დამატება",
+      search: "ვიდეოს ძიება...",
+      noEducationsFound: "ვიდეო ვერ მოიძებნა",
+      video: "ვიდეო",
+      name: "სახელი",
+      link: "ლინკი",
+      from: "დაწყების თარიღი",
+      to: "დასრულების თარიღი",
+      present: "დღემდე",
+      translations: "თარგმანები",
+      created: "შეიქმნა",
+      form: {
+        createTitle: "ვიდეო შექმნა",
+        editTitle: "ვიდეო რედაქტირება",
+        subtitle: "ვებსაიტის ვიდეო კონფიგურაცია",
+        contentTranslations: "კონტენტი და თარგმანები",
+        contentTranslationsDescription:
+          "შეავსეთ ვიდეო დეტალები თითოეული ენისთვის",
+        thumbnail: "სახელი",
+        thumbnailPlaceholder: "მაგ., ონლაინ ჯავშანი",
+        createdSuccessfully: "ვიდეო წარმატებით შეიქმნა",
+        updatedSuccessfully: "ვიდეო წარმატებით განახლდა",
+        deletedSuccessfully: "ვიდეო წარმატებით წაიშალა"
+      },
+      filters: {
+        hasThumbnail: "Thumbnail-ით",
+        noThumbnail: "Thumbnail-ის გარეშე"
+      }
     }
   }
 };
