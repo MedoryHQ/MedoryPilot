@@ -12,3 +12,4 @@ export * from "./Socials";
 export * from "./PageComponents";
 export * from "./Introduce";
 export * from "./About";
+export * from "./Educations";
