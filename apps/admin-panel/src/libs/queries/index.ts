@@ -14,3 +14,4 @@ export * from "./about";
 export * from "./video";
 export * from "./experience";
 export * from "./education";
+export * from "./visit";
