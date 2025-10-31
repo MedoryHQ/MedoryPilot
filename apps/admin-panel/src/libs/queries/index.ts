@@ -15,3 +15,4 @@ export * from "./video";
 export * from "./experience";
 export * from "./education";
 export * from "./visit";
+export * from "./examination-sheet";
