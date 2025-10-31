@@ -19,3 +19,4 @@ export * from "./education";
 export * from "./experience";
 export * from "./about";
 export * from "./video";
+export * from "./chat";
