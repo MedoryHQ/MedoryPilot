@@ -19,3 +19,4 @@ export * from "./examination-sheet";
 export * from "./form100";
 export * from "./icd";
 export * from "./statistic";
+export * from "./chat";
