@@ -11,3 +11,4 @@ export * from "./form";
 export * from "./enums";
 export * from "./visit";
 export * from "./statistics";
+export * from "./chat";
