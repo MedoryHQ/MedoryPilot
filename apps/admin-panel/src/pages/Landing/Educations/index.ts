@@ -1,3 +1,3 @@
 export * from "./Educations";
-// export * from "./CreateEducation";
-// export * from "./EditEducation";
+export * from "./CreateEducation";
+export * from "./EditEducation";

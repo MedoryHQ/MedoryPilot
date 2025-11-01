@@ -33,7 +33,8 @@ export type FieldType =
   | "custom"
   | "number"
   | "email"
-  | "translated-select";
+  | "translated-select"
+  | "date";
 
 export type FieldConfig<TForm extends FieldValues = FieldValues> =
   | {

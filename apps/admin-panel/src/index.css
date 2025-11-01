@@ -515,6 +515,11 @@ button,
   color: rgba(255, 255, 255, 0.95);
 }
 
+.rdp-weekdays {
+  display: flex;
+  justify-content: space-between;
+}
+
 .ant-form-item-explain-error {
   font-size: 14px;
 }

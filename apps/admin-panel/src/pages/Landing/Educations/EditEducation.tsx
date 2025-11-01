@@ -1,19 +1,23 @@
 import { useLocation } from "react-router-dom";
-import { ServiceForm } from "@/components/forms";
+import { EducationForm } from "@/components/forms";
 
-const EditService = () => {
+const EditEducation = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const id = searchParams.get("id") || "";
 
   return (
-    <ServiceForm mode="edit" id={id} onSuccessNavigate="/landing/services" />
+    <EducationForm
+      mode="edit"
+      id={id}
+      onSuccessNavigate="/landing/educations"
+    />
   );
 };
 
-export const EditServiceNavigationRoute = {
-  element: <EditService />,
-  path: "/landing/services/edit"
+export const EditEducationNavigationRoute = {
+  element: <EditEducation />,
+  path: "/landing/educations/edit"
 };
 
-export default EditService;
+export default EditEducation;

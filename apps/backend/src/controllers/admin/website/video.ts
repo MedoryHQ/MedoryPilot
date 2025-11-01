@@ -277,36 +277,24 @@ export const updateVideo = async (
       return sendError(req, res, 404, "videoNotFound");
     }
 
-    let newThumbnailFile: { id: string } | null = null;
-
-    if (thumbnailToCreate) {
-      newThumbnailFile = await prisma.file.create({
-        data: { ...thumbnailToCreate },
-        select: { id: true },
-      });
-    }
-
-    const updateData: any = {
-      translations: {
-        deleteMany: {},
-        create: translationsToCreate,
-      },
-      link,
-      ...(date && { date }),
-    };
-
-    if (newThumbnailFile) {
-      updateData.thumbnailId = newThumbnailFile.id;
-    } else if (
-      Object.prototype.hasOwnProperty.call(req.body, "thumbnail") &&
-      thumbnail === null
-    ) {
-      updateData.thumbnailId = null;
-    }
-
     const video = await prisma.video.update({
       where: { id },
-      data: updateData,
+      data: {
+        translations: {
+          deleteMany: {},
+          create: translationsToCreate,
+        },
+        link,
+        ...(date && { date }),
+        thumbnail: thumbnailToCreate
+          ? {
+              delete: findVideo.thumbnail ? {} : undefined,
+              create: thumbnailToCreate,
+            }
+          : findVideo.thumbnail
+          ? { delete: {} }
+          : undefined,
+      },
       include: { translations: true, thumbnail: true },
     });
 

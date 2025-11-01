@@ -51,3 +51,4 @@ export * from "./radio-group";
 export * from "./data-table";
 export * from "./status-toggle";
 export * from "./language-tabs";
+export * from "./date-picker";
