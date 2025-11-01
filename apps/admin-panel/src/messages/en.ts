@@ -1005,14 +1005,12 @@ export const en = {
       search: "Search video...",
       noVideoFound: "No video found",
       video: "Video",
+      addVideo: "Add Video",
       name: "Name",
-      degree: "Degree",
       translations: "Translations",
       link: "Link",
       created: "Created",
-      from: "From Date",
-      to: "End Date",
-      present: "Present",
+      date: "Date",
       form: {
         createTitle: "Create Video",
         editTitle: "Edit Video",
@@ -1021,16 +1019,14 @@ export const en = {
         contentTranslationsDescription:
           "Fill in video details for each language",
         name: "Name",
-        namePlaceholder: "e.g.",
+        namePlaceholder: "e.g., video 1",
         settings: "Settings",
         translations: "Translations",
         link: "Link",
-        icon: "Icon",
-        iconLabel: "Drop your icon here",
-        iconDescription: "or click to browse",
-        background: "Background",
-        backgroundLabel: "Drop your background here",
-        backgroundDescription: "or click to browse",
+        date: "Date",
+        thumbnail: "Thumbnail",
+        thumbnailLabel: "Drop your thumbnail here",
+        thumbnailDescription: "or click to browse",
         video: "Video",
         createdSuccessfully: "Video created successfully",
         updatedSuccessfully: "Video updated successfully",
@@ -1039,6 +1035,11 @@ export const en = {
       filters: {
         hasThumbnail: "გარეკანის ფოტოთი",
         noThumbnail: "გარეკანის ფოტოს გარეშე"
+      },
+      errors: {
+        thumbnailRequired: "Thumbnail is required",
+        linkRequired: "Link is required",
+        nameRequired: "Name is required"
       }
     }
   }

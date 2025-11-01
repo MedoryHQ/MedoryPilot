@@ -10,3 +10,4 @@ export * from "./NewsForm";
 export * from "./PageComponentForm";
 export * from "./BlogForm";
 export * from "./AboutForm";
+export * from "./VideoForm";

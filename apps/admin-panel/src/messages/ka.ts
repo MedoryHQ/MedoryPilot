@@ -997,26 +997,33 @@ export const ka = {
     videos: {
       management: "ვიდეო მენეჯმენტი",
       managementDescription: "მართეთ ვებსაიტის ვიდეო და ნავიგაცია",
-      addEducation: "ვიდეოს დამატება",
+      addVideo: "ვიდეოს დამატება",
       search: "ვიდეოს ძიება...",
-      noEducationsFound: "ვიდეო ვერ მოიძებნა",
+      noVideosFound: "ვიდეო ვერ მოიძებნა",
       video: "ვიდეო",
       name: "სახელი",
       link: "ლინკი",
-      from: "დაწყების თარიღი",
-      to: "დასრულების თარიღი",
-      present: "დღემდე",
       translations: "თარგმანები",
       created: "შეიქმნა",
+      date: "თარიღი",
       form: {
-        createTitle: "ვიდეო შექმნა",
-        editTitle: "ვიდეო რედაქტირება",
-        subtitle: "ვებსაიტის ვიდეო კონფიგურაცია",
+        createTitle: "ვიდეოს შექმნა",
+        editTitle: "ვიდეოს რედაქტირება",
+        subtitle: "ვებსაიტის ვიდეოს კონფიგურაცია",
         contentTranslations: "კონტენტი და თარგმანები",
         contentTranslationsDescription:
-          "შეავსეთ ვიდეო დეტალები თითოეული ენისთვის",
-        thumbnail: "სახელი",
-        thumbnailPlaceholder: "მაგ., ონლაინ ჯავშანი",
+          "შეავსეთ ვიდეოს დეტალები თითოეული ენისთვის",
+        thumbnail: "გარეკანის ფოტო",
+        iconLabel: "ჩააგდეთ გარეკანის ფოტო აქ",
+        iconDescription: "ან დააჭირეთ არჩევისთვის",
+
+        name: "სახელი",
+        namePlaceholder: "მაგ., ვიდეო 1",
+        settings: "პარამეტრები",
+        translations: "თარგმნები",
+        link: "ბმული",
+        date: "თარიღი",
+        video: "ვიდეო",
         createdSuccessfully: "ვიდეო წარმატებით შეიქმნა",
         updatedSuccessfully: "ვიდეო წარმატებით განახლდა",
         deletedSuccessfully: "ვიდეო წარმატებით წაიშალა"
@@ -1024,6 +1031,11 @@ export const ka = {
       filters: {
         hasThumbnail: "Thumbnail-ით",
         noThumbnail: "Thumbnail-ის გარეშე"
+      },
+      errors: {
+        thumbnailRequired: "გარეკანის ფოტო აუცილებელია",
+        linkRequired: "ბმული აუცილებელია",
+        nameRequired: "სახელი აუცილებელია"
       }
     }
   }
