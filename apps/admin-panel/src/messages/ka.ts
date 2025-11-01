@@ -974,14 +974,13 @@ export const ka = {
         title: "სახელი",
         titlePlaceholder: "მაგ., ონლაინ ჯავშანი",
         description: "აღწერა",
+        fromDate: "From Date",
+        endDate: "End Date",
         descriptionPlaceholder: "შეიყვანეთ მოკლე აღწერა ამ განათლებისთვის...",
         settings: "პარამეტრები",
         icon: "სურათი",
         iconLabel: "ჩააგდეთ სურათი აქ",
         iconDescription: "ან დააჭირეთ არჩევისთვის",
-        background: "ფონი",
-        backgroundLabel: "ჩააგდეთ ფონი აქ",
-        backgroundDescription: "ან დააჭირეთ არჩევისთვის",
         service: "განათლება",
         createdSuccessfully: "განათლება წარმატებით შეიქმნა",
         updatedSuccessfully: "განათლება წარმატებით განახლდა",
@@ -992,6 +991,14 @@ export const ka = {
         noIcon: "Icon-ის გარეშე",
         hasBackground: "ფონით",
         noBackground: "უფონოდ"
+      },
+      errors: {
+        iconRequired: "სურათი აუცილებელია",
+        fromDateRequired: "დაწყების თარიღი აუცილებელია",
+        endDateRequired: "დასრულების თარიღი აუცილებელია",
+        nameRequired: "სახელი აუცილებელია",
+        degreeRequired: "ხარისხი აუცილებელია",
+        descriptionRequired: "აღწერა აუცილებელია"
       }
     },
     videos: {

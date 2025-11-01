@@ -1,12 +1,14 @@
-import { ServiceForm } from "@/components/forms";
+import { EducationForm } from "@/components/forms";
 
-const CreateService = () => {
-  return <ServiceForm mode="create" onSuccessNavigate="/landing/services" />;
+const CreateEducation = () => {
+  return (
+    <EducationForm mode="create" onSuccessNavigate="/landing/educations" />
+  );
 };
 
-export const CreateServiceNavigationRoute = {
-  element: <CreateService />,
-  path: "/landing/services/create"
+export const CreateEducationNavigationRoute = {
+  element: <CreateEducation />,
+  path: "/landing/educations/create"
 };
 
-export default CreateService;
+export default CreateEducation;
