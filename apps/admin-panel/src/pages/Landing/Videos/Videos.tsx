@@ -99,7 +99,7 @@ const Videos = () => {
     },
     {
       key: "date",
-      label: toUpperCase(t("videos.from") || "From"),
+      label: toUpperCase(t("videos.date") || "date"),
       render: (item) =>
         item.date ? (
           <div className="text-sm">{formatDate(item.date, i18n.language)}</div>
@@ -145,7 +145,7 @@ const Videos = () => {
         filters={filters}
         total={data?.count}
         editUrl="/landing/videos/edit"
-        emptyMessage={toUpperCase(t("videos.noVideosFound"))}
+        emptyMessage={toUpperCase(t("videos.noVideoFound"))}
         mobileCardRender={(item) => {
           if (isFetching || !item) {
             return (
