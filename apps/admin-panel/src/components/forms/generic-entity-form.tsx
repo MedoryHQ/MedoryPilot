@@ -22,13 +22,19 @@ import {
   MediaUploader,
   MetadataDisplay
 } from ".";
-import { Button, LocaleTabSwitcher, StatusToggle } from "@/components/ui";
+import {
+  Button,
+  DatePicker,
+  LocaleTabSwitcher,
+  StatusToggle
+} from "@/components/ui";
 import { DeleteConfirmDialog } from "@/components/forms";
 import { useToast } from "@/hooks";
 import { FieldConfig, GenericEntityFormProps } from "@/types";
 import { ArrowLeft, Edit3, Eye } from "lucide-react";
 import { locales } from "@/libs";
 import TranslatedSelect from "../TranslatedSelect";
+import { DatePickerSelection } from "@/types/ui";
 
 type localeType = "en" | "ka";
 
@@ -445,6 +451,74 @@ export function GenericEntityForm<
             required={!!f.props?.required}
           />
         );
+
+      case "date": {
+        const raw = watchedValue as unknown;
+        let currentDate: Date | undefined;
+        if (raw == null || raw === "") {
+          currentDate = undefined;
+        } else if (raw instanceof Date) {
+          currentDate = raw;
+        } else if (typeof raw === "string" || typeof raw === "number") {
+          const parsed = new Date(raw as any);
+          currentDate = isNaN(parsed.getTime()) ? undefined : parsed;
+        } else {
+          currentDate = undefined;
+        }
+
+        const handleDateChange = (d: DatePickerSelection) => {
+          form.setValue(
+            name as Path<TForm>,
+            d as unknown as PathValue<TForm, Path<TForm>>
+          );
+        };
+
+        return (
+          <div key={name} className="mb-5">
+            <label className="text-muted-foreground mb-2 block text-sm font-medium">
+              {toUpperCase(
+                typeof label === "string" ? t(label) : (label as any)
+              )}
+              {f.props?.required ? (
+                <span className="text-destructive"> *</span>
+              ) : null}
+            </label>
+
+            {internalMode === "readonly" ? (
+              <div className="bg-surface rounded-md border p-2">
+                {currentDate
+                  ? currentDate.toLocaleDateString()
+                  : watchedValue
+                    ? String(watchedValue)
+                    : "-"}
+              </div>
+            ) : (
+              <DatePicker
+                value={currentDate ?? undefined}
+                onChange={(d) => handleDateChange(d)}
+                placeholder={
+                  f.props?.placeholder
+                    ? (t(f.props.placeholder as string) as string)
+                    : undefined
+                }
+                fromDate={f.props?.fromDate as Date | undefined}
+                toDate={f.props?.toDate as Date | undefined}
+              />
+            )}
+
+            {fieldError ? (
+              <p className="text-destructive mt-2 text-sm">
+                {String(fieldError)}
+              </p>
+            ) : f.props?.description ? (
+              <p className="text-muted-foreground mt-2 text-sm">
+                {t(f.props.description as string)}
+              </p>
+            ) : null}
+          </div>
+        );
+      }
+
       default:
         return null;
     }
