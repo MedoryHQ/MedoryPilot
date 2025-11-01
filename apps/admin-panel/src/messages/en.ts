@@ -971,8 +971,8 @@ export const en = {
         contentTranslations: "Content & Translations",
         contentTranslationsDescription:
           "Fill in education details for each language",
-        title: "Title",
-        titlePlaceholder: "e.g., Online Appointments",
+        name: "Name",
+        namePlaceholder: "e.g., Online Appointments",
         description: "Description",
         descriptionPlaceholder:
           "Enter a brief description for this education...",
@@ -980,12 +980,11 @@ export const en = {
         translations: "Translations",
         link: "Link",
         degree: "Degree",
+        fromDate: "From Date",
+        endDate: "End Date",
         icon: "Icon",
         iconLabel: "Drop your icon here",
         iconDescription: "or click to browse",
-        background: "Background",
-        backgroundLabel: "Drop your background here",
-        backgroundDescription: "or click to browse",
         education: "Education",
         createdSuccessfully: "Education created successfully",
         updatedSuccessfully: "Education updated successfully",
@@ -996,6 +995,14 @@ export const en = {
         noIcon: "Without Icon",
         hasLink: "With Link",
         noLink: "Without Link"
+      },
+      errors: {
+        iconRequired: "Icon is required",
+        fromDateRequired: "From Date is required",
+        endDateRequired: "End Date is required",
+        nameRequired: "Name is required",
+        degreeRequired: "Degree is required",
+        descriptionRequired: "Description is required"
       }
     },
     videos: {
