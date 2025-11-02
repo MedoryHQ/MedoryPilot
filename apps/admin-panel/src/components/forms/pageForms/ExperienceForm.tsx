@@ -5,36 +5,37 @@ import { toUpperCase } from "@/utils";
 
 import { GenericEntityForm } from "..";
 import type { FieldConfig } from "@/types";
-import type { EducationFormValues } from "@/validations/website/education.validation";
-import { educationSubmitSchema } from "@/validations/website/education.validation";
+import type { ExperienceFormValues } from "@/validations/website/experience.validation";
+import { experienceSubmitSchema } from "@/validations/website/experience.validation";
 
-export interface EducationFormProps {
+export interface ExperienceFormProps {
   mode: "create" | "edit" | "readonly";
   id?: string | null;
   onSuccessNavigate?: string;
 }
 
-const defaultValues: EducationFormValues = {
+const defaultValues: ExperienceFormValues = {
   fromDate: null,
   endDate: undefined,
   link: "",
   icon: null,
+  location: "",
   translations: {
-    en: { name: "", degree: "", description: "" },
-    ka: { name: "", degree: "", description: "" }
+    en: { name: "", position: "", description: "" },
+    ka: { name: "", position: "", description: "" }
   }
 };
 
-export const EducationForm: React.FC<EducationFormProps> = ({
+export const ExperienceForm: React.FC<ExperienceFormProps> = ({
   mode,
   id = null,
-  onSuccessNavigate = "/landing/educations"
+  onSuccessNavigate = "/landing/experiences"
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<EducationFormValues> => {
+  const mapFetchedToForm = (entity: any): Partial<ExperienceFormValues> => {
     if (!entity) return {};
-    const { link, fromDate, endDate } = entity;
+    const { link, fromDate, endDate, location } = entity;
 
     const translations = entity.translations ?? [];
     const en = translations.find((tr: any) => tr.language?.code === "en") ?? {};
@@ -51,17 +52,18 @@ export const EducationForm: React.FC<EducationFormProps> = ({
     return {
       icon,
       ...(link ? { link } : {}),
+      ...(location ? { location } : {}),
       ...(fromDate ? { fromDate: new Date(fromDate) } : {}),
       ...(endDate ? { endDate: new Date(endDate) } : {}),
       translations: {
         en: {
           name: en.name ?? "",
-          degree: en.degree ?? "",
+          position: en.position ?? "",
           description: en.description ?? ""
         },
         ka: {
           name: ka.name ?? "",
-          degree: ka.degree ?? "",
+          position: ka.position ?? "",
           description: ka.description ?? ""
         }
       }
@@ -69,73 +71,84 @@ export const EducationForm: React.FC<EducationFormProps> = ({
   };
 
   const fetchEntity = async (entityId?: string) => {
-    const res = await axios.get(`/education/${entityId}`);
+    const res = await axios.get(`/experience/${entityId}`);
     return res.data?.data ?? res.data;
   };
 
-  const createEntity = async (payload: EducationFormValues) => {
-    await axios.post("/education", payload);
+  const createEntity = async (payload: ExperienceFormValues) => {
+    await axios.post("/experience", payload);
   };
 
   const updateEntity = async (
     entityId: string,
-    payload: EducationFormValues
+    payload: ExperienceFormValues
   ) => {
-    await axios.put(`/education/${entityId}`, payload);
+    await axios.put(`/experience/${entityId}`, payload);
   };
 
   const deleteEntity = async (entityId: string) => {
-    await axios.delete(`/education/${entityId}`);
+    await axios.delete(`/experience/${entityId}`);
   };
 
   const rightSections = [
     {
       key: "name",
-      title: toUpperCase(t("educations.management")),
+      title: toUpperCase(t("experiences.management")),
       fields: [
         {
           kind: "simple",
           name: "link",
-          label: toUpperCase(t("educations.form.link")),
+          label: toUpperCase(t("experiences.form.link")),
           type: "text",
           props: {
             step: 1,
-            placeholder: t("educations.form.link"),
+            placeholder: t("experiences.form.link"),
+            fullWidth: true
+          }
+        },
+        {
+          kind: "simple",
+          name: "location",
+          label: toUpperCase(t("experiences.form.location")),
+          type: "text",
+          props: {
+            step: 1,
+            placeholder: t("experiences.form.location"),
             fullWidth: true
           }
         },
         {
           kind: "simple",
           name: "fromDate",
-          label: toUpperCase(t("educations.form.fromDate")),
+          label: toUpperCase(t("experiences.form.fromDate")),
           type: "date",
           props: {
             step: 1,
-            placeholder: t("educations.form.fromDate"),
+            placeholder: t("experiences.form.fromDate"),
             fullWidth: true
           }
         },
         {
           kind: "simple",
           name: "endDate",
-          label: toUpperCase(t("educations.form.endDate")),
+          label: toUpperCase(t("experiences.form.endDate")),
           type: "date",
           props: {
             step: 1,
-            placeholder: t("educations.form.endDate"),
+            placeholder: t("experiences.form.endDate"),
             fullWidth: true
           }
         }
-      ] as FieldConfig<EducationFormValues>[]
+      ] as FieldConfig<ExperienceFormValues>[]
     },
     {
       key: "icon",
-      title: toUpperCase(t("educations.form.icon")),
+      title: toUpperCase(t("experiences.form.icon")),
       fields: [
         {
           kind: "simple",
           name: "icon",
-          label: toUpperCase(t("educations.form.icon")),
+          label: toUpperCase(t("experiences.form.icon")),
           type: "media",
           props: {
             maxSizeMB: 5,
@@ -143,16 +156,16 @@ export const EducationForm: React.FC<EducationFormProps> = ({
             previewHeight: "h-[248px]"
           }
         }
-      ] as FieldConfig<EducationFormValues>[]
+      ] as FieldConfig<ExperienceFormValues>[]
     }
   ];
 
   return (
-    <GenericEntityForm<EducationFormValues, any>
-      resourceName="educations"
+    <GenericEntityForm<ExperienceFormValues, any>
+      resourceName="experiences"
       mode={mode}
       id={id ?? undefined}
-      schema={educationSubmitSchema(t, i18n.language as "en" | "ka")}
+      schema={experienceSubmitSchema(t, i18n.language as "en" | "ka")}
       defaultValues={defaultValues}
       fetchEntity={fetchEntity}
       createEntity={createEntity}
@@ -163,14 +176,14 @@ export const EducationForm: React.FC<EducationFormProps> = ({
         [
           {
             name: "name",
-            label: toUpperCase(t("educations.form.name")),
+            label: toUpperCase(t("experiences.form.name")),
             required: true,
             fullWidth: true,
             rows: 1
           },
           {
-            name: "degree",
-            label: toUpperCase(t("educations.form.degree")),
+            name: "position",
+            label: toUpperCase(t("experiences.form.position")),
             required: true,
             fullWidth: true,
             rows: 1
@@ -178,7 +191,7 @@ export const EducationForm: React.FC<EducationFormProps> = ({
           {
             type: "textarea",
             name: "description",
-            label: toUpperCase(t("educations.form.description")),
+            label: toUpperCase(t("experiences.form.description")),
             required: true,
             fullWidth: true,
             rows: 1
@@ -193,4 +206,4 @@ export const EducationForm: React.FC<EducationFormProps> = ({
   );
 };
 
-export default EducationForm;
+export default ExperienceForm;

@@ -318,6 +318,8 @@ export const ka = {
       page: "გვერდი",
       of: "დან",
       search: "ძებნა...",
+      from: "დან",
+      to: "მდე",
       filters: "ფილტრები",
       clearFilters: "ფილტრების გასუფთავება",
       clearAll: "გასუფთავება",
@@ -713,7 +715,7 @@ export const ka = {
       name: "სახელი",
       created: "შეიქმნა",
       icon: "სურათი",
-      link: "ლინკი",
+      link: "ბმული",
       filters: {
         hasIcon: "სურათით",
         noIcon: "სურათის გარეშე"
@@ -957,12 +959,11 @@ export const ka = {
       education: "განათლება",
       name: "სახელი",
       degree: "ხარისხი",
-      link: "ლინკი",
+      link: "ბმული",
       from: "დაწყების თარიღი",
       to: "დასრულების თარიღი",
       present: "დღემდე",
       translations: "თარგმანები",
-      visits: "ვიზიტები",
       created: "შეიქმნა",
       form: {
         createTitle: "განათლების შექმნა",
@@ -971,26 +972,29 @@ export const ka = {
         contentTranslations: "კონტენტი და თარგმანები",
         contentTranslationsDescription:
           "შეავსეთ განათლების დეტალები თითოეული ენისთვის",
-        title: "სახელი",
-        titlePlaceholder: "მაგ., ონლაინ ჯავშანი",
+        name: "სახელი",
+        namePlaceholder: "მაგ., ინფორმაციული ტექნოლოგიები",
+        degree: "ხარისხი",
         description: "აღწერა",
-        fromDate: "From Date",
-        endDate: "End Date",
         descriptionPlaceholder: "შეიყვანეთ მოკლე აღწერა ამ განათლებისთვის...",
+        fromDate: "დაწყების თაირღი",
+        endDate: "დასრულების თარიღი",
+        link: "ბმული",
         settings: "პარამეტრები",
         icon: "სურათი",
         iconLabel: "ჩააგდეთ სურათი აქ",
         iconDescription: "ან დააჭირეთ არჩევისთვის",
-        service: "განათლება",
+        education: "განათლება",
         createdSuccessfully: "განათლება წარმატებით შეიქმნა",
         updatedSuccessfully: "განათლება წარმატებით განახლდა",
         deletedSuccessfully: "განათლება წარმატებით წაიშალა"
       },
       filters: {
-        hasIcon: "Icon-ით",
-        noIcon: "Icon-ის გარეშე",
-        hasBackground: "ფონით",
-        noBackground: "უფონოდ"
+        hasIcon: "სურათითით",
+        noIcon: "სურათის გარეშე",
+        hasLink: "ბმულით",
+        noLink: "ბმულის გარეშე",
+        dateRange: "თარიღის დიაპაზონი"
       },
       errors: {
         iconRequired: "სურათი აუცილებელია",
@@ -1009,7 +1013,7 @@ export const ka = {
       noVideosFound: "ვიდეო ვერ მოიძებნა",
       video: "ვიდეო",
       name: "სახელი",
-      link: "ლინკი",
+      link: "ბმული",
       translations: "თარგმანები",
       created: "შეიქმნა",
       date: "თარიღი",
@@ -1042,7 +1046,68 @@ export const ka = {
       errors: {
         thumbnailRequired: "გარეკანის ფოტო აუცილებელია",
         linkRequired: "ბმული აუცილებელია",
-        nameRequired: "სახელი აუცილებელია"
+        nameRequired: "სახელი აუცილებელია",
+        dateRange: "თარიღის დიაპაზონი"
+      }
+    },
+    experiences: {
+      management: "გამოცდილების მენეჯმენტი",
+      managementDescription: "მართეთ ვებსაიტის გამოცდილება და ნავიგაცია",
+      addExperience: "გამოცდილების დამატება",
+      search: "გამოცდილების ძიება...",
+      noExperiencesFound: "გამოცდილება ვერ მოიძებნა",
+      experience: "გამოცდილება",
+      name: "სახელი",
+      location: "ლოკაცია",
+      position: "პოზიცია",
+      link: "ბმული",
+      from: "დაწყების თარიღი",
+      to: "დასრულების თარიღი",
+      present: "დღემდე",
+      translations: "თარგმანები",
+      created: "შეიქმნა",
+      form: {
+        createTitle: "გამოცდილების შექმნა",
+        editTitle: "გამოცდილების რედაქტირება",
+        subtitle: "ვებსაიტის გამოცდილების კონფიგურაცია",
+        contentTranslations: "კონტენტი და თარგმანები",
+        contentTranslationsDescription:
+          "შეავსეთ გამოცდილების დეტალები თითოეული ენისთვის",
+        name: "სახელი",
+        namePlaceholder: "მაგ., გუგლი",
+        position: "პოზიცია",
+        positionPlaceholder: "მაგ., ინჟინერი",
+        location: "ლოკაცია",
+        description: "აღწერა",
+        descriptionPlaceholder: "შეიყვანეთ მოკლე აღწერა ამ გამოცდილებისთვის...",
+        fromDate: "დაწყების თაირღი",
+        endDate: "დასრულების თარიღი",
+        link: "ბმული",
+        settings: "პარამეტრები",
+        icon: "სურათი",
+        iconLabel: "ჩააგდეთ სურათი აქ",
+        iconDescription: "ან დააჭირეთ არჩევისთვის",
+        experience: "გამოცდილება",
+        createdSuccessfully: "გამოცდილება წარმატებით შეიქმნა",
+        updatedSuccessfully: "გამოცდილება წარმატებით განახლდა",
+        deletedSuccessfully: "გამოცდილება წარმატებით წაიშალა"
+      },
+      filters: {
+        hasIcon: "სურათითით",
+        noIcon: "სურათის გარეშე",
+        hasLink: "ბმულით",
+        noLink: "ბმულის გარეშე",
+        hasLocation: "ლოკაციით",
+        noLocation: "ლოკაციის გარეშე",
+        dateRange: "თარიღის დიაპაზონი"
+      },
+      errors: {
+        iconRequired: "სურათი აუცილებელია",
+        fromDateRequired: "დაწყების თარიღი აუცილებელია",
+        endDateRequired: "დასრულების თარიღი აუცილებელია",
+        nameRequired: "სახელი აუცილებელია",
+        positionRequired: "პოზიცია აუცილებელია",
+        descriptionRequired: "აღწერა აუცილებელია"
       }
     }
   }

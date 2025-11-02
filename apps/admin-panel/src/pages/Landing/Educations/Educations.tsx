@@ -40,6 +40,11 @@ const Educations = () => {
         { label: toUpperCase(t("educations.filters.hasLink")), value: "true" },
         { label: toUpperCase(t("educations.filters.noLink")), value: "false" }
       ]
+    },
+    {
+      key: "dateRange",
+      label: toUpperCase(t("educations.filters.dateRange") || "Date range"),
+      type: "date-range"
     }
   ];
 

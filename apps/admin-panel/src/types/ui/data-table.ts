@@ -21,7 +21,13 @@ export type Action<T> = {
 export type FilterConfig = {
   key: string;
   label: string;
-  type: "select" | "boolean" | "number" | "multiple-select";
+  type:
+    | "select"
+    | "boolean"
+    | "number"
+    | "multiple-select"
+    | "date"
+    | "date-range";
   multiple?: boolean;
   withSearch?: boolean;
   searchEndpoint?: string;

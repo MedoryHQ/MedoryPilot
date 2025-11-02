@@ -31,6 +31,11 @@ const Videos = () => {
         { label: toUpperCase(t("videos.filters.hasThumbnail")), value: "true" },
         { label: toUpperCase(t("videos.filters.noThumbnail")), value: "false" }
       ]
+    },
+    {
+      key: "dateRange",
+      label: toUpperCase(t("videos.filters.dateRange") || "Date range"),
+      type: "date-range"
     }
   ];
 

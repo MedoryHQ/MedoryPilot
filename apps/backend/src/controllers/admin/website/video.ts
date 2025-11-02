@@ -10,6 +10,7 @@ import {
   logAdminInfo as logInfo,
   logAdminWarn as logWarn,
   parseFilters,
+  parseDate,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
 import { CreateVideoDTO, UpdateVideoDTO } from "@/types/admin";
@@ -22,7 +23,16 @@ export const fetchVideos = async (
   try {
     const { skip, take, search, orderBy } = getPaginationAndFilters(req);
     const filters = parseFilters(req);
-    const { thumbnail } = filters;
+    const { thumbnail, dateRange } = filters as {
+      thumbnail?: any;
+      dateRange?: {
+        from?: string;
+        to?: string;
+      };
+    };
+
+    const parsedFrom = parseDate(dateRange?.from);
+    const parsedEnd = parseDate(dateRange?.to);
 
     const where = generateWhereInput<Prisma.VideoWhereInput>(
       search,
@@ -38,6 +48,8 @@ export const fetchVideos = async (
                 ? { thumbnail: { isNot: null } }
                 : { thumbnail: { is: null } }
               : {}),
+            ...(parsedFrom ? { date: { gte: parsedFrom } } : {}),
+            ...(parsedEnd ? { date: { lte: parsedEnd } } : {}),
           },
         ],
       }

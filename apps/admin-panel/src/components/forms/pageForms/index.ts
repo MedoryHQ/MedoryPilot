@@ -12,3 +12,4 @@ export * from "./BlogForm";
 export * from "./AboutForm";
 export * from "./VideoForm";
 export * from "./EducationForm";
+export * from "./ExperienceForm";

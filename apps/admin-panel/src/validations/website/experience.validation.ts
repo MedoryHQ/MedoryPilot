@@ -15,10 +15,16 @@ export const experienceSchema = (
     ),
     location: z.string().optional(),
     link: z.string().optional(),
-    fromDate: z
-      .date()
-      .min(1, { message: t("experiences.errors.fromDateRequired", lang) }),
-    endDate: z.date().optional(),
+    fromDate: z.preprocess((val) => {
+      if (val === "" || val === null || val === undefined) return null;
+      if (typeof val === "string") return new Date(val);
+      return val;
+    }, z.date().nullable()),
+    endDate: z.preprocess((val) => {
+      if (val === "" || val === null || val === undefined) return undefined;
+      if (typeof val === "string") return new Date(val);
+      return val;
+    }, z.date().optional()),
     translations: z.object({
       en: z.object({
         name: z
@@ -45,4 +51,32 @@ export const experienceSchema = (
     })
   });
 
+export const experienceSubmitSchema = (
+  t: TFunction<"translation", undefined>,
+  lang: "en" | "ka" = "en"
+) =>
+  experienceSchema(t, lang).superRefine((data, ctx) => {
+    if (data.fromDate === null || data.fromDate === undefined) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: t("experiences.errors.fromDateRequired", lang),
+        path: ["fromDate"]
+      });
+    }
+    if (
+      data.fromDate instanceof Date &&
+      data.endDate instanceof Date &&
+      data.endDate < data.fromDate
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: t("experiences.errors.endDateBeforeFromDate", lang),
+        path: ["endDate"]
+      });
+    }
+  });
+
 export type ExperienceFormValues = z.infer<ReturnType<typeof experienceSchema>>;
+export type ExperienceSubmitValues = z.infer<
+  ReturnType<typeof experienceSubmitSchema>
+>;

@@ -55,6 +55,11 @@ const Experiences = () => {
           value: "false"
         }
       ]
+    },
+    {
+      key: "dateRange",
+      label: toUpperCase(t("experiences.filters.dateRange") || "Date range"),
+      type: "date-range"
     }
   ];
 
@@ -113,6 +118,9 @@ const Experiences = () => {
           item.translations,
           i18n.language
         );
+        if (!item.link) {
+          return "";
+        }
         return (
           <a
             className="text-accent !underline"
@@ -140,13 +148,10 @@ const Experiences = () => {
     {
       key: "location",
       label: toUpperCase(t("experiences.location")),
+      sortable: true,
       render: (item) => {
-        const translation = getTranslatedObject(
-          item.translations,
-          i18n.language
-        );
         return (
-          <div className="text-sm">{toUpperCase(translation?.location)}</div>
+          <div className="text-sm">{toUpperCase(item?.location || "")}</div>
         );
       }
     },
