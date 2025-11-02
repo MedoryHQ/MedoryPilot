@@ -473,6 +473,42 @@ export function GenericEntityForm<
           );
         };
 
+        const otherFieldName =
+          (name as string) === "fromDate"
+            ? ("endDate" as Path<TForm>)
+            : (name as string) === "endDate"
+              ? ("fromDate" as Path<TForm>)
+              : (undefined as any);
+
+        let otherRaw: unknown = undefined;
+        if (otherFieldName) {
+          try {
+            otherRaw = getValues()[otherFieldName as unknown as string];
+          } catch {
+            otherRaw = undefined;
+          }
+        }
+
+        const parseToDate = (v: unknown): Date | undefined => {
+          if (!v && v !== 0) return undefined;
+          if (v instanceof Date) return v;
+          if (typeof v === "string" || typeof v === "number") {
+            const p = new Date(v as any);
+            return isNaN(p.getTime()) ? undefined : p;
+          }
+          return undefined;
+        };
+
+        const otherDate = parseToDate(otherRaw);
+
+        const computedFromDate: Date | undefined =
+          (f.props?.fromDate as Date | undefined) ??
+          ((name as string) === "endDate" ? otherDate : undefined);
+
+        const computedToDate: Date | undefined =
+          (f.props?.toDate as Date | undefined) ??
+          ((name as string) === "fromDate" ? otherDate : undefined);
+
         return (
           <div key={name} className="mb-5">
             <label className="text-muted-foreground mb-2 block text-sm font-medium">
@@ -501,8 +537,8 @@ export function GenericEntityForm<
                     ? (t(f.props.placeholder as string) as string)
                     : undefined
                 }
-                fromDate={f.props?.fromDate as Date | undefined}
-                toDate={f.props?.toDate as Date | undefined}
+                fromDate={computedFromDate}
+                toDate={computedToDate}
               />
             )}
 
