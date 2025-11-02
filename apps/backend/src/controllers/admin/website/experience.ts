@@ -33,7 +33,7 @@ export const fetchExperiences = async (
       {
         link: "insensitive",
         location: "insensitive",
-        "translations.some.title": "insensitive",
+        "translations.some.name": "insensitive",
         "translations.some.position": "insensitive",
         "translations.some.description": "insensitive",
       },
