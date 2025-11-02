@@ -23,10 +23,58 @@ export const fetchEducations = async (
   try {
     const { skip, take, search, orderBy } = getPaginationAndFilters(req);
     const filters = parseFilters(req);
-    const { icon, fromDate, endDate, link } = filters;
+    const { icon, dateRange, link } = filters as {
+      icon?: any;
+      link?: string;
+      dateRange?: {
+        from?: string;
+        to?: string;
+      };
+    };
 
-    const parsedFrom = parseDate(fromDate);
-    const parsedEnd = parseDate(endDate);
+    const parsedFrom = parseDate(dateRange?.from);
+    const parsedEnd = parseDate(dateRange?.to);
+
+    let dateFilterCondition: Prisma.EducationWhereInput | undefined;
+
+    if (parsedFrom && parsedEnd) {
+      dateFilterCondition = {
+        AND: [
+          {
+            OR: [{ endDate: { gte: parsedFrom } }, { endDate: null }],
+          },
+          {
+            fromDate: { lte: parsedEnd },
+          },
+        ],
+      };
+    } else if (parsedFrom) {
+      dateFilterCondition = {
+        OR: [{ endDate: { gte: parsedFrom } }, { endDate: null }],
+      };
+    } else if (parsedEnd) {
+      dateFilterCondition = {
+        fromDate: { lte: parsedEnd },
+      };
+    } else {
+      dateFilterCondition = undefined;
+    }
+
+    const andConditions: Prisma.EducationWhereInput[] = [];
+
+    if (typeof icon === "boolean") {
+      if (icon) andConditions.push({ icon: { isNot: null } });
+      else andConditions.push({ icon: { is: null } });
+    }
+
+    if (typeof link === "boolean") {
+      if (link) andConditions.push({ link: { not: null } });
+      else andConditions.push({ link: null });
+    }
+
+    if (dateFilterCondition) {
+      andConditions.push(dateFilterCondition);
+    }
 
     const where = generateWhereInput<Prisma.EducationWhereInput>(
       search,
@@ -37,26 +85,7 @@ export const fetchEducations = async (
         "translations.some.description": "insensitive",
       },
       {
-        AND: [
-          {
-            ...(typeof icon === "boolean"
-              ? icon
-                ? { icon: { isNot: null } }
-                : { icon: { is: null } }
-              : {}),
-          },
-          {
-            ...(typeof link === "boolean"
-              ? link
-                ? { link: { not: null } }
-                : { link: null }
-              : {}),
-          },
-          {
-            ...(parsedFrom ? { fromDate: { gte: parsedFrom } } : {}),
-            ...(parsedEnd ? { endDate: { lte: parsedEnd } } : {}),
-          },
-        ],
+        AND: andConditions,
       }
     );
 
