@@ -511,7 +511,7 @@ export function GenericEntityForm<
 
         return (
           <div key={name} className="mb-5">
-            <label className="text-muted-foreground mb-2 block text-sm font-medium">
+            <label className="mb-2 block text-sm font-medium">
               {toUpperCase(
                 typeof label === "string" ? t(label) : (label as any)
               )}
@@ -532,6 +532,7 @@ export function GenericEntityForm<
               <DatePicker
                 value={currentDate ?? undefined}
                 onChange={(d) => handleDateChange(d)}
+                showClearButton
                 placeholder={
                   f.props?.placeholder
                     ? (t(f.props.placeholder as string) as string)
