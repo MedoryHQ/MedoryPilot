@@ -324,42 +324,25 @@ export const updateEducation = async (
       return sendError(req, res, 404, "educationNotFound");
     }
 
-    let newIconFile: { id: string } | null = null;
-
-    if (iconToCreate) {
-      newIconFile = await prisma.file.create({
-        data: { ...iconToCreate },
-        select: { id: true },
-      });
-    }
-
-    const updateData: any = {
-      translations: {
-        deleteMany: {},
-        create: translationsToCreate,
-      },
-      fromDate,
-    };
-
-    if (Object.prototype.hasOwnProperty.call(req.body, "link")) {
-      updateData.link = link ?? null;
-    }
-    if (Object.prototype.hasOwnProperty.call(req.body, "endDate")) {
-      updateData.endDate = endDate ?? null;
-    }
-
-    if (newIconFile) {
-      updateData.iconId = newIconFile.id;
-    } else if (
-      Object.prototype.hasOwnProperty.call(req.body, "icon") &&
-      icon === null
-    ) {
-      updateData.iconId = null;
-    }
-
     const education = await prisma.education.update({
       where: { id },
-      data: updateData,
+      data: {
+        translations: {
+          deleteMany: {},
+          create: translationsToCreate,
+        },
+        fromDate,
+        ...(endDate && { endDate }),
+        ...(link && { link }),
+        icon: iconToCreate
+          ? {
+              delete: findEducation.icon ? {} : undefined,
+              create: iconToCreate,
+            }
+          : findEducation.icon
+          ? { delete: {} }
+          : undefined,
+      },
       include: { translations: true, icon: true },
     });
 
