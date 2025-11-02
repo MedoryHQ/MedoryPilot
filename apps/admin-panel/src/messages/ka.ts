@@ -1046,7 +1046,68 @@ export const ka = {
       errors: {
         thumbnailRequired: "გარეკანის ფოტო აუცილებელია",
         linkRequired: "ბმული აუცილებელია",
-        nameRequired: "სახელი აუცილებელია"
+        nameRequired: "სახელი აუცილებელია",
+        dateRange: "თარიღის დიაპაზონი"
+      }
+    },
+    experiences: {
+      management: "გამოცდილების მენეჯმენტი",
+      managementDescription: "მართეთ ვებსაიტის გამოცდილება და ნავიგაცია",
+      addExperience: "გამოცდილების დამატება",
+      search: "გამოცდილების ძიება...",
+      noExperiencesFound: "გამოცდილება ვერ მოიძებნა",
+      experience: "გამოცდილება",
+      name: "სახელი",
+      location: "ლოკაცია",
+      position: "პოზიცია",
+      link: "ბმული",
+      from: "დაწყების თარიღი",
+      to: "დასრულების თარიღი",
+      present: "დღემდე",
+      translations: "თარგმანები",
+      created: "შეიქმნა",
+      form: {
+        createTitle: "გამოცდილების შექმნა",
+        editTitle: "გამოცდილების რედაქტირება",
+        subtitle: "ვებსაიტის გამოცდილების კონფიგურაცია",
+        contentTranslations: "კონტენტი და თარგმანები",
+        contentTranslationsDescription:
+          "შეავსეთ გამოცდილების დეტალები თითოეული ენისთვის",
+        name: "სახელი",
+        namePlaceholder: "მაგ., გუგლი",
+        position: "პოზიცია",
+        positionPlaceholder: "მაგ., ინჟინერი",
+        location: "ლოკაცია",
+        description: "აღწერა",
+        descriptionPlaceholder: "შეიყვანეთ მოკლე აღწერა ამ გამოცდილებისთვის...",
+        fromDate: "დაწყების თაირღი",
+        endDate: "დასრულების თარიღი",
+        link: "ბმული",
+        settings: "პარამეტრები",
+        icon: "სურათი",
+        iconLabel: "ჩააგდეთ სურათი აქ",
+        iconDescription: "ან დააჭირეთ არჩევისთვის",
+        experience: "გამოცდილება",
+        createdSuccessfully: "გამოცდილება წარმატებით შეიქმნა",
+        updatedSuccessfully: "გამოცდილება წარმატებით განახლდა",
+        deletedSuccessfully: "გამოცდილება წარმატებით წაიშალა"
+      },
+      filters: {
+        hasIcon: "სურათითით",
+        noIcon: "სურათის გარეშე",
+        hasLink: "ბმულით",
+        noLink: "ბმულის გარეშე",
+        hasLocation: "ლოკაციით",
+        noLocation: "ლოკაციის გარეშე",
+        dateRange: "თარიღის დიაპაზონი"
+      },
+      errors: {
+        iconRequired: "სურათი აუცილებელია",
+        fromDateRequired: "დაწყების თარიღი აუცილებელია",
+        endDateRequired: "დასრულების თარიღი აუცილებელია",
+        nameRequired: "სახელი აუცილებელია",
+        degreeRequired: "ხარისხი აუცილებელია",
+        descriptionRequired: "აღწერა აუცილებელია"
       }
     }
   }

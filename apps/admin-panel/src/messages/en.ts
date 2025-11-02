@@ -1049,7 +1049,71 @@ export const en = {
       errors: {
         thumbnailRequired: "Thumbnail is required",
         linkRequired: "Link is required",
-        nameRequired: "Name is required"
+        nameRequired: "Name is required",
+        dateRange: "Date Range"
+      }
+    },
+    experiences: {
+      management: "Experiences Management",
+      managementDescription:
+        "Manage website experiences and navigation elements",
+      addExperience: "Add Experience",
+      search: "Search experiences...",
+      noExperiencesFound: "No experiences found",
+      experience: "Experience",
+      name: "Name",
+      location: "Location",
+      position: "Position",
+      translations: "Translations",
+      link: "Link",
+      created: "Created",
+      from: "From Date",
+      to: "End Date",
+      present: "Present",
+      form: {
+        createTitle: "Create Experience",
+        editTitle: "Edit Experience",
+        subtitle: "Configure your website experience and navigation",
+        contentTranslations: "Content & Translations",
+        contentTranslationsDescription:
+          "Fill in experience details for each language",
+        name: "Name",
+        namePlaceholder: "e.g., Google",
+        position: "Position",
+        positionPlaceholder: "e.g., Software Engineer",
+        description: "Description",
+        descriptionPlaceholder:
+          "Enter a brief description for this experience...",
+        settings: "Settings",
+        translations: "Translations",
+        link: "Link",
+        location: "Location",
+        fromDate: "From Date",
+        endDate: "End Date",
+        icon: "Icon",
+        iconLabel: "Drop your icon here",
+        iconDescription: "or click to browse",
+        experience: "Experience",
+        createdSuccessfully: "Experience created successfully",
+        updatedSuccessfully: "Experience updated successfully",
+        deletedSuccessfully: "Experience deleted successfully"
+      },
+      filters: {
+        hasIcon: "With Icon",
+        noIcon: "Without Icon",
+        hasLink: "With Link",
+        noLink: "Without Link",
+        hasLocation: "With Location",
+        noLocation: "Without Location",
+        dateRange: "Date Range"
+      },
+      errors: {
+        iconRequired: "Icon is required",
+        fromDateRequired: "From Date is required",
+        endDateRequired: "End Date is required",
+        nameRequired: "Name is required",
+        positionRequired: "Position is required",
+        descriptionRequired: "Description is required"
       }
     }
   }

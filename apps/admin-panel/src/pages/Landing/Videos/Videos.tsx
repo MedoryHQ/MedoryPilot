@@ -34,7 +34,7 @@ const Videos = () => {
     },
     {
       key: "dateRange",
-      label: toUpperCase(t("educations.filters.dateRange") || "Date range"),
+      label: toUpperCase(t("videos.filters.dateRange") || "Date range"),
       type: "date-range"
     }
   ];
