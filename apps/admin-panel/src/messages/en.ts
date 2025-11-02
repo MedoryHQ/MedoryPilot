@@ -314,6 +314,8 @@ export const en = {
       next: "Next",
       page: "Page",
       of: "of",
+      from: "From",
+      to: "To",
       search: "Search...",
       filters: "Filters",
       clearFilters: "Clear filters",
@@ -994,7 +996,8 @@ export const en = {
         hasIcon: "With Icon",
         noIcon: "Without Icon",
         hasLink: "With Link",
-        noLink: "Without Link"
+        noLink: "Without Link",
+        dateRange: "Date Range"
       },
       errors: {
         iconRequired: "Icon is required",

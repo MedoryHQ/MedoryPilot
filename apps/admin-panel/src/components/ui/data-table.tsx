@@ -20,7 +20,8 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-  Skeleton
+  Skeleton,
+  DatePicker
 } from "@/components/ui";
 import {
   Search,
@@ -250,7 +251,9 @@ export function DataTable<T extends Record<string, any>>({
                     <Separator />
                     {filters.map((f) => (
                       <div key={f.key} className="space-y-2">
-                        <label className="text-sm font-medium">{f.label}</label>
+                        <label className="mb-1.5 block text-sm font-medium">
+                          {f.label}
+                        </label>
 
                         {f.type === "select" && f.options && (
                           <Select
@@ -333,6 +336,78 @@ export function DataTable<T extends Record<string, any>>({
                                 }))
                               }
                               className="w-1/2"
+                            />
+                          </div>
+                        )}
+                        {f.type === "date" && (
+                          <div>
+                            <DatePicker
+                              value={
+                                activeFilters[f.key]
+                                  ? new Date(activeFilters[f.key])
+                                  : undefined
+                              }
+                              onChange={(d) =>
+                                setActiveFilters((prev) => ({
+                                  ...prev,
+                                  [f.key]: d
+                                    ? (d as Date).toISOString()
+                                    : undefined
+                                }))
+                              }
+                              placeholder={toUpperCase(
+                                t("dataTable.selectDate") || "Select date"
+                              )}
+                              showClearButton
+                            />
+                          </div>
+                        )}
+
+                        {f.type === "date-range" && (
+                          <div className="grid grid-cols-2 gap-2">
+                            <DatePicker
+                              value={
+                                activeFilters[f.key]?.from
+                                  ? new Date(activeFilters[f.key].from)
+                                  : undefined
+                              }
+                              onChange={(d) =>
+                                setActiveFilters((prev) => ({
+                                  ...prev,
+                                  [f.key]: {
+                                    ...(prev[f.key] || {}),
+                                    from: d
+                                      ? (d as Date).toISOString()
+                                      : undefined
+                                  }
+                                }))
+                              }
+                              placeholder={toUpperCase(
+                                t("dataTable.from") || "From"
+                              )}
+                              showClearButton
+                            />
+                            <DatePicker
+                              value={
+                                activeFilters[f.key]?.to
+                                  ? new Date(activeFilters[f.key].to)
+                                  : undefined
+                              }
+                              onChange={(d) =>
+                                setActiveFilters((prev) => ({
+                                  ...prev,
+                                  [f.key]: {
+                                    ...(prev[f.key] || {}),
+                                    to: d
+                                      ? (d as Date).toISOString()
+                                      : undefined
+                                  }
+                                }))
+                              }
+                              placeholder={toUpperCase(
+                                t("dataTable.to") || "To"
+                              )}
+                              showClearButton
                             />
                           </div>
                         )}

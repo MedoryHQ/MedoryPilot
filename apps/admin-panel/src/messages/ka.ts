@@ -318,6 +318,8 @@ export const ka = {
       page: "გვერდი",
       of: "დან",
       search: "ძებნა...",
+      from: "დან",
+      to: "მდე",
       filters: "ფილტრები",
       clearFilters: "ფილტრების გასუფთავება",
       clearAll: "გასუფთავება",
@@ -991,7 +993,8 @@ export const ka = {
         hasIcon: "სურათითით",
         noIcon: "სურათის გარეშე",
         hasLink: "ბმულით",
-        noLink: "ბმულის გარეშე"
+        noLink: "ბმულის გარეშე",
+        dateRange: "თარიღის დიაპაზონი"
       },
       errors: {
         iconRequired: "სურათი აუცილებელია",
