@@ -1106,7 +1106,7 @@ export const ka = {
         fromDateRequired: "დაწყების თარიღი აუცილებელია",
         endDateRequired: "დასრულების თარიღი აუცილებელია",
         nameRequired: "სახელი აუცილებელია",
-        degreeRequired: "ხარისხი აუცილებელია",
+        positionRequired: "პოზიცია აუცილებელია",
         descriptionRequired: "აღწერა აუცილებელია"
       }
     }
