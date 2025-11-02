@@ -972,7 +972,7 @@ export const en = {
         contentTranslationsDescription:
           "Fill in education details for each language",
         name: "Name",
-        namePlaceholder: "e.g., Online Appointments",
+        namePlaceholder: "e.g., Information Technology",
         description: "Description",
         descriptionPlaceholder:
           "Enter a brief description for this education...",
