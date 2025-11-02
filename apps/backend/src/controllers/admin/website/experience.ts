@@ -306,38 +306,26 @@ export const updateExperience = async (
       return sendError(req, res, 404, "experienceNotFound");
     }
 
-    let newIconFile: { id: string } | null = null;
-
-    if (iconToCreate) {
-      newIconFile = await prisma.file.create({
-        data: { ...iconToCreate },
-        select: { id: true },
-      });
-    }
-
-    const updateData: any = {
-      translations: {
-        deleteMany: {},
-        create: translationsToCreate,
-      },
-      fromDate,
-      ...(link && { link }),
-      ...(location && { location }),
-      ...(endDate && { endDate }),
-    };
-
-    if (newIconFile) {
-      updateData.iconId = newIconFile.id;
-    } else if (
-      Object.prototype.hasOwnProperty.call(req.body, "icon") &&
-      icon === null
-    ) {
-      updateData.iconId = null;
-    }
-
     const experience = await prisma.experience.update({
       where: { id },
-      data: updateData,
+      data: {
+        translations: {
+          deleteMany: {},
+          create: translationsToCreate,
+        },
+        fromDate,
+        ...(endDate && { endDate }),
+        ...(link && { link }),
+        ...(location && { location }),
+        icon: iconToCreate
+          ? {
+              delete: findExperience.icon ? {} : undefined,
+              create: iconToCreate,
+            }
+          : findExperience.icon
+          ? { delete: {} }
+          : undefined,
+      },
       include: { translations: true, icon: true },
     });
 
