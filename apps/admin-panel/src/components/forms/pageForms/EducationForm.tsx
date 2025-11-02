@@ -6,7 +6,7 @@ import { toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
 import type { FieldConfig } from "@/types";
 import type { EducationFormValues } from "@/validations/website/education.validation";
-import { educationSchema } from "@/validations/website/education.validation";
+import { educationSubmitSchema } from "@/validations/website/education.validation";
 
 export interface EducationFormProps {
   mode: "create" | "edit" | "readonly";
@@ -15,7 +15,7 @@ export interface EducationFormProps {
 }
 
 const defaultValues: EducationFormValues = {
-  fromDate: new Date(),
+  fromDate: null,
   endDate: undefined,
   link: "",
   icon: null,
@@ -152,7 +152,7 @@ export const EducationForm: React.FC<EducationFormProps> = ({
       resourceName="educations"
       mode={mode}
       id={id ?? undefined}
-      schema={educationSchema(t, i18n.language as "en" | "ka")}
+      schema={educationSubmitSchema(t, i18n.language as "en" | "ka")}
       defaultValues={defaultValues}
       fetchEntity={fetchEntity}
       createEntity={createEntity}
