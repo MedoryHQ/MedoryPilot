@@ -102,6 +102,8 @@ export function DataTable<T extends Record<string, any>>({
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
+  const paramFiltersJson = JSON.stringify(paramFilters ?? {});
+
   const updateQuery = (params: any) => {
     updateQueryParamsAndNavigate(navigate, {
       page: params.page ?? 1,
@@ -138,6 +140,26 @@ export function DataTable<T extends Record<string, any>>({
       updateQuery({ orderBy: undefined, order: undefined });
     }
   }, [sort]);
+
+  useEffect(() => {
+    if ((paramSearch ?? "") !== (searchTerm ?? "")) {
+      setSearchTerm(paramSearch ?? "");
+      setDebouncedSearch(paramSearch ?? "");
+    }
+    try {
+      const parsedPF = paramFilters ?? {};
+      if (JSON.stringify(parsedPF) !== JSON.stringify(activeFilters ?? {})) {
+        setActiveFilters(parsedPF);
+      }
+    } catch {
+      // ignore
+    }
+    const desiredSortKey = orderBy ?? "";
+    const desiredSortDir = (order as "asc" | "desc") ?? null;
+    if (desiredSortKey !== sort.key || desiredSortDir !== sort.direction) {
+      setSort({ key: desiredSortKey, direction: desiredSortDir });
+    }
+  }, [paramSearch, paramFiltersJson, orderBy, order]);
 
   const toggleSort = (key: string) => {
     if (!sortable) return;
