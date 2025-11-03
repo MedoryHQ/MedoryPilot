@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import {
   Card,
@@ -69,9 +69,24 @@ export function DataTable<T extends Record<string, any>>({
   actions: propActions,
   deleteEndpoint
 }: DataTableProps<T>) {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [activeFilters, setActiveFilters] = useState<Record<string, any>>({});
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const [searchParams] = useSearchParams();
+  const {
+    pageSize,
+    orderBy,
+    order,
+    search: paramSearch,
+    filters: paramFilters
+  } = useMemo(() => getPaginationFields(searchParams), [searchParams]);
+
+  const [searchTerm, setSearchTerm] = useState<string>(() => paramSearch ?? "");
+  const [debouncedSearch, setDebouncedSearch] = useState<string>(
+    () => paramSearch ?? ""
+  );
+  const [activeFilters, setActiveFilters] = useState<Record<string, any>>(
+    () => paramFilters ?? {}
+  );
   const [sort, setSort] = useState<{
     key: string;
     direction: "asc" | "desc" | null;
@@ -81,17 +96,6 @@ export function DataTable<T extends Record<string, any>>({
   });
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [filterMenuOpen, setFilterMenuOpen] = useState(false);
-  const navigate = useNavigate();
-  const { t } = useTranslation();
-  const [searchParams] = useSearchParams();
-
-  const {
-    pageSize,
-    orderBy,
-    order,
-    search,
-    filters: paramFilters
-  } = getPaginationFields(searchParams);
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(searchTerm), 500);
@@ -110,10 +114,10 @@ export function DataTable<T extends Record<string, any>>({
   };
 
   useEffect(() => {
-    if (debouncedSearch !== search) {
+    if ((debouncedSearch ?? "") !== (paramSearch ?? "")) {
       updateQuery({ search: debouncedSearch });
     }
-  }, [debouncedSearch]);
+  }, [debouncedSearch, paramSearch]);
 
   useEffect(() => {
     const cleaned = Object.entries(activeFilters).reduce(
