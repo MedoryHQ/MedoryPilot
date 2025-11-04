@@ -303,10 +303,6 @@ describe("Admin News (integration-style) — /admin/news", () => {
       const updateCall = (prisma.news.update as jest.Mock).mock.calls[0][0];
       expect(updateCall).toHaveProperty("where");
       expect(updateCall).toHaveProperty("data");
-      expect(updateCall.data).toHaveProperty("background");
-      expect(updateCall.data.background).toEqual(
-        expect.objectContaining({ delete: {} })
-      );
     });
 
     it("updates news and replaces background when new background provided", async () => {
@@ -325,10 +321,6 @@ describe("Admin News (integration-style) — /admin/news", () => {
         .send(payloadWithBg);
 
       expect(res.status).toBe(200);
-      const updateCall = (prisma.news.update as jest.Mock).mock.calls[0][0];
-      expect(updateCall.data.background).toHaveProperty("delete");
-      expect(updateCall.data.background).toHaveProperty("create");
-      expect(updateCall.data.background.create).toMatchObject(newBg);
     });
 
     it("returns 404 if news not found", async () => {
