@@ -68,6 +68,18 @@
  *             tariffs:
  *               type: integer
  *               example: 20
+ *             about:
+ *               type: integer
+ *               example: 1
+ *             educations:
+ *               type: integer
+ *               example: 2
+ *             experiences:
+ *               type: integer
+ *               example: 4
+ *             videos:
+ *               type: integer
+ *               example: 11
  *
  * securitySchemes:
  *   cookieAuth:
