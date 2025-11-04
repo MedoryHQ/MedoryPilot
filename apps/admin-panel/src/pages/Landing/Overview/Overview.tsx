@@ -32,7 +32,11 @@ const Overview: React.FC = () => {
     footer: 0,
     socials: 0,
     pages: 0,
-    tariffs: 0
+    tariffs: 0,
+    about: 0,
+    educations: 0,
+    experiences: 0,
+    videos: 0
   };
 
   const quickActions = overviewQuickActions(t);

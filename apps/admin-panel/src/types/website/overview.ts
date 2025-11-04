@@ -12,5 +12,9 @@ export interface OverviewResponse {
     socials: number;
     pages: number;
     tariffs: number;
+    about: number;
+    educations: number;
+    experiences: number;
+    videos: number;
   };
 }

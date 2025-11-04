@@ -17,7 +17,10 @@ import {
   User,
   Layers,
   Copy,
-  Package
+  Package,
+  Video,
+  Briefcase,
+  GraduationCap
 } from "lucide-react";
 
 type SubNavigationItem = {
@@ -204,6 +207,34 @@ export const overviewQuickActions = (t: (key: string) => string) => [
     description: toUpperCase(t("overview.tariffsDescription")),
     icon: Package,
     color: "bg-rose-500"
+  },
+  {
+    key: "about",
+    label: toUpperCase(t("overview.about")),
+    description: toUpperCase(t("overview.aboutDescription")),
+    icon: User,
+    color: "bg-red-400"
+  },
+  {
+    key: "educations",
+    label: toUpperCase(t("overview.educations")),
+    description: toUpperCase(t("overview.educationsDescription")),
+    icon: GraduationCap,
+    color: "bg-blue-400"
+  },
+  {
+    key: "experiences",
+    label: toUpperCase(t("overview.experiences")),
+    description: toUpperCase(t("overview.experiencesDescription")),
+    icon: Briefcase,
+    color: "bg-green-400"
+  },
+  {
+    key: "videos",
+    label: toUpperCase(t("overview.videos")),
+    description: toUpperCase(t("overview.videosDescription")),
+    icon: Video,
+    color: "bg-purple-400"
   }
 ];
 
@@ -219,7 +250,11 @@ export const overviewStatsConfig = [
   { key: "footer", label: "overview.footer", icon: Copy },
   { key: "socials", label: "overview.socials", icon: Share2 },
   { key: "pages", label: "overview.pages", icon: Globe },
-  { key: "tariffs", label: "overview.tariffs", icon: Package }
+  { key: "tariffs", label: "overview.tariffs", icon: Package },
+  { key: "about", label: "overview.about", icon: User },
+  { key: "educations", label: "overview.educations", icon: GraduationCap },
+  { key: "experiences", label: "overview.experiences", icon: Briefcase },
+  { key: "videos", label: "overview.videos", icon: Video }
 ];
 
 export const locales = [
