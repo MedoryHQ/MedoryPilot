@@ -23,10 +23,18 @@ export const fetchExperiences = async (
   try {
     const { skip, take, search, orderBy } = getPaginationAndFilters(req);
     const filters = parseFilters(req);
-    const { icon, fromDate, endDate, link, location } = filters;
+    const { icon, dateRange, link, location } = filters as {
+      icon?: any;
+      link?: string;
+      location?: string;
+      dateRange?: {
+        from?: string;
+        to?: string;
+      };
+    };
 
-    const parsedFrom = parseDate(fromDate);
-    const parsedEnd = parseDate(endDate);
+    const parsedFrom = parseDate(dateRange?.from);
+    const parsedEnd = parseDate(dateRange?.to);
 
     const where = generateWhereInput<Prisma.ExperienceWhereInput>(
       search,
