@@ -5,7 +5,7 @@ import "dayjs/locale/ka";
 dayjs.locale("en");
 
 export const formatDate = (
-  date: string,
+  date: string | Date,
   language: string,
   renderTime?: boolean
 ) => {

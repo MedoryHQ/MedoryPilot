@@ -138,6 +138,11 @@ export const fetchBlogs = async (
         include: {
           background: true,
           metaImage: true,
+          _count: {
+            select: {
+              stars: true,
+            },
+          },
           stars: {
             include: {
               user: {

@@ -221,10 +221,6 @@ export const en = {
       contact: "Contact Info",
       contactsDescription: "Update contacts information",
       footer: "Footer",
-      about: "About",
-      educations: "Educations",
-      experiences: "Experiences",
-      videos: "Videos",
       footerDescription: "Configure website footer and links",
       socials: "Socials",
       socialsDescription: "Manage social media links and icons",
@@ -232,6 +228,18 @@ export const en = {
       pagesDescription: "Manage static page components",
       tariffs: "Tariffs",
       tariffsDescription: "Manage pricing and tariff history",
+      about: "About",
+      aboutDescription:
+        "Doctor’s profile: biography, specialties and contact information",
+      educations: "Educations",
+      educationsDescription:
+        "Academic background: degrees, institutions and certifications",
+      experiences: "Experiences",
+      experiencesDescription:
+        "Professional work history, roles and clinical experience",
+      videos: "Videos",
+      videosDescription:
+        "Medical videos, lectures and patient-education content",
       actionsTitle: "Content Management",
       overviewTitle: "Website Management",
       overviewDescription: "Manage your website content, pages, and components",
@@ -884,6 +892,7 @@ export const en = {
       showInLanding: "Show in Landing",
       created: "Created At",
       landingOrder: "Landing Order",
+      starredUsers: "Starred users",
       categories: "Categories",
       featured: "Featured",
       stars: "Stars",

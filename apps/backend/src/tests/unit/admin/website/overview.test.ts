@@ -16,6 +16,10 @@ jest.mock("@/config", () => ({
     social: { count: jest.fn() },
     pageComponent: { count: jest.fn() },
     tariff: { count: jest.fn() },
+    about: { count: jest.fn() },
+    education: { count: jest.fn() },
+    experience: { count: jest.fn() },
+    video: { count: jest.fn() },
     $disconnect: jest.fn(),
   },
 }));
@@ -63,6 +67,10 @@ describe("Admin Overview routes — /admin/overview", () => {
       (prisma.social.count as jest.Mock).mockResolvedValueOnce(6);
       (prisma.pageComponent.count as jest.Mock).mockResolvedValueOnce(9);
       (prisma.tariff.count as jest.Mock).mockResolvedValueOnce(5);
+      (prisma.about.count as jest.Mock).mockResolvedValueOnce(1);
+      (prisma.education.count as jest.Mock).mockResolvedValueOnce(2);
+      (prisma.experience.count as jest.Mock).mockResolvedValueOnce(4);
+      (prisma.video.count as jest.Mock).mockResolvedValueOnce(11);
 
       const res = await request(app).get("/admin/overview");
 
@@ -80,6 +88,10 @@ describe("Admin Overview routes — /admin/overview", () => {
         socials: 6,
         pages: 9,
         tariffs: 5,
+        about: 1,
+        educations: 2,
+        experiences: 4,
+        videos: 11,
       });
 
       expect(prisma.header.count).toHaveBeenCalled();

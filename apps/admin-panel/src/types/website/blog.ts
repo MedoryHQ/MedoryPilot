@@ -29,6 +29,9 @@ export interface Blog {
   stars: BlogStar[];
   averageStar: number;
   translations: BlogTranslation[];
+  _count: {
+    stars: number;
+  };
   metaTitle: string | null;
   metaDescription: string | null;
   metaKeywords: string | null;

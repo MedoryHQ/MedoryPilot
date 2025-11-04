@@ -1,6 +1,5 @@
 import * as React from "react";
 import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
 import { Button } from "./button";
 import { Calendar as CalendarWrapper } from "./calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
@@ -13,6 +12,8 @@ import {
   RangeSelection,
   SingleSelection
 } from "@/types/ui";
+import { formatDate } from "@/utils";
+import { useTranslation } from "react-i18next";
 
 export function DatePicker({
   value,
@@ -38,6 +39,7 @@ export function DatePicker({
   ariaLabel
 }: DatePickerProps) {
   const [open, setOpen] = React.useState(false);
+  const { i18n } = useTranslation();
   const disabledProp: DisabledMatcher =
     disabledDates ??
     (fromDate || toDate
@@ -75,26 +77,32 @@ export function DatePicker({
     try {
       if (mode === "single") {
         const d = value as SingleSelection;
-        if (d instanceof Date) return <span>{format(d, dateFormat)}</span>;
+        console.log(value);
+        if (d instanceof Date)
+          return <span>{formatDate(d, i18n.language)}</span>;
       }
 
       if (mode === "range") {
         const r = value as RangeSelection;
         const from = r?.from;
         const to = r?.to;
-        if (from && to)
+        if (from && to) {
           return (
-            <span>{`${format(from, dateFormat)} — ${format(to, dateFormat)}`}</span>
+            <span>{`${formatDate(from, i18n.language)} — ${formatDate(to, i18n.language)}`}</span>
           );
-        if (from) return <span>{`From ${format(from, dateFormat)}`}</span>;
-        if (to) return <span>{`Until ${format(to, dateFormat)}`}</span>;
+        }
+        if (from)
+          return <span>{`From ${formatDate(from, i18n.language)}`}</span>;
+        if (to) return <span>{`Until ${formatDate(to, i18n.language)}`}</span>;
       }
 
       if (mode === "multiple") {
         const arr = (value as MultipleSelection) ?? [];
         if (Array.isArray(arr) && arr.length > 0)
           return (
-            <span>{arr.map((d) => format(d, dateFormat)).join(", ")}</span>
+            <span>
+              {arr.map((d) => formatDate(d, i18n.language)).join(", ")}
+            </span>
           );
       }
 

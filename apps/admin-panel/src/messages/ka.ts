@@ -216,9 +216,6 @@ export const ka = {
       faqs: "ხშირად დასმული კითხვები",
       faqsDescription: "ხშირად დასმული კითხვების განახლება და მართვა",
       blogs: "ბლოგები",
-      educations: "განათლებები",
-      experiences: "გამოცდილებები",
-      videos: "ვიდეოები",
       blogsDescription: "ბლოგების წერა და მართვა",
       categories: "კატეგორიები",
       categoriesDescription: "ბლოგებისა და კონტენტის კატეგორიების მართვა",
@@ -226,7 +223,6 @@ export const ka = {
       contact: "საკონტაქტო ინფორმაცია",
       contactsDescription: "საკონტაქტო ინფორმაციების განახლება",
       footer: "Footer",
-      about: "ჩემს შესახებ",
       footerDescription: "ვებსაიტის footer-ის კონფიგურაცია და ბმულები",
       socials: "სოციალური ქსელები",
       socialsDescription: "სოციალური ქსელების ბმულებისა და იკონების მართვა",
@@ -234,6 +230,18 @@ export const ka = {
       pagesDescription: "სტატიკური გვერდების კომპონენტების მართვა",
       tariffs: "ტარიფები",
       tariffsDescription: "ფასების და ტარიფების ისტორიის მართვა",
+      about: "ჩემს შესახებ",
+      aboutDescription:
+        "ექიმის პროფილი: ბიოგრაფია, სპეციალობები და საკონტაქტო ინფორმაცია",
+      educations: "განათლებები",
+      educationsDescription:
+        "აკადემიური წარსული: ხარისხები, სასწავლო დაწესებულებები და სერტიფიკატები",
+      experiences: "გამოცდილებები",
+      experiencesDescription:
+        "პროფესიული სამუშაო გამოცდილება, დანიშნულებები და კლინიკური პრაქტიკა",
+      videos: "ვიდეოები",
+      videosDescription:
+        "მედიცინის ვიდეოები, ლექციები და პაციენტებისთვის საგანმანათლებლო მასალები",
       actionsTitle: "კონტენტის მენეჯმენტი",
       overviewTitle: "საიტის მენეჯმენტი",
       overviewDescription:
@@ -888,6 +896,7 @@ export const ka = {
       landingOrder: "ლანდინგ რიგი",
       featured: "ჩანს",
       categories: "კატეგორიები",
+      starredUsers: "შეფასების რაოდენობა",
       stars: "ვარსკვლავები",
       inLanding: "ჩანს ლენდინგზე",
       yes: "დიახ",
