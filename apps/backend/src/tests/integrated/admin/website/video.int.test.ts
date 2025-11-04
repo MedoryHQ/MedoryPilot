@@ -12,9 +12,6 @@ jest.mock("@/config", () => ({
       create: jest.fn(),
       update: jest.fn(),
     },
-    file: {
-      create: jest.fn(),
-    },
     $disconnect: jest.fn(),
   },
   getEnvVariable: jest.fn((key: string) => {
@@ -275,9 +272,6 @@ describe("Admin Video (integration-style) — /admin/video", () => {
         ...mockVideo,
         thumbnail: null,
       });
-      (prisma.file.create as jest.Mock).mockResolvedValueOnce({
-        id: "file-id",
-      });
       (prisma.video.update as jest.Mock).mockResolvedValueOnce({
         ...mockVideo,
         translations: [{ id: "t1", name: "Updated", language: { code: "en" } }],
@@ -300,7 +294,6 @@ describe("Admin Video (integration-style) — /admin/video", () => {
       expect(prisma.video.findUnique).toHaveBeenCalledWith(
         expect.objectContaining({ where: { id }, include: { thumbnail: true } })
       );
-      expect(prisma.file.create).toHaveBeenCalledTimes(1);
       expect(prisma.video.update).toHaveBeenCalledTimes(1);
     });
 
