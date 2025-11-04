@@ -884,6 +884,7 @@ export const en = {
       showInLanding: "Show in Landing",
       created: "Created At",
       landingOrder: "Landing Order",
+      starredUsers: "Starred users",
       categories: "Categories",
       featured: "Featured",
       stars: "Stars",

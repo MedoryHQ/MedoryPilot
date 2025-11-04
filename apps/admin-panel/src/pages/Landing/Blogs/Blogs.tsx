@@ -145,16 +145,6 @@ const Blogs = () => {
         sortable: true
       },
       {
-        key: "translationsCount",
-        label: toUpperCase(t("blogs.translations")),
-        render: (item) => (
-          <Badge variant="secondary" className="px-3 py-1">
-            {item.translations?.length}
-          </Badge>
-        ),
-        className: "text-center"
-      },
-      {
         key: "showInLanding",
         label: toUpperCase(t("blogs.showInLanding")),
         sortable: true,
@@ -205,7 +195,6 @@ const Blogs = () => {
       {
         key: "stars",
         label: toUpperCase(t("blogs.stars")),
-        sortable: true,
         render: (item) => (
           <div className="flex items-center justify-start gap-1">
             {Array.from({ length: 5 }, (_, i) => (
@@ -220,6 +209,26 @@ const Blogs = () => {
               />
             ))}
           </div>
+        ),
+        className: "text-center"
+      },
+      {
+        key: "starredUsers",
+        label: toUpperCase(t("blogs.starredUsers")),
+        render: (item) => (
+          <Badge variant="secondary" className="px-3 py-1">
+            {item._count?.stars}
+          </Badge>
+        ),
+        className: "text-center"
+      },
+      {
+        key: "translationsCount",
+        label: toUpperCase(t("blogs.translations")),
+        render: (item) => (
+          <Badge variant="secondary" className="px-3 py-1">
+            {item.translations?.length}
+          </Badge>
         ),
         className: "text-center"
       }

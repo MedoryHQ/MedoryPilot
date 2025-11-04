@@ -888,6 +888,7 @@ export const ka = {
       landingOrder: "ლანდინგ რიგი",
       featured: "ჩანს",
       categories: "კატეგორიები",
+      starredUsers: "შეფასების რაოდენობა",
       stars: "ვარსკვლავები",
       inLanding: "ჩანს ლენდინგზე",
       yes: "დიახ",
