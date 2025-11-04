@@ -12,9 +12,6 @@ jest.mock("@/config", () => ({
       create: jest.fn(),
       update: jest.fn(),
     },
-    file: {
-      create: jest.fn(),
-    },
     $disconnect: jest.fn(),
   },
   getEnvVariable: jest.fn((key: string) => {
@@ -311,9 +308,6 @@ describe("Admin Experience routes — /admin/experience", () => {
         ...mockExperience,
         icon: null,
       });
-      (prisma.file.create as jest.Mock).mockResolvedValueOnce({
-        id: "file-id",
-      });
       (prisma.experience.update as jest.Mock).mockResolvedValueOnce({
         ...mockExperience,
         translations: [
@@ -350,7 +344,6 @@ describe("Admin Experience routes — /admin/experience", () => {
           include: { icon: true },
         })
       );
-      expect(prisma.file.create).toHaveBeenCalled();
       expect(prisma.experience.update).toHaveBeenCalled();
     });
 
