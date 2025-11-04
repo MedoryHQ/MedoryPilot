@@ -15,6 +15,10 @@ const overviewQueries = {
   socials: () => prisma.social.count(),
   pages: () => prisma.pageComponent.count(),
   tariffs: () => prisma.tariff.count(),
+  about: () => prisma.about.count(),
+  educations: () => prisma.education.count(),
+  experiences: () => prisma.experience.count(),
+  videos: () => prisma.video.count(),
 };
 
 export const fetchOverviews = async (
