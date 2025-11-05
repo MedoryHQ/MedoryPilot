@@ -5,8 +5,6 @@ import swaggerUi from "swagger-ui-express";
 import { getEnvVariable } from "@/config";
 import { swaggerAuthenticate } from "@/middlewares/customer";
 
-const patl = path.join(__dirname, "..", "..", "docs", "customer", "*.ts");
-console.log(patl);
 const swaggerOptions: swaggerJsDoc.Options = {
   swaggerDefinition: {
     openapi: "3.0.0",
