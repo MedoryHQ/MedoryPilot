@@ -5,14 +5,16 @@ import swaggerUi from "swagger-ui-express";
 import { getEnvVariable } from "@/config";
 import { swaggerAuthenticate } from "@/middlewares/customer";
 
+const patl = path.join(__dirname, "..", "..", "docs", "customer", "*.ts");
+console.log(patl);
 const swaggerOptions: swaggerJsDoc.Options = {
   swaggerDefinition: {
     openapi: "3.0.0",
     info: {
-      title: "PraxisSync API",
+      title: "Medory API",
       version: "1.0.0",
       description:
-        "API documentation for PraxisSync - Admin and Customer endpoints",
+        "API documentation for Medory - Admin and Customer endpoints",
     },
     servers: [
       {
@@ -21,8 +23,9 @@ const swaggerOptions: swaggerJsDoc.Options = {
     ],
   },
   apis: [
-    path.join(__dirname, "..", "..", "docs", "admin", "*.ts"),
-    path.join(__dirname, "..", "..", "docs", "customer", "*.ts"),
+    path.join(__dirname, "..", "..", "docs", "admin", "*.js"),
+    path.join(__dirname, "..", "..", "docs", "admin", "website", "*.js"),
+    path.join(__dirname, "..", "..", "docs", "customer", "website", "*.js"),
   ],
 };
 
