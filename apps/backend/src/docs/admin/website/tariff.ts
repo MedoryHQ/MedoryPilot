@@ -2,13 +2,16 @@
  * @swagger
  * tags:
  *   - name: Admin Tariff
- *     description: Endpoints to manage tariffs (admin). Tariffs support versioning: a single **isCurrent** tariff is active, older tariffs are kept as history and linked via `parentId`.
+ *     description: |
+ *       Endpoints to manage tariffs (admin). Tariffs support versioning: a single **isCurrent**
+ *       tariff is active, older tariffs are kept as history and linked via `parentId`.
  *
  * /admin/tariff:
  *   get:
  *     summary: List tariffs
  *     description: |
- *       Returns a paginated list of tariffs. Use `type` to filter current (active) vs history entries. You can also filter by price range using `price[min]` and `price[max]`.
+ *       Returns a paginated list of tariffs. Use `type` to filter current (active) vs history entries.
+ *       You can also filter by price range using `price[min]` and `price[max]`.
  *     tags:
  *       - Admin Tariff
  *     parameters:
@@ -98,7 +101,8 @@
  * /admin/tariff/{id}:
  *   get:
  *     summary: Get a tariff by id
- *     description: Returns a single tariff. Response includes a `type` field: `"active"` if `isCurrent` is true, otherwise `"history"`.
+ *     description: |
+ *       Returns a single tariff. Response includes a `type` field: "active" if `isCurrent` is true, otherwise "history".
  *     tags:
  *       - Admin Tariff
  *     parameters:

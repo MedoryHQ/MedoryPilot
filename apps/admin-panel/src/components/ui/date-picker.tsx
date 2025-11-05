@@ -77,7 +77,6 @@ export function DatePicker({
     try {
       if (mode === "single") {
         const d = value as SingleSelection;
-        console.log(value);
         if (d instanceof Date)
           return <span>{formatDate(d, i18n.language)}</span>;
       }

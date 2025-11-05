@@ -11,8 +11,8 @@ interface MailerTemplateOptions {
 
 class Mailer {
   private readonly from = {
-    name: "PraxisSync",
-    email: "info@praxissync.com",
+    name: "Medory",
+    email: "info@medory.com",
   };
 
   async sendVerificationEmail({ to, subject, html }: MailerTemplateOptions) {
@@ -33,10 +33,10 @@ class Mailer {
   }
 
   async sendOtpCode(to: string, otpCode: string) {
-    const subject = "Your PraxisSync One-Time Verification Code";
+    const subject = "Your Medory One-Time Verification Code";
     const html = `
       <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
-        <h2>PraxisSync Verification</h2>
+        <h2>Medory Verification</h2>
         <p>Use the code below to verify your account. Please do not share it with anyone.</p>
         <h1 style="letter-spacing: 4px; background-color: #f4f4f4; padding: 10px; display: inline-block;">${otpCode}</h1>
         <p>This code will expire in <strong>5 minutes</strong>.</p>

@@ -13,7 +13,7 @@ export const NotFound = () => {
   };
 
   return (
-    <div className="flex h-full items-center justify-center">
+    <div className="m-auto flex h-full items-center justify-center">
       <div className="flex flex-col items-center justify-center gap-[24px] pb-[56px]">
         <Icons.NotFound className="h-[152px] w-[152px]" />
         <h2 className="text-[20px] md:text-[26px]">

@@ -237,9 +237,9 @@ export function DataTable<T extends Record<string, any>>({
           )}
 
           {filters.length > 0 && (
-            <div className="flex items-center gap-2">
+            <div className="flex w-full flex-col items-center gap-2 md:w-min md:flex-row">
               <Button
-                className="h-[40px]"
+                className="h-[40px] w-full md:w-min"
                 variant="outline"
                 onClick={() => setActiveFilters({})}
               >
@@ -247,7 +247,10 @@ export function DataTable<T extends Record<string, any>>({
               </Button>
               <Popover open={filterMenuOpen} onOpenChange={setFilterMenuOpen}>
                 <PopoverTrigger asChild>
-                  <Button className="h-[40px]" variant="outline">
+                  <Button
+                    className="h-[40px] w-full md:w-min"
+                    variant="outline"
+                  >
                     <Filter className="mr-2 h-4 w-4" />
                     {toUpperCase(t("dataTable.filters"))}
                     {activeFilterCount > 0 && (
@@ -257,7 +260,7 @@ export function DataTable<T extends Record<string, any>>({
                     )}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-80">
+                <PopoverContent className="w-80 md:mr-[20px] lg:mr-[28px]">
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <h4 className="text-sm font-semibold">

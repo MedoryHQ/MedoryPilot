@@ -95,7 +95,21 @@ describe("Admin Overview routes — /admin/overview", () => {
       });
 
       expect(prisma.header.count).toHaveBeenCalled();
+      expect(prisma.introduce.count).toHaveBeenCalled();
+      expect(prisma.news.count).toHaveBeenCalled();
+      expect(prisma.service.count).toHaveBeenCalled();
+      expect(prisma.fAQ.count).toHaveBeenCalled();
+      expect(prisma.blog.count).toHaveBeenCalled();
+      expect(prisma.category.count).toHaveBeenCalled();
+      expect(prisma.contact.count).toHaveBeenCalled();
+      expect(prisma.footer.count).toHaveBeenCalled();
+      expect(prisma.social.count).toHaveBeenCalled();
+      expect(prisma.pageComponent.count).toHaveBeenCalled();
       expect(prisma.tariff.count).toHaveBeenCalled();
+      expect(prisma.about.count).toHaveBeenCalled();
+      expect(prisma.education.count).toHaveBeenCalled();
+      expect(prisma.experience.count).toHaveBeenCalled();
+      expect(prisma.video.count).toHaveBeenCalled();
     });
 
     it("handles DB errors gracefully", async () => {
