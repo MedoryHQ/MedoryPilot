@@ -1,8 +1,10 @@
+"use client";
+
 // import { Facebook, Instagram, Linkedin, Mail } from "lucide-react";
 // import { useTranslations } from "next-intl";
 // import { Button, Input } from "./ui";
 
-const Footer = () => {
+export const Footer = () => {
   // const t = useTranslations("Footer");
 
   return (
@@ -35,5 +37,3 @@ const Footer = () => {
     </footer>
   );
 };
-
-export default Footer;
