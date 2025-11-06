@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Noto_Sans_Georgian } from "next/font/google";
+import { Inter, Noto_Sans_Georgian } from "next/font/google";
 import { Locale, routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { getMessages, getTranslations } from "next-intl/server";
@@ -9,6 +9,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import type { Viewport } from "next";
 import ReactQueryProvider from "@/components/QueryProvider";
 import HeroProvider from "@/contexts/HeroProvider";
+import QueryProvider from "@/components/provider/QueryProvider";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -20,6 +21,13 @@ export const viewport: Viewport = {
 const notoSans = Noto_Sans_Georgian({
   weight: ["300", "400", "500", "600", "700", "800", "900"],
   subsets: ["georgian"],
+  variable: "--font-noto",
+});
+
+const interFont = Inter({
+  weight: ["300", "400", "500", "700"],
+  subsets: ["latin"],
+  variable: "--font-inter",
 });
 
 export const generateMetadata = async ({
@@ -51,15 +59,23 @@ export default async function RootLayout({
 
   const messages = await getMessages();
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html
+      className={cn(notoSans.variable, interFont.variable)}
+      lang={locale}
+      suppressHydrationWarning
+    >
       <body className={cn(notoSans.className)}>
         <NextIntlClientProvider messages={messages}>
           <ReactQueryProvider>
-            <HeroProvider>
-              <NuqsAdapter>
-                <div className="min-h-mobile md:min-h-desktop">{children}</div>
-              </NuqsAdapter>
-            </HeroProvider>
+            <QueryProvider>
+              <HeroProvider>
+                <NuqsAdapter>
+                  <div className="min-h-mobile md:min-h-desktop">
+                    {children}
+                  </div>
+                </NuqsAdapter>
+              </HeroProvider>
+            </QueryProvider>
           </ReactQueryProvider>
         </NextIntlClientProvider>
       </body>
