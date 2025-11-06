@@ -5,6 +5,7 @@ import { useTransition, useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@heroui/react";
+import { Icons } from "./shared";
 
 export function LocaleSwitcher() {
   const router = useRouter();
@@ -55,27 +56,7 @@ export function LocaleSwitcher() {
       aria-pressed={isPending}
     >
       {isPending ? (
-        <svg
-          className="w-4 h-4 animate-spin"
-          viewBox="0 0 24 24"
-          fill="none"
-          aria-hidden
-        >
-          <circle
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="#025661"
-            strokeWidth="3"
-            opacity="0.2"
-          />
-          <path
-            d="M22 12a10 10 0 00-10-10"
-            stroke="#025661"
-            strokeWidth="3"
-            strokeLinecap="round"
-          />
-        </svg>
+        <Icons.LanguageLoader />
       ) : (
         <span className="leading-none font-semibold text-primary">
           {locale === "en" ? "EN" : "KA"}
