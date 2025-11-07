@@ -3,6 +3,8 @@ import { Translations, File } from "../global";
 export interface CreateHeaderDTO {
   logo: File | null;
   active?: boolean;
+  experience?: number;
+  visits?: number;
   translations: Translations;
 }
 

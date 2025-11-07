@@ -272,6 +272,14 @@ export const errorMessages = {
     en: "Invalid active type",
     ka: "აქტიურობის ტიპი არასწორია",
   },
+  invalidExperience: {
+    en: "Invalid Experience",
+    ka: "გამოცდილება არასწორია",
+  },
+  invalidVisits: {
+    en: "Invalid Visits",
+    ka: "ვიზიტები არასწორია",
+  },
   emailAlreadyExists: {
     en: "User with this email already exists",
     ka: "მომხმარებელი ამ ელ-ფოსტით უკვე არსებობს",

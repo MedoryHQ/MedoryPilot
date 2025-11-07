@@ -191,7 +191,8 @@ export const createHeader = async (
   next: NextFunction
 ) => {
   try {
-    const { translations, logo, active } = req.body as CreateHeaderDTO;
+    const { translations, logo, active, experience, visits } =
+      req.body as CreateHeaderDTO;
 
     logInfo("Header create attempt", {
       ip: (req as any).hashedIp,
@@ -224,6 +225,8 @@ export const createHeader = async (
     const header = await prisma.header.create({
       data: {
         active: !!active,
+        ...(experience ? { experience } : {}),
+        ...(visits ? { visits } : {}),
         translations: { create: translationsToCreate },
         logo: {
           create: logoToCreate,
@@ -259,7 +262,8 @@ export const updateHeader = async (
   try {
     const { id } = req.params;
 
-    const { translations, logo, active } = req.body as UpdateHeaderDTO;
+    const { translations, logo, active, visits, experience } =
+      req.body as UpdateHeaderDTO;
 
     logInfo("Header update attempt", {
       ip: (req as any).hashedIp,
@@ -313,6 +317,8 @@ export const updateHeader = async (
         id,
       },
       data: {
+        ...(experience ? { experience } : {}),
+        ...(visits ? { visits } : {}),
         translations: {
           deleteMany: {},
           create: translationsToCreate,
