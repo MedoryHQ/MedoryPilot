@@ -19,6 +19,18 @@ export const headerSchema = (
       .refine((val) => val !== null, {
         message: t("headers.errors.activeRequired", lang)
       }),
+    experience: z
+      .number()
+      .min(1, {
+        message: t("headers.errors.invalidExperience", lang)
+      })
+      .optional(),
+    visits: z
+      .number()
+      .min(1, {
+        message: t("headers.errors.invalidVisits", lang)
+      })
+      .optional(),
     translations: z.object({
       en: z.object({
         name: z
