@@ -12,6 +12,8 @@ export interface HeaderResponse {
 export interface Header {
   id: string;
   logo: File | null;
+  experience?: number;
+  visits?: number;
   active: boolean | null;
   translations: HeaderTranslation[];
   createdAt: string;
@@ -39,6 +41,8 @@ export type HeaderFormValues = {
     size: number;
   } | null;
   active: boolean | null;
+  experience?: number;
+  visits?: number;
   translations: {
     en: {
       name: string;

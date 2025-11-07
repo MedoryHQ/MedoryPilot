@@ -83,6 +83,33 @@ const Headers = () => {
       }
     },
     {
+      key: "experience",
+      label: toUpperCase(t("headers.experience")),
+      render: (item) =>
+        item.experience ? (
+          <Badge variant="secondary" className="px-3 py-1">
+            {item.experience}
+          </Badge>
+        ) : (
+          ""
+        ),
+      className: "text-center"
+    },
+
+    {
+      key: "visits",
+      label: toUpperCase(t("headers.visits")),
+      render: (item) =>
+        item.visits ? (
+          <Badge variant="secondary" className="px-3 py-1">
+            {item.visits}
+          </Badge>
+        ) : (
+          ""
+        ),
+      className: "text-center"
+    },
+    {
       key: "translationsCount",
       label: toUpperCase(t("headers.translations")),
       render: (item) => (
