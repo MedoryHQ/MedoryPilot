@@ -22,7 +22,7 @@ export const fetchHeaders = async (
   try {
     const { skip, take, orderBy, search } = getPaginationAndFilters(req);
     const filters = parseFilters(req);
-    const { active, logo } = filters;
+    const { active, logo, experience, visits } = filters;
 
     const where = generateWhereInput<Prisma.HeaderWhereInput>(
       search,
@@ -46,6 +46,18 @@ export const fetchHeaders = async (
               ? logo
                 ? { logo: { isNot: null } }
                 : { logo: { is: null } }
+              : {}),
+          },
+          {
+            ...(typeof experience === "boolean"
+              ? experience
+                ? { experience: { not: null } }
+                : { experience: null }
+              : {}),
+            ...(typeof visits === "boolean"
+              ? visits
+                ? { visits: { not: null } }
+                : { visits: null }
               : {}),
           },
         ],
