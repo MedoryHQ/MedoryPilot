@@ -255,6 +255,8 @@ export const en = {
       search: "Search headers...",
       name: "Name",
       position: "Position",
+      experience: "Experience",
+      visits: "Visits",
       translations: "Translations",
       status: "Status",
       actions: "Actions",
@@ -276,6 +278,8 @@ export const en = {
         contentTranslationsDescription:
           "Fill in header details for each language",
         name: "Name",
+        experience: "Experience",
+        visits: "Visits",
         namePlaceholder: "e.g., Main Navigation",
         position: "Position",
         positionPlaceholder: "e.g., Top Navigation",
@@ -301,6 +305,10 @@ export const en = {
         all: "All",
         active: "Active",
         inactive: "Inactive",
+        hasVisits: "Has Visits",
+        noVisits: "No Visits",
+        hasExperience: "Has Experience",
+        noExperience: "No Experience",
         clearAll: "Clear All",
         hasImage: "Has Image",
         noImage: "No Image"
@@ -311,7 +319,9 @@ export const en = {
         nameRequired: "Name is required",
         positionRequired: "Position is required",
         headlineRequired: "Headline is required",
-        descriptionRequired: "Description is required"
+        descriptionRequired: "Description is required",
+        invalidExperience: "Invalid Experience",
+        invalidVisits: "Invalid Visits"
       }
     },
     dataTable: {

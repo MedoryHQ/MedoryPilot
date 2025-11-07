@@ -39,6 +39,36 @@ const Headers = () => {
         { label: toUpperCase(t("headers.filters.hasImage")), value: "true" },
         { label: toUpperCase(t("headers.filters.noImage")), value: "false" }
       ]
+    },
+    {
+      key: "experience",
+      label: toUpperCase(t("headers.filters.hasExperience")),
+      type: "select",
+      options: [
+        {
+          label: toUpperCase(t("headers.filters.hasExperience")),
+          value: "true"
+        },
+        {
+          label: toUpperCase(t("headers.filters.noExperience")),
+          value: "false"
+        }
+      ]
+    },
+    {
+      key: "visits",
+      label: toUpperCase(t("headers.filters.hasVisits")),
+      type: "select",
+      options: [
+        {
+          label: toUpperCase(t("headers.filters.hasVisits")),
+          value: "true"
+        },
+        {
+          label: toUpperCase(t("headers.filters.noVisits")),
+          value: "false"
+        }
+      ]
     }
   ];
 
@@ -81,6 +111,33 @@ const Headers = () => {
         const tr = getTranslatedObject(item.translations, i18n.language);
         return <span className="text-foreground">{tr.position}</span>;
       }
+    },
+    {
+      key: "experience",
+      label: toUpperCase(t("headers.experience")),
+      render: (item) =>
+        item.experience ? (
+          <Badge variant="secondary" className="px-3 py-1">
+            {item.experience}
+          </Badge>
+        ) : (
+          ""
+        ),
+      className: "text-center"
+    },
+
+    {
+      key: "visits",
+      label: toUpperCase(t("headers.visits")),
+      render: (item) =>
+        item.visits ? (
+          <Badge variant="secondary" className="px-3 py-1">
+            {item.visits}
+          </Badge>
+        ) : (
+          ""
+        ),
+      className: "text-center"
     },
     {
       key: "translationsCount",

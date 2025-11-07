@@ -7,6 +7,8 @@ export interface HeaderResponse {
 export interface Header {
   id: string;
   logo: File | null;
+  visits?: number;
+  experience?: number;
   active: boolean | null;
   translations: HeaderTranslation[];
   createdAt: string;

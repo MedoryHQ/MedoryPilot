@@ -34,7 +34,6 @@ export const HeaderForm: React.FC<HeaderFormProps> = ({
     const translations = entity.translations ?? [];
     const en = translations.find((tr: any) => tr.language?.code === "en") ?? {};
     const ka = translations.find((tr: any) => tr.language?.code === "ka") ?? {};
-
     const logo = entity.logo
       ? {
           path: entity.logo.path ?? entity.logo.url ?? "",
@@ -46,6 +45,8 @@ export const HeaderForm: React.FC<HeaderFormProps> = ({
     return {
       logo,
       active: !!entity.active,
+      ...(entity.experience ? { experience: entity.experience } : {}),
+      ...(entity.visits ? { visits: entity.visits } : {}),
       translations: {
         en: {
           name: en.name ?? "",
@@ -92,6 +93,32 @@ export const HeaderForm: React.FC<HeaderFormProps> = ({
           label: "headers.form.status",
           description: "headers.form.statusDescription",
           type: "toggle"
+        },
+        {
+          kind: "simple",
+          name: "experience",
+          label: toUpperCase(t("headers.form.experience")),
+          type: "number",
+          props: {
+            min: 1,
+            max: 100,
+            step: 1,
+            placeholder: t("headers.form.experience"),
+            fullWidth: true
+          }
+        },
+        {
+          kind: "simple",
+          name: "visits",
+          label: toUpperCase(t("headers.form.visits")),
+          type: "number",
+          props: {
+            min: 1,
+            max: 100,
+            step: 1,
+            placeholder: t("headers.form.visits"),
+            fullWidth: true
+          }
         }
       ] as FieldConfig<HeaderFormValues>[]
     },

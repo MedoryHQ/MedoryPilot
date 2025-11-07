@@ -258,6 +258,8 @@ export const ka = {
       search: "ძებნა...",
       name: "სახელი",
       position: "პოზიცია",
+      experience: "გამოცდილება",
+      visits: "ვიზიტები",
       translations: "თარგმანები",
       status: "სტატუსი",
       actions: "ქმედებები",
@@ -279,6 +281,8 @@ export const ka = {
         contentTranslationsDescription:
           "შეავსეთ Header-ის დეტალები თითოეული ენისთვის",
         name: "სახელი",
+        experience: "გამოცდილება (წლებში)",
+        visits: "ვიზიტები",
         namePlaceholder: "მაგ., მთავარი ნავიგაცია",
         position: "პოზიცია",
         positionPlaceholder: "მაგ., ზედა ნავიგაცია",
@@ -306,7 +310,11 @@ export const ka = {
         inactive: "არააქტიური",
         clearAll: "ყველას გასუფთავება",
         hasImage: "სურათი აქვს",
-        noImage: "სურათი არ აქვს"
+        noImage: "სურათი არ აქვს",
+        hasVisits: "ვიზიტები აქვს",
+        noVisits: "ვიზიტები არ აქვს",
+        hasExperience: "გამოცდილება აქვს",
+        noExperience: "გამოცდილება არ აქვს"
       },
       errors: {
         logoRequired: "ლოგო აუცილებელია",
@@ -314,7 +322,9 @@ export const ka = {
         nameRequired: "სახელი აუცილებელია",
         positionRequired: "პოზიცია აუცილებელია",
         headlineRequired: "სათაური აუცილებელია",
-        descriptionRequired: "აღწერა აუცილებელია"
+        descriptionRequired: "აღწერა აუცილებელია",
+        invalidExperience: "არასწორი გამოცდილება",
+        invalidVisits: "არასწორი ვიზიტები"
       }
     },
     dataTable: {

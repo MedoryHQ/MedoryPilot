@@ -18,6 +18,8 @@ export const fetchHeader = async (
       },
       select: {
         logo: true,
+        visits: true,
+        experience: true,
         translations: {
           select: {
             description: true,
@@ -43,7 +45,13 @@ export const fetchHeader = async (
       });
       return sendError(req, res, 404, "headerNotFound");
     }
-    return res.status(200).json({ data: header });
+    const tariff = await prisma.tariff.findFirst({
+      where: {
+        isCurrent: true,
+      },
+    });
+
+    return res.status(200).json({ data: header, tariff });
   } catch (error) {
     logCatchyError("fetch_header_exception", error, {
       ip: (req as any).hashedIp,

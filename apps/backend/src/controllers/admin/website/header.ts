@@ -22,7 +22,7 @@ export const fetchHeaders = async (
   try {
     const { skip, take, orderBy, search } = getPaginationAndFilters(req);
     const filters = parseFilters(req);
-    const { active, logo } = filters;
+    const { active, logo, experience, visits } = filters;
 
     const where = generateWhereInput<Prisma.HeaderWhereInput>(
       search,
@@ -46,6 +46,18 @@ export const fetchHeaders = async (
               ? logo
                 ? { logo: { isNot: null } }
                 : { logo: { is: null } }
+              : {}),
+          },
+          {
+            ...(typeof experience === "boolean"
+              ? experience
+                ? { experience: { not: null } }
+                : { experience: null }
+              : {}),
+            ...(typeof visits === "boolean"
+              ? visits
+                ? { visits: { not: null } }
+                : { visits: null }
               : {}),
           },
         ],
@@ -191,7 +203,8 @@ export const createHeader = async (
   next: NextFunction
 ) => {
   try {
-    const { translations, logo, active } = req.body as CreateHeaderDTO;
+    const { translations, logo, active, experience, visits } =
+      req.body as CreateHeaderDTO;
 
     logInfo("Header create attempt", {
       ip: (req as any).hashedIp,
@@ -224,6 +237,8 @@ export const createHeader = async (
     const header = await prisma.header.create({
       data: {
         active: !!active,
+        ...(experience ? { experience } : {}),
+        ...(visits ? { visits } : {}),
         translations: { create: translationsToCreate },
         logo: {
           create: logoToCreate,
@@ -259,7 +274,8 @@ export const updateHeader = async (
   try {
     const { id } = req.params;
 
-    const { translations, logo, active } = req.body as UpdateHeaderDTO;
+    const { translations, logo, active, visits, experience } =
+      req.body as UpdateHeaderDTO;
 
     logInfo("Header update attempt", {
       ip: (req as any).hashedIp,
@@ -270,7 +286,12 @@ export const updateHeader = async (
 
     if (active) {
       const activeHeader = await prisma.header.count({
-        where: { active: true },
+        where: {
+          active: true,
+          id: {
+            not: id,
+          },
+        },
       });
       if (activeHeader) {
         return sendError(req, res, 400, "onlyOneActiveHeaderAllowed");
@@ -313,6 +334,8 @@ export const updateHeader = async (
         id,
       },
       data: {
+        ...(experience ? { experience } : {}),
+        ...(visits ? { visits } : {}),
         translations: {
           deleteMany: {},
           create: translationsToCreate,
