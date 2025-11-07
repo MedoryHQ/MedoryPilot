@@ -305,6 +305,10 @@ export const en = {
         all: "All",
         active: "Active",
         inactive: "Inactive",
+        hasVisits: "Has Visits",
+        noVisits: "No Visits",
+        hasExperience: "Has Experience",
+        noExperience: "No Experience",
         clearAll: "Clear All",
         hasImage: "Has Image",
         noImage: "No Image"

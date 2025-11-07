@@ -310,7 +310,11 @@ export const ka = {
         inactive: "არააქტიური",
         clearAll: "ყველას გასუფთავება",
         hasImage: "სურათი აქვს",
-        noImage: "სურათი არ აქვს"
+        noImage: "სურათი არ აქვს",
+        hasVisits: "ვიზიტები აქვს",
+        noVisits: "ვიზიტები არ აქვს",
+        hasExperience: "გამოცდილება აქვს",
+        noExperience: "გამოცდილება არ აქვს"
       },
       errors: {
         logoRequired: "ლოგო აუცილებელია",

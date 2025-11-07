@@ -39,6 +39,36 @@ const Headers = () => {
         { label: toUpperCase(t("headers.filters.hasImage")), value: "true" },
         { label: toUpperCase(t("headers.filters.noImage")), value: "false" }
       ]
+    },
+    {
+      key: "experience",
+      label: toUpperCase(t("headers.filters.hasExperience")),
+      type: "select",
+      options: [
+        {
+          label: toUpperCase(t("headers.filters.hasExperience")),
+          value: "true"
+        },
+        {
+          label: toUpperCase(t("headers.filters.noExperience")),
+          value: "false"
+        }
+      ]
+    },
+    {
+      key: "visits",
+      label: toUpperCase(t("headers.filters.hasVisits")),
+      type: "select",
+      options: [
+        {
+          label: toUpperCase(t("headers.filters.hasVisits")),
+          value: "true"
+        },
+        {
+          label: toUpperCase(t("headers.filters.noVisits")),
+          value: "false"
+        }
+      ]
     }
   ];
 
