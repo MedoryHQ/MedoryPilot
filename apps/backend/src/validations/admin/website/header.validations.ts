@@ -7,6 +7,8 @@ export const deleteHeaderValidation = [uuidValidation()];
 
 export const createHeaderValidation = [
   body("active").optional().isBoolean().withMessage("invalidActiveType"),
+  body("experience").optional().isInt().withMessage("invalidExperience"),
+  body("visits").optional().isInt().withMessage("invalidVisits"),
   body("logo")
     .isObject()
     .optional({ nullable: true })
