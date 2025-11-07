@@ -274,7 +274,12 @@ export const updateHeader = async (
 
     if (active) {
       const activeHeader = await prisma.header.count({
-        where: { active: true },
+        where: {
+          active: true,
+          id: {
+            not: id,
+          },
+        },
       });
       if (activeHeader) {
         return sendError(req, res, 400, "onlyOneActiveHeaderAllowed");
