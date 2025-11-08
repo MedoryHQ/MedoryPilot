@@ -220,7 +220,6 @@ const Headers = () => {
                 <div className="border-border grid grid-cols-2 gap-3 border-t pt-3">
                   <div>
                     <span className="text-muted-foreground text-sm">
-                      {" "}
                       {toUpperCase(t("headers.position"))}
                     </span>
                     <div className="mt-1">
@@ -250,9 +249,9 @@ const Headers = () => {
                     <span className="text-muted-foreground text-sm">
                       {toUpperCase(t("headers.created"))}
                     </span>
-                    <p className="mt-1 text-sm">
+                    <div className="mt-1 text-sm">
                       <Skeleton className="h-4 w-28" />
-                    </p>
+                    </div>
                   </div>
                 </div>
               </div>
