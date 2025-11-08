@@ -20,10 +20,6 @@ export const routing = defineRouting({
     "/contact": "/contact",
     "/sign-in": "/sign-in",
     "/sign-up": "/sign-up",
-    "/[slug]": {
-      ka: "/[slug]",
-      en: "/[slug]",
-    },
   },
 });
 
