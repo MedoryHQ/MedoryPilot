@@ -1,4 +1,5 @@
 import { File, Language } from "../global";
+import { Visit } from "../visit";
 
 export interface ServicesResponse {
   data: Service[];
@@ -15,7 +16,7 @@ export interface Service {
   iconId: string;
   background: File | null;
   backgroundId: string;
-  visits: any[]; // TODO: Add visits type
+  visits: Visit[];
   translations: ServiceTranslation[];
   createdAt: string;
   updatedAt: string;
