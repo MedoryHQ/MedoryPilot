@@ -1,4 +1,6 @@
+import { Chat } from "./chat";
 import { RefreshToken } from "./global";
+import { Form100, Transaction, Visit } from "./visit";
 import { Blog } from "./website";
 
 export interface User {
@@ -13,17 +15,17 @@ export interface User {
   personalId: string;
   needPasswordChange: boolean;
   starredBlogs?: Blog[];
-  // transactions?: Transaction[];
-  // form100s?: Form100[];
+  transactions?: Transaction[];
+  form100s?: Form100[];
   photo?: File | null;
-  // chat?: Chat | null;
+  chat?: Chat | null;
   phoneNumber: string;
   passwordHash: string;
   smsCode?: string | null;
   smsCodeExpiresAt?: string | null;
   isVerified: boolean;
   refreshTokens?: RefreshToken[];
-  // visits?: Visit[];
+  visits: Visit[];
   createdAt: string;
   updatedAt: string;
 }
