@@ -14,12 +14,12 @@ export const routing = defineRouting({
   pathnames: {
     "/": "/",
     "/landing": "/landing",
+    "/about-me": "/about-me",
+    "/blogs": "/blogs",
+    "/newses": "/newses",
+    "/contact": "/contact",
     "/sign-in": "/sign-in",
     "/sign-up": "/sign-up",
-    "/[slug]": {
-      ka: "/[slug]",
-      en: "/[slug]",
-    },
   },
 });
 

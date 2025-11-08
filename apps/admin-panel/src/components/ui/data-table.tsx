@@ -15,7 +15,6 @@ import {
   SelectItem,
   SelectValue,
   Separator,
-  TableCell,
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
@@ -528,8 +527,11 @@ export function DataTable<T extends Record<string, any>>({
                           </td>
                         ))}
                         {effectiveActions.length > 0 && (
-                          <td className="flex justify-end px-6 py-4">
-                            <TableCell onClick={(e) => e.stopPropagation()}>
+                          <td
+                            className="flex justify-end px-6 py-4"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <div>
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                   <Button
@@ -559,7 +561,7 @@ export function DataTable<T extends Record<string, any>>({
                                   ))}
                                 </DropdownMenuContent>
                               </DropdownMenu>
-                            </TableCell>
+                            </div>
                           </td>
                         )}
                       </motion.tr>
@@ -639,14 +641,14 @@ export function DataTable<T extends Record<string, any>>({
                               key={col.key}
                               className="flex items-start justify-between"
                             >
-                              <span className="text-secondary-foreground text-sm font-medium">
+                              <div className="text-secondary-foreground text-sm font-medium">
                                 {col.mobileLabel || col.label}
-                              </span>
-                              <span className="text-right text-sm font-medium">
+                              </div>
+                              <div className="text-right text-sm font-medium">
                                 {col.render
                                   ? col.render(row)
                                   : String(row[col.key] ?? "")}
-                              </span>
+                              </div>
                             </div>
                           ))}
                       {effectiveActions && effectiveActions.length > 0 && (
