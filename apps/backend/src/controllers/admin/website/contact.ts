@@ -224,7 +224,7 @@ export const updateContact = async (
         id,
       },
       data: {
-        ...(location ? { location } : {}),
+        ...(typeof location === "string" ? { location } : {}),
         translations: {
           deleteMany: {},
           create: translationsToCreate,
