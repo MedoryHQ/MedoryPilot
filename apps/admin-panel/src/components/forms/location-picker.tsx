@@ -9,6 +9,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import "leaflet/dist/leaflet.css";
 import { Button, Input, Label } from "../ui";
 import axios from "axios";
+import { toUpperCase } from "@/utils";
 
 const createSvgIcon = (color = "#0ea5a4") =>
   L.divIcon({
@@ -111,7 +112,7 @@ export function LocationPicker({
         const cc = (data?.address?.country_code || "").toLowerCase();
         if (cc !== "ge") {
           const msg =
-            t("forms.errors.mustBeInGeorgia") ??
+            toUpperCase(t("forms.errors.mustBeInGeorgia")) ??
             "Please pick a location inside Georgia.";
           setError(msg);
           onValidate?.(msg);
@@ -122,7 +123,7 @@ export function LocationPicker({
         return { address: fmt, placeId: String(data.place_id ?? "") };
       } catch {
         const msg =
-          t("forms.errors.cantResolveAddress") ??
+          toUpperCase(t("forms.errors.cantResolveAddress")) ??
           "Can't resolve address for selected location.";
         setError(msg);
         onValidate?.(msg);
@@ -145,7 +146,9 @@ export function LocationPicker({
 
   const handleConfirm = useCallback(async () => {
     if (!tempMarker) {
-      const msg = t("forms.errors.invalidPlace") ?? "Pick a place on the map.";
+      const msg =
+        toUpperCase(t("forms.errors.invalidPlace")) ??
+        "Pick a place on the map.";
       setError(msg);
       onValidate?.(msg);
       return;
@@ -208,7 +211,7 @@ export function LocationPicker({
             }}
             placeholder={
               placeholder ??
-              (t("contact.form.locationPlaceholder") as string) ??
+              (toUpperCase(t("contact.form.locationPlaceholder")) as string) ??
               "e.g., Tbilisi, Georgia"
             }
             className={cn(
@@ -229,7 +232,7 @@ export function LocationPicker({
               onValidate?.(undefined);
             }}
           >
-            {t("forms.clear")}
+            {toUpperCase(t("forms.clear"))}
           </Button>
         </div>
         {error && <div className="text-destructive mt-2 text-sm">{error}</div>}
@@ -242,7 +245,7 @@ export function LocationPicker({
             <div className="mb-3 flex items-center justify-between">
               <div>
                 <Dialog.Title className="text-lg font-medium">
-                  {t("contact.form.selectLocation")}
+                  {toUpperCase(t("contact.form.selectLocation"))}
                 </Dialog.Title>
                 <div className="text-muted-foreground text-xs">
                   {tempAddress ?? ""}
@@ -251,9 +254,11 @@ export function LocationPicker({
 
               <div className="flex items-center gap-2">
                 <Button onClick={handleCancel} variant="secondary">
-                  {t("forms.cancel")}
+                  {toUpperCase(t("forms.cancel"))}
                 </Button>
-                <Button onClick={handleConfirm}>{t("forms.save")}</Button>
+                <Button onClick={handleConfirm}>
+                  {toUpperCase(t("forms.save"))}
+                </Button>
               </div>
             </div>
 
