@@ -79,7 +79,7 @@ export const SocialForm: React.FC<SocialFormProps> = ({
           kind: "simple",
           name: "url",
           label: toUpperCase(t("socials.form.url")),
-          type: "text",
+          type: "link",
           props: {
             step: 1,
             placeholder: t("socials.form.urlPlaceholder"),

@@ -97,7 +97,7 @@ export const EducationForm: React.FC<EducationFormProps> = ({
           kind: "simple",
           name: "link",
           label: toUpperCase(t("educations.form.link")),
-          type: "text",
+          type: "link",
           props: {
             step: 1,
             placeholder: t("educations.form.link"),

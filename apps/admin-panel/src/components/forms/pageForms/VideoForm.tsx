@@ -88,7 +88,7 @@ export const VideoForm: React.FC<VideoFormProps> = ({
           kind: "simple",
           name: "link",
           label: toUpperCase(t("videos.form.link")),
-          type: "text",
+          type: "link",
           props: {
             step: 1,
             placeholder: t("videos.form.link"),
