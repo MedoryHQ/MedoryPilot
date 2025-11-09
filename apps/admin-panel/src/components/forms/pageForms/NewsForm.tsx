@@ -117,8 +117,8 @@ export const NewsForm: React.FC<NewsFormProps> = ({
           name: "showInLanding",
           label: "newses.form.showInLanding",
           description: "newses.form.showInLandingDescription",
-          activeLabel: "newses.form.showInLanding",
-          inactiveLabel: "newses.form.notShowInLanding",
+          activeLabel: "newses.yes",
+          inactiveLabel: "newses.no",
           type: "toggle"
         },
         {
@@ -230,6 +230,7 @@ export const NewsForm: React.FC<NewsFormProps> = ({
           {
             name: "content",
             label: toUpperCase(t("newses.form.content")),
+            placeholder: toUpperCase(t("newses.form.content")),
             required: true,
             fullWidth: true,
             type: "markdown"

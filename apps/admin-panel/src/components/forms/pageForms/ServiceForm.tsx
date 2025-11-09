@@ -139,6 +139,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
           {
             name: "title",
             label: toUpperCase(t("services.form.title")),
+            placeholder: toUpperCase(t("services.form.title")),
             required: true,
             fullWidth: true,
             rows: 1
@@ -146,6 +147,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
           {
             name: "description",
             label: toUpperCase(t("services.form.description")),
+            placeholder: toUpperCase(t("services.form.description")),
             type: "textarea",
             rows: 5,
             maxLength: 500

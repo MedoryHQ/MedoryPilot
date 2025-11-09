@@ -195,6 +195,7 @@ export const PageComponentForm: React.FC<PageComponentFormProps> = ({
           {
             name: "name",
             label: toUpperCase(t("pageComponents.form.name")),
+            placeholder: toUpperCase(t("pageComponents.form.name")),
             required: true,
             fullWidth: true,
             type: "text"
@@ -202,6 +203,7 @@ export const PageComponentForm: React.FC<PageComponentFormProps> = ({
           {
             name: "content",
             label: toUpperCase(t("pageComponents.form.content")),
+            placeholder: toUpperCase(t("pageComponents.form.content")),
             required: true,
             fullWidth: true,
             type: "markdown"

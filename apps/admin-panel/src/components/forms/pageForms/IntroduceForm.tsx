@@ -86,16 +86,17 @@ export const IntroduceForm: React.FC<IntroduceFormProps> = ({
           {
             name: "headline",
             label: toUpperCase(t("introduce.form.headline")),
+            placeholder: toUpperCase(t("introduce.form.headline")),
             fullWidth: true,
             required: true
           },
           {
             name: "description",
             label: toUpperCase(t("introduce.form.description")),
-            type: "textarea",
-            rows: 5,
-            maxLength: 500,
-            required: true
+            placeholder: toUpperCase(t("introduce.form.description")),
+            required: true,
+            fullWidth: true,
+            type: "markdown"
           }
         ] as const
       }

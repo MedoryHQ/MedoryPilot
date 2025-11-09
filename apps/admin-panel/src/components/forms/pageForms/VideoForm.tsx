@@ -144,6 +144,7 @@ export const VideoForm: React.FC<VideoFormProps> = ({
           {
             name: "name",
             label: toUpperCase(t("videos.form.name")),
+            placeholder: toUpperCase(t("videos.form.name")),
             required: true,
             fullWidth: true,
             rows: 1
