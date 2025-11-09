@@ -919,6 +919,7 @@ export const ka = {
         contentTranslationsDescription:
           "შეავსეთ ბლოგის დეტალები თითოეული ენისთვის",
         title: "სათაური",
+        categories: "კატეგორიები",
         titlePlaceholder: "მაგ., ჩემი პირველი ბლოგი",
         content: "კონტენტი",
         contentPlaceholder: "შეიყვანეთ კონტენტი ამ ბლოგისთვის...",
@@ -1060,13 +1061,13 @@ export const ka = {
       },
       filters: {
         hasThumbnail: "Thumbnail-ით",
-        noThumbnail: "Thumbnail-ის გარეშე"
+        noThumbnail: "Thumbnail-ის გარეშე",
+        dateRange: "თარიღის დიაპაზონი"
       },
       errors: {
         thumbnailRequired: "გარეკანის ფოტო აუცილებელია",
         linkRequired: "ბმული აუცილებელია",
-        nameRequired: "სახელი აუცილებელია",
-        dateRange: "თარიღის დიაპაზონი"
+        nameRequired: "სახელი აუცილებელია"
       }
     },
     experiences: {

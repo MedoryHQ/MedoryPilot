@@ -81,6 +81,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
           {
             name: "name",
             label: toUpperCase(t("categories.form.name")),
+            placeholder: toUpperCase(t("categories.form.name")),
             fullWidth: true,
             required: true
           }

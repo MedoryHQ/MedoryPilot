@@ -928,6 +928,7 @@ export const en = {
         landingOrderPlaceholder: "e.g., 1",
         slug: "Slug",
         slugPlaceholder: "e.g., blog-1",
+        categories: "Categories",
         background: "Background",
         backgroundLabel: "Drop your background here",
         backgroundDescription: "or click to browse",
@@ -1063,13 +1064,13 @@ export const en = {
       },
       filters: {
         hasThumbnail: "გარეკანის ფოტოთი",
-        noThumbnail: "გარეკანის ფოტოს გარეშე"
+        noThumbnail: "გარეკანის ფოტოს გარეშე",
+        dateRange: "Date Range"
       },
       errors: {
         thumbnailRequired: "Thumbnail is required",
         linkRequired: "Link is required",
-        nameRequired: "Name is required",
-        dateRange: "Date Range"
+        nameRequired: "Name is required"
       }
     },
     experiences: {

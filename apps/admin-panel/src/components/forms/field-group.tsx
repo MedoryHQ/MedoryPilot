@@ -84,6 +84,7 @@ export const FieldGroup: React.FC<FieldGroupProps> = ({
               onChange={(v: string) => onChange(v)}
               disabled={disabled}
               className={textareaClasses}
+              placeholder={placeholder}
               aria-invalid={hasError}
               aria-describedby={error ? `${inputId}-error` : undefined}
             />
