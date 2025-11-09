@@ -106,6 +106,7 @@ export const FaqForm: React.FC<FaqFormProps> = ({
           {
             name: "question",
             label: toUpperCase(t("faqs.form.question")),
+            placeholder: toUpperCase(t("faqs.form.question")),
             required: true,
             fullWidth: true,
             rows: 1
@@ -113,9 +114,10 @@ export const FaqForm: React.FC<FaqFormProps> = ({
           {
             name: "answer",
             label: toUpperCase(t("faqs.form.answer")),
-            type: "textarea",
-            rows: 5,
-            maxLength: 500
+            placeholder: toUpperCase(t("faqs.form.answer")),
+            required: true,
+            fullWidth: true,
+            type: "markdown"
           }
         ] as const
       }

@@ -99,7 +99,7 @@ export const ExperienceForm: React.FC<ExperienceFormProps> = ({
           kind: "simple",
           name: "link",
           label: toUpperCase(t("experiences.form.link")),
-          type: "text",
+          type: "link",
           props: {
             step: 1,
             placeholder: t("experiences.form.link"),
@@ -177,6 +177,7 @@ export const ExperienceForm: React.FC<ExperienceFormProps> = ({
           {
             name: "name",
             label: toUpperCase(t("experiences.form.name")),
+            placeholder: toUpperCase(t("experiences.form.name")),
             required: true,
             fullWidth: true,
             rows: 1
@@ -184,17 +185,18 @@ export const ExperienceForm: React.FC<ExperienceFormProps> = ({
           {
             name: "position",
             label: toUpperCase(t("experiences.form.position")),
+            placeholder: toUpperCase(t("experiences.form.position")),
             required: true,
             fullWidth: true,
             rows: 1
           },
           {
-            type: "textarea",
             name: "description",
             label: toUpperCase(t("experiences.form.description")),
+            placeholder: toUpperCase(t("experiences.form.description")),
             required: true,
             fullWidth: true,
-            rows: 1
+            type: "markdown"
           }
         ] as const
       }

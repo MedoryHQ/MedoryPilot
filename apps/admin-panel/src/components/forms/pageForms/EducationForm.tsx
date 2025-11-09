@@ -164,6 +164,7 @@ export const EducationForm: React.FC<EducationFormProps> = ({
           {
             name: "name",
             label: toUpperCase(t("educations.form.name")),
+            placeholder: toUpperCase(t("educations.form.name")),
             required: true,
             fullWidth: true,
             rows: 1
@@ -171,17 +172,18 @@ export const EducationForm: React.FC<EducationFormProps> = ({
           {
             name: "degree",
             label: toUpperCase(t("educations.form.degree")),
+            placeholder: toUpperCase(t("educations.form.degree")),
             required: true,
             fullWidth: true,
             rows: 1
           },
           {
-            type: "textarea",
             name: "description",
-            label: toUpperCase(t("educations.form.description")),
+            label: toUpperCase(t("experiences.form.description")),
+            placeholder: toUpperCase(t("experiences.form.description")),
             required: true,
             fullWidth: true,
-            rows: 1
+            type: "markdown"
           }
         ] as const
       }

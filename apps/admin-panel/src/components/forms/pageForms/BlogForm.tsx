@@ -125,8 +125,8 @@ export const BlogForm: React.FC<BlogFormProps> = ({
           name: "showInLanding",
           label: "blogs.form.showInLanding",
           description: "blogs.form.showInLandingDescription",
-          activeLabel: "blogs.form.showInLanding",
-          inactiveLabel: "blogs.form.notShowInLanding",
+          activeLabel: "blogs.yes",
+          inactiveLabel: "blogs.no",
           type: "toggle"
         },
         {
@@ -162,7 +162,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({
             endpoints: "/category/list",
             mode: "multiple",
             translationKey: "name",
-            placeholder: t("blogs.form.categoriesPlaceholder"),
+            placeholder: t("blogs.form.categories"),
             required: true
           }
         }
@@ -252,6 +252,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({
           {
             name: "title",
             label: toUpperCase(t("blogs.form.title")),
+            placeholder: toUpperCase(t("blogs.form.title")),
             required: true,
             fullWidth: true,
             type: "text"
@@ -259,6 +260,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({
           {
             name: "content",
             label: toUpperCase(t("blogs.form.content")),
+            placeholder: toUpperCase(t("blogs.form.content")),
             required: true,
             fullWidth: true,
             type: "markdown"

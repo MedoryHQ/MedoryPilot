@@ -158,22 +158,26 @@ export const HeaderForm: React.FC<HeaderFormProps> = ({
           {
             name: "name",
             label: toUpperCase(t("headers.form.name")),
+            placeholder: toUpperCase(t("headers.form.name")),
             required: true
           },
           {
             name: "position",
             label: toUpperCase(t("headers.form.position")),
+            placeholder: toUpperCase(t("headers.form.position")),
             required: true
           },
           {
             name: "headline",
             label: toUpperCase(t("headers.form.headline")),
+            placeholder: toUpperCase(t("headers.form.headline")),
             fullWidth: true,
             required: true
           },
           {
             name: "description",
             label: toUpperCase(t("headers.form.description")),
+            placeholder: toUpperCase(t("headers.form.description")),
             type: "textarea",
             rows: 5,
             maxLength: 500
