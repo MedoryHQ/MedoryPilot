@@ -73,8 +73,8 @@ export const ContactForm: React.FC<ContactFormProps> = ({
     await axios.put(`/contact/${entityId}`, payload);
   };
 
-  const deleteEntity = async (entityId: string) => {
-    await axios.delete(`/contact/${entityId}`);
+  const deleteEntity = async () => {
+    await axios.delete("/contact");
   };
 
   const rightSections = [
@@ -86,7 +86,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
           kind: "simple",
           name: "location",
           label: toUpperCase(t("contact.form.location")),
-          type: "text",
+          type: "location",
           props: {
             step: 1,
             placeholder: t("contact.form.locationPlaceholder"),
@@ -132,12 +132,14 @@ export const ContactForm: React.FC<ContactFormProps> = ({
           {
             name: "title",
             label: toUpperCase(t("contact.form.title")),
+            placeholder: toUpperCase(t("contact.form.title")),
             fullWidth: true,
             required: true
           },
           {
             name: "description",
             label: toUpperCase(t("contact.form.description")),
+            placeholder: toUpperCase(t("contact.form.description")),
             type: "textarea",
             rows: 5,
             maxLength: 500,
