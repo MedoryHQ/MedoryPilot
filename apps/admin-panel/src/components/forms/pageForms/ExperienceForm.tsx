@@ -7,6 +7,7 @@ import { GenericEntityForm } from "..";
 import type { FieldConfig } from "@/types";
 import type { ExperienceFormValues } from "@/validations/website/experience.validation";
 import { experienceSubmitSchema } from "@/validations/website/experience.validation";
+import { Experience } from "@/types/website";
 
 export interface ExperienceFormProps {
   mode: "create" | "edit" | "readonly";
@@ -33,17 +34,19 @@ export const ExperienceForm: React.FC<ExperienceFormProps> = ({
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<ExperienceFormValues> => {
+  const mapFetchedToForm = (
+    entity: Experience
+  ): Partial<ExperienceFormValues> => {
     if (!entity) return {};
     const { link, fromDate, endDate, location } = entity;
 
     const translations = entity.translations ?? [];
-    const en = translations.find((tr: any) => tr.language?.code === "en") ?? {};
-    const ka = translations.find((tr: any) => tr.language?.code === "ka") ?? {};
+    const en = translations.find((tr) => tr.language?.code === "en");
+    const ka = translations.find((tr) => tr.language?.code === "ka");
 
     const icon = entity.icon
       ? {
-          path: entity.icon.path ?? entity.icon.url ?? "",
+          path: entity.icon.path ?? "",
           name: entity.icon.name ?? "",
           size: entity.icon.size ?? undefined
         }
@@ -57,14 +60,14 @@ export const ExperienceForm: React.FC<ExperienceFormProps> = ({
       ...(endDate ? { endDate: new Date(endDate) } : {}),
       translations: {
         en: {
-          name: en.name ?? "",
-          position: en.position ?? "",
-          description: en.description ?? ""
+          name: en?.name ?? "",
+          position: en?.position ?? "",
+          description: en?.description ?? ""
         },
         ka: {
-          name: ka.name ?? "",
-          position: ka.position ?? "",
-          description: ka.description ?? ""
+          name: ka?.name ?? "",
+          position: ka?.position ?? "",
+          description: ka?.description ?? ""
         }
       }
     };
@@ -161,7 +164,7 @@ export const ExperienceForm: React.FC<ExperienceFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<ExperienceFormValues, any>
+    <GenericEntityForm<ExperienceFormValues>
       resourceName="experiences"
       mode={mode}
       id={id ?? undefined}

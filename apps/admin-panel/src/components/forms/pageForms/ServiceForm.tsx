@@ -4,15 +4,10 @@ import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
 
 import { GenericEntityForm } from "..";
-import type { FieldConfig } from "@/types";
+import type { FieldConfig, FormProps } from "@/types";
 import type { ServiceFormValues } from "@/validations/website/service.validation";
 import { serviceSchema } from "@/validations/website/service.validation";
-
-export interface ServiceFormProps {
-  mode: "create" | "edit" | "readonly";
-  id?: string | null;
-  onSuccessNavigate?: string;
-}
+import { Service } from "@/types/website";
 
 const defaultValues: ServiceFormValues = {
   icon: null,
@@ -23,22 +18,22 @@ const defaultValues: ServiceFormValues = {
   }
 };
 
-export const ServiceForm: React.FC<ServiceFormProps> = ({
+export const ServiceForm: React.FC<FormProps> = ({
   mode,
   id = null,
   onSuccessNavigate = "/landing/services"
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<ServiceFormValues> => {
+  const mapFetchedToForm = (entity: Service): Partial<ServiceFormValues> => {
     if (!entity) return {};
     const translations = entity.translations ?? [];
-    const en = translations.find((tr: any) => tr.language?.code === "en") ?? {};
-    const ka = translations.find((tr: any) => tr.language?.code === "ka") ?? {};
+    const en = translations.find((tr) => tr.language?.code === "en");
+    const ka = translations.find((tr) => tr.language?.code === "ka");
 
     const icon = entity.icon
       ? {
-          path: entity.icon.path ?? entity.icon.url ?? "",
+          path: entity.icon.path ?? "",
           name: entity.icon.name ?? "",
           size: entity.icon.size ?? undefined
         }
@@ -46,7 +41,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
 
     const background = entity.background
       ? {
-          path: entity.background.path ?? entity.background.url ?? "",
+          path: entity.background.path ?? "",
           name: entity.background.name ?? "",
           size: entity.background.size ?? undefined
         }
@@ -57,12 +52,12 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
       background,
       translations: {
         en: {
-          title: en.title ?? "",
-          description: en.description ?? ""
+          title: en?.title ?? "",
+          description: en?.description ?? ""
         },
         ka: {
-          title: ka.title ?? "",
-          description: ka.description ?? ""
+          title: ka?.title ?? "",
+          description: ka?.description ?? ""
         }
       }
     };
@@ -123,7 +118,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<ServiceFormValues, any>
+    <GenericEntityForm<ServiceFormValues>
       resourceName="services"
       mode={mode}
       id={id ?? undefined}

@@ -7,6 +7,7 @@ import { GenericEntityForm } from "..";
 import type { FieldConfig } from "@/types";
 import type { FaqFormValues } from "@/validations/website/faq.validation";
 import { faqSchema } from "@/validations/website/faq.validation";
+import { Faq } from "@/types/website";
 
 export interface FaqFormProps {
   mode: "create" | "edit" | "readonly";
@@ -29,22 +30,22 @@ export const FaqForm: React.FC<FaqFormProps> = ({
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<FaqFormValues> => {
+  const mapFetchedToForm = (entity: Faq): Partial<FaqFormValues> => {
     if (!entity) return {};
     const translations = entity.translations ?? [];
-    const en = translations.find((tr: any) => tr.language?.code === "en") ?? {};
-    const ka = translations.find((tr: any) => tr.language?.code === "ka") ?? {};
+    const en = translations.find((tr) => tr.language?.code === "en");
+    const ka = translations.find((tr) => tr.language?.code === "ka");
 
     return {
       order: entity.order,
       translations: {
         en: {
-          question: en.question ?? "",
-          answer: en.answer ?? ""
+          question: en?.question ?? "",
+          answer: en?.answer ?? ""
         },
         ka: {
-          question: ka.question ?? "",
-          answer: ka.answer ?? ""
+          question: ka?.question ?? "",
+          answer: ka?.answer ?? ""
         }
       }
     };
@@ -90,7 +91,7 @@ export const FaqForm: React.FC<FaqFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<FaqFormValues, any>
+    <GenericEntityForm<FaqFormValues>
       resourceName="faqs"
       mode={mode}
       id={id ?? undefined}

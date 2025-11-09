@@ -3,15 +3,10 @@ import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
-import type { FieldConfig } from "@/types";
+import type { FieldConfig, FormProps } from "@/types";
 import type { HeaderFormValues } from "@/validations/website/header.validation";
 import { headerSchema } from "@/validations/website/header.validation";
-
-export interface HeaderFormProps {
-  mode: "create" | "edit" | "readonly";
-  id?: string | null;
-  onSuccessNavigate?: string;
-}
+import { Header } from "@/types/website";
 
 const defaultValues: HeaderFormValues = {
   logo: null,
@@ -22,21 +17,21 @@ const defaultValues: HeaderFormValues = {
   }
 };
 
-export const HeaderForm: React.FC<HeaderFormProps> = ({
+export const HeaderForm: React.FC<FormProps> = ({
   mode,
   id = null,
   onSuccessNavigate = "/landing/headers"
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<HeaderFormValues> => {
+  const mapFetchedToForm = (entity: Header): Partial<HeaderFormValues> => {
     if (!entity) return {};
     const translations = entity.translations ?? [];
-    const en = translations.find((tr: any) => tr.language?.code === "en") ?? {};
-    const ka = translations.find((tr: any) => tr.language?.code === "ka") ?? {};
+    const en = translations.find((tr) => tr.language?.code === "en");
+    const ka = translations.find((tr) => tr.language?.code === "ka");
     const logo = entity.logo
       ? {
-          path: entity.logo.path ?? entity.logo.url ?? "",
+          path: entity.logo.path ?? "",
           name: entity.logo.name ?? "",
           size: entity.logo.size ?? undefined
         }
@@ -49,16 +44,16 @@ export const HeaderForm: React.FC<HeaderFormProps> = ({
       ...(entity.visits ? { visits: entity.visits } : {}),
       translations: {
         en: {
-          name: en.name ?? "",
-          position: en.position ?? "",
-          headline: en.headline ?? "",
-          description: en.description ?? ""
+          name: en?.name ?? "",
+          position: en?.position ?? "",
+          headline: en?.headline ?? "",
+          description: en?.description ?? ""
         },
         ka: {
-          name: ka.name ?? "",
-          position: ka.position ?? "",
-          headline: ka.headline ?? "",
-          description: ka.description ?? ""
+          name: ka?.name ?? "",
+          position: ka?.position ?? "",
+          headline: ka?.headline ?? "",
+          description: ka?.description ?? ""
         }
       }
     };
@@ -142,7 +137,7 @@ export const HeaderForm: React.FC<HeaderFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<HeaderFormValues, any>
+    <GenericEntityForm<HeaderFormValues>
       resourceName="headers"
       mode={mode}
       id={id ?? undefined}

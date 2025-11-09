@@ -7,6 +7,7 @@ import { GenericEntityForm } from "..";
 import type { FieldConfig } from "@/types";
 import type { EducationFormValues } from "@/validations/website/education.validation";
 import { educationSubmitSchema } from "@/validations/website/education.validation";
+import { Education } from "@/types/website";
 
 export interface EducationFormProps {
   mode: "create" | "edit" | "readonly";
@@ -32,17 +33,19 @@ export const EducationForm: React.FC<EducationFormProps> = ({
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<EducationFormValues> => {
+  const mapFetchedToForm = (
+    entity: Education
+  ): Partial<EducationFormValues> => {
     if (!entity) return {};
     const { link, fromDate, endDate } = entity;
 
     const translations = entity.translations ?? [];
-    const en = translations.find((tr: any) => tr.language?.code === "en") ?? {};
-    const ka = translations.find((tr: any) => tr.language?.code === "ka") ?? {};
+    const en = translations.find((tr) => tr.language?.code === "en");
+    const ka = translations.find((tr) => tr.language?.code === "ka");
 
     const icon = entity.icon
       ? {
-          path: entity.icon.path ?? entity.icon.url ?? "",
+          path: entity.icon.path ?? "",
           name: entity.icon.name ?? "",
           size: entity.icon.size ?? undefined
         }
@@ -55,14 +58,14 @@ export const EducationForm: React.FC<EducationFormProps> = ({
       ...(endDate ? { endDate: new Date(endDate) } : {}),
       translations: {
         en: {
-          name: en.name ?? "",
-          degree: en.degree ?? "",
-          description: en.description ?? ""
+          name: en?.name ?? "",
+          degree: en?.degree ?? "",
+          description: en?.description ?? ""
         },
         ka: {
-          name: ka.name ?? "",
-          degree: ka.degree ?? "",
-          description: ka.description ?? ""
+          name: ka?.name ?? "",
+          degree: ka?.degree ?? "",
+          description: ka?.description ?? ""
         }
       }
     };
@@ -148,7 +151,7 @@ export const EducationForm: React.FC<EducationFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<EducationFormValues, any>
+    <GenericEntityForm<EducationFormValues>
       resourceName="educations"
       mode={mode}
       id={id ?? undefined}

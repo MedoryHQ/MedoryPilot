@@ -3,16 +3,10 @@ import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
-import type { FieldConfig } from "@/types";
+import type { FieldConfig, FormProps } from "@/types";
 import type { BlogFormValues } from "@/validations/website/blog.validation";
 import { blogSchema } from "@/validations/website/blog.validation";
 import { Blog } from "@/types/website";
-
-export interface BlogFormProps {
-  mode: "create" | "edit" | "readonly";
-  slug?: string | null;
-  onSuccessNavigate?: string;
-}
 
 const defaultValues: BlogFormValues = {
   background: null,
@@ -30,7 +24,7 @@ const defaultValues: BlogFormValues = {
   }
 };
 
-export const BlogForm: React.FC<BlogFormProps> = ({
+export const BlogForm: React.FC<FormProps> = ({
   mode,
   slug = null,
   onSuccessNavigate = "/landing/blogs"
@@ -236,7 +230,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<BlogFormValues, any>
+    <GenericEntityForm<BlogFormValues>
       resourceName="blogs"
       mode={mode}
       id={slug ?? undefined}

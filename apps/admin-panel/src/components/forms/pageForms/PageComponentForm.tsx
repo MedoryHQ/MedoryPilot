@@ -3,15 +3,10 @@ import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
-import type { FieldConfig } from "@/types";
+import type { FieldConfig, FormProps } from "@/types";
 import type { PageComponentFormValues } from "@/validations/website/pageComponent.validation";
 import { pageComponentSchema } from "@/validations/website/pageComponent.validation";
-
-export interface PageComponentFormProps {
-  mode: "create" | "edit" | "readonly";
-  slug?: string | null;
-  onSuccessNavigate?: string;
-}
+import { PageComponent } from "@/types/website";
 
 const defaultValues: PageComponentFormValues = {
   metaTitle: "",
@@ -26,14 +21,16 @@ const defaultValues: PageComponentFormValues = {
   }
 };
 
-export const PageComponentForm: React.FC<PageComponentFormProps> = ({
+export const PageComponentForm: React.FC<FormProps> = ({
   mode,
   slug = null,
   onSuccessNavigate = "/landing/page-components"
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<PageComponentFormValues> => {
+  const mapFetchedToForm = (
+    entity: PageComponent
+  ): Partial<PageComponentFormValues> => {
     if (!entity) return {};
     const {
       metaTitle,
@@ -44,14 +41,12 @@ export const PageComponentForm: React.FC<PageComponentFormProps> = ({
       translations,
       footerOrder
     } = entity;
-    const en =
-      translations?.find((tr: any) => tr?.language?.code === "en") ?? {};
-    const ka =
-      translations?.find((tr: any) => tr?.language?.code === "ka") ?? {};
+    const en = translations.find((tr) => tr.language?.code === "en");
+    const ka = translations.find((tr) => tr.language?.code === "ka");
 
     const formMetaImage = metaImage
       ? {
-          path: metaImage.path ?? metaImage.url ?? "",
+          path: metaImage.path ?? "",
           name: metaImage.name ?? "",
           size: metaImage.size ?? undefined
         }
@@ -66,12 +61,12 @@ export const PageComponentForm: React.FC<PageComponentFormProps> = ({
       footerOrder,
       translations: {
         en: {
-          content: en.content ?? "",
-          name: en.name ?? ""
+          content: en?.content ?? "",
+          name: en?.name ?? ""
         },
         ka: {
-          content: ka.content ?? "",
-          name: ka.name ?? ""
+          content: ka?.content ?? "",
+          name: ka?.name ?? ""
         }
       }
     };
@@ -179,7 +174,7 @@ export const PageComponentForm: React.FC<PageComponentFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<PageComponentFormValues, any>
+    <GenericEntityForm<PageComponentFormValues>
       resourceName="pageComponents"
       mode={mode}
       id={slug ?? undefined}

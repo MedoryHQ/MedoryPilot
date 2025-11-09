@@ -4,15 +4,10 @@ import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
 
 import { GenericEntityForm } from "..";
-import type { FieldConfig } from "@/types";
+import type { FieldConfig, FormProps } from "@/types";
 import type { VideoFormValues } from "@/validations/website/video.validation";
 import { videoSchema } from "@/validations/website/video.validation";
-
-export interface VideoFormProps {
-  mode: "create" | "edit" | "readonly";
-  id?: string | null;
-  onSuccessNavigate?: string;
-}
+import { Video } from "@/types/website";
 
 const defaultValues: VideoFormValues = {
   date: undefined,
@@ -24,24 +19,24 @@ const defaultValues: VideoFormValues = {
   }
 };
 
-export const VideoForm: React.FC<VideoFormProps> = ({
+export const VideoForm: React.FC<FormProps> = ({
   mode,
   id = null,
   onSuccessNavigate = "/landing/videos"
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<VideoFormValues> => {
+  const mapFetchedToForm = (entity: Video): Partial<VideoFormValues> => {
     if (!entity) return {};
     const { link, date } = entity;
 
     const translations = entity.translations ?? [];
-    const en = translations.find((tr: any) => tr.language?.code === "en") ?? {};
-    const ka = translations.find((tr: any) => tr.language?.code === "ka") ?? {};
+    const en = translations.find((tr) => tr.language?.code === "en");
+    const ka = translations.find((tr) => tr.language?.code === "ka");
 
     const thumbnail = entity.thumbnail
       ? {
-          path: entity.thumbnail.path ?? entity.thumbnail.url ?? "",
+          path: entity.thumbnail.path ?? "",
           name: entity.thumbnail.name ?? "",
           size: entity.thumbnail.size ?? undefined
         }
@@ -53,10 +48,10 @@ export const VideoForm: React.FC<VideoFormProps> = ({
       ...(date ? { date: new Date(date) } : {}),
       translations: {
         en: {
-          name: en.name ?? ""
+          name: en?.name ?? ""
         },
         ka: {
-          name: ka.name ?? ""
+          name: ka?.name ?? ""
         }
       }
     };
@@ -128,7 +123,7 @@ export const VideoForm: React.FC<VideoFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<VideoFormValues, any>
+    <GenericEntityForm<VideoFormValues>
       resourceName="videos"
       mode={mode}
       id={id ?? undefined}

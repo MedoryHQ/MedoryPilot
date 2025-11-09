@@ -5,15 +5,8 @@ import { toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
 import type { FooterFormValues } from "@/validations/website/footer.validation.ts";
 import { footerSchema } from "@/validations/website/footer.validation.ts";
-import { FieldConfig } from "@/types";
+import { FieldConfig, FormProps } from "@/types";
 import { Footer } from "@/types/website";
-
-export interface FooterFormProps {
-  mode: "create" | "edit" | "readonly";
-  id?: string | null;
-  entityData?: any;
-  refetch?: () => Promise<any> | void;
-}
 
 const defaultValues: FooterFormValues = {
   phone: "",
@@ -22,7 +15,7 @@ const defaultValues: FooterFormValues = {
   pages: []
 };
 
-export const FooterForm: React.FC<FooterFormProps> = ({
+export const FooterForm: React.FC<FormProps> = ({
   mode,
   id = null,
   entityData,
@@ -119,7 +112,7 @@ export const FooterForm: React.FC<FooterFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<FooterFormValues, any>
+    <GenericEntityForm<FooterFormValues>
       resourceName="footer"
       mode={mode}
       id={id ?? undefined}
@@ -129,7 +122,7 @@ export const FooterForm: React.FC<FooterFormProps> = ({
       createEntity={createEntity}
       updateEntity={updateEntity}
       deleteEntity={deleteEntity}
-      onDeleteSuccess={() => {}}
+      onDeleteSuccess={() => refetch}
       translationLocales={["en", "ka"]}
       sections={{ left: leftSections, right: [] }}
       mapFetchedToForm={mapFetchedToForm}

@@ -5,13 +5,8 @@ import { toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
 import type { IntroduceFormValues } from "@/validations/website/introduce.validation.ts";
 import { introduceSchema } from "@/validations/website/introduce.validation.ts";
-
-export interface IntroduceFormProps {
-  mode: "create" | "edit" | "readonly";
-  id?: string | null;
-  entityData?: any;
-  refetch?: () => Promise<any> | void;
-}
+import { FormProps } from "@/types";
+import { Introduce } from "@/types/website";
 
 const defaultValues: IntroduceFormValues = {
   translations: {
@@ -20,7 +15,7 @@ const defaultValues: IntroduceFormValues = {
   }
 };
 
-export const IntroduceForm: React.FC<IntroduceFormProps> = ({
+export const IntroduceForm: React.FC<FormProps> = ({
   mode,
   id = null,
   entityData,
@@ -28,21 +23,23 @@ export const IntroduceForm: React.FC<IntroduceFormProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<IntroduceFormValues> => {
+  const mapFetchedToForm = (
+    entity: Introduce
+  ): Partial<IntroduceFormValues> => {
     if (!entity) return {};
     const translations = entity.translations ?? [];
-    const en = translations.find((tr: any) => tr.language?.code === "en") ?? {};
-    const ka = translations.find((tr: any) => tr.language?.code === "ka") ?? {};
+    const en = translations.find((tr) => tr.language?.code === "en");
+    const ka = translations.find((tr) => tr.language?.code === "ka");
 
     return {
       translations: {
         en: {
-          headline: en.headline ?? "",
-          description: en.description ?? ""
+          headline: en?.headline ?? "",
+          description: en?.description ?? ""
         },
         ka: {
-          headline: ka.headline ?? "",
-          description: ka.description ?? ""
+          headline: ka?.headline ?? "",
+          description: ka?.description ?? ""
         }
       }
     };
@@ -69,7 +66,7 @@ export const IntroduceForm: React.FC<IntroduceFormProps> = ({
   };
 
   return (
-    <GenericEntityForm<IntroduceFormValues, any>
+    <GenericEntityForm<IntroduceFormValues>
       resourceName="introduce"
       mode={mode}
       id={id ?? undefined}
@@ -79,7 +76,7 @@ export const IntroduceForm: React.FC<IntroduceFormProps> = ({
       createEntity={createEntity}
       updateEntity={updateEntity}
       deleteEntity={deleteEntity}
-      onDeleteSuccess={() => {}}
+      onDeleteSuccess={() => refetch}
       translationLocales={["en", "ka"]}
       translationFields={
         [

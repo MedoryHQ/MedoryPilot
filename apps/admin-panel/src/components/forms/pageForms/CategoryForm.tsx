@@ -5,12 +5,8 @@ import { toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
 import type { CategoryFormValues } from "@/validations/website/category.validation.ts";
 import { categorySchema } from "@/validations/website/category.validation.ts";
-
-export interface CategoryFormProps {
-  mode: "create" | "edit" | "readonly";
-  id?: string | null;
-  onSuccessNavigate?: string;
-}
+import { FormProps } from "@/types";
+import { Category } from "@/types/website";
 
 const defaultValues: CategoryFormValues = {
   translations: {
@@ -19,26 +15,26 @@ const defaultValues: CategoryFormValues = {
   }
 };
 
-export const CategoryForm: React.FC<CategoryFormProps> = ({
+export const CategoryForm: React.FC<FormProps> = ({
   mode,
   id = null,
   onSuccessNavigate = "/landing/categories"
 }) => {
   const { t } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<CategoryFormValues> => {
+  const mapFetchedToForm = (entity: Category): Partial<CategoryFormValues> => {
     if (!entity) return {};
     const translations = entity.translations ?? [];
-    const en = translations.find((tr: any) => tr.language?.code === "en") ?? {};
-    const ka = translations.find((tr: any) => tr.language?.code === "ka") ?? {};
+    const en = translations.find((tr) => tr.language?.code === "en");
+    const ka = translations.find((tr) => tr.language?.code === "ka");
 
     return {
       translations: {
         en: {
-          name: en.name ?? ""
+          name: en?.name ?? ""
         },
         ka: {
-          name: ka.name ?? ""
+          name: ka?.name ?? ""
         }
       }
     };
@@ -65,7 +61,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
   };
 
   return (
-    <GenericEntityForm<CategoryFormValues, any>
+    <GenericEntityForm<CategoryFormValues>
       resourceName="categories"
       mode={mode}
       id={id ?? undefined}

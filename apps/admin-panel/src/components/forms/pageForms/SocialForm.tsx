@@ -3,15 +3,10 @@ import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
-import type { FieldConfig } from "@/types";
+import type { FieldConfig, FormProps } from "@/types";
 import type { SocialFormValues } from "@/validations/website/social.validation.ts";
 import { socialSchema } from "@/validations/website/social.validation.ts";
-
-export interface SocialFormProps {
-  mode: "create" | "edit" | "readonly";
-  id?: string | null;
-  onSuccessNavigate?: string;
-}
+import { Social } from "@/types/website";
 
 const defaultValues: SocialFormValues = {
   icon: null,
@@ -19,18 +14,18 @@ const defaultValues: SocialFormValues = {
   url: ""
 };
 
-export const SocialForm: React.FC<SocialFormProps> = ({
+export const SocialForm: React.FC<FormProps> = ({
   mode,
   id = null,
   onSuccessNavigate = "/landing/socials"
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<SocialFormValues> => {
+  const mapFetchedToForm = (entity: Social): Partial<SocialFormValues> => {
     if (!entity) return {};
     const icon = entity.icon
       ? {
-          path: entity.icon.path ?? entity.icon.url ?? "",
+          path: entity.icon.path ?? "",
           name: entity.icon.name ?? "",
           size: entity.icon.size ?? undefined
         }
@@ -111,7 +106,7 @@ export const SocialForm: React.FC<SocialFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<SocialFormValues, any>
+    <GenericEntityForm<SocialFormValues>
       resourceName="socials"
       mode={mode}
       id={id ?? undefined}

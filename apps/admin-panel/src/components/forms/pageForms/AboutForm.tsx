@@ -5,14 +5,8 @@ import { toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
 import type { AboutFormValues } from "@/validations/website/about.validation.ts";
 import { aboutSchema } from "@/validations/website/about.validation.ts";
-import { FieldConfig } from "@/types";
-
-export interface AboutFormProps {
-  mode: "create" | "edit" | "readonly";
-  id?: string | null;
-  entityData?: any;
-  refetch?: () => Promise<any> | void;
-}
+import { FieldConfig, FormProps } from "@/types";
+import { About } from "@/types/website";
 
 const defaultValues: AboutFormValues = {
   image: null,
@@ -22,7 +16,7 @@ const defaultValues: AboutFormValues = {
   }
 };
 
-export const AboutForm: React.FC<AboutFormProps> = ({
+export const AboutForm: React.FC<FormProps> = ({
   mode,
   id = null,
   entityData,
@@ -30,14 +24,14 @@ export const AboutForm: React.FC<AboutFormProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<AboutFormValues> => {
+  const mapFetchedToForm = (entity: About): Partial<AboutFormValues> => {
     if (!entity) return {};
     const translations = entity.translations ?? [];
-    const en = translations.find((tr: any) => tr.language?.code === "en") ?? {};
-    const ka = translations.find((tr: any) => tr.language?.code === "ka") ?? {};
+    const en = translations.find((tr) => tr.language?.code === "en");
+    const ka = translations.find((tr) => tr.language?.code === "ka");
     const image = entity.image
       ? {
-          path: entity.image.path ?? entity.image.url ?? "",
+          path: entity.image.path ?? "",
           name: entity.image.name ?? "",
           size: entity.image.size ?? undefined
         }
@@ -47,12 +41,12 @@ export const AboutForm: React.FC<AboutFormProps> = ({
       image,
       translations: {
         en: {
-          headline: en.headline ?? "",
-          description: en.description ?? ""
+          headline: en?.headline ?? "",
+          description: en?.description ?? ""
         },
         ka: {
-          headline: ka.headline ?? "",
-          description: ka.description ?? ""
+          headline: ka?.headline ?? "",
+          description: ka?.description ?? ""
         }
       }
     };
@@ -96,7 +90,7 @@ export const AboutForm: React.FC<AboutFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<AboutFormValues, any>
+    <GenericEntityForm<AboutFormValues>
       resourceName="about"
       mode={mode}
       id={id ?? undefined}

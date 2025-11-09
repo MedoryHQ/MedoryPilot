@@ -3,28 +3,23 @@ import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
-import type { FieldConfig } from "@/types";
+import type { FieldConfig, FormProps } from "@/types";
 import type { TariffFormValues } from "@/validations/website/tariff.validation.ts";
 import { tariffSchema } from "@/validations/website/tariff.validation.ts";
-
-export interface TariffFormProps {
-  mode: "create" | "edit" | "readonly";
-  id?: string | null;
-  onSuccessNavigate?: string;
-}
+import { Tariff } from "@/types/website";
 
 const defaultValues: TariffFormValues = {
   price: 0
 };
 
-export const TariffForm: React.FC<TariffFormProps> = ({
+export const TariffForm: React.FC<FormProps> = ({
   mode,
   id = null,
   onSuccessNavigate = "/landing/tariffs"
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<TariffFormValues> => {
+  const mapFetchedToForm = (entity: Tariff): Partial<TariffFormValues> => {
     if (!entity) return {};
     return {
       price: entity.price
@@ -71,7 +66,7 @@ export const TariffForm: React.FC<TariffFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<TariffFormValues, any>
+    <GenericEntityForm<TariffFormValues>
       resourceName="tariffs"
       mode={mode}
       id={id ?? undefined}

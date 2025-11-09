@@ -95,3 +95,12 @@ export interface GenericEntityFormProps<
   onModeChange?: (m: "create" | "edit" | "readonly") => void;
   allowModeToggleForReadonly?: boolean;
 }
+
+export interface FormProps {
+  mode: "create" | "edit" | "readonly";
+  id?: string | null;
+  slug?: string | null;
+  entityData?: any;
+  refetch?: () => Promise<any> | void;
+  onSuccessNavigate?: string;
+}

@@ -1,4 +1,4 @@
-import { Language } from "../global";
+import { File, Language } from "../global";
 import { Footer } from "./footer";
 
 export interface PageComponentsResponse {

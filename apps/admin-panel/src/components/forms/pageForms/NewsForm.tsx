@@ -3,15 +3,10 @@ import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
 import { toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
-import type { FieldConfig } from "@/types";
+import type { FieldConfig, FormProps } from "@/types";
 import type { NewsFormValues } from "@/validations/website/news.validation";
 import { newsSchema } from "@/validations/website/news.validation";
-
-export interface NewsFormProps {
-  mode: "create" | "edit" | "readonly";
-  slug?: string | null;
-  onSuccessNavigate?: string;
-}
+import { News } from "@/types/website";
 
 const defaultValues: NewsFormValues = {
   background: null,
@@ -28,14 +23,14 @@ const defaultValues: NewsFormValues = {
   }
 };
 
-export const NewsForm: React.FC<NewsFormProps> = ({
+export const NewsForm: React.FC<FormProps> = ({
   mode,
   slug = null,
   onSuccessNavigate = "/landing/newses"
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<NewsFormValues> => {
+  const mapFetchedToForm = (entity: News): Partial<NewsFormValues> => {
     if (!entity) return {};
     const {
       metaTitle,
@@ -48,14 +43,12 @@ export const NewsForm: React.FC<NewsFormProps> = ({
       showInLanding,
       order
     } = entity;
-    const en =
-      translations?.find((tr: any) => tr?.language?.code === "en") ?? {};
-    const ka =
-      translations?.find((tr: any) => tr?.language?.code === "ka") ?? {};
+    const en = translations.find((tr) => tr.language?.code === "en");
+    const ka = translations.find((tr) => tr.language?.code === "ka");
 
     const formBackground = background
       ? {
-          path: background.path ?? background.url ?? "",
+          path: background.path ?? "",
           name: background.name ?? "",
           size: background.size ?? undefined
         }
@@ -63,7 +56,7 @@ export const NewsForm: React.FC<NewsFormProps> = ({
 
     const formMetaImage = metaImage
       ? {
-          path: metaImage.path ?? metaImage.url ?? "",
+          path: metaImage.path ?? "",
           name: metaImage.name ?? "",
           size: metaImage.size ?? undefined
         }
@@ -80,10 +73,10 @@ export const NewsForm: React.FC<NewsFormProps> = ({
       order,
       translations: {
         en: {
-          content: en.content ?? ""
+          content: en?.content ?? ""
         },
         ka: {
-          content: ka.content ?? ""
+          content: ka?.content ?? ""
         }
       }
     };
@@ -214,7 +207,7 @@ export const NewsForm: React.FC<NewsFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<NewsFormValues, any>
+    <GenericEntityForm<NewsFormValues>
       resourceName="newses"
       mode={mode}
       id={slug ?? undefined}

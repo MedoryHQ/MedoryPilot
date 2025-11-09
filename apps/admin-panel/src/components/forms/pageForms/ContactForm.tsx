@@ -5,14 +5,8 @@ import { toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
 import type { ContactFormValues } from "@/validations/website/contact.validation.ts";
 import { contactSchema } from "@/validations/website/contact.validation.ts";
-import { FieldConfig } from "@/types";
-
-export interface ContactFormProps {
-  mode: "create" | "edit" | "readonly";
-  id?: string | null;
-  entityData?: any;
-  refetch?: () => Promise<any> | void;
-}
+import { FieldConfig, FormProps } from "@/types";
+import { Contact } from "@/types/website";
 
 const defaultValues: ContactFormValues = {
   background: null,
@@ -23,7 +17,7 @@ const defaultValues: ContactFormValues = {
   }
 };
 
-export const ContactForm: React.FC<ContactFormProps> = ({
+export const ContactForm: React.FC<FormProps> = ({
   mode,
   id = null,
   entityData,
@@ -31,14 +25,14 @@ export const ContactForm: React.FC<ContactFormProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<ContactFormValues> => {
+  const mapFetchedToForm = (entity: Contact): Partial<ContactFormValues> => {
     if (!entity) return {};
     const translations = entity.translations ?? [];
-    const en = translations.find((tr: any) => tr.language?.code === "en") ?? {};
-    const ka = translations.find((tr: any) => tr.language?.code === "ka") ?? {};
+    const en = translations.find((tr) => tr.language?.code === "en");
+    const ka = translations.find((tr) => tr.language?.code === "ka");
     const background = entity.background
       ? {
-          path: entity.background.path ?? entity.background.url ?? "",
+          path: entity.background.path ?? "",
           name: entity.background.name ?? "",
           size: entity.background.size ?? undefined
         }
@@ -49,12 +43,12 @@ export const ContactForm: React.FC<ContactFormProps> = ({
       location: entity.location || "",
       translations: {
         en: {
-          title: en.title ?? "",
-          description: en.description ?? ""
+          title: en?.title ?? "",
+          description: en?.description ?? ""
         },
         ka: {
-          title: ka.title ?? "",
-          description: ka.description ?? ""
+          title: ka?.title ?? "",
+          description: ka?.description ?? ""
         }
       }
     };
@@ -115,7 +109,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<ContactFormValues, any>
+    <GenericEntityForm<ContactFormValues>
       resourceName="contact"
       mode={mode}
       id={id ?? undefined}
