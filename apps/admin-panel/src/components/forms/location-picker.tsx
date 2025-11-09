@@ -228,7 +228,7 @@ export function LocationPicker({
               setAddress("");
               setMarker(null);
               onChange?.("");
-              onChangeFull?.({ address: "", lat: 0, lng: 0 });
+              onChangeFull?.(null);
               onValidate?.(undefined);
             }}
           >

@@ -96,7 +96,7 @@ export const ContactForm: React.FC<FormProps> = ({
       createEntity={createEntity}
       updateEntity={updateEntity}
       deleteEntity={deleteEntity}
-      onDeleteSuccess={() => {}}
+      onDeleteSuccess={() => refetch?.()}
       translationLocales={["en", "ka"]}
       translationFields={
         [

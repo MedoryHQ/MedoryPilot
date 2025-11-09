@@ -143,7 +143,7 @@ export const createContact = async (
 
     const contact = await prisma.contact.create({
       data: {
-        ...(location ? { location } : {}),
+        ...(typeof location === "string" ? { location } : {}),
         translations: { create: translationsToCreate },
         background: {
           create: backgroundToCreate,

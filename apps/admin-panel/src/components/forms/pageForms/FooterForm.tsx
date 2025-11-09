@@ -113,7 +113,7 @@ export const FooterForm: React.FC<FormProps> = ({
       createEntity={createEntity}
       updateEntity={updateEntity}
       deleteEntity={deleteEntity}
-      onDeleteSuccess={() => refetch}
+      onDeleteSuccess={() => refetch?.()}
       translationLocales={["en", "ka"]}
       sections={{ left: leftSections, right: [] }}
       mapFetchedToForm={mapFetchedToForm}

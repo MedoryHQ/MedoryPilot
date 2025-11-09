@@ -6,6 +6,7 @@ import { MarkdownEditor } from "../MarkdownRenderer";
 interface FieldGroupProps {
   label: string;
   required?: boolean;
+  id?: string;
   type?: "text" | "email" | "password" | "number" | "textarea" | "markdown";
   placeholder?: string;
   value: string;
@@ -26,13 +27,14 @@ export const FieldGroup: React.FC<FieldGroupProps> = ({
   value,
   onChange,
   error,
+  id,
   helperText,
   disabled = false,
   rows = 5,
   maxLength,
   className = ""
 }) => {
-  const inputId = `field-${label.toLowerCase().replace(/\s+/g, "-")}`;
+  const inputId = id ?? `field-${label.toLowerCase().replace(/\s+/g, "-")}`;
   const hasError = !!error;
   const currentLength = value?.length;
   const inputClasses = cn(
@@ -78,17 +80,19 @@ export const FieldGroup: React.FC<FieldGroupProps> = ({
             )}
           </>
         ) : type === "markdown" ? (
-          <>
+          <div
+            role="textbox"
+            aria-invalid={hasError}
+            aria-describedby={error ? `${inputId}-error` : undefined}
+          >
             <MarkdownEditor
               value={value}
               onChange={(v: string) => onChange(v)}
               disabled={disabled}
               className={textareaClasses}
               placeholder={placeholder}
-              aria-invalid={hasError}
-              aria-describedby={error ? `${inputId}-error` : undefined}
             />
-          </>
+          </div>
         ) : (
           <input
             id={inputId}
@@ -112,7 +116,12 @@ export const FieldGroup: React.FC<FieldGroupProps> = ({
           className="text-destructive flex items-center gap-1 text-sm"
           role="alert"
         >
-          <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+          <svg
+            className="h-4 w-4"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            aria-hidden="true"
+          >
             <path
               fillRule="evenodd"
               d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
@@ -161,7 +170,12 @@ export const FieldRow: React.FC<FieldRowProps> = ({
             className="text-destructive flex items-center gap-1 text-sm"
             role="alert"
           >
-            <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+            <svg
+              className="h-4 w-4"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              aria-hidden="true"
+            >
               <path
                 fillRule="evenodd"
                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
