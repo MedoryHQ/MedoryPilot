@@ -1,13 +1,12 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 
 import { GenericEntityForm } from "..";
 import type { FieldConfig, FormProps } from "@/types";
 import type { ServiceFormValues } from "@/validations/website/service.validation";
 import { serviceSchema } from "@/validations/website/service.validation";
-import { Service } from "@/types/website";
 
 const defaultValues: ServiceFormValues = {
   icon: null,
@@ -25,43 +24,12 @@ export const ServiceForm: React.FC<FormProps> = ({
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: Service): Partial<ServiceFormValues> => {
-    if (!entity) return {};
-    const translations = entity.translations ?? [];
-    const en = translations.find((tr) => tr.language?.code === "en");
-    const ka = translations.find((tr) => tr.language?.code === "ka");
-
-    const icon = entity.icon
-      ? {
-          path: entity.icon.path ?? "",
-          name: entity.icon.name ?? "",
-          size: entity.icon.size ?? undefined
-        }
-      : null;
-
-    const background = entity.background
-      ? {
-          path: entity.background.path ?? "",
-          name: entity.background.name ?? "",
-          size: entity.background.size ?? undefined
-        }
-      : null;
-
-    return {
-      icon,
-      background,
-      translations: {
-        en: {
-          title: en?.title ?? "",
-          description: en?.description ?? ""
-        },
-        ka: {
-          title: ka?.title ?? "",
-          description: ka?.description ?? ""
-        }
-      }
-    };
-  };
+  const mapFetchedToForm = buildMapper<ServiceFormValues>({
+    fileFields: ["icon", "background"],
+    translations: {
+      fields: ["title", "description"]
+    }
+  });
 
   const fetchEntity = async (entityId?: string) => {
     const res = await axios.get(`/service/${entityId}`);

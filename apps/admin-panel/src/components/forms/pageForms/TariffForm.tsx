@@ -1,12 +1,11 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
 import type { FieldConfig, FormProps } from "@/types";
 import type { TariffFormValues } from "@/validations/website/tariff.validation.ts";
 import { tariffSchema } from "@/validations/website/tariff.validation.ts";
-import { Tariff } from "@/types/website";
 
 const defaultValues: TariffFormValues = {
   price: 0
@@ -19,12 +18,9 @@ export const TariffForm: React.FC<FormProps> = ({
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: Tariff): Partial<TariffFormValues> => {
-    if (!entity) return {};
-    return {
-      price: entity.price
-    };
-  };
+  const mapFetchedToForm = buildMapper<TariffFormValues>({
+    copyFields: ["price"]
+  });
 
   const fetchEntity = async (entityId?: string) => {
     const res = await axios.get(`/tariff/${entityId}`);

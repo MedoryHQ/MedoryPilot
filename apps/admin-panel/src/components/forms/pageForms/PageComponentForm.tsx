@@ -1,12 +1,11 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
 import type { FieldConfig, FormProps } from "@/types";
 import type { PageComponentFormValues } from "@/validations/website/pageComponent.validation";
 import { pageComponentSchema } from "@/validations/website/pageComponent.validation";
-import { PageComponent } from "@/types/website";
 
 const defaultValues: PageComponentFormValues = {
   metaTitle: "",
@@ -28,49 +27,19 @@ export const PageComponentForm: React.FC<FormProps> = ({
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (
-    entity: PageComponent
-  ): Partial<PageComponentFormValues> => {
-    if (!entity) return {};
-    const {
-      metaTitle,
-      metaDescription,
-      metaKeywords,
-      metaImage,
-      slug,
-      translations,
-      footerOrder
-    } = entity;
-    const en = translations.find((tr) => tr.language?.code === "en");
-    const ka = translations.find((tr) => tr.language?.code === "ka");
-
-    const formMetaImage = metaImage
-      ? {
-          path: metaImage.path ?? "",
-          name: metaImage.name ?? "",
-          size: metaImage.size ?? undefined
-        }
-      : null;
-
-    return {
-      metaTitle,
-      metaDescription,
-      metaKeywords,
-      metaImage: formMetaImage,
-      slug,
-      footerOrder,
-      translations: {
-        en: {
-          content: en?.content ?? "",
-          name: en?.name ?? ""
-        },
-        ka: {
-          content: ka?.content ?? "",
-          name: ka?.name ?? ""
-        }
-      }
-    };
-  };
+  const mapFetchedToForm = buildMapper<PageComponentFormValues>({
+    fileFields: ["metaImage"],
+    copyFields: [
+      "metaTitle",
+      "metaDescription",
+      "metaKeywords",
+      "slug",
+      "footerOrder"
+    ],
+    translations: {
+      fields: ["content", "name"]
+    }
+  });
 
   const fetchEntity = async (entityId?: string) => {
     const res = await axios.get(`/page-component/${entityId}`);

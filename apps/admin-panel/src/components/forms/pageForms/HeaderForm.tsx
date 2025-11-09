@@ -1,12 +1,11 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
 import type { FieldConfig, FormProps } from "@/types";
 import type { HeaderFormValues } from "@/validations/website/header.validation";
 import { headerSchema } from "@/validations/website/header.validation";
-import { Header } from "@/types/website";
 
 const defaultValues: HeaderFormValues = {
   logo: null,
@@ -24,41 +23,13 @@ export const HeaderForm: React.FC<FormProps> = ({
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: Header): Partial<HeaderFormValues> => {
-    if (!entity) return {};
-    const translations = entity.translations ?? [];
-    const en = translations.find((tr) => tr.language?.code === "en");
-    const ka = translations.find((tr) => tr.language?.code === "ka");
-    const logo = entity.logo
-      ? {
-          path: entity.logo.path ?? "",
-          name: entity.logo.name ?? "",
-          size: entity.logo.size ?? undefined
-        }
-      : null;
-
-    return {
-      logo,
-      active: !!entity.active,
-      ...(entity.experience ? { experience: entity.experience } : {}),
-      ...(entity.visits ? { visits: entity.visits } : {}),
-      translations: {
-        en: {
-          name: en?.name ?? "",
-          position: en?.position ?? "",
-          headline: en?.headline ?? "",
-          description: en?.description ?? ""
-        },
-        ka: {
-          name: ka?.name ?? "",
-          position: ka?.position ?? "",
-          headline: ka?.headline ?? "",
-          description: ka?.description ?? ""
-        }
-      }
-    };
-  };
-
+  const mapFetchedToForm = buildMapper<HeaderFormValues>({
+    fileFields: ["logo"],
+    copyFields: ["active", "experience", "visits"],
+    translations: {
+      fields: ["name", "position", "headline", "description"]
+    }
+  });
   const fetchEntity = async (entityId?: string) => {
     const res = await axios.get(`/header/${entityId}`);
     return res.data?.data ?? res.data;

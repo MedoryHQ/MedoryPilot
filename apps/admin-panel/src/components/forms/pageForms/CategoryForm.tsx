@@ -1,12 +1,11 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
 import type { CategoryFormValues } from "@/validations/website/category.validation.ts";
 import { categorySchema } from "@/validations/website/category.validation.ts";
 import { FormProps } from "@/types";
-import { Category } from "@/types/website";
 
 const defaultValues: CategoryFormValues = {
   translations: {
@@ -22,24 +21,11 @@ export const CategoryForm: React.FC<FormProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const mapFetchedToForm = (entity: Category): Partial<CategoryFormValues> => {
-    if (!entity) return {};
-    const translations = entity.translations ?? [];
-    const en = translations.find((tr) => tr.language?.code === "en");
-    const ka = translations.find((tr) => tr.language?.code === "ka");
-
-    return {
-      translations: {
-        en: {
-          name: en?.name ?? ""
-        },
-        ka: {
-          name: ka?.name ?? ""
-        }
-      }
-    };
-  };
-
+  const mapFetchedToForm = buildMapper<CategoryFormValues>({
+    translations: {
+      fields: ["name"]
+    }
+  });
   const fetchEntity = async (entityId?: string) => {
     const res = await axios.get(`/category/${entityId}`);
     return res.data?.data ?? res.data;

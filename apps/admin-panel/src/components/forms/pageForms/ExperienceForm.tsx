@@ -1,13 +1,12 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 
 import { GenericEntityForm } from "..";
 import type { FieldConfig } from "@/types";
 import type { ExperienceFormValues } from "@/validations/website/experience.validation";
 import { experienceSubmitSchema } from "@/validations/website/experience.validation";
-import { Experience } from "@/types/website";
 
 export interface ExperienceFormProps {
   mode: "create" | "edit" | "readonly";
@@ -34,44 +33,14 @@ export const ExperienceForm: React.FC<ExperienceFormProps> = ({
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (
-    entity: Experience
-  ): Partial<ExperienceFormValues> => {
-    if (!entity) return {};
-    const { link, fromDate, endDate, location } = entity;
-
-    const translations = entity.translations ?? [];
-    const en = translations.find((tr) => tr.language?.code === "en");
-    const ka = translations.find((tr) => tr.language?.code === "ka");
-
-    const icon = entity.icon
-      ? {
-          path: entity.icon.path ?? "",
-          name: entity.icon.name ?? "",
-          size: entity.icon.size ?? undefined
-        }
-      : null;
-
-    return {
-      icon,
-      ...(link ? { link } : {}),
-      ...(location ? { location } : {}),
-      ...(fromDate ? { fromDate: new Date(fromDate) } : {}),
-      ...(endDate ? { endDate: new Date(endDate) } : {}),
-      translations: {
-        en: {
-          name: en?.name ?? "",
-          position: en?.position ?? "",
-          description: en?.description ?? ""
-        },
-        ka: {
-          name: ka?.name ?? "",
-          position: ka?.position ?? "",
-          description: ka?.description ?? ""
-        }
-      }
-    };
-  };
+  const mapFetchedToForm = buildMapper<ExperienceFormValues>({
+    fileFields: ["icon"],
+    copyFields: ["link", "location"],
+    dateFields: ["fromDate", "endDate"],
+    translations: {
+      fields: ["name", "position", "description"]
+    }
+  });
 
   const fetchEntity = async (entityId?: string) => {
     const res = await axios.get(`/experience/${entityId}`);

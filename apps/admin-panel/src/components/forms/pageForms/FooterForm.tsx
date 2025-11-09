@@ -1,12 +1,11 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
 import type { FooterFormValues } from "@/validations/website/footer.validation.ts";
 import { footerSchema } from "@/validations/website/footer.validation.ts";
 import { FieldConfig, FormProps } from "@/types";
-import { Footer } from "@/types/website";
 
 const defaultValues: FooterFormValues = {
   phone: "",
@@ -23,18 +22,10 @@ export const FooterForm: React.FC<FormProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const mapFetchedToForm = (entity: Footer): Partial<FooterFormValues> => {
-    if (!entity) return {};
-    const { phone, email, socials, pages } = entity;
-    const filteredSocials = (socials || []).map((social) => social.id);
-    const filteredPages = (pages || []).map((page) => page.id);
-    return {
-      phone: phone || "",
-      email: email || "",
-      socials: filteredSocials,
-      pages: filteredPages
-    };
-  };
+  const mapFetchedToForm = buildMapper<FooterFormValues>({
+    copyFields: ["phone", "email"],
+    listToIds: ["socials", "pages"]
+  });
 
   const fetchEntity = async () => {
     const res = await axios.get("/footer");

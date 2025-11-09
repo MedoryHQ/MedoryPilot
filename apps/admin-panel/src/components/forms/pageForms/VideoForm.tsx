@@ -1,13 +1,12 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 
 import { GenericEntityForm } from "..";
 import type { FieldConfig, FormProps } from "@/types";
 import type { VideoFormValues } from "@/validations/website/video.validation";
 import { videoSchema } from "@/validations/website/video.validation";
-import { Video } from "@/types/website";
 
 const defaultValues: VideoFormValues = {
   date: undefined,
@@ -26,36 +25,16 @@ export const VideoForm: React.FC<FormProps> = ({
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: Video): Partial<VideoFormValues> => {
-    if (!entity) return {};
-    const { link, date } = entity;
-
-    const translations = entity.translations ?? [];
-    const en = translations.find((tr) => tr.language?.code === "en");
-    const ka = translations.find((tr) => tr.language?.code === "ka");
-
-    const thumbnail = entity.thumbnail
-      ? {
-          path: entity.thumbnail.path ?? "",
-          name: entity.thumbnail.name ?? "",
-          size: entity.thumbnail.size ?? undefined
-        }
-      : null;
-
-    return {
-      thumbnail,
-      ...(link ? { link } : {}),
-      ...(date ? { date: new Date(date) } : {}),
-      translations: {
-        en: {
-          name: en?.name ?? ""
-        },
-        ka: {
-          name: ka?.name ?? ""
-        }
-      }
-    };
-  };
+  const mapFetchedToForm = buildMapper<VideoFormValues>({
+    fileFields: ["thumbnail"],
+    copyFields: ["link", "date"],
+    custom: {
+      date: (entity) => (entity.date ? new Date(entity.date) : undefined)
+    },
+    translations: {
+      fields: ["name"]
+    }
+  });
 
   const fetchEntity = async (entityId?: string) => {
     const res = await axios.get(`/video/${entityId}`);

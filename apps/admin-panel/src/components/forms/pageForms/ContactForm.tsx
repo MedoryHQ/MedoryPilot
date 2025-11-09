@@ -1,12 +1,11 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
 import type { ContactFormValues } from "@/validations/website/contact.validation.ts";
 import { contactSchema } from "@/validations/website/contact.validation.ts";
 import { FieldConfig, FormProps } from "@/types";
-import { Contact } from "@/types/website";
 
 const defaultValues: ContactFormValues = {
   background: null,
@@ -25,35 +24,13 @@ export const ContactForm: React.FC<FormProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const mapFetchedToForm = (entity: Contact): Partial<ContactFormValues> => {
-    if (!entity) return {};
-    const translations = entity.translations ?? [];
-    const en = translations.find((tr) => tr.language?.code === "en");
-    const ka = translations.find((tr) => tr.language?.code === "ka");
-    const background = entity.background
-      ? {
-          path: entity.background.path ?? "",
-          name: entity.background.name ?? "",
-          size: entity.background.size ?? undefined
-        }
-      : null;
-
-    return {
-      background,
-      location: entity.location || "",
-      translations: {
-        en: {
-          title: en?.title ?? "",
-          description: en?.description ?? ""
-        },
-        ka: {
-          title: ka?.title ?? "",
-          description: ka?.description ?? ""
-        }
-      }
-    };
-  };
-
+  const mapFetchedToForm = buildMapper<ContactFormValues>({
+    fileFields: ["background"],
+    copyFields: ["location"],
+    translations: {
+      fields: ["title", "description"]
+    }
+  });
   const fetchEntity = async () => {
     const res = await axios.get("/contact");
     return res.data?.data ?? res.data;

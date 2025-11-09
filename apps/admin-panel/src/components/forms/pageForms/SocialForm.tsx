@@ -1,12 +1,11 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
 import type { FieldConfig, FormProps } from "@/types";
 import type { SocialFormValues } from "@/validations/website/social.validation.ts";
 import { socialSchema } from "@/validations/website/social.validation.ts";
-import { Social } from "@/types/website";
 
 const defaultValues: SocialFormValues = {
   icon: null,
@@ -21,21 +20,10 @@ export const SocialForm: React.FC<FormProps> = ({
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: Social): Partial<SocialFormValues> => {
-    if (!entity) return {};
-    const icon = entity.icon
-      ? {
-          path: entity.icon.path ?? "",
-          name: entity.icon.name ?? "",
-          size: entity.icon.size ?? undefined
-        }
-      : null;
-    return {
-      icon,
-      name: entity.name,
-      url: entity.url
-    };
-  };
+  const mapFetchedToForm = buildMapper<SocialFormValues>({
+    fileFields: ["icon"],
+    copyFields: ["name", "url"]
+  });
 
   const fetchEntity = async (entityId?: string) => {
     const res = await axios.get(`/social/${entityId}`);

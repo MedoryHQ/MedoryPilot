@@ -1,13 +1,12 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 
 import { GenericEntityForm } from "..";
 import type { FieldConfig } from "@/types";
 import type { FaqFormValues } from "@/validations/website/faq.validation";
 import { faqSchema } from "@/validations/website/faq.validation";
-import { Faq } from "@/types/website";
 
 export interface FaqFormProps {
   mode: "create" | "edit" | "readonly";
@@ -30,26 +29,12 @@ export const FaqForm: React.FC<FaqFormProps> = ({
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: Faq): Partial<FaqFormValues> => {
-    if (!entity) return {};
-    const translations = entity.translations ?? [];
-    const en = translations.find((tr) => tr.language?.code === "en");
-    const ka = translations.find((tr) => tr.language?.code === "ka");
-
-    return {
-      order: entity.order,
-      translations: {
-        en: {
-          question: en?.question ?? "",
-          answer: en?.answer ?? ""
-        },
-        ka: {
-          question: ka?.question ?? "",
-          answer: ka?.answer ?? ""
-        }
-      }
-    };
-  };
+  const mapFetchedToForm = buildMapper<FaqFormValues>({
+    copyFields: ["order"],
+    translations: {
+      fields: ["question", "answer"]
+    }
+  });
 
   const fetchEntity = async (entityId?: string) => {
     const res = await axios.get(`/faq/${entityId}`);

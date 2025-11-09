@@ -1,12 +1,11 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
 import type { AboutFormValues } from "@/validations/website/about.validation.ts";
 import { aboutSchema } from "@/validations/website/about.validation.ts";
 import { FieldConfig, FormProps } from "@/types";
-import { About } from "@/types/website";
 
 const defaultValues: AboutFormValues = {
   image: null,
@@ -24,33 +23,13 @@ export const AboutForm: React.FC<FormProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const mapFetchedToForm = (entity: About): Partial<AboutFormValues> => {
-    if (!entity) return {};
-    const translations = entity.translations ?? [];
-    const en = translations.find((tr) => tr.language?.code === "en");
-    const ka = translations.find((tr) => tr.language?.code === "ka");
-    const image = entity.image
-      ? {
-          path: entity.image.path ?? "",
-          name: entity.image.name ?? "",
-          size: entity.image.size ?? undefined
-        }
-      : null;
-
-    return {
-      image,
-      translations: {
-        en: {
-          headline: en?.headline ?? "",
-          description: en?.description ?? ""
-        },
-        ka: {
-          headline: ka?.headline ?? "",
-          description: ka?.description ?? ""
-        }
-      }
-    };
-  };
+  const mapFetchedToForm = buildMapper<AboutFormValues>({
+    fileFields: ["image"],
+    translations: {
+      locales: ["en", "ka"],
+      fields: ["headline", "description"]
+    }
+  });
 
   const fetchEntity = async () => {
     const res = await axios.get("/about");

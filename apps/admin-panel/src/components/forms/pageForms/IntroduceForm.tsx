@@ -1,12 +1,11 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
 import type { IntroduceFormValues } from "@/validations/website/introduce.validation.ts";
 import { introduceSchema } from "@/validations/website/introduce.validation.ts";
 import { FormProps } from "@/types";
-import { Introduce } from "@/types/website";
 
 const defaultValues: IntroduceFormValues = {
   translations: {
@@ -23,27 +22,11 @@ export const IntroduceForm: React.FC<FormProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const mapFetchedToForm = (
-    entity: Introduce
-  ): Partial<IntroduceFormValues> => {
-    if (!entity) return {};
-    const translations = entity.translations ?? [];
-    const en = translations.find((tr) => tr.language?.code === "en");
-    const ka = translations.find((tr) => tr.language?.code === "ka");
-
-    return {
-      translations: {
-        en: {
-          headline: en?.headline ?? "",
-          description: en?.description ?? ""
-        },
-        ka: {
-          headline: ka?.headline ?? "",
-          description: ka?.description ?? ""
-        }
-      }
-    };
-  };
+  const mapFetchedToForm = buildMapper<IntroduceFormValues>({
+    translations: {
+      fields: ["headline", "description"]
+    }
+  });
 
   const fetchEntity = async () => {
     const res = await axios.get("/introduce");

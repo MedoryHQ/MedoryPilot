@@ -1,12 +1,11 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
 import type { FieldConfig, FormProps } from "@/types";
 import type { NewsFormValues } from "@/validations/website/news.validation";
 import { newsSchema } from "@/validations/website/news.validation";
-import { News } from "@/types/website";
 
 const defaultValues: NewsFormValues = {
   background: null,
@@ -30,57 +29,20 @@ export const NewsForm: React.FC<FormProps> = ({
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: News): Partial<NewsFormValues> => {
-    if (!entity) return {};
-    const {
-      metaTitle,
-      metaDescription,
-      metaKeywords,
-      metaImage,
-      background,
-      slug,
-      translations,
-      showInLanding,
-      order
-    } = entity;
-    const en = translations.find((tr) => tr.language?.code === "en");
-    const ka = translations.find((tr) => tr.language?.code === "ka");
-
-    const formBackground = background
-      ? {
-          path: background.path ?? "",
-          name: background.name ?? "",
-          size: background.size ?? undefined
-        }
-      : null;
-
-    const formMetaImage = metaImage
-      ? {
-          path: metaImage.path ?? "",
-          name: metaImage.name ?? "",
-          size: metaImage.size ?? undefined
-        }
-      : null;
-
-    return {
-      background: formBackground,
-      metaTitle,
-      metaDescription,
-      metaKeywords,
-      metaImage: formMetaImage,
-      slug,
-      showInLanding,
-      order,
-      translations: {
-        en: {
-          content: en?.content ?? ""
-        },
-        ka: {
-          content: ka?.content ?? ""
-        }
-      }
-    };
-  };
+  const mapFetchedToForm = buildMapper<NewsFormValues>({
+    fileFields: ["background", "metaImage"],
+    copyFields: [
+      "metaTitle",
+      "metaDescription",
+      "metaKeywords",
+      "slug",
+      "showInLanding",
+      "order"
+    ],
+    translations: {
+      fields: ["content"]
+    }
+  });
 
   const fetchEntity = async (entityId?: string) => {
     const res = await axios.get(`/news/${entityId}`);
