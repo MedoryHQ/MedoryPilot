@@ -219,9 +219,8 @@ export const ka = {
       blogsDescription: "ბლოგების წერა და მართვა",
       categories: "კატეგორიები",
       categoriesDescription: "ბლოგებისა და კონტენტის კატეგორიების მართვა",
-      contacts: "საკონტაქტო ინფორმაციები",
       contact: "საკონტაქტო ინფორმაცია",
-      contactsDescription: "საკონტაქტო ინფორმაციების განახლება",
+      contactDescription: "საკონტაქტო ინფორმაციების განახლება",
       footer: "Footer",
       footerDescription: "ვებსაიტის footer-ის კონფიგურაცია და ბმულები",
       socials: "სოციალური ქსელები",
@@ -653,6 +652,7 @@ export const ka = {
         createTitle: "საკ. ინფორმაციის შექმნა",
         editTitle: "საკ. ინფორმაციის რედაქტირება",
         readonlyTitle: "საკ. ინფორმაცია",
+        selectLocation: "მდებარეობის არჩევა",
         edit: "საკ. ინფორმაციის რედაქტირება",
         read: "საკ. ინფორმაციის ნახვა",
         subtitle: "ვებსაიტის საკ. ინფორმაციის კონფიგურაცია",
@@ -919,6 +919,7 @@ export const ka = {
         contentTranslationsDescription:
           "შეავსეთ ბლოგის დეტალები თითოეული ენისთვის",
         title: "სათაური",
+        categories: "კატეგორიები",
         titlePlaceholder: "მაგ., ჩემი პირველი ბლოგი",
         content: "კონტენტი",
         contentPlaceholder: "შეიყვანეთ კონტენტი ამ ბლოგისთვის...",
@@ -1060,13 +1061,13 @@ export const ka = {
       },
       filters: {
         hasThumbnail: "Thumbnail-ით",
-        noThumbnail: "Thumbnail-ის გარეშე"
+        noThumbnail: "Thumbnail-ის გარეშე",
+        dateRange: "თარიღის დიაპაზონი"
       },
       errors: {
         thumbnailRequired: "გარეკანის ფოტო აუცილებელია",
         linkRequired: "ბმული აუცილებელია",
-        nameRequired: "სახელი აუცილებელია",
-        dateRange: "თარიღის დიაპაზონი"
+        nameRequired: "სახელი აუცილებელია"
       }
     },
     experiences: {
@@ -1127,6 +1128,17 @@ export const ka = {
         nameRequired: "სახელი აუცილებელია",
         positionRequired: "პოზიცია აუცილებელია",
         descriptionRequired: "აღწერა აუცილებელია"
+      }
+    },
+    forms: {
+      clear: "გასუფთავება",
+      cancel: "გაუქმება",
+      save: "შენახვა",
+      errors: {
+        mustBeInGeorgia:
+          "გთხოვთ აირჩიოთ მდებარეობა საქართველოს ფარგლების შიგნით.",
+        cantResolveAddress: "მისამართის განსაზღვრა ვერ მოხერხდა.",
+        invalidPlace: "გაირჩიეთ სწორი ადგილი რუკაზე."
       }
     }
   }

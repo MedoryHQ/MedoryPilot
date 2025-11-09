@@ -1,17 +1,11 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
-import type { FieldConfig } from "@/types";
+import type { FieldConfig, FormProps } from "@/types";
 import type { PageComponentFormValues } from "@/validations/website/pageComponent.validation";
 import { pageComponentSchema } from "@/validations/website/pageComponent.validation";
-
-export interface PageComponentFormProps {
-  mode: "create" | "edit" | "readonly";
-  slug?: string | null;
-  onSuccessNavigate?: string;
-}
 
 const defaultValues: PageComponentFormValues = {
   metaTitle: "",
@@ -26,56 +20,26 @@ const defaultValues: PageComponentFormValues = {
   }
 };
 
-export const PageComponentForm: React.FC<PageComponentFormProps> = ({
+export const PageComponentForm: React.FC<FormProps> = ({
   mode,
   slug = null,
   onSuccessNavigate = "/landing/page-components"
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<PageComponentFormValues> => {
-    if (!entity) return {};
-    const {
-      metaTitle,
-      metaDescription,
-      metaKeywords,
-      metaImage,
-      slug,
-      translations,
-      footerOrder
-    } = entity;
-    const en =
-      translations?.find((tr: any) => tr?.language?.code === "en") ?? {};
-    const ka =
-      translations?.find((tr: any) => tr?.language?.code === "ka") ?? {};
-
-    const formMetaImage = metaImage
-      ? {
-          path: metaImage.path ?? metaImage.url ?? "",
-          name: metaImage.name ?? "",
-          size: metaImage.size ?? undefined
-        }
-      : null;
-
-    return {
-      metaTitle,
-      metaDescription,
-      metaKeywords,
-      metaImage: formMetaImage,
-      slug,
-      footerOrder,
-      translations: {
-        en: {
-          content: en.content ?? "",
-          name: en.name ?? ""
-        },
-        ka: {
-          content: ka.content ?? "",
-          name: ka.name ?? ""
-        }
-      }
-    };
-  };
+  const mapFetchedToForm = buildMapper<PageComponentFormValues>({
+    fileFields: ["metaImage"],
+    copyFields: [
+      "metaTitle",
+      "metaDescription",
+      "metaKeywords",
+      "slug",
+      "footerOrder"
+    ],
+    translations: {
+      fields: ["content", "name"]
+    }
+  });
 
   const fetchEntity = async (entityId?: string) => {
     const res = await axios.get(`/page-component/${entityId}`);
@@ -179,7 +143,7 @@ export const PageComponentForm: React.FC<PageComponentFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<PageComponentFormValues, any>
+    <GenericEntityForm<PageComponentFormValues>
       resourceName="pageComponents"
       mode={mode}
       id={slug ?? undefined}
@@ -195,6 +159,7 @@ export const PageComponentForm: React.FC<PageComponentFormProps> = ({
           {
             name: "name",
             label: toUpperCase(t("pageComponents.form.name")),
+            placeholder: toUpperCase(t("pageComponents.form.name")),
             required: true,
             fullWidth: true,
             type: "text"
@@ -202,6 +167,7 @@ export const PageComponentForm: React.FC<PageComponentFormProps> = ({
           {
             name: "content",
             label: toUpperCase(t("pageComponents.form.content")),
+            placeholder: toUpperCase(t("pageComponents.form.content")),
             required: true,
             fullWidth: true,
             type: "markdown"

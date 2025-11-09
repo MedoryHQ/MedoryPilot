@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 
 import { GenericEntityForm } from "..";
 import type { FieldConfig } from "@/types";
@@ -33,42 +33,14 @@ export const ExperienceForm: React.FC<ExperienceFormProps> = ({
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<ExperienceFormValues> => {
-    if (!entity) return {};
-    const { link, fromDate, endDate, location } = entity;
-
-    const translations = entity.translations ?? [];
-    const en = translations.find((tr: any) => tr.language?.code === "en") ?? {};
-    const ka = translations.find((tr: any) => tr.language?.code === "ka") ?? {};
-
-    const icon = entity.icon
-      ? {
-          path: entity.icon.path ?? entity.icon.url ?? "",
-          name: entity.icon.name ?? "",
-          size: entity.icon.size ?? undefined
-        }
-      : null;
-
-    return {
-      icon,
-      ...(link ? { link } : {}),
-      ...(location ? { location } : {}),
-      ...(fromDate ? { fromDate: new Date(fromDate) } : {}),
-      ...(endDate ? { endDate: new Date(endDate) } : {}),
-      translations: {
-        en: {
-          name: en.name ?? "",
-          position: en.position ?? "",
-          description: en.description ?? ""
-        },
-        ka: {
-          name: ka.name ?? "",
-          position: ka.position ?? "",
-          description: ka.description ?? ""
-        }
-      }
-    };
-  };
+  const mapFetchedToForm = buildMapper<ExperienceFormValues>({
+    fileFields: ["icon"],
+    copyFields: ["link", "location"],
+    dateFields: ["fromDate", "endDate"],
+    translations: {
+      fields: ["name", "position", "description"]
+    }
+  });
 
   const fetchEntity = async (entityId?: string) => {
     const res = await axios.get(`/experience/${entityId}`);
@@ -99,7 +71,7 @@ export const ExperienceForm: React.FC<ExperienceFormProps> = ({
           kind: "simple",
           name: "link",
           label: toUpperCase(t("experiences.form.link")),
-          type: "text",
+          type: "link",
           props: {
             step: 1,
             placeholder: t("experiences.form.link"),
@@ -161,7 +133,7 @@ export const ExperienceForm: React.FC<ExperienceFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<ExperienceFormValues, any>
+    <GenericEntityForm<ExperienceFormValues>
       resourceName="experiences"
       mode={mode}
       id={id ?? undefined}
@@ -177,6 +149,7 @@ export const ExperienceForm: React.FC<ExperienceFormProps> = ({
           {
             name: "name",
             label: toUpperCase(t("experiences.form.name")),
+            placeholder: toUpperCase(t("experiences.form.name")),
             required: true,
             fullWidth: true,
             rows: 1
@@ -184,17 +157,18 @@ export const ExperienceForm: React.FC<ExperienceFormProps> = ({
           {
             name: "position",
             label: toUpperCase(t("experiences.form.position")),
+            placeholder: toUpperCase(t("experiences.form.position")),
             required: true,
             fullWidth: true,
             rows: 1
           },
           {
-            type: "textarea",
             name: "description",
             label: toUpperCase(t("experiences.form.description")),
+            placeholder: toUpperCase(t("experiences.form.description")),
             required: true,
             fullWidth: true,
-            rows: 1
+            type: "markdown"
           }
         ] as const
       }

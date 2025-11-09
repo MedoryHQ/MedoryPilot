@@ -8,3 +8,6 @@ export * from "./media-uploader";
 export * from "./translations-panel";
 export * from "./pageForms";
 export * from "./generic-entity-form";
+export * from "./field-group";
+export * from "./link-field";
+export * from "./location-picker";

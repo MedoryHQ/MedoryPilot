@@ -34,7 +34,9 @@ export type FieldType =
   | "number"
   | "email"
   | "translated-select"
-  | "date";
+  | "date"
+  | "link"
+  | "location";
 
 export type FieldConfig<TForm extends FieldValues = FieldValues> =
   | {
@@ -92,4 +94,13 @@ export interface GenericEntityFormProps<
   externalMode?: "create" | "edit" | "readonly";
   onModeChange?: (m: "create" | "edit" | "readonly") => void;
   allowModeToggleForReadonly?: boolean;
+}
+
+export interface FormProps {
+  mode: "create" | "edit" | "readonly";
+  id?: string | null;
+  slug?: string | null;
+  entityData?: any;
+  refetch?: () => Promise<any> | void;
+  onSuccessNavigate?: string;
 }

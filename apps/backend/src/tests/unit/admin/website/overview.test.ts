@@ -83,7 +83,7 @@ describe("Admin Overview routes — /admin/overview", () => {
         faqs: 3,
         blogs: 4,
         categories: 2,
-        contacts: 8,
+        contact: 1,
         footer: 1,
         socials: 6,
         pages: 9,

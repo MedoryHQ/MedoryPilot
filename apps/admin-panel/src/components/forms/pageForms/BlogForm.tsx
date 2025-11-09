@@ -1,18 +1,11 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
-import type { FieldConfig } from "@/types";
+import type { FieldConfig, FormProps } from "@/types";
 import type { BlogFormValues } from "@/validations/website/blog.validation";
 import { blogSchema } from "@/validations/website/blog.validation";
-import { Blog } from "@/types/website";
-
-export interface BlogFormProps {
-  mode: "create" | "edit" | "readonly";
-  slug?: string | null;
-  onSuccessNavigate?: string;
-}
 
 const defaultValues: BlogFormValues = {
   background: null,
@@ -30,72 +23,28 @@ const defaultValues: BlogFormValues = {
   }
 };
 
-export const BlogForm: React.FC<BlogFormProps> = ({
+export const BlogForm: React.FC<FormProps> = ({
   mode,
   slug = null,
   onSuccessNavigate = "/landing/blogs"
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: Blog): Partial<BlogFormValues> => {
-    if (!entity) return {};
-    const {
-      metaTitle,
-      metaDescription,
-      metaKeywords,
-      metaImage,
-      background,
-      slug,
-      translations,
-      categories,
-      showInLanding,
-      landingOrder
-    } = entity;
-    const en = translations?.find((tr) => tr?.language?.code === "en");
-    const ka = translations?.find((tr) => tr?.language?.code === "ka");
-
-    const filteredCategories = (categories || []).map(
-      (category) => category.id
-    );
-
-    const formBackground = background
-      ? {
-          path: background.path ?? "",
-          name: background.name ?? "",
-          size: background.size ?? undefined
-        }
-      : null;
-
-    const formMetaImage = metaImage
-      ? {
-          path: metaImage.path ?? "",
-          name: metaImage.name ?? "",
-          size: metaImage.size ?? undefined
-        }
-      : null;
-
-    return {
-      background: formBackground,
-      metaTitle,
-      metaDescription,
-      metaKeywords,
-      metaImage: formMetaImage,
-      slug,
-      showInLanding,
-      landingOrder,
-      categories: filteredCategories,
-      translations: {
-        en: {
-          content: en?.content ?? "",
-          title: en?.title ?? ""
-        },
-        ka: {
-          content: ka?.content ?? "",
-          title: ka?.title ?? ""
-        }
-      }
-    };
-  };
+  const mapFetchedToForm = buildMapper<BlogFormValues>({
+    fileFields: ["background", "metaImage"],
+    copyFields: [
+      "metaTitle",
+      "metaDescription",
+      "metaKeywords",
+      "slug",
+      "showInLanding",
+      "landingOrder"
+    ],
+    listToIds: ["categories"],
+    translations: {
+      fields: ["content", "title"]
+    }
+  });
 
   const fetchEntity = async (entityId?: string) => {
     const res = await axios.get(`/blog/${entityId}`);
@@ -125,8 +74,8 @@ export const BlogForm: React.FC<BlogFormProps> = ({
           name: "showInLanding",
           label: "blogs.form.showInLanding",
           description: "blogs.form.showInLandingDescription",
-          activeLabel: "blogs.form.showInLanding",
-          inactiveLabel: "blogs.form.notShowInLanding",
+          activeLabel: "blogs.yes",
+          inactiveLabel: "blogs.no",
           type: "toggle"
         },
         {
@@ -162,7 +111,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({
             endpoints: "/category/list",
             mode: "multiple",
             translationKey: "name",
-            placeholder: t("blogs.form.categoriesPlaceholder"),
+            placeholder: t("blogs.form.categories"),
             required: true
           }
         }
@@ -236,7 +185,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<BlogFormValues, any>
+    <GenericEntityForm<BlogFormValues>
       resourceName="blogs"
       mode={mode}
       id={slug ?? undefined}
@@ -252,6 +201,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({
           {
             name: "title",
             label: toUpperCase(t("blogs.form.title")),
+            placeholder: toUpperCase(t("blogs.form.title")),
             required: true,
             fullWidth: true,
             type: "text"
@@ -259,6 +209,7 @@ export const BlogForm: React.FC<BlogFormProps> = ({
           {
             name: "content",
             label: toUpperCase(t("blogs.form.content")),
+            placeholder: toUpperCase(t("blogs.form.content")),
             required: true,
             fullWidth: true,
             type: "markdown"

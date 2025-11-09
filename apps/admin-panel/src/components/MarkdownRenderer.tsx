@@ -67,6 +67,7 @@ export function MarkdownEditor({
   form,
   disabled,
   value,
+  placeholder,
   label,
   className,
   onChange,
@@ -76,6 +77,7 @@ export function MarkdownEditor({
   label?: React.ReactNode;
   className?: string;
   form?: MaybeForm;
+  placeholder?: string;
   value?: string;
   disabled?: boolean;
   onChange?: (html: string) => void;
@@ -358,6 +360,7 @@ export function MarkdownEditor({
         ref={quillRef}
         readOnly={disabled}
         onChange={handleChange}
+        placeholder={placeholder || ""}
         value={currentContent}
         style={{ width: "100%" }}
       />

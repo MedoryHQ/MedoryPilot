@@ -217,9 +217,8 @@ export const en = {
       blogsDescription: "Write and manage blog posts",
       categories: "Categories",
       categoriesDescription: "Manage blog and content categories",
-      contacts: "Contacts Info",
       contact: "Contact Info",
-      contactsDescription: "Update contacts information",
+      contactDescription: "Update contact information",
       footer: "Footer",
       footerDescription: "Configure website footer and links",
       socials: "Socials",
@@ -657,6 +656,8 @@ export const en = {
         readonlyTitle: "Contact",
         edit: "Edit Contact",
         read: "Read Contact",
+        locationPlaceholder: "e.g., Tbilisi, Georgia",
+        selectLocation: "Select location",
         subtitle: "Configure your website contact and navigation",
         contentTranslations: "Content & Translations",
         contentTranslationsDescription:
@@ -664,7 +665,6 @@ export const en = {
         title: "Title",
         titlePlaceholder: "e.g., Contact information",
         location: "Location",
-        locationPlaceholder: "e.g., Tbilisi, Georgia",
         description: "Description",
         descriptionPlaceholder: "Enter a brief description for this contact...",
         background: "Background",
@@ -928,6 +928,7 @@ export const en = {
         landingOrderPlaceholder: "e.g., 1",
         slug: "Slug",
         slugPlaceholder: "e.g., blog-1",
+        categories: "Categories",
         background: "Background",
         backgroundLabel: "Drop your background here",
         backgroundDescription: "or click to browse",
@@ -1063,13 +1064,13 @@ export const en = {
       },
       filters: {
         hasThumbnail: "გარეკანის ფოტოთი",
-        noThumbnail: "გარეკანის ფოტოს გარეშე"
+        noThumbnail: "გარეკანის ფოტოს გარეშე",
+        dateRange: "Date Range"
       },
       errors: {
         thumbnailRequired: "Thumbnail is required",
         linkRequired: "Link is required",
-        nameRequired: "Name is required",
-        dateRange: "Date Range"
+        nameRequired: "Name is required"
       }
     },
     experiences: {
@@ -1133,6 +1134,16 @@ export const en = {
         nameRequired: "Name is required",
         positionRequired: "Position is required",
         descriptionRequired: "Description is required"
+      }
+    },
+    forms: {
+      clear: "Clear",
+      cancel: "Cancel",
+      save: "Save",
+      errors: {
+        mustBeInGeorgia: "Please pick a location inside Georgia.",
+        cantResolveAddress: "Can't resolve address for selected location.",
+        invalidPlace: "Please pick a valid place on the map."
       }
     }
   }

@@ -1,18 +1,11 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
 import type { AboutFormValues } from "@/validations/website/about.validation.ts";
 import { aboutSchema } from "@/validations/website/about.validation.ts";
-import { FieldConfig } from "@/types";
-
-export interface AboutFormProps {
-  mode: "create" | "edit" | "readonly";
-  id?: string | null;
-  entityData?: any;
-  refetch?: () => Promise<any> | void;
-}
+import { FieldConfig, FormProps } from "@/types";
 
 const defaultValues: AboutFormValues = {
   image: null,
@@ -22,7 +15,7 @@ const defaultValues: AboutFormValues = {
   }
 };
 
-export const AboutForm: React.FC<AboutFormProps> = ({
+export const AboutForm: React.FC<FormProps> = ({
   mode,
   id = null,
   entityData,
@@ -30,33 +23,13 @@ export const AboutForm: React.FC<AboutFormProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<AboutFormValues> => {
-    if (!entity) return {};
-    const translations = entity.translations ?? [];
-    const en = translations.find((tr: any) => tr.language?.code === "en") ?? {};
-    const ka = translations.find((tr: any) => tr.language?.code === "ka") ?? {};
-    const image = entity.image
-      ? {
-          path: entity.image.path ?? entity.image.url ?? "",
-          name: entity.image.name ?? "",
-          size: entity.image.size ?? undefined
-        }
-      : null;
-
-    return {
-      image,
-      translations: {
-        en: {
-          headline: en.headline ?? "",
-          description: en.description ?? ""
-        },
-        ka: {
-          headline: ka.headline ?? "",
-          description: ka.description ?? ""
-        }
-      }
-    };
-  };
+  const mapFetchedToForm = buildMapper<AboutFormValues>({
+    fileFields: ["image"],
+    translations: {
+      locales: ["en", "ka"],
+      fields: ["headline", "description"]
+    }
+  });
 
   const fetchEntity = async () => {
     const res = await axios.get("/about");
@@ -96,7 +69,7 @@ export const AboutForm: React.FC<AboutFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<AboutFormValues, any>
+    <GenericEntityForm<AboutFormValues>
       resourceName="about"
       mode={mode}
       id={id ?? undefined}
@@ -106,7 +79,7 @@ export const AboutForm: React.FC<AboutFormProps> = ({
       createEntity={createEntity}
       updateEntity={updateEntity}
       deleteEntity={deleteEntity}
-      onDeleteSuccess={() => {}}
+      onDeleteSuccess={() => refetch?.()}
       translationLocales={["en", "ka"]}
       translationFields={
         [
@@ -119,10 +92,9 @@ export const AboutForm: React.FC<AboutFormProps> = ({
           {
             name: "description",
             label: toUpperCase(t("about.form.description")),
-            type: "textarea",
-            rows: 5,
-            maxLength: 500,
-            required: true
+            type: "markdown",
+            required: true,
+            fullWidth: true
           }
         ] as const
       }

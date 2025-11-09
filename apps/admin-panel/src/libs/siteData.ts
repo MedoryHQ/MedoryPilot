@@ -129,114 +129,195 @@ export const overviewQuickActions = (t: (key: string) => string) => [
     label: toUpperCase(t("overview.headers")),
     description: toUpperCase(t("overview.headersDescription")),
     icon: Layout,
-    color: "bg-blue-500"
+    color: "blue-500"
   },
   {
     key: "introduce",
     label: toUpperCase(t("overview.introduce")),
     description: toUpperCase(t("overview.introduceDescription")),
     icon: User,
-    color: "bg-teal-500"
+    color: "teal-500"
   },
   {
     key: "newses",
     label: toUpperCase(t("overview.news")),
     description: toUpperCase(t("overview.newsDescription")),
     icon: Newspaper,
-    color: "bg-orange-500"
+    color: "orange-500"
   },
   {
     key: "services",
     label: toUpperCase(t("overview.services")),
     description: toUpperCase(t("overview.servicesDescription")),
     icon: Settings,
-    color: "bg-green-500"
+    color: "green-500"
   },
   {
     key: "faqs",
     label: toUpperCase(t("overview.faqs")),
     description: toUpperCase(t("overview.faqsDescription")),
     icon: HelpCircle,
-    color: "bg-indigo-500"
+    color: "indigo-500"
   },
   {
     key: "blogs",
     label: toUpperCase(t("overview.blogs")),
     description: toUpperCase(t("overview.blogsDescription")),
     icon: FileText,
-    color: "bg-purple-500"
+    color: "purple-500"
   },
   {
     key: "categories",
     label: toUpperCase(t("overview.categories")),
     description: toUpperCase(t("overview.categoriesDescription")),
     icon: Layers,
-    color: "bg-amber-500"
+    color: "amber-500"
   },
   {
-    key: "contacts",
-    label: toUpperCase(t("overview.contacts")),
-    description: toUpperCase(t("overview.contactsDescription")),
+    key: "contact",
+    label: toUpperCase(t("overview.contact")),
+    description: toUpperCase(t("overview.contactDescription")),
     icon: Phone,
-    color: "bg-teal-500"
+    color: "teal-500"
   },
   {
     key: "footer",
     label: toUpperCase(t("overview.footer")),
     description: toUpperCase(t("overview.footerDescription")),
     icon: Copy,
-    color: "bg-slate-500"
+    color: "slate-500"
   },
   {
     key: "socials",
     label: toUpperCase(t("overview.socials")),
     description: toUpperCase(t("overview.socialsDescription")),
     icon: Share2,
-    color: "bg-pink-500"
+    color: "pink-500"
   },
   {
     key: "pages",
     label: toUpperCase(t("overview.pages")),
     description: toUpperCase(t("overview.pagesDescription")),
     icon: Globe,
-    color: "bg-cyan-500"
+    color: "cyan-500"
   },
   {
     key: "tariffs",
     label: toUpperCase(t("overview.tariffs")),
     description: toUpperCase(t("overview.tariffsDescription")),
     icon: Package,
-    color: "bg-rose-500"
+    color: "rose-500"
   },
   {
     key: "about",
     label: toUpperCase(t("overview.about")),
     description: toUpperCase(t("overview.aboutDescription")),
     icon: User,
-    color: "bg-red-400"
+    color: "red-400"
   },
   {
     key: "educations",
     label: toUpperCase(t("overview.educations")),
     description: toUpperCase(t("overview.educationsDescription")),
     icon: GraduationCap,
-    color: "bg-blue-400"
+    color: "blue-400"
   },
   {
     key: "experiences",
     label: toUpperCase(t("overview.experiences")),
     description: toUpperCase(t("overview.experiencesDescription")),
     icon: Briefcase,
-    color: "bg-green-400"
+    color: "green-400"
   },
   {
     key: "videos",
     label: toUpperCase(t("overview.videos")),
     description: toUpperCase(t("overview.videosDescription")),
     icon: Video,
-    color: "bg-purple-400"
+    color: "purple-400"
   }
 ];
+
+export const color_map: Record<
+  string,
+  { bg: string; borderHover: string; textHover: string }
+> = {
+  "blue-500": {
+    bg: "bg-blue-500",
+    borderHover: "hover:border-blue-500/20",
+    textHover: "group-hover:text-blue-500"
+  },
+  "teal-500": {
+    bg: "bg-teal-500",
+    borderHover: "hover:border-teal-500/20",
+    textHover: "group-hover:text-teal-500"
+  },
+  "orange-500": {
+    bg: "bg-orange-500",
+    borderHover: "hover:border-orange-500/20",
+    textHover: "group-hover:text-orange-500"
+  },
+  "green-500": {
+    bg: "bg-green-500",
+    borderHover: "hover:border-green-500/20",
+    textHover: "group-hover:text-green-500"
+  },
+  "indigo-500": {
+    bg: "bg-indigo-500",
+    borderHover: "hover:border-indigo-500/20",
+    textHover: "group-hover:text-indigo-500"
+  },
+  "purple-500": {
+    bg: "bg-purple-500",
+    borderHover: "hover:border-purple-500/20",
+    textHover: "group-hover:text-purple-500"
+  },
+  "amber-500": {
+    bg: "bg-amber-500",
+    borderHover: "hover:border-amber-500/20",
+    textHover: "group-hover:text-amber-500"
+  },
+  "slate-500": {
+    bg: "bg-slate-500",
+    borderHover: "hover:border-slate-500/20",
+    textHover: "group-hover:text-slate-500"
+  },
+  "pink-500": {
+    bg: "bg-pink-500",
+    borderHover: "hover:border-pink-500/20",
+    textHover: "group-hover:text-pink-500"
+  },
+  "cyan-500": {
+    bg: "bg-cyan-500",
+    borderHover: "hover:border-cyan-500/20",
+    textHover: "group-hover:text-cyan-500"
+  },
+  "rose-500": {
+    bg: "bg-rose-500",
+    borderHover: "hover:border-rose-500/20",
+    textHover: "group-hover:text-rose-500"
+  },
+  "red-400": {
+    bg: "bg-red-400",
+    borderHover: "hover:border-red-400/20",
+    textHover: "group-hover:text-red-400"
+  },
+  "blue-400": {
+    bg: "bg-blue-400",
+    borderHover: "hover:border-blue-400/20",
+    textHover: "group-hover:text-blue-400"
+  },
+  "green-400": {
+    bg: "bg-green-400",
+    borderHover: "hover:border-green-400/20",
+    textHover: "group-hover:text-green-400"
+  },
+  "purple-400": {
+    bg: "bg-purple-400",
+    borderHover: "hover:border-purple-400/20",
+    textHover: "group-hover:text-purple-400"
+  }
+};
 
 export const overviewStatsConfig = [
   { key: "headers", label: "overview.headers", icon: Layout },
@@ -246,7 +327,7 @@ export const overviewStatsConfig = [
   { key: "faqs", label: "overview.faqs", icon: HelpCircle },
   { key: "blogs", label: "overview.blogs", icon: FileText },
   { key: "categories", label: "overview.categories", icon: Layers },
-  { key: "contacts", label: "overview.contacts", icon: Phone },
+  { key: "contact", label: "overview.contact", icon: Phone },
   { key: "footer", label: "overview.footer", icon: Copy },
   { key: "socials", label: "overview.socials", icon: Share2 },
   { key: "pages", label: "overview.pages", icon: Globe },

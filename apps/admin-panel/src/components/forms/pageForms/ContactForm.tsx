@@ -1,18 +1,11 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
 import type { ContactFormValues } from "@/validations/website/contact.validation.ts";
 import { contactSchema } from "@/validations/website/contact.validation.ts";
-import { FieldConfig } from "@/types";
-
-export interface ContactFormProps {
-  mode: "create" | "edit" | "readonly";
-  id?: string | null;
-  entityData?: any;
-  refetch?: () => Promise<any> | void;
-}
+import { FieldConfig, FormProps } from "@/types";
 
 const defaultValues: ContactFormValues = {
   background: null,
@@ -23,7 +16,7 @@ const defaultValues: ContactFormValues = {
   }
 };
 
-export const ContactForm: React.FC<ContactFormProps> = ({
+export const ContactForm: React.FC<FormProps> = ({
   mode,
   id = null,
   entityData,
@@ -31,35 +24,13 @@ export const ContactForm: React.FC<ContactFormProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<ContactFormValues> => {
-    if (!entity) return {};
-    const translations = entity.translations ?? [];
-    const en = translations.find((tr: any) => tr.language?.code === "en") ?? {};
-    const ka = translations.find((tr: any) => tr.language?.code === "ka") ?? {};
-    const background = entity.background
-      ? {
-          path: entity.background.path ?? entity.background.url ?? "",
-          name: entity.background.name ?? "",
-          size: entity.background.size ?? undefined
-        }
-      : null;
-
-    return {
-      background,
-      location: entity.location || "",
-      translations: {
-        en: {
-          title: en.title ?? "",
-          description: en.description ?? ""
-        },
-        ka: {
-          title: ka.title ?? "",
-          description: ka.description ?? ""
-        }
-      }
-    };
-  };
-
+  const mapFetchedToForm = buildMapper<ContactFormValues>({
+    fileFields: ["background"],
+    copyFields: ["location"],
+    translations: {
+      fields: ["title", "description"]
+    }
+  });
   const fetchEntity = async () => {
     const res = await axios.get("/contact");
     return res.data?.data ?? res.data;
@@ -73,8 +44,8 @@ export const ContactForm: React.FC<ContactFormProps> = ({
     await axios.put(`/contact/${entityId}`, payload);
   };
 
-  const deleteEntity = async (entityId: string) => {
-    await axios.delete(`/contact/${entityId}`);
+  const deleteEntity = async () => {
+    await axios.delete("/contact");
   };
 
   const rightSections = [
@@ -86,7 +57,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
           kind: "simple",
           name: "location",
           label: toUpperCase(t("contact.form.location")),
-          type: "text",
+          type: "location",
           props: {
             step: 1,
             placeholder: t("contact.form.locationPlaceholder"),
@@ -115,7 +86,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<ContactFormValues, any>
+    <GenericEntityForm<ContactFormValues>
       resourceName="contact"
       mode={mode}
       id={id ?? undefined}
@@ -125,19 +96,21 @@ export const ContactForm: React.FC<ContactFormProps> = ({
       createEntity={createEntity}
       updateEntity={updateEntity}
       deleteEntity={deleteEntity}
-      onDeleteSuccess={() => {}}
+      onDeleteSuccess={() => refetch?.()}
       translationLocales={["en", "ka"]}
       translationFields={
         [
           {
             name: "title",
             label: toUpperCase(t("contact.form.title")),
+            placeholder: toUpperCase(t("contact.form.title")),
             fullWidth: true,
             required: true
           },
           {
             name: "description",
             label: toUpperCase(t("contact.form.description")),
+            placeholder: toUpperCase(t("contact.form.description")),
             type: "textarea",
             rows: 5,
             maxLength: 500,

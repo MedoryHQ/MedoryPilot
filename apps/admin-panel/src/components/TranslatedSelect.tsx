@@ -3,13 +3,15 @@ import React, {
   useEffect,
   useRef,
   useState,
-  useMemo
+  useMemo,
+  useId
 } from "react";
 import { useTranslation } from "react-i18next";
 import axios from "@/api/axios";
 import { useDebounce } from "@/hooks/useDebounce";
 import { handleError, toUpperCase } from "@/utils";
 import {
+  Label,
   Select as RadixSelect,
   SelectContent,
   SelectItem,
@@ -43,6 +45,7 @@ export const TranslatedSelect: React.FC<TranslatedSelectProps> = React.memo(
     error
   }) => {
     const { t, i18n } = useTranslation();
+    const uniqId = useId();
     const [options, setOptions] = useState<Option[]>([]);
     const [loading, setLoading] = useState(false);
     const [searchText, setSearchText] = useState("");
@@ -235,6 +238,10 @@ export const TranslatedSelect: React.FC<TranslatedSelectProps> = React.memo(
     if (!isMultiple) {
       return (
         <div className={className}>
+          <Label className="mb-2 !text-sm" htmlFor={uniqId}>
+            {label}
+          </Label>
+
           <RadixSelect
             value={singleValue}
             onValueChange={handleSelectSingle}
@@ -243,6 +250,7 @@ export const TranslatedSelect: React.FC<TranslatedSelectProps> = React.memo(
             }}
           >
             <SelectTrigger
+              id={uniqId}
               size="default"
               aria-label={label || placeholder || "select"}
               className={`${triggerBaseClass} ${errorClass} ${disabledClass}`}
@@ -297,8 +305,13 @@ export const TranslatedSelect: React.FC<TranslatedSelectProps> = React.memo(
 
     return (
       <div className={className}>
+        <Label className="mb-2 !text-sm" htmlFor={uniqId}>
+          {label}
+        </Label>
+
         <RadixSelect open={open} onOpenChange={setOpen}>
           <SelectTrigger
+            id={uniqId}
             aria-label={label || placeholder || "select"}
             className={cn(triggerBaseClass, errorClass, disabledClass)}
           >

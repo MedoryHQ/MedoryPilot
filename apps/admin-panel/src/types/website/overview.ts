@@ -7,7 +7,7 @@ export interface OverviewResponse {
     faqs: number;
     blogs: number;
     categories: number;
-    contacts: number;
+    contact: number;
     footer: number;
     socials: number;
     pages: number;

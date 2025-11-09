@@ -1,19 +1,11 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
 import type { FooterFormValues } from "@/validations/website/footer.validation.ts";
 import { footerSchema } from "@/validations/website/footer.validation.ts";
-import { FieldConfig } from "@/types";
-import { Footer } from "@/types/website";
-
-export interface FooterFormProps {
-  mode: "create" | "edit" | "readonly";
-  id?: string | null;
-  entityData?: any;
-  refetch?: () => Promise<any> | void;
-}
+import { FieldConfig, FormProps } from "@/types";
 
 const defaultValues: FooterFormValues = {
   phone: "",
@@ -22,7 +14,7 @@ const defaultValues: FooterFormValues = {
   pages: []
 };
 
-export const FooterForm: React.FC<FooterFormProps> = ({
+export const FooterForm: React.FC<FormProps> = ({
   mode,
   id = null,
   entityData,
@@ -30,18 +22,10 @@ export const FooterForm: React.FC<FooterFormProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const mapFetchedToForm = (entity: Footer): Partial<FooterFormValues> => {
-    if (!entity) return {};
-    const { phone, email, socials, pages } = entity;
-    const filteredSocials = (socials || []).map((social) => social.id);
-    const filteredPages = (pages || []).map((page) => page.id);
-    return {
-      phone: phone || "",
-      email: email || "",
-      socials: filteredSocials,
-      pages: filteredPages
-    };
-  };
+  const mapFetchedToForm = buildMapper<FooterFormValues>({
+    copyFields: ["phone", "email"],
+    listToIds: ["socials", "pages"]
+  });
 
   const fetchEntity = async () => {
     const res = await axios.get("/footer");
@@ -119,7 +103,7 @@ export const FooterForm: React.FC<FooterFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<FooterFormValues, any>
+    <GenericEntityForm<FooterFormValues>
       resourceName="footer"
       mode={mode}
       id={id ?? undefined}
@@ -129,7 +113,7 @@ export const FooterForm: React.FC<FooterFormProps> = ({
       createEntity={createEntity}
       updateEntity={updateEntity}
       deleteEntity={deleteEntity}
-      onDeleteSuccess={() => {}}
+      onDeleteSuccess={() => refetch?.()}
       translationLocales={["en", "ka"]}
       sections={{ left: leftSections, right: [] }}
       mapFetchedToForm={mapFetchedToForm}

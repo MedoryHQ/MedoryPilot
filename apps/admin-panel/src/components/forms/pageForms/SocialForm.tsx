@@ -1,17 +1,11 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
-import type { FieldConfig } from "@/types";
+import type { FieldConfig, FormProps } from "@/types";
 import type { SocialFormValues } from "@/validations/website/social.validation.ts";
 import { socialSchema } from "@/validations/website/social.validation.ts";
-
-export interface SocialFormProps {
-  mode: "create" | "edit" | "readonly";
-  id?: string | null;
-  onSuccessNavigate?: string;
-}
 
 const defaultValues: SocialFormValues = {
   icon: null,
@@ -19,28 +13,17 @@ const defaultValues: SocialFormValues = {
   url: ""
 };
 
-export const SocialForm: React.FC<SocialFormProps> = ({
+export const SocialForm: React.FC<FormProps> = ({
   mode,
   id = null,
   onSuccessNavigate = "/landing/socials"
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<SocialFormValues> => {
-    if (!entity) return {};
-    const icon = entity.icon
-      ? {
-          path: entity.icon.path ?? entity.icon.url ?? "",
-          name: entity.icon.name ?? "",
-          size: entity.icon.size ?? undefined
-        }
-      : null;
-    return {
-      icon,
-      name: entity.name,
-      url: entity.url
-    };
-  };
+  const mapFetchedToForm = buildMapper<SocialFormValues>({
+    fileFields: ["icon"],
+    copyFields: ["name", "url"]
+  });
 
   const fetchEntity = async (entityId?: string) => {
     const res = await axios.get(`/social/${entityId}`);
@@ -79,7 +62,7 @@ export const SocialForm: React.FC<SocialFormProps> = ({
           kind: "simple",
           name: "url",
           label: toUpperCase(t("socials.form.url")),
-          type: "text",
+          type: "link",
           props: {
             step: 1,
             placeholder: t("socials.form.urlPlaceholder"),
@@ -111,7 +94,7 @@ export const SocialForm: React.FC<SocialFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<SocialFormValues, any>
+    <GenericEntityForm<SocialFormValues>
       resourceName="socials"
       mode={mode}
       id={id ?? undefined}

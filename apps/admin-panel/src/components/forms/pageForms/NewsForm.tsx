@@ -1,17 +1,11 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
-import type { FieldConfig } from "@/types";
+import type { FieldConfig, FormProps } from "@/types";
 import type { NewsFormValues } from "@/validations/website/news.validation";
 import { newsSchema } from "@/validations/website/news.validation";
-
-export interface NewsFormProps {
-  mode: "create" | "edit" | "readonly";
-  slug?: string | null;
-  onSuccessNavigate?: string;
-}
 
 const defaultValues: NewsFormValues = {
   background: null,
@@ -28,66 +22,27 @@ const defaultValues: NewsFormValues = {
   }
 };
 
-export const NewsForm: React.FC<NewsFormProps> = ({
+export const NewsForm: React.FC<FormProps> = ({
   mode,
   slug = null,
   onSuccessNavigate = "/landing/newses"
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<NewsFormValues> => {
-    if (!entity) return {};
-    const {
-      metaTitle,
-      metaDescription,
-      metaKeywords,
-      metaImage,
-      background,
-      slug,
-      translations,
-      showInLanding,
-      order
-    } = entity;
-    const en =
-      translations?.find((tr: any) => tr?.language?.code === "en") ?? {};
-    const ka =
-      translations?.find((tr: any) => tr?.language?.code === "ka") ?? {};
-
-    const formBackground = background
-      ? {
-          path: background.path ?? background.url ?? "",
-          name: background.name ?? "",
-          size: background.size ?? undefined
-        }
-      : null;
-
-    const formMetaImage = metaImage
-      ? {
-          path: metaImage.path ?? metaImage.url ?? "",
-          name: metaImage.name ?? "",
-          size: metaImage.size ?? undefined
-        }
-      : null;
-
-    return {
-      background: formBackground,
-      metaTitle,
-      metaDescription,
-      metaKeywords,
-      metaImage: formMetaImage,
-      slug,
-      showInLanding,
-      order,
-      translations: {
-        en: {
-          content: en.content ?? ""
-        },
-        ka: {
-          content: ka.content ?? ""
-        }
-      }
-    };
-  };
+  const mapFetchedToForm = buildMapper<NewsFormValues>({
+    fileFields: ["background", "metaImage"],
+    copyFields: [
+      "metaTitle",
+      "metaDescription",
+      "metaKeywords",
+      "slug",
+      "showInLanding",
+      "order"
+    ],
+    translations: {
+      fields: ["content"]
+    }
+  });
 
   const fetchEntity = async (entityId?: string) => {
     const res = await axios.get(`/news/${entityId}`);
@@ -117,8 +72,8 @@ export const NewsForm: React.FC<NewsFormProps> = ({
           name: "showInLanding",
           label: "newses.form.showInLanding",
           description: "newses.form.showInLandingDescription",
-          activeLabel: "newses.form.showInLanding",
-          inactiveLabel: "newses.form.notShowInLanding",
+          activeLabel: "newses.yes",
+          inactiveLabel: "newses.no",
           type: "toggle"
         },
         {
@@ -214,7 +169,7 @@ export const NewsForm: React.FC<NewsFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<NewsFormValues, any>
+    <GenericEntityForm<NewsFormValues>
       resourceName="newses"
       mode={mode}
       id={slug ?? undefined}
@@ -230,6 +185,7 @@ export const NewsForm: React.FC<NewsFormProps> = ({
           {
             name: "content",
             label: toUpperCase(t("newses.form.content")),
+            placeholder: toUpperCase(t("newses.form.content")),
             required: true,
             fullWidth: true,
             type: "markdown"

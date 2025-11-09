@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 
 import { GenericEntityForm } from "..";
 import type { FieldConfig } from "@/types";
@@ -32,41 +32,14 @@ export const EducationForm: React.FC<EducationFormProps> = ({
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<EducationFormValues> => {
-    if (!entity) return {};
-    const { link, fromDate, endDate } = entity;
-
-    const translations = entity.translations ?? [];
-    const en = translations.find((tr: any) => tr.language?.code === "en") ?? {};
-    const ka = translations.find((tr: any) => tr.language?.code === "ka") ?? {};
-
-    const icon = entity.icon
-      ? {
-          path: entity.icon.path ?? entity.icon.url ?? "",
-          name: entity.icon.name ?? "",
-          size: entity.icon.size ?? undefined
-        }
-      : null;
-
-    return {
-      icon,
-      ...(link ? { link } : {}),
-      ...(fromDate ? { fromDate: new Date(fromDate) } : {}),
-      ...(endDate ? { endDate: new Date(endDate) } : {}),
-      translations: {
-        en: {
-          name: en.name ?? "",
-          degree: en.degree ?? "",
-          description: en.description ?? ""
-        },
-        ka: {
-          name: ka.name ?? "",
-          degree: ka.degree ?? "",
-          description: ka.description ?? ""
-        }
-      }
-    };
-  };
+  const mapFetchedToForm = buildMapper<EducationFormValues>({
+    fileFields: ["icon"],
+    copyFields: ["link"],
+    dateFields: ["fromDate", "endDate"],
+    translations: {
+      fields: ["name", "degree", "description"]
+    }
+  });
 
   const fetchEntity = async (entityId?: string) => {
     const res = await axios.get(`/education/${entityId}`);
@@ -97,7 +70,7 @@ export const EducationForm: React.FC<EducationFormProps> = ({
           kind: "simple",
           name: "link",
           label: toUpperCase(t("educations.form.link")),
-          type: "text",
+          type: "link",
           props: {
             step: 1,
             placeholder: t("educations.form.link"),
@@ -148,7 +121,7 @@ export const EducationForm: React.FC<EducationFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<EducationFormValues, any>
+    <GenericEntityForm<EducationFormValues>
       resourceName="educations"
       mode={mode}
       id={id ?? undefined}
@@ -164,6 +137,7 @@ export const EducationForm: React.FC<EducationFormProps> = ({
           {
             name: "name",
             label: toUpperCase(t("educations.form.name")),
+            placeholder: toUpperCase(t("educations.form.name")),
             required: true,
             fullWidth: true,
             rows: 1
@@ -171,17 +145,18 @@ export const EducationForm: React.FC<EducationFormProps> = ({
           {
             name: "degree",
             label: toUpperCase(t("educations.form.degree")),
+            placeholder: toUpperCase(t("educations.form.degree")),
             required: true,
             fullWidth: true,
             rows: 1
           },
           {
-            type: "textarea",
             name: "description",
-            label: toUpperCase(t("educations.form.description")),
+            label: toUpperCase(t("experiences.form.description")),
+            placeholder: toUpperCase(t("experiences.form.description")),
             required: true,
             fullWidth: true,
-            rows: 1
+            type: "markdown"
           }
         ] as const
       }

@@ -6,7 +6,12 @@ import {
   CardTitle,
   Skeleton
 } from "@/components/ui";
-import { cn, overviewQuickActions, overviewStatsConfig } from "@/libs";
+import {
+  cn,
+  color_map,
+  overviewQuickActions,
+  overviewStatsConfig
+} from "@/libs";
 import { useGetOverview } from "@/libs/queries";
 import { OverviewResponse } from "@/types/website";
 import { toUpperCase } from "@/utils";
@@ -28,7 +33,7 @@ const Overview: React.FC = () => {
     faqs: 0,
     blogs: 0,
     categories: 0,
-    contacts: 0,
+    contact: 0,
     footer: 0,
     socials: 0,
     pages: 0,
@@ -99,6 +104,8 @@ const Overview: React.FC = () => {
                 ))
               : quickActions.map((action, idx) => {
                   const Icon = action.icon;
+                  const colorClasses =
+                    color_map[action.color] ?? color_map["slate-500"];
                   return (
                     <motion.div
                       key={action.key}
@@ -108,12 +115,17 @@ const Overview: React.FC = () => {
                       className="group cursor-pointer"
                       onClick={() => navigate(`/landing/${action.key}`)}
                     >
-                      <div className="border-border hover:border-primary/20 bg-card flex h-full flex-col rounded-lg border p-6 transition-all duration-200 hover:shadow-md">
+                      <div
+                        className={cn(
+                          "border-border bg-card flex h-full flex-col rounded-lg border p-6 transition-all duration-200 hover:shadow-md",
+                          colorClasses.borderHover
+                        )}
+                      >
                         <div className="flex min-h-0 items-start gap-4">
                           <div
                             className={cn(
                               "flex-shrink-0 rounded-lg p-3 text-white",
-                              action.color
+                              colorClasses.bg
                             )}
                           >
                             <Icon className="h-6 w-6" />
@@ -121,7 +133,12 @@ const Overview: React.FC = () => {
 
                           <div className="flex min-h-0 flex-1 flex-col justify-between">
                             <div>
-                              <h3 className="group-hover:text-primary mb-2 font-medium transition-colors">
+                              <h3
+                                className={cn(
+                                  "mb-2 font-medium transition-colors",
+                                  colorClasses.textHover
+                                )}
+                              >
                                 {action.label}
                               </h3>
                               <p className="text-muted-foreground text-sm">

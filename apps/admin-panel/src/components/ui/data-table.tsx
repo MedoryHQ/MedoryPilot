@@ -345,7 +345,7 @@ export function DataTable<T extends Record<string, any>>({
                                   }
                                 }))
                               }
-                              className="w-1/2"
+                              className="!border-border w-1/2 !border px-3 py-2 text-sm placeholder:text-sm"
                             />
                             <Input
                               type="number"
@@ -363,7 +363,7 @@ export function DataTable<T extends Record<string, any>>({
                                   }
                                 }))
                               }
-                              className="w-1/2"
+                              className="!border-border w-1/2 !border px-3 py-2 text-sm placeholder:text-sm"
                             />
                           </div>
                         )}

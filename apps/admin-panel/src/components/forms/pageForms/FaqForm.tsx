@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "@/api/axios";
 import { useTranslation } from "react-i18next";
-import { toUpperCase } from "@/utils";
+import { buildMapper, toUpperCase } from "@/utils";
 
 import { GenericEntityForm } from "..";
 import type { FieldConfig } from "@/types";
@@ -29,26 +29,12 @@ export const FaqForm: React.FC<FaqFormProps> = ({
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = (entity: any): Partial<FaqFormValues> => {
-    if (!entity) return {};
-    const translations = entity.translations ?? [];
-    const en = translations.find((tr: any) => tr.language?.code === "en") ?? {};
-    const ka = translations.find((tr: any) => tr.language?.code === "ka") ?? {};
-
-    return {
-      order: entity.order,
-      translations: {
-        en: {
-          question: en.question ?? "",
-          answer: en.answer ?? ""
-        },
-        ka: {
-          question: ka.question ?? "",
-          answer: ka.answer ?? ""
-        }
-      }
-    };
-  };
+  const mapFetchedToForm = buildMapper<FaqFormValues>({
+    copyFields: ["order"],
+    translations: {
+      fields: ["question", "answer"]
+    }
+  });
 
   const fetchEntity = async (entityId?: string) => {
     const res = await axios.get(`/faq/${entityId}`);
@@ -90,7 +76,7 @@ export const FaqForm: React.FC<FaqFormProps> = ({
   ];
 
   return (
-    <GenericEntityForm<FaqFormValues, any>
+    <GenericEntityForm<FaqFormValues>
       resourceName="faqs"
       mode={mode}
       id={id ?? undefined}
@@ -106,6 +92,7 @@ export const FaqForm: React.FC<FaqFormProps> = ({
           {
             name: "question",
             label: toUpperCase(t("faqs.form.question")),
+            placeholder: toUpperCase(t("faqs.form.question")),
             required: true,
             fullWidth: true,
             rows: 1
@@ -113,9 +100,10 @@ export const FaqForm: React.FC<FaqFormProps> = ({
           {
             name: "answer",
             label: toUpperCase(t("faqs.form.answer")),
-            type: "textarea",
-            rows: 5,
-            maxLength: 500
+            placeholder: toUpperCase(t("faqs.form.answer")),
+            required: true,
+            fullWidth: true,
+            type: "markdown"
           }
         ] as const
       }
