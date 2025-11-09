@@ -36,6 +36,7 @@ import { ArrowLeft, Edit3, Eye } from "lucide-react";
 import { locales } from "@/libs";
 import TranslatedSelect from "../TranslatedSelect";
 import { DatePickerSelection } from "@/types/ui";
+import { LocationPicker } from "./location-picker";
 
 type localeType = "en" | "ka";
 
@@ -338,6 +339,37 @@ export function GenericEntityForm<
           />
         );
       }
+      case "location": {
+        const inputId = `field-${String(name).toLowerCase().replace(/\s+/g, "-")}`;
+
+        return (
+          <LocationPicker
+            key={name}
+            id={inputId}
+            label={toUpperCase(
+              typeof label === "string" ? t(label) : (label as any)
+            )}
+            required={!!f.props?.required}
+            placeholder={
+              f.props?.placeholder
+                ? (t(f.props.placeholder as string) as string)
+                : (t("contact.form.locationPlaceholder") as string)
+            }
+            disabled={internalMode === "readonly" || Boolean(f.props?.disabled)}
+            value={(watchedValue as string) ?? ""}
+            onChange={(addressStr: string) => {
+              form.setValue(name as Path<TForm>, addressStr as any);
+              form.clearErrors(name as any);
+            }}
+            onValidate={(err) => {
+              if (err)
+                form.setError(name as any, { type: "manual", message: err });
+              else form.clearErrors(name as any);
+            }}
+          />
+        );
+      }
+
       case "email":
         return (
           <FieldGroup

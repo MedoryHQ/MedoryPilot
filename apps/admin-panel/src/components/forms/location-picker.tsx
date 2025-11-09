@@ -61,7 +61,7 @@ function MapClickHandler({
   return null;
 }
 
-export default function LocationPicker({
+export function LocationPicker({
   id,
   className,
   label,
