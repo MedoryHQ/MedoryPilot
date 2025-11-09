@@ -657,6 +657,8 @@ export const en = {
         readonlyTitle: "Contact",
         edit: "Edit Contact",
         read: "Read Contact",
+        locationPlaceholder: "e.g., Tbilisi, Georgia",
+        selectLocation: "Select location",
         subtitle: "Configure your website contact and navigation",
         contentTranslations: "Content & Translations",
         contentTranslationsDescription:
@@ -664,7 +666,6 @@ export const en = {
         title: "Title",
         titlePlaceholder: "e.g., Contact information",
         location: "Location",
-        locationPlaceholder: "e.g., Tbilisi, Georgia",
         description: "Description",
         descriptionPlaceholder: "Enter a brief description for this contact...",
         background: "Background",
@@ -1134,6 +1135,16 @@ export const en = {
         nameRequired: "Name is required",
         positionRequired: "Position is required",
         descriptionRequired: "Description is required"
+      }
+    },
+    forms: {
+      clear: "Clear",
+      cancel: "Cancel",
+      save: "Save",
+      errors: {
+        mustBeInGeorgia: "Please pick a location inside Georgia.",
+        cantResolveAddress: "Can't resolve address for selected location.",
+        invalidPlace: "Please pick a valid place on the map."
       }
     }
   }

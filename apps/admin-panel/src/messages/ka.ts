@@ -653,6 +653,7 @@ export const ka = {
         createTitle: "საკ. ინფორმაციის შექმნა",
         editTitle: "საკ. ინფორმაციის რედაქტირება",
         readonlyTitle: "საკ. ინფორმაცია",
+        selectLocation: "მდებარეობის არჩევა",
         edit: "საკ. ინფორმაციის რედაქტირება",
         read: "საკ. ინფორმაციის ნახვა",
         subtitle: "ვებსაიტის საკ. ინფორმაციის კონფიგურაცია",
@@ -1128,6 +1129,17 @@ export const ka = {
         nameRequired: "სახელი აუცილებელია",
         positionRequired: "პოზიცია აუცილებელია",
         descriptionRequired: "აღწერა აუცილებელია"
+      }
+    },
+    forms: {
+      clear: "გასუფთავება",
+      cancel: "გაუქმება",
+      save: "შენახვა",
+      errors: {
+        mustBeInGeorgia:
+          "გთხოვთ აირჩიოთ მდებარეობა საქართველოს ფარგლების შიგნით.",
+        cantResolveAddress: "მისამართის განსაზღვრა ვერ მოხერხდა.",
+        invalidPlace: "გაირჩიეთ სწორი ადგილი რუკაზე."
       }
     }
   }
