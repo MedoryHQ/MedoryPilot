@@ -119,10 +119,9 @@ export const AboutForm: React.FC<AboutFormProps> = ({
           {
             name: "description",
             label: toUpperCase(t("about.form.description")),
-            type: "textarea",
-            rows: 5,
-            maxLength: 500,
-            required: true
+            type: "markdown",
+            required: true,
+            fullWidth: true
           }
         ] as const
       }
