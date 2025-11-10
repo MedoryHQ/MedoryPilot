@@ -1,5 +1,5 @@
 "use client";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -8,14 +8,16 @@ import { fadeVariant } from "./ui";
 import { Shell } from "./Shell";
 import { Link, routing } from "@/i18n/routing";
 import { nav_links } from "@/lib/siteData";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Menu, X } from "lucide-react";
 import { cn } from "@heroui/react";
 import { Search } from "./Search";
+import { useState } from "react";
 
 export const Header = () => {
   const pathname = usePathname();
   const locale = useLocale();
   const t = useTranslations("Header");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <motion.header
@@ -84,7 +86,62 @@ export const Header = () => {
             <ArrowRight className="w-4 h-4" />
           </Link>
         </motion.div>
+        <button
+          className="md:hidden p-2 hover:bg-primary/10 rounded-lg transition-colors"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
+          {!isMobileMenuOpen ? (
+            <Menu className="w-6 h-6 text-primary" />
+          ) : (
+            <X className="w-6 h-6 text-primary" />
+          )}
+        </button>
       </Shell>
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 bg-white z-40 lg:hidden flex items-center justify-center"
+          >
+            <div className="w-full max-w-md px-8 flex flex-col gap-8">
+              <nav className="flex flex-col gap-4">
+                {nav_links
+                  .filter((link) => link.href !== "/")
+                  .map((item, index) => {
+                    const resolvedHref = routing.pathnames[item.href];
+                    return (
+                      <Link
+                        key={index}
+                        href={resolvedHref}
+                        onClick={() => {
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className={`text-left text-xl font-medium py-3 px-4 rounded-xl transition-colors ${
+                          pathname.includes(resolvedHref)
+                            ? "bg-primary/10 text-primary"
+                            : "text-muted-foreground hover:text-foreground hover:bg-gray-100"
+                        }`}
+                      >
+                        {toUpperCase(item.label[locale as "en" | "ka"])}
+                      </Link>
+                    );
+                  })}
+              </nav>
+
+              <Link
+                href="/sign-in"
+                className="w-full flex items-center justify-center gap-2 bg-[#1E293B] text-white px-6 py-4 rounded-full font-medium hover:bg-[#0F172A] transition-all shadow-lg"
+              >
+                {toUpperCase(t("getStarted"))}
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.header>
   );
 };
