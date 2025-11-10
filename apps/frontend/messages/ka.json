@@ -13,7 +13,8 @@
     "searchDescription": "იპოვეთ სტატიები, ბლოგები, სიახლეები და ინფორმაცია ენდოკრინოლოგიაზე."
   },
   "Header": {
-    "name": "ექ. თამარ"
+    "name": "ექ. თამარ",
+    "getStarted": "დაწყება"
   },
   "Search": {
     "searchPlaceholder": "ძიება..."

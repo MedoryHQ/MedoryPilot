@@ -13,7 +13,8 @@
     "searchDescription": "Find articles, blogs, newses, and information related to endocrinology."
   },
   "Header": {
-    "name": "Dr. Tamar"
+    "name": "Dr. Tamar",
+    "getStarted": "Get Started"
   },
   "Search": {
     "searchPlaceholder": "Search..."

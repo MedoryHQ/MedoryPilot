@@ -17,7 +17,7 @@ const shellVariants = cva(shellBase, {
         "min-h-dvh w-full mx-auto max-w-[1440px] grid grid-cols-1 md:grid-cols-2 gap-6 px-4 md:px-8",
       fullBleed: "w-full",
       wrapper:
-        "w-full max-w-[1440px] p-3 bg-white/80 backdrop-blur-xl rounded-[32px] border border-black/5 shadow-lg flex justify-between",
+        "w-full max-w-[1440px] p-3 bg-white/80 backdrop-blur-xl rounded-[22px] md:rounded-[28px] lg:rounded-[32px] border border-primary/10 shadow-sm shadow-primary/5 flex justify-between",
     },
     size: {
       sm: "py-6",
