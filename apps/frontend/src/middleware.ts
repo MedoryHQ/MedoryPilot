@@ -12,10 +12,12 @@ const PUBLIC_PATHS = [
   "/sign-in",
   "/sign-up",
   "/set-password",
+  "/about-me",
   "/contact",
   "/blogs",
-  "/news",
+  "/newses",
   "/pages",
+  "/search",
 ];
 
 function isPublicPathForLocale(pathname: string, locale: string) {
@@ -29,7 +31,7 @@ function isPublicPathForLocale(pathname: string, locale: string) {
   }
   if (
     path.startsWith(`/${locale}/blogs`) ||
-    path.startsWith(`/${locale}/news`) ||
+    path.startsWith(`/${locale}/newses`) ||
     path.startsWith(`/${locale}/pages`)
   ) {
     return true;
