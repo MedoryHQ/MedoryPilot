@@ -25,17 +25,12 @@ export const Header = () => {
       custom={0}
       className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4"
     >
-      <Shell variant="wrapper">
-        <motion.a
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="flex items-center cursor-pointer"
-          href="/"
-        >
-          <span className="text-2xl font-bold text-primary pl-3">
+      <Shell className="items-center" variant="wrapper">
+        <Link className="p-0! h-min" href="/">
+          <span className="text-[28px] font-bold text-primary pl-3">
             {toUpperCase(t("name"))}
           </span>
-        </motion.a>
+        </Link>
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
