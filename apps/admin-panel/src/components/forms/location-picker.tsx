@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import { cn } from "@/libs";
@@ -10,6 +10,7 @@ import "leaflet/dist/leaflet.css";
 import { Button, Input, Label } from "../ui";
 import axios from "axios";
 import { toUpperCase } from "@/utils";
+import { LocationPickerProps, PickedLocation } from "@/types";
 
 const createSvgIcon = (color = "#0ea5a4") =>
   L.divIcon({
@@ -24,29 +25,6 @@ const createSvgIcon = (color = "#0ea5a4") =>
   });
 
 const DEFAULT_CENTER = { lat: 41.715136, lng: 44.827096 }; // Tbilisi
-
-export type PickedLocation = {
-  address: string;
-  lat: number;
-  lng: number;
-  placeId?: string;
-  translations?: { en?: string; ka?: string };
-};
-
-export interface LocationPickerProps {
-  id?: string;
-  className?: string;
-  label?: React.ReactNode;
-  value?: string | null;
-  placeholder?: string;
-  disabled?: boolean;
-  required?: boolean;
-  onChange?: (address: string) => void;
-  onChangeFull?: (picked: PickedLocation) => void;
-  onValidate?: (err?: string) => void;
-  defaultCenter?: { lat: number; lng: number };
-  mapHeight?: string;
-}
 
 function MapClickHandler({
   onClick

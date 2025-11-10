@@ -86,3 +86,26 @@ export interface TranslatedSelectProps {
   error?: string | null;
   required?: boolean;
 }
+
+export type PickedLocation = {
+  address: string;
+  lat: number;
+  lng: number;
+  placeId?: string;
+  translations?: { en?: string; ka?: string };
+};
+
+export interface LocationPickerProps {
+  id?: string;
+  className?: string;
+  label?: React.ReactNode;
+  value?: string | null;
+  placeholder?: string;
+  disabled?: boolean;
+  required?: boolean;
+  onChange?: (address: string) => void;
+  onChangeFull?: (picked: PickedLocation | null) => void;
+  onValidate?: (err?: string) => void;
+  defaultCenter?: { lat: number; lng: number };
+  mapHeight?: string;
+}
