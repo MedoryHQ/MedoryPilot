@@ -1,6 +1,16 @@
 {
   "LocaleLayout": {
-    "title": "Tamar Chaduneli"
+    "title": "Tamar Chaduneli",
+    "aboutTitle": "About me",
+    "aboutDescription": "Learn more about Dr. Tamar Chaduneli, an experienced endocrinologist.",
+    "contactTitle": "Contact me",
+    "contactDescription": "Book a consultation or reach out for any endocrinology-related questions and medical advice.",
+    "blogsTitle": "Blogs",
+    "blogsDescription": "Read informative articles about hormone health, lifestyle, and medical tips from Dr. Tamar Chaduneli.",
+    "newsesTitle": "Newses",
+    "newsesDescription": "Stay updated with the latest news, research, and events in endocrinology and health care.",
+    "searchTitle": "Search",
+    "searchDescription": "Find articles, blogs, newses, and information related to endocrinology."
   },
   "Header": {
     "name": "Dr. Tamar"
