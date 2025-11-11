@@ -7,7 +7,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { searchParams } from "@/hooks/params/use-search-params";
 import { toUpperCase } from "@/utils";
-import { Input } from "./ui";
+import { Input } from "../ui";
 
 export function useSearchController() {
   const [{ search }, setSearchParams] = useQueryStates(searchParams, {
@@ -161,5 +161,31 @@ export function Search() {
         </motion.form>
       )}
     </AnimatePresence>
+  );
+}
+
+export function SearchFull({ onSubmit }: { onSubmit?: () => void }) {
+  const { value, setValue, containerRef, handleSubmit } = useSearchController();
+  const t = useTranslations("Search");
+  return (
+    <form
+      ref={containerRef}
+      key="search-input"
+      onSubmit={(e) => {
+        handleSubmit(e);
+        onSubmit?.();
+      }}
+      className="flex w-full items-center gap-2 bg-gray-100 rounded-lg px-3 py-2 border border-primary/10"
+    >
+      <SearchIcon className="w-4 h-4 text-muted-foreground" />
+      <Input
+        type="text"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        placeholder={toUpperCase(t("searchPlaceholder"))}
+        className="bg-transparent border-none outline-none text-sm w-full h-min p-0"
+        aria-label="Search input"
+      />
+    </form>
   );
 }

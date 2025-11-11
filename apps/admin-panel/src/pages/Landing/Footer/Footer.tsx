@@ -1,16 +1,12 @@
+import { LoadingScreen } from "@/components";
 import { FooterForm } from "@/components/forms";
 import { useGetFooter } from "@/libs/queries";
-import { Spin } from "antd";
 
 const Footer = () => {
   const { data, refetch, isFetching, error } = useGetFooter();
 
   if (isFetching) {
-    return (
-      <div className="absolute inset-0 flex min-h-screen w-full items-center justify-center">
-        <Spin size="large" />
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   const entityData = data?.data;
