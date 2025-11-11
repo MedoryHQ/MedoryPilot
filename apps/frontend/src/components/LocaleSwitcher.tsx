@@ -51,7 +51,7 @@ export function LocaleSwitcher() {
         nextLocale === "en" ? "English" : "ქართული"
       }`}
       disabled={isPending}
-      className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-md p-0 min-w-0 bg-transparent hover:bg-secondary transition-smooth uppercase font-semibold text-sm"
+      className="flex items-center justify-center w-9 h-9 rounded-md p-0 min-w-0 bg-transparent hover:bg-primary/10 transition-smooth uppercase font-semibold text-sm"
       type="button"
       aria-pressed={isPending}
     >
