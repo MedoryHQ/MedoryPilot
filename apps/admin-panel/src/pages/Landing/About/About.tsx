@@ -1,6 +1,5 @@
 import { AboutForm } from "@/components/forms";
 import { useGetAbout } from "@/libs/queries";
-import { Spin } from "antd";
 
 const About = () => {
   const { data, refetch, isFetching, error } = useGetAbout();
@@ -8,7 +7,7 @@ const About = () => {
   if (isFetching) {
     return (
       <div className="absolute inset-0 flex min-h-screen w-full items-center justify-center">
-        <Spin size="large" />
+        loading...
       </div>
     );
   }

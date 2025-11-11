@@ -1,6 +1,6 @@
 import { Icons } from "@/components";
+import { Button } from "@/components/ui";
 import { toUpperCase } from "@/utils";
-import { Button } from "antd";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -23,7 +23,7 @@ export const NotFound = () => {
           {toUpperCase(t("notFound.resourceOfGiven"))}: {location.pathname}{" "}
           {toUpperCase(t("notFound.cannotBeFound"))}
         </p>
-        <Button type="primary" onClick={navigateBack}>
+        <Button variant="default" onClick={navigateBack}>
           {toUpperCase(t("notFound.navigateBack"))}
         </Button>
       </div>

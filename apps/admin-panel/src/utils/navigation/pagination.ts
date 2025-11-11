@@ -1,4 +1,3 @@
-import { TableProps } from "antd";
 import { useNavigate } from "react-router-dom";
 import { URLSearchParams } from "url";
 
@@ -65,31 +64,6 @@ export const getPaginationFields = (
     filters: filtersObj
   };
 };
-
-export const getPaginationProps = (
-  searchParams: URLSearchParams,
-  navigate: (url: string) => void,
-  total: number = 0
-): TableProps<any>["pagination"] => ({
-  showSizeChanger: true,
-  showQuickJumper: true,
-  pageSizeOptions: ["10", "20", "50", "100"],
-  total,
-  showTotal: (total) => `ჯამი: ${total}`,
-  style: { justifyContent: "center" },
-  current: Number(searchParams.get("page")) || 1,
-  pageSize: Number(searchParams.get("pageSize")) || 10,
-  onChange: (page, pageSize) => {
-    searchParams.set("page", page.toString());
-    searchParams.set("pageSize", pageSize.toString());
-    navigate(`?${searchParams.toString()}`);
-  },
-  locale: {
-    items_per_page: "ელემენტი თითო გვერდზე",
-    jump_to: "გადასვლა: ",
-    page: "გვერდი"
-  }
-});
 
 export const buildQueryString = (opts: {
   page?: number;

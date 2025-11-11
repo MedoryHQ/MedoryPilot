@@ -3,7 +3,6 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
 import { useAuthStore } from "@/store";
 import axios from "@/api/axios";
-import { Spin } from "antd";
 import { Shell } from "./Shell";
 import { Sidebar } from "./Sidebar";
 import { MobileNavigation } from "./MobileNavigation";
@@ -17,7 +16,7 @@ interface LayoutProps {
 export const LoadingScreen: React.FC = () => {
   return (
     <div className="absolute inset-0 flex min-h-screen w-full items-center justify-center">
-      <Spin className="left-0" size="large" />
+      loading..
     </div>
   );
 };

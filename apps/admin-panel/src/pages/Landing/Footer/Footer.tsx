@@ -1,6 +1,5 @@
 import { FooterForm } from "@/components/forms";
 import { useGetFooter } from "@/libs/queries";
-import { Spin } from "antd";
 
 const Footer = () => {
   const { data, refetch, isFetching, error } = useGetFooter();
@@ -8,7 +7,7 @@ const Footer = () => {
   if (isFetching) {
     return (
       <div className="absolute inset-0 flex min-h-screen w-full items-center justify-center">
-        <Spin size="large" />
+        loading...
       </div>
     );
   }

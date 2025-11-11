@@ -1,5 +1,4 @@
 import { ResponseError } from "@/types";
-import { FormInstance } from "antd";
 
 const defaultError = {
   en: "Something went wrong",
@@ -25,44 +24,6 @@ export const throwErrMessage = (
     toast.error(t("toast.error"), err.response.data.error[lang]);
   } else {
     toast.error(t("toast.error"), defaultError[lang]);
-  }
-};
-
-export const setFormErrors = (
-  err: ResponseError,
-  toast: ReturnType<any>["toast"],
-  t: (key: string) => string,
-  lang: "ka" | "en",
-  form?: FormInstance
-) => {
-  if (err?.response?.data?.errors) {
-    err.response.data.errors.forEach((error) => {
-      const errorMessage =
-        typeof error.message === "string"
-          ? isJson(error.message)
-            ? JSON.parse(error.message)[lang]
-            : error.message
-          : error.message[lang];
-
-      if (form) {
-        const field = form.getFieldInstance(error.path);
-        if (field) {
-          form.scrollToField(error.path);
-          form.setFields([
-            {
-              name: error.path,
-              errors: [errorMessage]
-            }
-          ]);
-        } else {
-          toast.error(t("toast.validationError"), errorMessage);
-        }
-      } else {
-        toast.error(t("toast.validationError"), errorMessage);
-      }
-    });
-  } else {
-    throwErrMessage(err, toast, t, lang);
   }
 };
 
