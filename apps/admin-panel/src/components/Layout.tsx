@@ -6,6 +6,7 @@ import axios from "@/api/axios";
 import { Shell } from "./Shell";
 import { Sidebar } from "./Sidebar";
 import { MobileNavigation } from "./MobileNavigation";
+import { Loader2 } from "lucide-react";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -16,7 +17,7 @@ interface LayoutProps {
 export const LoadingScreen: React.FC = () => {
   return (
     <div className="absolute inset-0 flex min-h-screen w-full items-center justify-center">
-      loading..
+      <Loader2 className="text-primary h-10 w-10 animate-spin" />
     </div>
   );
 };
