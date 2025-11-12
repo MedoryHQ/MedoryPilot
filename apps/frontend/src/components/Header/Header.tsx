@@ -21,7 +21,7 @@ export const Header = () => {
       initial="hidden"
       animate="visible"
       custom={0}
-      className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 "
+      className="fixed top-0 md:top-4 left-0 right-0 z-50 flex justify-center md:px-6"
     >
       <Shell className="items-center" variant="wrapper">
         <Link className="p-0! h-min" href="/">
