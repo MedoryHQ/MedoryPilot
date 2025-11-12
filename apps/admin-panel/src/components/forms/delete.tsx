@@ -33,10 +33,10 @@ export function DeleteDialog({
   itemId,
   onSuccess,
   onError,
-  titleKey = "headers.areYouSure",
-  descriptionKey = "headers.deleteDescription",
-  cancelKey = "headers.cancel",
-  deleteKey = "headers.delete",
+  titleKey = "heros.areYouSure",
+  descriptionKey = "heros.deleteDescription",
+  cancelKey = "heros.cancel",
+  deleteKey = "heros.delete",
   className
 }: DeleteDialogProps) {
   const { t } = useTranslation();

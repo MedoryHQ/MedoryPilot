@@ -466,10 +466,10 @@ export function GenericEntityForm<
                 )
               }
               activeLabel={toUpperCase(
-                t(f?.activeLabel ?? "headers.form.active")
+                t(f?.activeLabel ?? "heros.form.active")
               )}
               inactiveLabel={toUpperCase(
-                t(f?.inactiveLabel ?? "headers.form.inactive")
+                t(f?.inactiveLabel ?? "heros.form.inactive")
               )}
             />
           </div>
