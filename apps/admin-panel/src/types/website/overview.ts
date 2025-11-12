@@ -1,6 +1,6 @@
 export interface OverviewResponse {
   data: {
-    headers: number;
+    heros: number;
     introduce: number;
     newses: number;
     services: number;

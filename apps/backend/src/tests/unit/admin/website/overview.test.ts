@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 
 jest.mock("@/config", () => ({
   prisma: {
-    header: { count: jest.fn() },
+    hero: { count: jest.fn() },
     introduce: { count: jest.fn() },
     news: { count: jest.fn() },
     service: { count: jest.fn() },
@@ -55,7 +55,7 @@ describe("Admin Overview routes — /admin/overview", () => {
 
   describe("GET /admin/overview", () => {
     it("returns overview counts successfully", async () => {
-      (prisma.header.count as jest.Mock).mockResolvedValueOnce(5);
+      (prisma.hero.count as jest.Mock).mockResolvedValueOnce(5);
       (prisma.introduce.count as jest.Mock).mockResolvedValueOnce(1);
       (prisma.news.count as jest.Mock).mockResolvedValueOnce(10);
       (prisma.service.count as jest.Mock).mockResolvedValueOnce(7);
@@ -76,7 +76,7 @@ describe("Admin Overview routes — /admin/overview", () => {
 
       expect(res.status).toBe(200);
       expect(res.body.data).toEqual({
-        headers: 5,
+        heros: 5,
         introduce: 1,
         newses: 10,
         services: 7,
@@ -94,7 +94,7 @@ describe("Admin Overview routes — /admin/overview", () => {
         videos: 11,
       });
 
-      expect(prisma.header.count).toHaveBeenCalled();
+      expect(prisma.hero.count).toHaveBeenCalled();
       expect(prisma.introduce.count).toHaveBeenCalled();
       expect(prisma.news.count).toHaveBeenCalled();
       expect(prisma.service.count).toHaveBeenCalled();
@@ -113,7 +113,7 @@ describe("Admin Overview routes — /admin/overview", () => {
     });
 
     it("handles DB errors gracefully", async () => {
-      (prisma.header.count as jest.Mock).mockRejectedValueOnce(
+      (prisma.hero.count as jest.Mock).mockRejectedValueOnce(
         new Error("DB error")
       );
 
