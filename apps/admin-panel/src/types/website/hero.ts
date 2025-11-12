@@ -1,40 +1,40 @@
 import { File, Language } from "../global";
 
-export interface HeadersResponse {
-  data: Header[];
+export interface HerosResponse {
+  data: Hero[];
   count: number;
 }
 
-export interface HeaderResponse {
-  data: Header;
+export interface HeroResponse {
+  data: Hero;
 }
 
-export interface Header {
+export interface Hero {
   id: string;
   logo: File | null;
   experience?: number;
   visits?: number;
   active: boolean | null;
-  translations: HeaderTranslation[];
+  translations: HeroTranslation[];
   createdAt: string;
   updatedAt: string;
 }
 
-export interface HeaderTranslation {
+export interface HeroTranslation {
   id: string;
   name: string;
   position: string;
   headline: string;
   description: string;
-  header: Header;
-  headerId: string;
+  hero: Hero;
+  heroId: string;
   language: Language;
   languageId: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export type HeaderFormValues = {
+export type HeroFormValues = {
   logo: {
     name: string;
     path: string;

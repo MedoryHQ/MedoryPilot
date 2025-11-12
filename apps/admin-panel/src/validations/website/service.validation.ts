@@ -10,13 +10,13 @@ export const serviceSchema = (
     icon: FileSchema.nullable().refine(
       (file) => file === null || typeof file === "object",
       {
-        message: t("headers.errors.iconRequired", lang)
+        message: t("service.errors.iconRequired", lang)
       }
     ),
     background: FileSchema.nullable().refine(
       (file) => file === null || typeof file === "object",
       {
-        message: t("headers.errors.backgroundRequired", lang)
+        message: t("service.errors.backgroundRequired", lang)
       }
     ),
     translations: z.object({
