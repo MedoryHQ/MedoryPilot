@@ -4,10 +4,10 @@ import { useTranslation } from "react-i18next";
 import { buildMapper, toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
 import type { FieldConfig, FormProps } from "@/types";
-import type { HeaderFormValues } from "@/validations/website/header.validation";
-import { headerSchema } from "@/validations/website/header.validation";
+import type { HeroFormValues } from "@/validations/website/hero.validation";
+import { heroSchema } from "@/validations/website/hero.validation";
 
-const defaultValues: HeaderFormValues = {
+const defaultValues: HeroFormValues = {
   logo: null,
   active: false,
   translations: {
@@ -16,14 +16,14 @@ const defaultValues: HeaderFormValues = {
   }
 };
 
-export const HeaderForm: React.FC<FormProps> = ({
+export const HeroForm: React.FC<FormProps> = ({
   mode,
   id = null,
-  onSuccessNavigate = "/landing/headers"
+  onSuccessNavigate = "/landing/heros"
 }) => {
   const { t, i18n } = useTranslation();
 
-  const mapFetchedToForm = buildMapper<HeaderFormValues>({
+  const mapFetchedToForm = buildMapper<HeroFormValues>({
     fileFields: ["logo"],
     copyFields: ["active", "experience", "visits"],
     translations: {
@@ -31,71 +31,71 @@ export const HeaderForm: React.FC<FormProps> = ({
     }
   });
   const fetchEntity = async (entityId?: string) => {
-    const res = await axios.get(`/header/${entityId}`);
+    const res = await axios.get(`/hero/${entityId}`);
     return res.data?.data ?? res.data;
   };
 
-  const createEntity = async (payload: HeaderFormValues) => {
-    await axios.post("/header", payload);
+  const createEntity = async (payload: HeroFormValues) => {
+    await axios.post("/hero", payload);
   };
 
-  const updateEntity = async (entityId: string, payload: HeaderFormValues) => {
-    await axios.put(`/header/${entityId}`, payload);
+  const updateEntity = async (entityId: string, payload: HeroFormValues) => {
+    await axios.put(`/hero/${entityId}`, payload);
   };
 
   const deleteEntity = async (entityId: string) => {
-    await axios.delete(`/header/${entityId}`);
+    await axios.delete(`/hero/${entityId}`);
   };
 
   const rightSections = [
     {
       key: "settings",
-      title: toUpperCase(t("headers.form.settings")),
+      title: toUpperCase(t("heros.form.settings")),
       description: undefined,
       fields: [
         {
           kind: "simple",
           name: "active",
-          label: "headers.form.status",
-          description: "headers.form.statusDescription",
+          label: "heros.form.status",
+          description: "heros.form.statusDescription",
           type: "toggle"
         },
         {
           kind: "simple",
           name: "experience",
-          label: toUpperCase(t("headers.form.experience")),
+          label: toUpperCase(t("heros.form.experience")),
           type: "number",
           props: {
             min: 1,
             max: 100,
             step: 1,
-            placeholder: t("headers.form.experience"),
+            placeholder: t("heros.form.experience"),
             fullWidth: true
           }
         },
         {
           kind: "simple",
           name: "visits",
-          label: toUpperCase(t("headers.form.visits")),
+          label: toUpperCase(t("heros.form.visits")),
           type: "number",
           props: {
             min: 1,
             max: 100,
             step: 1,
-            placeholder: t("headers.form.visits"),
+            placeholder: t("heros.form.visits"),
             fullWidth: true
           }
         }
-      ] as FieldConfig<HeaderFormValues>[]
+      ] as FieldConfig<HeroFormValues>[]
     },
     {
       key: "logo",
-      title: toUpperCase(t("headers.form.logo")),
+      title: toUpperCase(t("heros.form.logo")),
       fields: [
         {
           kind: "simple",
           name: "logo",
-          label: toUpperCase(t("headers.form.logoLabel")),
+          label: toUpperCase(t("heros.form.logoLabel")),
           type: "media",
           props: {
             maxSizeMB: 5,
@@ -103,16 +103,16 @@ export const HeaderForm: React.FC<FormProps> = ({
             previewHeight: "h-[248px]"
           }
         }
-      ] as FieldConfig<HeaderFormValues>[]
+      ] as FieldConfig<HeroFormValues>[]
     }
   ];
 
   return (
-    <GenericEntityForm<HeaderFormValues>
-      resourceName="headers"
+    <GenericEntityForm<HeroFormValues>
+      resourceName="heros"
       mode={mode}
       id={id ?? undefined}
-      schema={headerSchema(t, i18n.language as "en" | "ka")}
+      schema={heroSchema(t, i18n.language as "en" | "ka")}
       defaultValues={defaultValues}
       fetchEntity={fetchEntity}
       createEntity={createEntity}
@@ -123,27 +123,27 @@ export const HeaderForm: React.FC<FormProps> = ({
         [
           {
             name: "name",
-            label: toUpperCase(t("headers.form.name")),
-            placeholder: toUpperCase(t("headers.form.name")),
+            label: toUpperCase(t("heros.form.name")),
+            placeholder: toUpperCase(t("heros.form.name")),
             required: true
           },
           {
             name: "position",
-            label: toUpperCase(t("headers.form.position")),
-            placeholder: toUpperCase(t("headers.form.position")),
+            label: toUpperCase(t("heros.form.position")),
+            placeholder: toUpperCase(t("heros.form.position")),
             required: true
           },
           {
             name: "headline",
-            label: toUpperCase(t("headers.form.headline")),
-            placeholder: toUpperCase(t("headers.form.headline")),
+            label: toUpperCase(t("heros.form.headline")),
+            placeholder: toUpperCase(t("heros.form.headline")),
             fullWidth: true,
             required: true
           },
           {
             name: "description",
-            label: toUpperCase(t("headers.form.description")),
-            placeholder: toUpperCase(t("headers.form.description")),
+            label: toUpperCase(t("heros.form.description")),
+            placeholder: toUpperCase(t("heros.form.description")),
             type: "textarea",
             rows: 5,
             maxLength: 500
@@ -158,4 +158,4 @@ export const HeaderForm: React.FC<FormProps> = ({
   );
 };
 
-export default HeaderForm;
+export default HeroForm;

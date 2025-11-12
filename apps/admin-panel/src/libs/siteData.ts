@@ -125,9 +125,9 @@ export const platformServices = [
 
 export const overviewQuickActions = (t: (key: string) => string) => [
   {
-    key: "headers",
-    label: toUpperCase(t("overview.headers")),
-    description: toUpperCase(t("overview.headersDescription")),
+    key: "heros",
+    label: toUpperCase(t("overview.heros")),
+    description: toUpperCase(t("overview.herosDescription")),
     icon: Layout,
     color: "blue-500"
   },
@@ -320,7 +320,7 @@ export const color_map: Record<
 };
 
 export const overviewStatsConfig = [
-  { key: "headers", label: "overview.headers", icon: Layout },
+  { key: "heros", label: "overview.heros", icon: Layout },
   { key: "introduce", label: "overview.introduce", icon: User },
   { key: "newses", label: "overview.news", icon: Newspaper },
   { key: "services", label: "overview.services", icon: Settings },

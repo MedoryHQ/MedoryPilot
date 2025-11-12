@@ -89,9 +89,9 @@ export const useMenuItems = (): SidebarItem[] => {
           label: toUpperCase(t("menu.overview"))
         },
         {
-          key: "headers",
-          href: "landing/headers",
-          label: toUpperCase(t("overview.headers")),
+          key: "heros",
+          href: "landing/heros",
+          label: toUpperCase(t("overview.heros")),
           icon: <Layout className="h-4 w-4" />
         },
         {

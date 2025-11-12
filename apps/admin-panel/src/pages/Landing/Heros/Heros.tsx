@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Badge, Button, DataTable, Skeleton } from "@/components/ui";
-import { useGetHeaders } from "@/libs/queries";
+import { useGetHeros } from "@/libs/queries";
 import {
   formatDate,
   getFileUrl,
@@ -12,75 +12,75 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ImageIcon, Plus } from "lucide-react";
 import { Column, FilterConfig } from "@/types/ui";
-import { Header } from "@/types/website";
+import { Hero } from "@/types/website";
 
-const Headers = () => {
+const Heros = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { filledSearchParams } = getPaginationFields(searchParams);
-  const { data, refetch, isFetching } = useGetHeaders(filledSearchParams);
+  const { data, refetch, isFetching } = useGetHeros(filledSearchParams);
 
   const filters: FilterConfig[] = [
     {
       key: "active",
-      label: toUpperCase(t("headers.filters.status")),
+      label: toUpperCase(t("heros.filters.status")),
       type: "select",
       options: [
-        { label: toUpperCase(t("headers.active")), value: "true" },
-        { label: toUpperCase(t("headers.inactive")), value: "false" }
+        { label: toUpperCase(t("heros.active")), value: "true" },
+        { label: toUpperCase(t("heros.inactive")), value: "false" }
       ]
     },
     {
       key: "logo",
-      label: toUpperCase(t("headers.filters.hasImage")),
+      label: toUpperCase(t("heros.filters.hasImage")),
       type: "select",
       options: [
-        { label: toUpperCase(t("headers.filters.hasImage")), value: "true" },
-        { label: toUpperCase(t("headers.filters.noImage")), value: "false" }
+        { label: toUpperCase(t("heros.filters.hasImage")), value: "true" },
+        { label: toUpperCase(t("heros.filters.noImage")), value: "false" }
       ]
     },
     {
       key: "experience",
-      label: toUpperCase(t("headers.filters.hasExperience")),
+      label: toUpperCase(t("heros.filters.hasExperience")),
       type: "select",
       options: [
         {
-          label: toUpperCase(t("headers.filters.hasExperience")),
+          label: toUpperCase(t("heros.filters.hasExperience")),
           value: "true"
         },
         {
-          label: toUpperCase(t("headers.filters.noExperience")),
+          label: toUpperCase(t("heros.filters.noExperience")),
           value: "false"
         }
       ]
     },
     {
       key: "visits",
-      label: toUpperCase(t("headers.filters.hasVisits")),
+      label: toUpperCase(t("heros.filters.hasVisits")),
       type: "select",
       options: [
         {
-          label: toUpperCase(t("headers.filters.hasVisits")),
+          label: toUpperCase(t("heros.filters.hasVisits")),
           value: "true"
         },
         {
-          label: toUpperCase(t("headers.filters.noVisits")),
+          label: toUpperCase(t("heros.filters.noVisits")),
           value: "false"
         }
       ]
     }
   ];
 
-  const columns: Column<Header>[] = [
+  const columns: Column<Hero>[] = [
     {
-      key: "header",
-      label: toUpperCase(t("headers.header")),
+      key: "hero",
+      label: toUpperCase(t("heros.hero")),
       render: (item) => {
         const tr = getTranslatedObject(item.translations, i18n.language);
         return (
           <div className="flex items-center gap-4">
-            <div className="border-border bg-muted/10 flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border">
+            <div className="border-border bg-muted/10 flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border">
               {item.logo ? (
                 <img
                   src={getFileUrl(item.logo.path)}
@@ -102,11 +102,11 @@ const Headers = () => {
           </div>
         );
       },
-      mobileLabel: toUpperCase(t("headers.name"))
+      mobileLabel: toUpperCase(t("heros.name"))
     },
     {
       key: "position",
-      label: toUpperCase(t("headers.position")),
+      label: toUpperCase(t("heros.position")),
       render: (item) => {
         const tr = getTranslatedObject(item.translations, i18n.language);
         return <span className="text-foreground">{tr.position}</span>;
@@ -114,7 +114,7 @@ const Headers = () => {
     },
     {
       key: "experience",
-      label: toUpperCase(t("headers.experience")),
+      label: toUpperCase(t("heros.experience")),
       render: (item) =>
         item.experience ? (
           <Badge variant="secondary" className="px-3 py-1">
@@ -128,7 +128,7 @@ const Headers = () => {
 
     {
       key: "visits",
-      label: toUpperCase(t("headers.visits")),
+      label: toUpperCase(t("heros.visits")),
       render: (item) =>
         item.visits ? (
           <Badge variant="secondary" className="px-3 py-1">
@@ -141,7 +141,7 @@ const Headers = () => {
     },
     {
       key: "translationsCount",
-      label: toUpperCase(t("headers.translations")),
+      label: toUpperCase(t("heros.translations")),
       render: (item) => (
         <Badge variant="secondary" className="px-3 py-1">
           {item.translations?.length}
@@ -151,7 +151,7 @@ const Headers = () => {
     },
     {
       key: "active",
-      label: toUpperCase(t("headers.status")),
+      label: toUpperCase(t("heros.status")),
       sortable: true,
       render: (item) => (
         <Badge
@@ -159,8 +159,8 @@ const Headers = () => {
           className="px-3 py-1"
         >
           {item.active
-            ? toUpperCase(t("headers.active"))
-            : toUpperCase(t("headers.inactive"))}
+            ? toUpperCase(t("heros.active"))
+            : toUpperCase(t("heros.inactive"))}
         </Badge>
       ),
       className: "text-center"
@@ -176,19 +176,19 @@ const Headers = () => {
       <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center">
         <div>
           <h1 className="text-foreground mb-2 text-[20px] font-semibold md:text-3xl">
-            {toUpperCase(t("headers.management"))}
+            {toUpperCase(t("heros.management"))}
           </h1>
           <p className="text-muted-foreground">
-            {toUpperCase(t("headers.managementDescription"))}
+            {toUpperCase(t("heros.managementDescription"))}
           </p>
         </div>
         <Button
           size="lg"
           className="premium-button floating-action flex items-center gap-2 shadow-md transition-all hover:shadow-lg"
-          onClick={() => navigate("/landing/headers/create")}
+          onClick={() => navigate("/landing/heros/create")}
         >
           <Plus className="h-5 w-5" />
-          {toUpperCase(t("headers.addHeader"))}
+          {toUpperCase(t("heros.addHero"))}
         </Button>
       </div>
 
@@ -197,11 +197,11 @@ const Headers = () => {
         columns={columns}
         refetch={refetch}
         isLoading={isFetching}
-        deleteEndpoint="header"
+        deleteEndpoint="hero"
         filters={filters}
         total={data?.count}
-        editUrl="/landing/headers/edit"
-        emptyMessage={toUpperCase(t("headers.noHeadersFound"))}
+        editUrl="/landing/heros/edit"
+        emptyMessage={toUpperCase(t("heros.noHerosFound"))}
         mobileCardRender={(item) => {
           if (isFetching || !item) {
             return (
@@ -220,7 +220,7 @@ const Headers = () => {
                 <div className="border-border grid grid-cols-2 gap-3 border-t pt-3">
                   <div>
                     <span className="text-muted-foreground text-sm">
-                      {toUpperCase(t("headers.position"))}
+                      {toUpperCase(t("heros.position"))}
                     </span>
                     <div className="mt-1">
                       <Skeleton className="h-5 w-20" />
@@ -229,7 +229,7 @@ const Headers = () => {
 
                   <div>
                     <span className="text-muted-foreground text-sm">
-                      {toUpperCase(t("headers.status"))}
+                      {toUpperCase(t("heros.status"))}
                     </span>
                     <div className="mt-1 flex justify-end">
                       <Skeleton className="h-6 w-16" />
@@ -238,7 +238,7 @@ const Headers = () => {
 
                   <div>
                     <span className="text-muted-foreground text-sm">
-                      {toUpperCase(t("headers.translations"))}
+                      {toUpperCase(t("heros.translations"))}
                     </span>
                     <div className="mt-1">
                       <Skeleton className="h-6 w-12" />
@@ -247,7 +247,7 @@ const Headers = () => {
 
                   <div>
                     <span className="text-muted-foreground text-sm">
-                      {toUpperCase(t("headers.created"))}
+                      {toUpperCase(t("heros.created"))}
                     </span>
                     <div className="mt-1 text-sm">
                       <Skeleton className="h-4 w-28" />
@@ -282,25 +282,25 @@ const Headers = () => {
               <div className="border-border grid grid-cols-2 gap-3 border-t pt-3">
                 <div>
                   <span className="text-muted-foreground text-sm">
-                    {toUpperCase(t("headers.position"))}
+                    {toUpperCase(t("heros.position"))}
                   </span>
                   <p className="mt-1 font-medium">{tr?.position}</p>
                 </div>
                 <div>
                   <span className="text-muted-foreground text-sm">
-                    {toUpperCase(t("headers.status"))}
+                    {toUpperCase(t("heros.status"))}
                   </span>
                   <div className="mt-1">
                     <Badge variant={item?.active ? "default" : "outline"}>
                       {item?.active
-                        ? toUpperCase(t("headers.active"))
-                        : toUpperCase(t("headers.inactive"))}
+                        ? toUpperCase(t("heros.active"))
+                        : toUpperCase(t("heros.inactive"))}
                     </Badge>
                   </div>
                 </div>
                 <div>
                   <span className="text-muted-foreground text-sm">
-                    {toUpperCase(t("headers.translations"))}
+                    {toUpperCase(t("heros.translations"))}
                   </span>
                   <div className="mt-1">
                     <Badge variant="secondary">
@@ -310,7 +310,7 @@ const Headers = () => {
                 </div>
                 <div>
                   <span className="text-muted-foreground text-sm">
-                    {toUpperCase(t("headers.created"))}
+                    {toUpperCase(t("heros.created"))}
                   </span>
                   <p className="mt-1 text-sm">
                     {formatDate(item?.createdAt, i18n.language, true)}
@@ -325,9 +325,9 @@ const Headers = () => {
   );
 };
 
-export const HeadersNavigationRoute = {
-  element: <Headers />,
-  path: "/landing/headers"
+export const HerosNavigationRoute = {
+  element: <Heros />,
+  path: "/landing/heros"
 };
 
-export default Headers;
+export default Heros;
