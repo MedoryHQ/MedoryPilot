@@ -1,4 +1,4 @@
-model Header {
+model Hero {
   id String @id @default(uuid(7)) @db.Uuid
 
   logo       File?
@@ -6,12 +6,12 @@ model Header {
   experience Int?
   visits     Int?
 
-  translations HeaderTranslation[]
+  translations HeroTranslation[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("header")
+  @@map("hero")
 }
 
 model Introduce {

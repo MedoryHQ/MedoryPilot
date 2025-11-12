@@ -1,4 +1,4 @@
-model HeaderTranslation {
+model HeroTranslation {
   id String @id @default(uuid(7)) @db.Uuid
 
   name        String
@@ -6,8 +6,8 @@ model HeaderTranslation {
   headline    String
   description String
 
-  header   Header @relation(fields: [headerId], references: [id], onDelete: Cascade)
-  headerId String @db.Uuid
+  hero   Hero   @relation(fields: [heroId], references: [id], onDelete: Cascade)
+  heroId String @db.Uuid
 
   language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
   languageId String   @db.Uuid
@@ -15,8 +15,8 @@ model HeaderTranslation {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([headerId, languageId])
-  @@map("header_translations")
+  @@unique([heroId, languageId])
+  @@map("hero_translations")
 }
 
 model IntroduceTranslation {

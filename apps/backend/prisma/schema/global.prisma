@@ -5,7 +5,7 @@ model Language {
   name  String
   order Int    @default(autoincrement())
 
-  headerTranslations           HeaderTranslation[]
+  heroTranslations             HeroTranslation[]
   introduceTranslations        IntroduceTranslation[]
   newsTranslations             NewsTranslation[]
   serviceTranslations          ServiceTranslation[]
@@ -36,8 +36,8 @@ model File {
   size  Int
   order Int?
 
-  header          Header?        @relation(fields: [headerId], references: [id], onDelete: Cascade)
-  headerId        String?        @unique @db.Uuid
+  hero            Hero?          @relation(fields: [heroId], references: [id], onDelete: Cascade)
+  heroId          String?        @unique @db.Uuid
   contact         Contact?       @relation(fields: [contactId], references: [id], onDelete: Cascade)
   contactId       String?        @unique @db.Uuid
   visit           Visit?         @relation(fields: [visitId], references: [id])
