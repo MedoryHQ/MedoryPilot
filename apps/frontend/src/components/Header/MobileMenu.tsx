@@ -27,7 +27,7 @@ const MobileMenu = ({
           className="fixed inset-0 bg-white z-40 lg:hidden"
         >
           <button
-            className="absolute top-[25px] right-[25px] p-2 hover:bg-primary/10 rounded-lg transition-colors"
+            className="absolute top-2 right-4 p-2 hover:bg-primary/10 rounded-lg transition-colors"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             <X className="w-5 h-5 text-primary" />
