@@ -1,11 +1,11 @@
 import { uuidValidation, validateTranslations } from "@/validations/shared";
 import { body } from "express-validator";
 
-export const fetchHeaderValidation = [uuidValidation()];
+export const fetchHeroValidation = [uuidValidation()];
 
-export const deleteHeaderValidation = [uuidValidation()];
+export const deleteHeroValidation = [uuidValidation()];
 
-export const createHeaderValidation = [
+export const createHeroValidation = [
   body("active").optional().isBoolean().withMessage("invalidActiveType"),
   body("experience").optional().isInt().withMessage("invalidExperience"),
   body("visits").optional().isInt().withMessage("invalidVisits"),
@@ -25,7 +25,4 @@ export const createHeaderValidation = [
     ),
 ];
 
-export const updateHeaderValidation = [
-  uuidValidation(),
-  ...createHeaderValidation,
-];
+export const updateHeroValidation = [uuidValidation(), ...createHeroValidation];

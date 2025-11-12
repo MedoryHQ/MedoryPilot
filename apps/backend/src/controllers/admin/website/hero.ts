@@ -12,9 +12,9 @@ import {
   parseFilters,
 } from "@/utils";
 import { Prisma } from "@prisma/client";
-import { CreateHeaderDTO, UpdateHeaderDTO } from "@/types/admin";
+import { CreateHeroDTO, UpdateHeroDTO } from "@/types/admin";
 
-export const fetchHeaders = async (
+export const fetchHeros = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -24,7 +24,7 @@ export const fetchHeaders = async (
     const filters = parseFilters(req);
     const { active, logo, experience, visits } = filters;
 
-    const where = generateWhereInput<Prisma.HeaderWhereInput>(
+    const where = generateWhereInput<Prisma.HeroWhereInput>(
       search,
       {
         "translations.some.name": "insensitive",
@@ -64,8 +64,8 @@ export const fetchHeaders = async (
       }
     );
 
-    const [headers, count] = await Promise.all([
-      prisma.header.findMany({
+    const [heros, count] = await Promise.all([
+      prisma.hero.findMany({
         where,
         skip,
         take,
@@ -83,21 +83,21 @@ export const fetchHeaders = async (
           },
         },
       }),
-      prisma.header.count({ where }),
+      prisma.hero.count({ where }),
     ]);
 
-    return res.status(200).json({ data: headers, count });
+    return res.status(200).json({ data: heros, count });
   } catch (error) {
-    logCatchyError("fetch_header_exception", error, {
+    logCatchyError("fetch_hero_exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_fetch_header_exception",
+      event: "admin_fetch_hero_exception",
     });
     next(error);
   }
 };
 
-export const fetchHeader = async (
+export const fetchHero = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -105,7 +105,7 @@ export const fetchHeader = async (
   try {
     const { id } = req.params;
 
-    const header = await prisma.header.findUnique({
+    const hero = await prisma.hero.findUnique({
       where: {
         id,
       },
@@ -123,29 +123,29 @@ export const fetchHeader = async (
       },
     });
 
-    if (!header) {
-      logWarn("Header fetch failed: header not found", {
+    if (!hero) {
+      logWarn("Hero fetch failed: hero not found", {
         ip: (req as any).hashedIp,
         id: (req as any).userId,
         path: req.path,
 
-        event: "header_fetch_failed",
+        event: "hero_fetch_failed",
       });
-      return sendError(req, res, 404, "headerNotFound");
+      return sendError(req, res, 404, "heroNotFound");
     }
 
-    return res.status(200).json({ data: header });
+    return res.status(200).json({ data: hero });
   } catch (error) {
-    logCatchyError("fetch_header_exception", error, {
+    logCatchyError("fetch_hero_exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_fetch_header_exception",
+      event: "admin_fetch_hero_exception",
     });
     next(error);
   }
 };
 
-export const deleteHeader = async (
+export const deleteHero = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -153,77 +153,77 @@ export const deleteHeader = async (
   try {
     const { id } = req.params;
 
-    logInfo("Header delete attempt", {
+    logInfo("Hero delete attempt", {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       path: req.path,
-      event: "header_delete_attempt",
+      event: "hero_delete_attempt",
     });
 
-    const header = await prisma.header.delete({
+    const hero = await prisma.hero.delete({
       where: {
         id,
       },
     });
 
-    if (!header) {
-      logWarn("Header delete failed: header not found", {
+    if (!hero) {
+      logWarn("Hero delete failed: hero not found", {
         ip: (req as any).hashedIp,
         id: (req as any).userId,
         path: req.path,
 
-        event: "header_delete_failed",
+        event: "hero_delete_failed",
       });
-      return sendError(req, res, 404, "headerNotFound");
+      return sendError(req, res, 404, "heroNotFound");
     }
 
-    logInfo("Header deleted successfully", {
+    logInfo("Hero deleted successfully", {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       path: req.path,
-      event: "header_deleted",
+      event: "hero_deleted",
     });
 
     return res.status(200).json({
-      message: getResponseMessage("headerDeleted"),
+      message: getResponseMessage("heroDeleted"),
     });
   } catch (error) {
-    logCatchyError("delete_header_exception", error, {
+    logCatchyError("delete_hero_exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_delete_header_exception",
+      event: "admin_delete_hero_exception",
     });
     next(error);
   }
 };
 
-export const createHeader = async (
+export const createHero = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const { translations, logo, active, experience, visits } =
-      req.body as CreateHeaderDTO;
+      req.body as CreateHeroDTO;
 
-    logInfo("Header create attempt", {
+    logInfo("Hero create attempt", {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       path: req.path,
-      event: "header_create_attempt",
+      event: "hero_create_attempt",
     });
 
     if (active) {
-      const activeHeader = await prisma.header.count({
+      const activeHero = await prisma.hero.count({
         where: { active: true },
       });
-      if (activeHeader) {
-        return sendError(req, res, 400, "onlyOneActiveHeaderAllowed");
+      if (activeHero) {
+        return sendError(req, res, 400, "onlyOneActiveHeroAllowed");
       }
     }
 
     const translationsToCreate = Prisma.validator<
-      Prisma.HeaderTranslationCreateWithoutHeaderInput[]
+      Prisma.HeroTranslationCreateWithoutHeroInput[]
     >()(createTranslations(translations) as any);
 
     const logoToCreate = logo
@@ -234,7 +234,7 @@ export const createHeader = async (
         }
       : undefined;
 
-    const header = await prisma.header.create({
+    const hero = await prisma.hero.create({
       data: {
         active: !!active,
         ...(experience ? { experience } : {}),
@@ -246,27 +246,27 @@ export const createHeader = async (
       },
     });
 
-    logInfo("Header created successfully", {
+    logInfo("Hero created successfully", {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       path: req.path,
-      event: "header_created",
+      event: "hero_created",
     });
 
     return res.status(201).json({
-      data: header,
+      data: hero,
     });
   } catch (error) {
-    logCatchyError("Create header exception", error, {
+    logCatchyError("Create hero exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_create_header_exception",
+      event: "admin_create_hero_exception",
     });
     next(error);
   }
 };
 
-export const updateHeader = async (
+export const updateHero = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -275,17 +275,17 @@ export const updateHeader = async (
     const { id } = req.params;
 
     const { translations, logo, active, visits, experience } =
-      req.body as UpdateHeaderDTO;
+      req.body as UpdateHeroDTO;
 
-    logInfo("Header update attempt", {
+    logInfo("Hero update attempt", {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       path: req.path,
-      event: "header_update_attempt",
+      event: "hero_update_attempt",
     });
 
     if (active) {
-      const activeHeader = await prisma.header.count({
+      const activeHero = await prisma.hero.count({
         where: {
           active: true,
           id: {
@@ -293,13 +293,13 @@ export const updateHeader = async (
           },
         },
       });
-      if (activeHeader) {
-        return sendError(req, res, 400, "onlyOneActiveHeaderAllowed");
+      if (activeHero) {
+        return sendError(req, res, 400, "onlyOneActiveHeroAllowed");
       }
     }
 
     const translationsToCreate = Prisma.validator<
-      Prisma.HeaderTranslationCreateWithoutHeaderInput[]
+      Prisma.HeroTranslationCreateWithoutHeroInput[]
     >()(createTranslations(translations) as any);
     const logoToCreate = logo
       ? {
@@ -309,7 +309,7 @@ export const updateHeader = async (
         }
       : undefined;
 
-    const findHeader = await prisma.header.findUnique({
+    const findHero = await prisma.hero.findUnique({
       where: {
         id,
       },
@@ -318,18 +318,18 @@ export const updateHeader = async (
       },
     });
 
-    if (!findHeader) {
-      logWarn("Header update failed: header not found", {
+    if (!findHero) {
+      logWarn("Hero update failed: hero not found", {
         ip: (req as any).hashedIp,
         id: (req as any).userId,
         path: req.path,
 
-        event: "header_update_failed",
+        event: "hero_update_failed",
       });
-      return sendError(req, res, 404, "headerNotFound");
+      return sendError(req, res, 404, "heroNotFound");
     }
 
-    const header = await prisma.header.update({
+    const hero = await prisma.hero.update({
       where: {
         id,
       },
@@ -342,31 +342,31 @@ export const updateHeader = async (
         },
         logo: logoToCreate
           ? {
-              delete: findHeader.logo ? {} : undefined,
+              delete: findHero.logo ? {} : undefined,
               create: logoToCreate,
             }
-          : findHeader.logo
+          : findHero.logo
           ? { delete: {} }
           : undefined,
         ...(typeof active === "boolean" ? { active } : {}),
       },
     });
 
-    logInfo("Header updated successfully", {
+    logInfo("Hero updated successfully", {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
       path: req.path,
-      event: "header_updated",
+      event: "hero_updated",
     });
 
     return res.json({
-      data: header,
+      data: hero,
     });
   } catch (error) {
-    logCatchyError("Update header exception", error, {
+    logCatchyError("Update hero exception", error, {
       ip: (req as any).hashedIp,
       id: (req as any).userId,
-      event: "admin_update_header_exception",
+      event: "admin_update_hero_exception",
     });
     next(error);
   }

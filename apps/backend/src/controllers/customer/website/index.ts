@@ -1,4 +1,4 @@
-export * from "./header";
+export * from "./hero";
 export * from "./FAQ";
 export * from "./introduce";
 export * from "./service";
