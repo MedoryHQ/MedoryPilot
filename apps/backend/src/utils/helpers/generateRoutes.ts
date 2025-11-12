@@ -6,7 +6,7 @@ import { determineCustomerIp } from "@/middlewares/customer/ip";
 
 const adminRouteList = [
   { path: "/auth", router: AdminRoutes.adminAuthRouter },
-  { path: "/header", router: AdminRoutes.adminHeaderRouter },
+  { path: "/hero", router: AdminRoutes.adminHeroRouter },
   { path: "/overview", router: AdminRoutes.adminOverviewRouter },
   { path: "/tariff", router: AdminRoutes.adminTariffRouter },
   { path: "/faq", router: AdminRoutes.adminFAQRouter },
@@ -29,7 +29,7 @@ const adminRouteList = [
 const customerRouteList = [
   { path: "/docs", router: CustomerRoutes.SwaggerRouter },
   { path: "/auth", router: CustomerRoutes.userAuthRouter },
-  { path: "/header", router: CustomerRoutes.headerRouter },
+  { path: "/hero", router: CustomerRoutes.heroRouter },
   { path: "/faq", router: CustomerRoutes.FAQRouter },
   { path: "/introduce", router: CustomerRoutes.introduceRouter },
   { path: "/service", router: CustomerRoutes.serviceRouter },

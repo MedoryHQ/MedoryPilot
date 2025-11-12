@@ -2,11 +2,11 @@ import request from "supertest";
 import express from "express";
 import cookieParser from "cookie-parser";
 import { prisma } from "@/config";
-import { adminHeaderRouter } from "@/routes/admin/website/header";
+import { adminHeroRouter } from "@/routes/admin/website/hero";
 
 jest.mock("@/config", () => ({
   prisma: {
-    header: {
+    hero: {
       findMany: jest.fn(),
       count: jest.fn(),
       findFirst: jest.fn(),
@@ -42,7 +42,7 @@ jest.mock("@/validations/admin", () => {
   const actual = jest.requireActual("@/validations/admin");
   return {
     ...actual,
-    fetchHeaderValidation: [],
+    fetchHeroValidation: [],
   };
 });
 
@@ -50,17 +50,17 @@ jest.mock("@/utils", () => {
   const actual = jest.requireActual("@/utils");
   const errorMessages = {
     ...((actual as any).errorMessages ?? {}),
-    headerDeleted: {
-      en: "Header deleted successfully",
-      ka: "Header წარმატებით წაიშალა",
+    heroDeleted: {
+      en: "Hero deleted successfully",
+      ka: "Hero წარმატებით წაიშალა",
     },
-    headerNotFound: {
-      en: "Header not found",
-      ka: "Header ვერ მოიძებნა",
+    heroNotFound: {
+      en: "Hero not found",
+      ka: "Hero ვერ მოიძებნა",
     },
-    onlyOneActiveHeaderAllowed: {
-      en: "Only one active header is allowed",
-      ka: "მხოლოდ ერთი აქტიური header არის დაშვებული",
+    onlyOneActiveHeroAllowed: {
+      en: "Only one active hero is allowed",
+      ka: "მხოლოდ ერთი აქტიური hero არის დაშვებული",
     },
   };
 
@@ -109,9 +109,9 @@ jest.mock("@/utils", () => {
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-app.use("/admin/header", adminHeaderRouter);
+app.use("/admin/hero", adminHeroRouter);
 
-const mockHeader = {
+const mockHero = {
   id: "11111111-1111-1111-1111-111111111111",
   active: true,
   logo: { id: "222", path: "/logo.png", name: "Logo", size: 123 },
@@ -176,77 +176,77 @@ afterAll(async () => {
   } catch {}
 });
 
-describe("Admin Header (integration-style) — /admin/header", () => {
+describe("Admin Hero (integration-style) — /admin/hero", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe("GET /admin/header", () => {
-    it("returns header when found", async () => {
-      (prisma.header.findMany as jest.Mock).mockResolvedValueOnce([mockHeader]);
-      (prisma.header.count as jest.Mock).mockResolvedValueOnce(1);
+  describe("GET /admin/hero", () => {
+    it("returns hero when found", async () => {
+      (prisma.hero.findMany as jest.Mock).mockResolvedValueOnce([mockHero]);
+      (prisma.hero.count as jest.Mock).mockResolvedValueOnce(1);
 
-      const res = await request(app).get("/admin/header");
+      const res = await request(app).get("/admin/hero");
 
       expect(res.status).toBe(200);
       expect(res.body).toHaveProperty("data");
       expect(res.body.data).toHaveLength(1);
       expect(res.body.count).toEqual(1);
-      expect(prisma.header.findMany).toHaveBeenCalled();
-      expect(prisma.header.count).toHaveBeenCalled();
+      expect(prisma.hero.findMany).toHaveBeenCalled();
+      expect(prisma.hero.count).toHaveBeenCalled();
     });
 
     it("handles DB error", async () => {
-      (prisma.header.findMany as jest.Mock).mockRejectedValueOnce(
+      (prisma.hero.findMany as jest.Mock).mockRejectedValueOnce(
         new Error("DB error")
       );
 
-      const res = await request(app).get("/admin/header");
+      const res = await request(app).get("/admin/hero");
 
       expect(res.status).toBe(500);
     });
   });
 
-  describe("GET /header/:id", () => {
+  describe("GET /hero/:id", () => {
     it("returns 404 when not found", async () => {
-      (prisma.header.findUnique as jest.Mock).mockResolvedValueOnce(null);
+      (prisma.hero.findUnique as jest.Mock).mockResolvedValueOnce(null);
 
-      const res = await request(app).get("/admin/header/invalidUUID");
+      const res = await request(app).get("/admin/hero/invalidUUID");
 
       expect(res.status).toBe(404);
       expect(res.body).toHaveProperty(
         "error",
-        require("@/utils").errorMessages.headerNotFound
+        require("@/utils").errorMessages.heroNotFound
       );
     });
 
     it("handles DB error", async () => {
-      (prisma.header.findUnique as jest.Mock).mockRejectedValueOnce(
+      (prisma.hero.findUnique as jest.Mock).mockRejectedValueOnce(
         new Error("DB error")
       );
 
-      const res = await request(app).get("/admin/header/some-id");
+      const res = await request(app).get("/admin/hero/some-id");
 
       expect(res.status).toBe(500);
     });
   });
 
-  describe("POST /admin/header", () => {
-    it("creates header successfully", async () => {
-      (prisma.header.create as jest.Mock).mockResolvedValueOnce(mockHeader);
+  describe("POST /admin/hero", () => {
+    it("creates hero successfully", async () => {
+      (prisma.hero.create as jest.Mock).mockResolvedValueOnce(mockHero);
 
-      const res = await request(app).post("/admin/header").send(createPayload);
+      const res = await request(app).post("/admin/hero").send(createPayload);
 
       expect(res.status).toBe(201);
-      expect(res.body.data).toHaveProperty("id", mockHeader.id);
-      expect(prisma.header.create).toHaveBeenCalledTimes(1);
+      expect(res.body.data).toHaveProperty("id", mockHero.id);
+      expect(prisma.hero.create).toHaveBeenCalledTimes(1);
     });
 
     it("returns 400 when translations missing or invalid", async () => {
-      (prisma.header.create as jest.Mock).mockResolvedValueOnce(mockHeader);
+      (prisma.hero.create as jest.Mock).mockResolvedValueOnce(mockHero);
 
       const res = await request(app)
-        .post("/admin/header")
+        .post("/admin/hero")
         .send({ translations: {} });
 
       expect(res.status).toBe(400);
@@ -254,104 +254,104 @@ describe("Admin Header (integration-style) — /admin/header", () => {
     });
   });
 
-  describe("PUT /admin/header/:id", () => {
-    it("updates header successfully", async () => {
-      (prisma.header.findUnique as jest.Mock).mockResolvedValueOnce(mockHeader);
-      (prisma.header.update as jest.Mock).mockResolvedValueOnce({
-        ...mockHeader,
+  describe("PUT /admin/hero/:id", () => {
+    it("updates hero successfully", async () => {
+      (prisma.hero.findUnique as jest.Mock).mockResolvedValueOnce(mockHero);
+      (prisma.hero.update as jest.Mock).mockResolvedValueOnce({
+        ...mockHero,
         active: false,
       });
 
       const res = await request(app)
-        .put(`/admin/header/${mockHeader.id}`)
+        .put(`/admin/hero/${mockHero.id}`)
         .send(updatePayload);
 
       expect(res.status).toBe(200);
       expect(res.body.data).toHaveProperty("active", false);
-      expect(prisma.header.findUnique).toHaveBeenCalledWith(
+      expect(prisma.hero.findUnique).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { id: mockHeader.id },
+          where: { id: mockHero.id },
           include: { logo: true },
         })
       );
-      expect(prisma.header.update).toHaveBeenCalledTimes(1);
+      expect(prisma.hero.update).toHaveBeenCalledTimes(1);
 
-      const updateArg = (prisma.header.update as jest.Mock).mock.calls[0][0];
+      const updateArg = (prisma.hero.update as jest.Mock).mock.calls[0][0];
       expect(updateArg).toHaveProperty("where");
       expect(updateArg).toHaveProperty("data");
     });
 
-    it("returns 404 when header not found", async () => {
-      (prisma.header.findUnique as jest.Mock).mockResolvedValueOnce(null);
+    it("returns 404 when hero not found", async () => {
+      (prisma.hero.findUnique as jest.Mock).mockResolvedValueOnce(null);
 
       const res = await request(app)
-        .put(`/admin/header/${mockHeader.id}`)
+        .put(`/admin/hero/${mockHero.id}`)
         .send(updatePayload);
 
       expect(res.status).toBe(404);
       expect(res.body).toHaveProperty(
         "error",
-        require("@/utils").errorMessages.headerNotFound
+        require("@/utils").errorMessages.heroNotFound
       );
     });
 
     it("returns 400 for invalid UUID id", async () => {
       const res = await request(app)
-        .put("/admin/header/not-a-uuid")
+        .put("/admin/hero/not-a-uuid")
         .send(updatePayload);
       expect(res.status).toBe(400);
       expect(res.body).toHaveProperty("errors");
     });
 
     it("handles DB update error (500)", async () => {
-      (prisma.header.findUnique as jest.Mock).mockResolvedValueOnce(mockHeader);
-      (prisma.header.update as jest.Mock).mockRejectedValueOnce(
+      (prisma.hero.findUnique as jest.Mock).mockResolvedValueOnce(mockHero);
+      (prisma.hero.update as jest.Mock).mockRejectedValueOnce(
         new Error("DB update")
       );
 
       const res = await request(app)
-        .put(`/admin/header/${mockHeader.id}`)
+        .put(`/admin/hero/${mockHero.id}`)
         .send(updatePayload);
       expect(res.status).toBe(500);
     });
   });
 
-  describe("DELETE /admin/header/:id", () => {
-    it("deletes header successfully", async () => {
-      (prisma.header.delete as jest.Mock).mockResolvedValueOnce(mockHeader);
+  describe("DELETE /admin/hero/:id", () => {
+    it("deletes hero successfully", async () => {
+      (prisma.hero.delete as jest.Mock).mockResolvedValueOnce(mockHero);
 
-      const res = await request(app).delete(`/admin/header/${mockHeader.id}`);
+      const res = await request(app).delete(`/admin/hero/${mockHero.id}`);
 
       expect(res.status).toBe(200);
       expect(res.body).toHaveProperty("message");
-      expect(prisma.header.delete).toHaveBeenCalledWith(
-        expect.objectContaining({ where: { id: mockHeader.id } })
+      expect(prisma.hero.delete).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: mockHero.id } })
       );
     });
 
-    it("returns 404 when header not found", async () => {
-      (prisma.header.delete as jest.Mock).mockResolvedValueOnce(null);
+    it("returns 404 when hero not found", async () => {
+      (prisma.hero.delete as jest.Mock).mockResolvedValueOnce(null);
 
-      const res = await request(app).delete(`/admin/header/${mockHeader.id}`);
+      const res = await request(app).delete(`/admin/hero/${mockHero.id}`);
 
       expect(res.status).toBe(404);
       expect(res.body).toHaveProperty(
         "error",
-        require("@/utils").errorMessages.headerNotFound
+        require("@/utils").errorMessages.heroNotFound
       );
     });
 
     it("handles DB delete error (500)", async () => {
-      (prisma.header.delete as jest.Mock).mockRejectedValueOnce(
+      (prisma.hero.delete as jest.Mock).mockRejectedValueOnce(
         new Error("DB delete")
       );
 
-      const res = await request(app).delete(`/admin/header/${mockHeader.id}`);
+      const res = await request(app).delete(`/admin/hero/${mockHero.id}`);
       expect(res.status).toBe(500);
     });
 
     it("returns 400 for invalid UUID id", async () => {
-      const res = await request(app).delete("/admin/header/invalid-id");
+      const res = await request(app).delete("/admin/hero/invalid-id");
       expect(res.status).toBe(400);
       expect(res.body).toHaveProperty("errors");
     });

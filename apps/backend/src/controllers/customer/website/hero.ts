@@ -6,13 +6,13 @@ import {
   sendError,
 } from "@/utils";
 
-export const fetchHeader = async (
+export const fetchHero = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const header = await prisma.header.findFirst({
+    const hero = await prisma.hero.findFirst({
       where: {
         active: true,
       },
@@ -35,15 +35,15 @@ export const fetchHeader = async (
         },
       },
     });
-    if (!header) {
-      logWarn("Header fetch failed: header not found", {
+    if (!hero) {
+      logWarn("Hero fetch failed: hero not found", {
         ip: (req as any).hashedIp,
         id: (req as any).userId,
         path: req.path,
 
-        event: "header_fetch_failed",
+        event: "hero_fetch_failed",
       });
-      return sendError(req, res, 404, "headerNotFound");
+      return sendError(req, res, 404, "heroNotFound");
     }
     const tariff = await prisma.tariff.findFirst({
       where: {
@@ -51,11 +51,11 @@ export const fetchHeader = async (
       },
     });
 
-    return res.status(200).json({ data: header, tariff });
+    return res.status(200).json({ data: hero, tariff });
   } catch (error) {
-    logCatchyError("fetch_header_exception", error, {
+    logCatchyError("fetch_hero_exception", error, {
       ip: (req as any).hashedIp,
-      event: "customer_fetch_header_exception",
+      event: "customer_fetch_hero_exception",
     });
     next(error);
   }

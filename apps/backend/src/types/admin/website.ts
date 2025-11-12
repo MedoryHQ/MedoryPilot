@@ -1,6 +1,6 @@
 import { Translations, File } from "../global";
 
-export interface CreateHeaderDTO {
+export interface CreateHeroDTO {
   logo: File | null;
   active?: boolean;
   experience?: number;
@@ -8,7 +8,7 @@ export interface CreateHeaderDTO {
   translations: Translations;
 }
 
-export interface UpdateHeaderDTO extends CreateHeaderDTO {
+export interface UpdateHeroDTO extends CreateHeroDTO {
   id: string;
 }
 

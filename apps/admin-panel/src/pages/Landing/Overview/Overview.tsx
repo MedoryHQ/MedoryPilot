@@ -26,7 +26,7 @@ const Overview: React.FC = () => {
   const navigate = useNavigate();
 
   const overviewData: OverviewResponse["data"] = data?.data ?? {
-    headers: 0,
+    heros: 0,
     introduce: 0,
     newses: 0,
     services: 0,

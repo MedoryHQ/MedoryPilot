@@ -1,17 +1,17 @@
 /**
  * @swagger
  * tags:
- *   - name: Admin Header
- *     description: Admin endpoints to manage site header (create, read, update, delete)
- *   - name: Customer Header
- *     description: Public endpoint to read current site header
+ *   - name: Admin Hero
+ *     description: Admin endpoints to manage site hero (create, read, update, delete)
+ *   - name: Customer Hero
+ *     description: Public endpoint to read current site hero
  *
- * /admin/header:
+ * /admin/hero:
  *   get:
- *     summary: List headers (admin)
- *     description: Returns a paginated list of headers (includes logo and translations). Requires admin authentication (cookie-based).
+ *     summary: List heros (admin)
+ *     description: Returns a paginated list of heros (includes logo and translations). Requires admin authentication (cookie-based).
  *     tags:
- *       - Admin Header
+ *       - Admin Hero
  *     security:
  *       - cookieAuth: []
  *     parameters:
@@ -37,7 +37,7 @@
  *         description: Ordering (e.g. "asc" or "desc") (optional)
  *     responses:
  *       200:
- *         description: Headers list returned
+ *         description: Heros list returned
  *         content:
  *           application/json:
  *             schema:
@@ -46,7 +46,7 @@
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/HeaderItem'
+ *                     $ref: '#/components/schemas/HeroItem'
  *                 count:
  *                   type: integer
  *                   example: 1
@@ -58,10 +58,10 @@
  *         $ref: '#/components/responses/InternalError'
  *
  *   post:
- *     summary: Create header
- *     description: Creates a new header with translations and optional logo. If `active` is true and another header is already active the request will fail (validation prevents multiple active headers).
+ *     summary: Create hero
+ *     description: Creates a new hero with translations and optional logo. If `active` is true and another hero is already active the request will fail (validation prevents multiple active heros).
  *     tags:
- *       - Admin Header
+ *       - Admin Hero
  *     security:
  *       - cookieAuth: []
  *     requestBody:
@@ -69,14 +69,14 @@
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/CreateHeaderRequest'
+ *             $ref: '#/components/schemas/CreateHeroRequest'
  *     responses:
  *       201:
- *         description: Header created
+ *         description: Hero created
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/HeaderResponse'
+ *               $ref: '#/components/schemas/HeroResponse'
  *       400:
  *         $ref: '#/components/responses/ValidationError'
  *       401:
@@ -84,12 +84,12 @@
  *       500:
  *         $ref: '#/components/responses/InternalError'
  *
- * /admin/header/{id}:
+ * /admin/hero/{id}:
  *   get:
- *     summary: Get single header (admin)
- *     description: Fetch a header by UUID. Requires admin authentication.
+ *     summary: Get single hero (admin)
+ *     description: Fetch a hero by UUID. Requires admin authentication.
  *     tags:
- *       - Admin Header
+ *       - Admin Hero
  *     security:
  *       - cookieAuth: []
  *     parameters:
@@ -99,14 +99,14 @@
  *         schema:
  *           type: string
  *           format: uuid
- *         description: Header UUID
+ *         description: Hero UUID
  *     responses:
  *       200:
- *         description: Header returned
+ *         description: Hero returned
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/HeaderResponse'
+ *               $ref: '#/components/schemas/HeroResponse'
  *       400:
  *         $ref: '#/components/responses/ValidationError'
  *       401:
@@ -117,10 +117,10 @@
  *         $ref: '#/components/responses/InternalError'
  *
  *   put:
- *     summary: Update header
- *     description: Update header translations, logo and `active` flag by UUID. If you set `active` to true and another header is active the request will be rejected by validation.
+ *     summary: Update hero
+ *     description: Update hero translations, logo and `active` flag by UUID. If you set `active` to true and another hero is active the request will be rejected by validation.
  *     tags:
- *       - Admin Header
+ *       - Admin Hero
  *     security:
  *       - cookieAuth: []
  *     parameters:
@@ -130,20 +130,20 @@
  *         schema:
  *           type: string
  *           format: uuid
- *         description: Header UUID
+ *         description: Hero UUID
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/UpdateHeaderRequest'
+ *             $ref: '#/components/schemas/UpdateHeroRequest'
  *     responses:
  *       200:
- *         description: Header updated
+ *         description: Hero updated
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/HeaderResponse'
+ *               $ref: '#/components/schemas/HeroResponse'
  *       400:
  *         $ref: '#/components/responses/ValidationError'
  *       401:
@@ -154,10 +154,10 @@
  *         $ref: '#/components/responses/InternalError'
  *
  *   delete:
- *     summary: Delete header
- *     description: Deletes a header by UUID.
+ *     summary: Delete hero
+ *     description: Deletes a hero by UUID.
  *     tags:
- *       - Admin Header
+ *       - Admin Hero
  *     security:
  *       - cookieAuth: []
  *     parameters:
@@ -167,10 +167,10 @@
  *         schema:
  *           type: string
  *           format: uuid
- *         description: Header UUID
+ *         description: Hero UUID
  *     responses:
  *       200:
- *         description: Header deleted successfully
+ *         description: Hero deleted successfully
  *         content:
  *           application/json:
  *             schema:
@@ -178,7 +178,7 @@
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "headerDeleted"
+ *                   example: "heroDeleted"
  *       400:
  *         $ref: '#/components/responses/ValidationError'
  *       401:
@@ -188,19 +188,19 @@
  *       500:
  *         $ref: '#/components/responses/InternalError'
  *
- * /header:
+ * /hero:
  *   get:
- *     summary: Get public header
- *     description: Public endpoint that returns the current header data (logo, translations and active flag) for the website. No authentication required.
+ *     summary: Get public hero
+ *     description: Public endpoint that returns the current hero data (logo, translations and active flag) for the website. No authentication required.
  *     tags:
- *       - Customer Header
+ *       - Customer Hero
  *     responses:
  *       200:
- *         description: Header returned
+ *         description: Hero returned
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/HeaderResponse'
+ *               $ref: '#/components/schemas/HeroResponse'
  *       404:
  *         $ref: '#/components/responses/NotFound'
  *       500:
@@ -247,7 +247,7 @@
  *             properties:
  *               error:
  *                 type: string
- *                 example: "headerNotFound"
+ *                 example: "heroNotFound"
  *
  *     InternalError:
  *       description: Internal server error
@@ -280,7 +280,7 @@
  *           type: integer
  *           example: 12345
  *
- *     HeaderTranslationItem:
+ *     HeroTranslationItem:
  *       type: object
  *       properties:
  *         name:
@@ -302,7 +302,7 @@
  *               type: string
  *               example: "en"
  *
- *     HeaderItem:
+ *     HeroItem:
  *       type: object
  *       properties:
  *         id:
@@ -315,7 +315,7 @@
  *         translations:
  *           type: array
  *           items:
- *             $ref: '#/components/schemas/HeaderTranslationItem'
+ *             $ref: '#/components/schemas/HeroTranslationItem'
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -323,13 +323,13 @@
  *           type: string
  *           format: date-time
  *
- *     HeaderResponse:
+ *     HeroResponse:
  *       type: object
  *       properties:
  *         data:
- *           $ref: '#/components/schemas/HeaderItem'
+ *           $ref: '#/components/schemas/HeroItem'
  *
- *     CreateHeaderRequest:
+ *     CreateHeroRequest:
  *       type: object
  *       required:
  *         - translations
@@ -354,7 +354,7 @@
  *               headline: "ლიდერი"
  *               description: "საკონს"
  *
- *     UpdateHeaderRequest:
+ *     UpdateHeroRequest:
  *       allOf:
- *         - $ref: '#/components/schemas/CreateHeaderRequest'
+ *         - $ref: '#/components/schemas/CreateHeroRequest'
  */

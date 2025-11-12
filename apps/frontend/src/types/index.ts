@@ -2,7 +2,7 @@ export * from "./global";
 export * from "./visit";
 export * from "./user";
 export * from "./enums";
-export * from "./header";
+export * from "./hero";
 export * from "./services";
 export * from "./introduce";
 export * from "./news";

@@ -1,28 +1,29 @@
-import { File, Language } from ".";
+import { File, Language, Tariff } from ".";
 
-export interface HeaderResponse {
-  data: Header;
+export interface HeroResponse {
+  data: Hero;
+  tariff: Tariff;
 }
 
-export interface Header {
+export interface Hero {
   id: string;
   logo: File | null;
   visits?: number;
   experience?: number;
   active: boolean | null;
-  translations: HeaderTranslation[];
+  translations: HeroTranslation[];
   createdAt: string;
   updatedAt: string;
 }
 
-export interface HeaderTranslation {
+export interface HeroTranslation {
   id: string;
   name: string;
   position: string;
   headline: string;
   description: string;
-  header: Header;
-  headerId: string;
+  hero: Hero;
+  heroId: string;
   language: Language;
   languageId: string;
   createdAt: string;

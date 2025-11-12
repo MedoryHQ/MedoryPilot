@@ -18,5 +18,16 @@
   },
   "Search": {
     "searchPlaceholder": "ძიება..."
+  },
+  "Hero": {
+    "bookAppointment": "დაჯავშნეთ ვიზიტი",
+    "seeAboutMe": "ჩემი შესახებ",
+    "onlineMeeting": "ონლაინ შეხვედრა",
+    "available": "ხელმისაწვდომია",
+    "onsiteMeeting": "ადგილზე შეხვედრა",
+    "bookNow": "დაჯავშნეთ ახლა",
+    "year_experience": "გამოცდილება",
+    "clients": "კლიენტი",
+    "each_visit": "ვიზიტი"
   }
 }

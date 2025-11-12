@@ -6,7 +6,7 @@ const shellBase = "w-full";
 const shellVariants = cva(shellBase, {
   variants: {
     variant: {
-      page: "mx-auto max-w-[1440px] px-6",
+      page: "mx-auto max-w-[1440px] ",
       centered: "mx-auto max-w-2xl h-dvh flex flex-col justify-center px-4",
       markdown: "mx-auto max-w-3xl py-8 md:py-10 px-6",
       panel:
@@ -17,7 +17,7 @@ const shellVariants = cva(shellBase, {
         "min-h-dvh w-full mx-auto max-w-[1440px] grid grid-cols-1 md:grid-cols-2 gap-6 px-4 md:px-8",
       fullBleed: "w-full",
       wrapper:
-        "w-full max-w-[1440px] p-2 md:p-3 bg-white/80 backdrop-blur-xl rounded-[22px] md:rounded-[28px] lg:rounded-[32px] border border-primary/10 shadow-sm shadow-primary/5 flex justify-between",
+        "w-full max-w-[1440px] px-4 py-2 md:px-3 md:py-3 bg-white/80 backdrop-blur-xl md:rounded-[28px] lg:rounded-[32px] border border-primary/10 shadow-sm shadow-primary/5 flex justify-between",
     },
     size: {
       sm: "py-6",

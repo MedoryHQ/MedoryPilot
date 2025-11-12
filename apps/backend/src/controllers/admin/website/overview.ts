@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { logAdminError as logCatchyError } from "@/utils";
 
 const overviewQueries = {
-  headers: () => prisma.header.count(),
+  heros: () => prisma.hero.count(),
   introduce: () => prisma.introduce.count(),
   newses: () => prisma.news.count(),
   services: () => prisma.service.count(),

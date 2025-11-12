@@ -214,7 +214,7 @@ const Newses = () => {
               </div>
               <div>
                 <span className="text-muted-foreground text-sm">
-                  {toUpperCase(t("headers.translations"))}
+                  {toUpperCase(t("newses.translations"))}
                 </span>
                 <div className="mt-1">
                   <Badge variant="secondary">
@@ -224,7 +224,7 @@ const Newses = () => {
               </div>
               <div>
                 <span className="text-muted-foreground text-sm">
-                  {toUpperCase(t("headers.created"))}
+                  {toUpperCase(t("newses.created"))}
                 </span>
                 <p className="mt-1 text-sm">
                   {formatDate(item?.createdAt, i18n.language, true)}

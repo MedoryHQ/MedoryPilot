@@ -1,79 +1,79 @@
 import { NextFunction, Router, Request, Response } from "express";
 import { GLOBAL_ERROR_MESSAGE } from "@/utils";
-import * as headerController from "@/controllers/admin/website/header";
+import * as heroController from "@/controllers/admin/website/hero";
 import { adminAuthenticate } from "@/middlewares/admin";
 import { validationHandler } from "@/middlewares/global/validationHandler";
 import {
-  createHeaderValidation,
-  deleteHeaderValidation,
-  fetchHeaderValidation,
-  updateHeaderValidation,
+  createHeroValidation,
+  deleteHeroValidation,
+  fetchHeroValidation,
+  updateHeroValidation,
 } from "@/validations/admin";
 
-export const adminHeaderRouter = Router();
+export const adminHeroRouter = Router();
 
-adminHeaderRouter.get(
+adminHeroRouter.get(
   "/",
   adminAuthenticate,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      return headerController.fetchHeaders(req, res, next);
+      return heroController.fetchHeros(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }
   }
 );
 
-adminHeaderRouter.get(
+adminHeroRouter.get(
   "/:id",
   adminAuthenticate,
-  fetchHeaderValidation,
+  fetchHeroValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      return headerController.fetchHeader(req, res, next);
+      return heroController.fetchHero(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }
   }
 );
 
-adminHeaderRouter.delete(
+adminHeroRouter.delete(
   "/:id",
   adminAuthenticate,
-  deleteHeaderValidation,
+  deleteHeroValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      return headerController.deleteHeader(req, res, next);
+      return heroController.deleteHero(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }
   }
 );
 
-adminHeaderRouter.post(
+adminHeroRouter.post(
   "/",
   adminAuthenticate,
-  createHeaderValidation,
+  createHeroValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      return headerController.createHeader(req, res, next);
+      return heroController.createHero(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }
   }
 );
 
-adminHeaderRouter.put(
+adminHeroRouter.put(
   "/:id",
   adminAuthenticate,
-  updateHeaderValidation,
+  updateHeroValidation,
   validationHandler,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      return headerController.updateHeader(req, res, next);
+      return heroController.updateHero(req, res, next);
     } catch {
       res.status(500).json({ errors: [{ message: GLOBAL_ERROR_MESSAGE }] });
     }

@@ -6,7 +6,7 @@ export * from "./Categories";
 export * from "./Contact";
 export * from "./Faqs";
 export * from "./Footer";
-export * from "./Headers";
+export * from "./Heros";
 export * from "./Tariffs";
 export * from "./Socials";
 export * from "./PageComponents";

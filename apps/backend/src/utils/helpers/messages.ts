@@ -60,9 +60,9 @@ export const errorMessages = {
     en: "Admin authentication failed.",
     ka: "ადმინისტრატორის ავტორიზაცია წარუმატებლად დასრულდა.",
   },
-  headerNotFound: {
-    en: "Header not found",
-    ka: "Header ვერ მოიძებნა",
+  heroNotFound: {
+    en: "Hero not found",
+    ka: "Hero ვერ მოიძებნა",
   },
   tariffNotFound: {
     en: "Tariff not found",
@@ -128,9 +128,9 @@ export const errorMessages = {
     en: "Invalid Image",
     ka: "არასწორი სურათი",
   },
-  onlyOneActiveHeaderAllowed: {
-    en: "Only one active header is allowed",
-    ka: "მხოლოდ ერთი აქტიური header არის დაშვებული",
+  onlyOneActiveHeroAllowed: {
+    en: "Only one active hero is allowed",
+    ka: "მხოლოდ ერთი აქტიური hero არის დაშვებული",
   },
   sameOrderedFaqExist: {
     en: "Faq with same order already exist",
@@ -174,9 +174,9 @@ export const errorMessages = {
     en: "Token refreshed",
     ka: "ტოკენი განახლდა",
   },
-  headerDeleted: {
-    en: "Header deleted successfully",
-    ka: "Header წარმატებით წაიშალა",
+  heroDeleted: {
+    en: "Hero deleted successfully",
+    ka: "Hero წარმატებით წაიშალა",
   },
   tariffDeleted: {
     en: "Tariff deleted successfully",
