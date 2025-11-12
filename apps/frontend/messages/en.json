@@ -18,5 +18,16 @@
   },
   "Search": {
     "searchPlaceholder": "Search..."
+  },
+  "Hero": {
+    "bookAppointment": "Book Appointment",
+    "seeAboutMe": "See About Me",
+    "onlineMeeting": "Online Meeting",
+    "available": "Available",
+    "onsiteMeeting": "Onsite Meeting",
+    "bookNow": "Book Now",
+    "year_experience": "Year experience",
+    "clients": "Clients",
+    "each_visit": "Each visit"
   }
 }

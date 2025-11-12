@@ -30,6 +30,11 @@
   --color-destructive: hsl(var(--destructive));
   --color-destructive-foreground: hsl(var(--destructive-foreground));
 
+  --color-online: hsl(var(--online));
+  --color-online-dark: hsl(var(--online-dark));
+  --color-onsite: hsl(var(--onsite));
+  --color-onsite-dark: hsl(var(--onsite-dark));
+
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
@@ -64,10 +69,15 @@
   --secondary-foreground: 200 15% 20%;
   --muted: 210 20% 96%;
   --muted-foreground: 200 10% 50%;
-  --accent: 187 71% 45%;
+  --accent: 192, 89%, 89%;
   --accent-foreground: 0 0% 100%;
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
+  --online: 31, 53%, 64%;
+  --online-dark: 30, 35%, 40%;
+  --onsite: 284, 34%, 75%;
+  --onsite-dark: 279, 47%, 19%;
+
   --border: 220 15% 90%;
   --input: 220 15% 90%;
   --ring: 187 71% 45%;

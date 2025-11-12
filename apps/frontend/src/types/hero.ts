@@ -1,7 +1,8 @@
-import { File, Language } from ".";
+import { File, Language, Tariff } from ".";
 
 export interface HeroResponse {
   data: Hero;
+  tariff: Tariff;
 }
 
 export interface Hero {
