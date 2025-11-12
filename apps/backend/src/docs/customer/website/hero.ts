@@ -1,22 +1,22 @@
 /**
  * @swagger
  * tags:
- *   - name: Customer Header
- *     description: Public endpoint to fetch the active website header
+ *   - name: Customer Hero
+ *     description: Public endpoint to fetch the active website hero
  *
- * /header:
+ * /hero:
  *   get:
- *     summary: Get active header
- *     description: Returns the active header with logo and translations for the website. No authentication required.
+ *     summary: Get active hero
+ *     description: Returns the active hero with logo and translations for the website. No authentication required.
  *     tags:
- *       - Customer Header
+ *       - Customer Hero
  *     responses:
  *       200:
- *         description: Active header returned
+ *         description: Active hero returned
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/CustomerHeaderResponse'
+ *               $ref: '#/components/schemas/CustomerHeroResponse'
  *       404:
  *         $ref: '#/components/responses/NotFound'
  *       500:
@@ -33,7 +33,7 @@
  *             properties:
  *               error:
  *                 type: string
- *                 example: "headerNotFound"
+ *                 example: "heroNotFound"
  *
  *     InternalError:
  *       description: Internal server error
@@ -48,7 +48,7 @@
  *                   type: object
  *
  *   schemas:
- *     CustomerHeaderLogo:
+ *     CustomerHeroLogo:
  *       type: object
  *       nullable: true
  *       properties:
@@ -66,7 +66,7 @@
  *           type: integer
  *           example: 45678
  *
- *     CustomerHeaderTranslation:
+ *     CustomerHeroTranslation:
  *       type: object
  *       properties:
  *         name:
@@ -80,7 +80,7 @@
  *           example: "Welcome to our site"
  *         description:
  *           type: string
- *           example: "Short description for header"
+ *           example: "Short description for hero"
  *         language:
  *           type: object
  *           properties:
@@ -88,19 +88,19 @@
  *               type: string
  *               example: "en"
  *
- *     CustomerHeaderData:
+ *     CustomerHeroData:
  *       type: object
  *       properties:
  *         logo:
- *           $ref: '#/components/schemas/CustomerHeaderLogo'
+ *           $ref: '#/components/schemas/CustomerHeroLogo'
  *         translations:
  *           type: array
  *           items:
- *             $ref: '#/components/schemas/CustomerHeaderTranslation'
+ *             $ref: '#/components/schemas/CustomerHeroTranslation'
  *
- *     CustomerHeaderResponse:
+ *     CustomerHeroResponse:
  *       type: object
  *       properties:
  *         data:
- *           $ref: '#/components/schemas/CustomerHeaderData'
+ *           $ref: '#/components/schemas/CustomerHeroData'
  */
