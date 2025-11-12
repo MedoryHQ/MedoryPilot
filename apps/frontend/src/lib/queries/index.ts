@@ -2,7 +2,7 @@ export * from "./blog";
 export * from "./contact";
 export * from "./faqs";
 export * from "./footer";
-export * from "./headers";
+export * from "./hero";
 export * from "./introduce";
 export * from "./news";
 export * from "./page-component";
