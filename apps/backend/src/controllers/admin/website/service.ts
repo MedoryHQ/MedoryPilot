@@ -278,31 +278,20 @@ export const updateService = async (
       return sendError(req, res, 404, "serviceNotFound");
     }
 
-    let newIconFile: { id: string } | null = null;
-    let newBackgroundFile: { id: string } | null = null;
-
-    if (iconToCreate) {
-      newIconFile = await prisma.file.create({
-        data: { ...iconToCreate },
-        select: { id: true },
-      });
-    }
-
     const updateData: any = {
       translations: {
         deleteMany: {},
         create: translationsToCreate,
       },
+      icon: iconToCreate
+        ? {
+            delete: findService.icon ? {} : undefined,
+            create: iconToCreate,
+          }
+        : findService.icon
+        ? { delete: {} }
+        : undefined,
     };
-
-    if (newIconFile) {
-      updateData.iconId = newIconFile.id;
-    } else if (
-      Object.prototype.hasOwnProperty.call(req.body, "icon") &&
-      icon === null
-    ) {
-      updateData.iconId = null;
-    }
 
     const service = await prisma.service.update({
       where: { id },

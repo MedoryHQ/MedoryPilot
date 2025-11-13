@@ -45,7 +45,7 @@ const Services = () => {
         );
         return (
           <div className="flex items-center gap-4">
-            <div className="border-border bg-muted/10 flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border">
+            <div className="border-border bg-muted/10 flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border">
               {item.icon ? (
                 <img
                   src={getFileUrl(item.icon.path)}
