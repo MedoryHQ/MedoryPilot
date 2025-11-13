@@ -116,7 +116,6 @@ const mockService = {
     },
   ],
   icon: null,
-  background: null,
 };
 
 afterAll(async () => {
@@ -195,7 +194,6 @@ describe("Admin Service routes — /admin/service", () => {
           ka: { title: "ახალი", description: "მოკლე" },
         },
         icon: { path: "/p.png", name: "p.png", size: 123 },
-        background: null,
       };
 
       (prisma.service.create as jest.Mock).mockResolvedValueOnce({
@@ -227,7 +225,6 @@ describe("Admin Service routes — /admin/service", () => {
           ka: { title: "განახლება", description: "dka" },
         },
         icon: { path: "/i.png", name: "i.png", size: 50 },
-        background: null,
       };
 
       (prisma.service.findUnique as jest.Mock).mockResolvedValueOnce(
@@ -250,7 +247,7 @@ describe("Admin Service routes — /admin/service", () => {
       expect(prisma.service.findUnique).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: mockService.id },
-          include: { icon: true, background: true },
+          include: { icon: true },
         })
       );
       expect(prisma.service.update).toHaveBeenCalled();
