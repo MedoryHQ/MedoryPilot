@@ -53,6 +53,15 @@
   --theme-hero-bg: var(--hero-bg);
 }
 
+@theme {
+  --breakpoint-*: initial;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1440px;
+}
+
 :root {
   --background: 0 0% 98%;
   --foreground: 200 15% 20%;
