@@ -8,7 +8,7 @@ export default function MainLayout({
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="grow mt-25 mb-10 md:mb-14 xl:mb-20">
+      <main className="grow mt-14 md:mt-20 xl:mt-22 mb-10 md:mb-14 xl:mb-20">
         <section className="wrapper h-full px-4 md:px-6">
           <Shell>{children}</Shell>
         </section>
