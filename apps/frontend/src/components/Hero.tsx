@@ -50,7 +50,7 @@ const Hero = () => {
   return (
     <section
       id="home"
-      className="relative pt-8 overflow-hidden mb-6 md:mb-8 xl:mb-10"
+      className="relative pt-4 md:pt-8 overflow-hidden mb-6 md:mb-8 xl:mb-10"
     >
       <div className="mx-auto">
         <motion.div
@@ -196,7 +196,7 @@ const Hero = () => {
                   <p className="text-2xl sm:text-3xl font-bold text-primary">
                     {toUpperCase(stat.value)}
                   </p>
-                  <p className="text-[12px] md:text-md text-muted-foreground mt-1 line-clamp-1">
+                  <p className="text-[12px] md:text-[16px] text-muted-foreground mt-1 line-clamp-1">
                     {toUpperCase(stat.label)}
                   </p>
                 </motion.div>
