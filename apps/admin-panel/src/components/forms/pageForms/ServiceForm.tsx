@@ -10,7 +10,6 @@ import { serviceSchema } from "@/validations/website/service.validation";
 
 const defaultValues: ServiceFormValues = {
   icon: null,
-  background: null,
   translations: {
     en: { title: "", description: "" },
     ka: { title: "", description: "" }
@@ -25,7 +24,7 @@ export const ServiceForm: React.FC<FormProps> = ({
   const { t, i18n } = useTranslation();
 
   const mapFetchedToForm = buildMapper<ServiceFormValues>({
-    fileFields: ["icon", "background"],
+    fileFields: ["icon"],
     translations: {
       fields: ["title", "description"]
     }
@@ -57,23 +56,6 @@ export const ServiceForm: React.FC<FormProps> = ({
           kind: "simple",
           name: "icon",
           label: toUpperCase(t("services.form.iconLabel")),
-          type: "media",
-          props: {
-            maxSizeMB: 5,
-            acceptedFormats: ["PNG", "JPG", "SVG", "WEBP"],
-            previewHeight: "h-[248px]"
-          }
-        }
-      ] as FieldConfig<ServiceFormValues>[]
-    },
-    {
-      key: "background",
-      title: toUpperCase(t("services.form.background")),
-      fields: [
-        {
-          kind: "simple",
-          name: "background",
-          label: toUpperCase(t("services.form.backgroundLabel")),
           type: "media",
           props: {
             maxSizeMB: 5,

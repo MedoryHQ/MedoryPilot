@@ -141,7 +141,7 @@ const Hero = () => {
                   </p>
                 </div>
                 <div className="absolute bottom-4 right-4 w-10 h-10 rounded-full bg-online-dark/60 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <ArrowUpRight className="w-5 h-5 text-white" />
+                  <ArrowUpRight className="w-5 h-5 text-white group-hover:rotate-45 duration-300 transition-all" />
                 </div>
               </motion.div>
 
@@ -161,7 +161,7 @@ const Hero = () => {
                   </p>
                 </div>
                 <div className="absolute bottom-4 right-4 w-10 h-10 rounded-full bg-onsite-dark/70 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <ArrowUpRight className="w-5 h-5 text-white" />
+                  <ArrowUpRight className="w-5 h-5 text-white group-hover:rotate-45 duration-300 transition-all" />
                 </div>
               </motion.div>
             </motion.div>

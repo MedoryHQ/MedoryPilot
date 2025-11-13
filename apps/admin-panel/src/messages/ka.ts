@@ -708,9 +708,6 @@ export const ka = {
         icon: "სურათი",
         iconLabel: "ჩააგდეთ სურათი აქ",
         iconDescription: "ან დააჭირეთ არჩევისთვის",
-        background: "ფონი",
-        backgroundLabel: "ჩააგდეთ ფონი აქ",
-        backgroundDescription: "ან დააჭირეთ არჩევისთვის",
         service: "Სერვისი",
         createdSuccessfully: "Სერვისი წარმატებით შეიქმნა",
         updatedSuccessfully: "Სერვისი წარმატებით განახლდა",
@@ -718,9 +715,7 @@ export const ka = {
       },
       filters: {
         hasIcon: "Icon-ით",
-        noIcon: "Icon-ის გარეშე",
-        hasBackground: "ფონით",
-        noBackground: "უფონოდ"
+        noIcon: "Icon-ის გარეშე"
       }
     },
     socials: {

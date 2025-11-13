@@ -31,21 +31,6 @@ const Services = () => {
         { label: toUpperCase(t("services.filters.hasIcon")), value: "true" },
         { label: toUpperCase(t("services.filters.noIcon")), value: "false" }
       ]
-    },
-    {
-      key: "background",
-      label: toUpperCase(t("services.filters.hasBackground")),
-      type: "select",
-      options: [
-        {
-          label: toUpperCase(t("services.filters.hasBackground")),
-          value: "true"
-        },
-        {
-          label: toUpperCase(t("services.filters.noBackground")),
-          value: "false"
-        }
-      ]
     }
   ];
 
