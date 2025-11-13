@@ -22,7 +22,7 @@ export const fetchServices = async (
   try {
     const { skip, take, search, orderBy } = getPaginationAndFilters(req);
     const filters = parseFilters(req);
-    const { icon, background } = filters;
+    const { icon } = filters;
 
     const where = generateWhereInput<Prisma.ServiceWhereInput>(
       search,
@@ -39,13 +39,6 @@ export const fetchServices = async (
                 : { icon: { is: null } }
               : {}),
           },
-          {
-            ...(typeof background === "boolean"
-              ? background
-                ? { background: { isNot: null } }
-                : { background: { is: null } }
-              : {}),
-          },
         ],
       }
     );
@@ -58,7 +51,6 @@ export const fetchServices = async (
         where,
         include: {
           icon: true,
-          background: true,
           translations: {
             include: {
               language: {
@@ -101,7 +93,6 @@ export const fetchService = async (
       },
       include: {
         icon: true,
-        background: true,
         translations: {
           include: {
             language: {
@@ -194,7 +185,7 @@ export const createService = async (
   next: NextFunction
 ) => {
   try {
-    const { translations, background, icon } = req.body as CreateServiceDTO;
+    const { translations, icon } = req.body as CreateServiceDTO;
 
     logInfo("Service create attempt", {
       ip: (req as any).hashedIp,
@@ -215,22 +206,11 @@ export const createService = async (
         }
       : undefined;
 
-    const backgroundToCreate = background
-      ? {
-          path: background.path,
-          name: background.name,
-          size: background.size,
-        }
-      : undefined;
-
     const service = await prisma.service.create({
       data: {
         translations: { create: translationsToCreate },
         icon: {
           create: iconToCreate,
-        },
-        background: {
-          create: backgroundToCreate,
         },
       },
     });
@@ -262,7 +242,7 @@ export const updateService = async (
 ) => {
   try {
     const { id } = req.params;
-    const { translations, background, icon } = req.body as UpdateServiceDTO;
+    const { translations, icon } = req.body as UpdateServiceDTO;
 
     logInfo("Service update attempt", {
       ip: (req as any).hashedIp,
@@ -283,17 +263,9 @@ export const updateService = async (
         }
       : undefined;
 
-    const backgroundToCreate = background
-      ? {
-          path: background.path,
-          name: background.name,
-          size: background.size,
-        }
-      : undefined;
-
     const findService = await prisma.service.findUnique({
       where: { id },
-      include: { icon: true, background: true },
+      include: { icon: true },
     });
 
     if (!findService) {
@@ -306,51 +278,25 @@ export const updateService = async (
       return sendError(req, res, 404, "serviceNotFound");
     }
 
-    let newIconFile: { id: string } | null = null;
-    let newBackgroundFile: { id: string } | null = null;
-
-    if (iconToCreate) {
-      newIconFile = await prisma.file.create({
-        data: { ...iconToCreate },
-        select: { id: true },
-      });
-    }
-
-    if (backgroundToCreate) {
-      newBackgroundFile = await prisma.file.create({
-        data: { ...backgroundToCreate },
-        select: { id: true },
-      });
-    }
-
     const updateData: any = {
       translations: {
         deleteMany: {},
         create: translationsToCreate,
       },
+      icon: iconToCreate
+        ? {
+            delete: findService.icon ? {} : undefined,
+            create: iconToCreate,
+          }
+        : findService.icon
+        ? { delete: {} }
+        : undefined,
     };
-
-    if (newIconFile) {
-      updateData.iconId = newIconFile.id;
-    } else if (
-      Object.prototype.hasOwnProperty.call(req.body, "icon") &&
-      icon === null
-    ) {
-      updateData.iconId = null;
-    }
-    if (newBackgroundFile) {
-      updateData.backgroundId = newBackgroundFile.id;
-    } else if (
-      Object.prototype.hasOwnProperty.call(req.body, "background") &&
-      background === null
-    ) {
-      updateData.backgroundId = null;
-    }
 
     const service = await prisma.service.update({
       where: { id },
       data: updateData,
-      include: { translations: true, icon: true, background: true },
+      include: { translations: true, icon: true },
     });
 
     logInfo("Service updated successfully", {

@@ -7,7 +7,7 @@
  * /admin/service:
  *   get:
  *     summary: Fetch list of services
- *     description: Returns all services with translations, icons, and backgrounds.
+ *     description: Returns all services with translations, amd icons.
  *     tags:
  *       - Admin Service
  *     parameters:
@@ -161,7 +161,7 @@
  *               type: string
  *               example: "en"
  *
- *     AdminServiceIconOrBackground:
+ *     AdminServiceIcon:
  *       type: object
  *       properties:
  *         path:
@@ -185,9 +185,7 @@
  *           items:
  *             $ref: '#/components/schemas/AdminServiceTranslation'
  *         icon:
- *           $ref: '#/components/schemas/AdminServiceIconOrBackground'
- *         background:
- *           $ref: '#/components/schemas/AdminServiceIconOrBackground'
+ *           $ref: '#/components/schemas/AdminServiceIcon'
  *
  *     AdminServiceListResponse:
  *       type: object
@@ -214,9 +212,7 @@
  *           additionalProperties:
  *             $ref: '#/components/schemas/AdminServiceTranslation'
  *         icon:
- *           $ref: '#/components/schemas/AdminServiceIconOrBackground'
- *         background:
- *           $ref: '#/components/schemas/AdminServiceIconOrBackground'
+ *           $ref: '#/components/schemas/AdminServiceIcon'
  *
  *     AdminServiceUpdateRequest:
  *       allOf:

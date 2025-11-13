@@ -45,7 +45,6 @@ export type UpdateIntroduceDTO = CreateIntroduceDTO;
 
 export interface CreateServiceDTO {
   icon?: File;
-  background?: File | null;
   translations: Translations;
 }
 

@@ -6,10 +6,7 @@ export interface ServicesResponse {
 
 export interface Service {
   id: string;
-  icon: File | null;
-  iconId: string;
-  background: File | null;
-  backgroundId: string;
+  icon?: File | null;
   translations: ServiceTranslation[];
   createdAt: string;
   updatedAt: string;

@@ -7,7 +7,7 @@
  * /customer/service:
  *   get:
  *     summary: Fetch list of services
- *     description: Returns all services with translations, icons, and backgrounds.
+ *     description: Returns all services with translations, and icons.
  *     tags:
  *       - Customer Service
  *     parameters:
@@ -57,7 +57,7 @@
  *               type: string
  *               example: "en"
  *
- *     CustomerServiceIconOrBackground:
+ *     CustomerServiceIcon:
  *       type: object
  *       properties:
  *         path:
@@ -74,9 +74,7 @@
  *       type: object
  *       properties:
  *         icon:
- *           $ref: '#/components/schemas/CustomerServiceIconOrBackground'
- *         background:
- *           $ref: '#/components/schemas/CustomerServiceIconOrBackground'
+ *           $ref: '#/components/schemas/CustomerServiceIcon'
  *         translations:
  *           type: array
  *           items:

@@ -25,7 +25,6 @@ export const fetchServices = async (
         where,
         select: {
           icon: true,
-          background: true,
           translations: {
             select: {
               description: true,

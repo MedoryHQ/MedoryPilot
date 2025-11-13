@@ -53,11 +53,7 @@ model Service {
   translations ServiceTranslation[]
 
   iconId String? @db.Uuid
-  icon   File?   @relation("ServiceIcon", fields: [iconId], references: [id], onDelete: Cascade)
-
-  backgroundId String? @db.Uuid
-  background   File?   @relation("ServiceBackground", fields: [backgroundId], references: [id], onDelete: Cascade)
-
+  icon   File?
   visits Visit[]
 
   createdAt DateTime @default(now())

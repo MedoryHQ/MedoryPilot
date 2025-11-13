@@ -70,7 +70,6 @@ const mockService = {
     },
   ],
   icon: null,
-  background: null,
 };
 
 afterAll(async () => {

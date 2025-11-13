@@ -710,9 +710,6 @@ export const en = {
         icon: "Icon",
         iconLabel: "Drop your icon here",
         iconDescription: "or click to browse",
-        background: "Background",
-        backgroundLabel: "Drop your background here",
-        backgroundDescription: "or click to browse",
         service: "Service",
         createdSuccessfully: "Service created successfully",
         updatedSuccessfully: "Service updated successfully",
@@ -720,9 +717,7 @@ export const en = {
       },
       filters: {
         hasIcon: "With Icon",
-        noIcon: "Without Icon",
-        hasBackground: "With Background",
-        noBackground: "Without Background"
+        noIcon: "Without Icon"
       }
     },
     socials: {

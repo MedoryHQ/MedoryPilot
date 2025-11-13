@@ -10,10 +10,6 @@ export const createServiceValidation = [
     .optional({ nullable: true })
     .isObject()
     .withMessage("invalidIcon"),
-  body("background")
-    .optional({ nullable: true })
-    .isObject()
-    .withMessage("invalidBackground"),
   body("translations")
     .isObject()
     .custom((translations) =>
