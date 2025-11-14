@@ -77,7 +77,7 @@ const getToastStyles = (variant?: string, index?: number) => {
 };
 
 const getIcon = (variant?: string) => {
-  const iconClass = "h-5 w-5 flex-shrink-0";
+  const iconClass = "h-5 w-5 shrink-0";
 
   switch (variant) {
     case "success":
@@ -295,7 +295,7 @@ const Toaster = () => {
                 <div className={getAccentBarStyles(variant)} />
 
                 <div className="flex min-w-0 flex-1 items-start gap-3 pl-2">
-                  <div className="mt-0.5 flex-shrink-0">{getIcon(variant)}</div>
+                  <div className="mt-0.5 shrink-0">{getIcon(variant)}</div>
 
                   <div className="min-w-0 flex-1 space-y-1">
                     {title && (
@@ -309,7 +309,7 @@ const Toaster = () => {
                       </ToastDescription>
                     )}
                   </div>
-                  {action && <div className="flex-shrink-0">{action}</div>}
+                  {action && <div className="shrink-0">{action}</div>}
                 </div>
 
                 <ToastClose
@@ -339,7 +339,7 @@ const Toaster = () => {
 
       <ToastViewport
         className={cn(
-          "fixed right-0 bottom-0 z-[2147483647] flex max-h-screen w-full flex-col gap-2 p-4 sm:p-6 md:max-w-[420px]",
+          "fixed right-0 bottom-0 z-100 flex max-h-screen w-full flex-col gap-2 p-4 sm:p-6 md:max-w-[420px]",
           "pointer-events-none"
         )}
       />

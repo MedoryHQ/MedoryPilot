@@ -85,7 +85,7 @@ export const SidebarFlyout: React.FC<SidebarFlyoutProps> = ({
                       setFlyoutMenu(null);
                     }}
                   >
-                    <div className="flex h-4 w-4 flex-shrink-0 items-center justify-center">
+                    <div className="flex h-4 w-4 shrink-0 items-center justify-center">
                       {child.icon}
                     </div>
                     <span className="text-sm font-medium">{child.label}</span>

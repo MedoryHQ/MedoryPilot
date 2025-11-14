@@ -14,7 +14,7 @@ export const NotFound = () => {
 
   return (
     <div className="m-auto flex h-full items-center justify-center">
-      <div className="flex flex-col items-center justify-center gap-[24px] pb-[56px]">
+      <div className="flex flex-col items-center justify-center gap-6 pb-14">
         <Icons.NotFound className="h-[152px] w-[152px]" />
         <h2 className="text-[20px] md:text-[26px]">
           {toUpperCase(t("notFound.pageNotFound"))}

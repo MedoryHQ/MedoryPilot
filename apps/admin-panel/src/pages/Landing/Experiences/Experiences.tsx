@@ -74,7 +74,7 @@ const Experiences = () => {
         );
         return (
           <div className="flex items-center gap-4">
-            <div className="border-border bg-muted/10 flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border">
+            <div className="border-border bg-muted/10 flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border">
               {item.icon ? (
                 <img
                   src={getFileUrl(item.icon.path)}
@@ -123,7 +123,7 @@ const Experiences = () => {
         }
         return (
           <a
-            className="text-accent !underline"
+            className="text-accent underline!"
             href={item.link}
             target="_blank"
           >
@@ -290,7 +290,7 @@ const Experiences = () => {
           return (
             <div className="px-3 py-4">
               <div className="flex items-start gap-3">
-                <div className="border-border bg-muted/10 flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg">
+                <div className="border-border bg-muted/10 flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-lg">
                   {item.icon ? (
                     <img
                       src={getFileUrl(item.icon.path)}

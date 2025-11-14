@@ -26,7 +26,7 @@ export const MetadataDisplay: React.FC<MetadataDisplayProps> = ({
         {createdAt && (
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-center gap-2">
-              <Clock className="text-muted-foreground mt-0.5 h-4 w-4 flex-shrink-0" />
+              <Clock className="text-muted-foreground mt-0.5 h-4 w-4 shrink-0" />
               <span className="text-muted-foreground text-sm">
                 {toUpperCase(t("ui.created"))}
               </span>
@@ -41,7 +41,7 @@ export const MetadataDisplay: React.FC<MetadataDisplayProps> = ({
         {updatedAt && (
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-center gap-2">
-              <Clock className="text-muted-foreground mt-0.5 h-4 w-4 flex-shrink-0" />
+              <Clock className="text-muted-foreground mt-0.5 h-4 w-4 shrink-0" />
               <span className="text-muted-foreground text-sm">
                 {toUpperCase(t("ui.updated"))}
               </span>
@@ -55,7 +55,7 @@ export const MetadataDisplay: React.FC<MetadataDisplayProps> = ({
         {createdBy && (
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-center gap-2">
-              <User className="text-muted-foreground mt-0.5 h-4 w-4 flex-shrink-0" />
+              <User className="text-muted-foreground mt-0.5 h-4 w-4 shrink-0" />
               <span className="text-muted-foreground text-sm">
                 {toUpperCase(t("ui.author"))}
               </span>

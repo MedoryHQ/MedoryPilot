@@ -88,14 +88,14 @@ export const StatsCard: React.FC<StatsCardProps> = ({
                 delay: index * 0.1,
                 ease: [0.16, 1, 0.3, 1]
               }}
-              className="flex-shrink-0"
+              className="shrink-0"
               style={{ scrollSnapAlign: "start" }}
             >
               <Card
                 onClick={() => navigate(`/landing/${stat.key}`)}
                 className="stats-card-hover border-border/50 bg-card/80 w-[170px] min-w-[170px] cursor-pointer border backdrop-blur-sm md:w-[260px] md:min-w-[260px]"
               >
-                <CardContent className="p-4 !pb-4 md:p-6 md:!pb-6">
+                <CardContent className="p-4 pb-4! md:p-6 md:pb-6!">
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div className="bg-primary/10 rounded-2xl p-2 md:p-3">

@@ -68,7 +68,7 @@ export const LanguageChanger: React.FC<LanguageChangerProps> = ({
       <Select value={language} onValueChange={changeLanguageHandler}>
         <SelectTrigger
           variant="minimize"
-          className="border-border/50 bg-background/50 hover:bg-background/80 hover:border-primary/30 group !h-11 !w-28 !rounded-2xl transition-all duration-200"
+          className="border-border/50 bg-background/50 hover:bg-background/80 hover:border-primary/30 group h-11! w-28! rounded-2xl! transition-all duration-200"
         >
           <div className="flex items-center gap-2">
             <div className="relative">
@@ -77,7 +77,7 @@ export const LanguageChanger: React.FC<LanguageChangerProps> = ({
                   {language === "en" ? "🇺🇸" : "🇬🇪"}
                 </span>
               </div>
-              <div className="from-primary/20 to-accent/20 absolute -inset-0.5 rounded-full bg-gradient-to-br opacity-0 blur-sm transition-all duration-200 group-hover:opacity-100 group-hover:blur-md"></div>
+              <div className="from-primary/20 to-accent/20 absolute -inset-0.5 rounded-full bg-linear-to-br opacity-0 blur-sm transition-all duration-200 group-hover:opacity-100 group-hover:blur-md"></div>
             </div>
             <span className="text-foreground/80 group-hover:text-foreground text-xs font-medium transition-colors duration-200">
               {language.toUpperCase()}
@@ -199,7 +199,7 @@ export const LanguageTabSwitcher: React.FC<LanguageTabSwitcherProps> = ({
               >
                 <Badge
                   variant="destructive"
-                  className="flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-xs"
+                  className="flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-xs"
                 >
                   {errorCount}
                 </Badge>
@@ -335,7 +335,7 @@ export const ValidationBadge: React.FC<ValidationBadgeProps> = ({
     <Badge
       variant="destructive"
       className={cn(
-        "flex h-5 min-w-[20px] cursor-pointer items-center justify-center rounded-full px-1.5 text-xs transition-transform hover:scale-110",
+        "flex h-5 min-w-5 cursor-pointer items-center justify-center rounded-full px-1.5 text-xs transition-transform hover:scale-110",
         className
       )}
       onClick={onClick}

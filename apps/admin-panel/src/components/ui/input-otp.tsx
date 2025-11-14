@@ -52,8 +52,8 @@ function InputOTPSlot({
       data-active={isActive}
       className={cn(
         "border-secondary-foreground/50 bg-input-background relative flex items-center justify-center border text-lg font-medium transition-all outline-none",
-        "h-[80px] w-[82px] rounded-[20px]",
-        "sm:h-[74px] sm:w-[70px] sm:rounded-[16px]",
+        "h-20 w-[82px] rounded-[20px]",
+        "sm:h-[74px] sm:w-[70px] sm:rounded-2xl",
         "max-sm:h-[66px] max-sm:w-[62px] max-sm:rounded-[14px]",
         "data-[active=true]:border-ring data-[active=true]:ring-ring/50 data-[active=true]:ring-[3px]",
         "aria-invalid:border-destructive data-[active=true]:aria-invalid:ring-destructive/40",

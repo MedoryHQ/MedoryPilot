@@ -38,7 +38,7 @@ const Socials = () => {
       key: "icon",
       label: toUpperCase(t("socials.icon")),
       render: (item) => (
-        <div className="border-border bg-muted/10 flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border">
+        <div className="border-border bg-muted/10 flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border">
           {item.icon ? (
             <img
               src={getFileUrl(item.icon.path)}
@@ -62,7 +62,7 @@ const Socials = () => {
       label: toUpperCase(t("socials.link")),
       sortable: true,
       render: (item) => (
-        <a className="text-accent !underline" href={item.url} target="_blank">
+        <a className="text-accent underline!" href={item.url} target="_blank">
           {item.name}
         </a>
       )
@@ -147,7 +147,7 @@ const Socials = () => {
                 </div>
                 <div className="min-w-0 flex-1">
                   <a
-                    className="text-accent !underline"
+                    className="text-accent underline!"
                     href={item?.url}
                     target="_blank"
                   >

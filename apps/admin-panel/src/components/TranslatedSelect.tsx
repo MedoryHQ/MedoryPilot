@@ -238,7 +238,7 @@ export const TranslatedSelect: React.FC<TranslatedSelectProps> = React.memo(
     if (!isMultiple) {
       return (
         <div className={className}>
-          <Label className="mb-2 !text-sm" htmlFor={uniqId}>
+          <Label className="mb-2 text-sm!" htmlFor={uniqId}>
             {label}
           </Label>
 
@@ -289,7 +289,7 @@ export const TranslatedSelect: React.FC<TranslatedSelectProps> = React.memo(
                       <div className="flex items-center justify-between">
                         <div className="truncate">{opt.label}</div>
                         <div className="text-muted-foreground">
-                          <CheckIcon className="size-4 opacity-0 group-data-[highlighted]:opacity-100" />
+                          <CheckIcon className="size-4 opacity-0 group-data-highlighted:opacity-100" />
                         </div>
                       </div>
                     </SelectItem>
@@ -305,7 +305,7 @@ export const TranslatedSelect: React.FC<TranslatedSelectProps> = React.memo(
 
     return (
       <div className={className}>
-        <Label className="mb-2 !text-sm" htmlFor={uniqId}>
+        <Label className="mb-2 text-sm!" htmlFor={uniqId}>
           {label}
         </Label>
 

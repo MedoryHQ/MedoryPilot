@@ -67,7 +67,7 @@ const Overview: React.FC = () => {
       <StatsCard
         config={overviewStatsConfig}
         overviewData={overviewData}
-        className="my-[26px] md:my-[40px]"
+        className="my-[26px] md:my-10"
       />
 
       <Card>
@@ -124,7 +124,7 @@ const Overview: React.FC = () => {
                         <div className="flex min-h-0 items-start gap-4">
                           <div
                             className={cn(
-                              "flex-shrink-0 rounded-lg p-3 text-white",
+                              "shrink-0 rounded-lg p-3 text-white",
                               colorClasses.bg
                             )}
                           >
@@ -147,7 +147,7 @@ const Overview: React.FC = () => {
                             </div>
                           </div>
 
-                          <div className="flex-shrink-0 opacity-0 transition-opacity group-hover:opacity-100">
+                          <div className="shrink-0 opacity-0 transition-opacity group-hover:opacity-100">
                             <Edit className="text-muted-foreground h-4 w-4" />
                           </div>
                         </div>

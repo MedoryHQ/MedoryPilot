@@ -41,7 +41,7 @@ const ChildItem: React.FC<{
       )}
       onClick={() => onClick(child.href)}
     >
-      <div className="flex h-4 w-4 flex-shrink-0 items-center justify-center">
+      <div className="flex h-4 w-4 shrink-0 items-center justify-center">
         {child.icon}
       </div>
       <span className="truncate text-sm font-medium">
@@ -109,7 +109,7 @@ const TopLevelItem: React.FC<{
                     )}
                     onClick={() => onItemClick(item)}
                   >
-                    <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center">
+                    <div className="flex h-5 w-5 shrink-0 items-center justify-center">
                       {item.icon}
                     </div>
 
@@ -179,7 +179,7 @@ const TopLevelItem: React.FC<{
             )}
             onClick={() => onItemClick(item)}
           >
-            <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center">
+            <div className="flex h-5 w-5 shrink-0 items-center justify-center">
               {item.icon}
             </div>
             <AnimatePresence>

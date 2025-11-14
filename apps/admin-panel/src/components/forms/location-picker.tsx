@@ -172,7 +172,7 @@ export function LocationPicker({
       {label && (
         <Label
           htmlFor={id}
-          className="text-foreground block !text-sm font-medium"
+          className="text-foreground block text-sm! font-medium"
         >
           {label}
           {required && <span className="text-destructive ml-1">*</span>}
@@ -193,7 +193,7 @@ export function LocationPicker({
               "e.g., Tbilisi, Georgia"
             }
             className={cn(
-              "!h-10 w-full cursor-pointer rounded-md border px-3 py-2 text-sm",
+              "h-10! w-full cursor-pointer rounded-md border px-3 py-2 text-sm",
               error ? "border-destructive" : "border-border",
               disabled ? "pointer-events-none opacity-50" : ""
             )}

@@ -39,10 +39,10 @@ function SelectTrigger({
       data-size={size}
       data-variant={variant}
       className={cn(
-        "!border-border !border",
-        "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground min-h-[44px]",
+        "border-border! border!",
+        "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground min-h-11",
         "dark:bg-input/30 bg-input-background",
-        "flex w-full min-w-0 items-center gap-2 rounded-md !px-4 !py-3 text-sm",
+        "flex w-full min-w-0 items-center gap-2 rounded-md px-4! py-3! text-sm",
         "data-[size=default]:h-9 data-[size=sm]:h-8",
         "overflow-hidden",
         "transition-[color,box-shadow] outline-none",
@@ -51,7 +51,7 @@ function SelectTrigger({
         "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
         "whitespace-nowrap *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2",
         variant === "minimize" &&
-          "min-h-[32px] !px-2 !py-1 data-[size=default]:h-8 data-[size=sm]:h-7",
+          "min-h-8 px-2! py-1! data-[size=default]:h-8 data-[size=sm]:h-7",
         className
       )}
       {...props}
@@ -78,13 +78,13 @@ function SelectContent({
       <SelectPrimitive.Content
         data-slot="select-content"
         className={cn(
-          "bg-popover text-popover-foreground relative left-0 z-50 !w-full overflow-hidden rounded-md border shadow-md",
+          "bg-popover text-popover-foreground relative left-0 z-50 w-full! overflow-hidden rounded-md border shadow-md",
           "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
           "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
           "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
           position === "popper" &&
             "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
-          "max-h-[var(--radix-select-content-available-height)] min-w-[10rem]",
+          "max-h-(--radix-select-content-available-height) min-w-40",
           className
         )}
         position={position}
@@ -124,7 +124,7 @@ function SelectItem({
       className={cn(
         "relative flex w-full cursor-default items-center gap-2 rounded-md py-2 pr-8 pl-3 text-sm outline-none select-none",
         "hover:bg-accent/5 focus:bg-accent/10",
-        "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "data-disabled:pointer-events-none data-disabled:opacity-50",
         "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className
       )}

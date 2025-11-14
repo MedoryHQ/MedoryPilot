@@ -73,7 +73,7 @@ export const Pagination: React.FC<PaginationProps> = ({ total }) => {
           value={String(pageSize)}
           onValueChange={(v) => handlePageSizeChange(Number(v))}
         >
-          <SelectTrigger className="w-[80px]">
+          <SelectTrigger className="w-20">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
