@@ -29,5 +29,9 @@
     "year_experience": "Year experience",
     "clients": "Clients",
     "each_visit": "Each visit"
+  },
+  "Services": {
+    "title": "My Services",
+    "subTitle": "Comprehensive endocrine care tailored to your needs"
   }
 }
