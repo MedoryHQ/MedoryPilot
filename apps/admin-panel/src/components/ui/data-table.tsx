@@ -230,7 +230,7 @@ export function DataTable<T extends Record<string, any>>({
                 placeholder={toUpperCase(t("services.search"))}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="dark:border-foreground/10 h-[40px] pl-9"
+                className="dark:border-foreground/10 h-10 pl-9"
               />
             </div>
           )}
@@ -238,7 +238,7 @@ export function DataTable<T extends Record<string, any>>({
           {filters.length > 0 && (
             <div className="flex w-full flex-col items-center gap-2 md:w-min md:flex-row">
               <Button
-                className="h-[40px] w-full md:w-min"
+                className="h-10 w-full md:w-min"
                 variant="outline"
                 onClick={() => setActiveFilters({})}
               >
@@ -246,10 +246,7 @@ export function DataTable<T extends Record<string, any>>({
               </Button>
               <Popover open={filterMenuOpen} onOpenChange={setFilterMenuOpen}>
                 <PopoverTrigger asChild>
-                  <Button
-                    className="h-[40px] w-full md:w-min"
-                    variant="outline"
-                  >
+                  <Button className="h-10 w-full md:w-min" variant="outline">
                     <Filter className="mr-2 h-4 w-4" />
                     {toUpperCase(t("dataTable.filters"))}
                     {activeFilterCount > 0 && (
@@ -259,7 +256,7 @@ export function DataTable<T extends Record<string, any>>({
                     )}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-80 md:mr-[20px] lg:mr-[28px]">
+                <PopoverContent className="w-80 md:mr-5 lg:mr-7">
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <h4 className="text-sm font-semibold">
@@ -345,7 +342,7 @@ export function DataTable<T extends Record<string, any>>({
                                   }
                                 }))
                               }
-                              className="!border-border w-1/2 !border px-3 py-2 text-sm placeholder:text-sm"
+                              className="border-border! w-1/2 border! px-3 py-2 text-sm placeholder:text-sm"
                             />
                             <Input
                               type="number"
@@ -363,7 +360,7 @@ export function DataTable<T extends Record<string, any>>({
                                   }
                                 }))
                               }
-                              className="!border-border w-1/2 !border px-3 py-2 text-sm placeholder:text-sm"
+                              className="border-border! w-1/2 border! px-3 py-2 text-sm placeholder:text-sm"
                             />
                           </div>
                         )}
@@ -450,9 +447,9 @@ export function DataTable<T extends Record<string, any>>({
 
         <Card className="border-border/50 hidden md:block">
           <CardContent className="p-0">
-            <div className="border-border overflow-x-auto rounded-[14px] border-1">
+            <div className="border-border overflow-x-auto rounded-[14px] border">
               <table className="w-full">
-                <thead className="bg-secondary/50 border-border border-b-1">
+                <thead className="bg-secondary/50 border-border border-b">
                   <tr>
                     {columns.map((col) => (
                       <th

@@ -34,7 +34,7 @@ export const SidebarFooter: React.FC<SideBarFooterProps> = ({
   const userName = `Dr. ${currentUser?.firstName} ${currentUser?.lastName}`;
 
   return (
-    <div className="flex-shrink-0 border-t border-[var(--sidebar-border)] p-4">
+    <div className="shrink-0 border-t border-[var(--sidebar-border)] p-4">
       <AnimatePresence>
         <motion.div
           initial={{ opacity: 0, y: 10 }}

@@ -50,7 +50,7 @@ const Videos = () => {
         );
         return (
           <div className="flex items-center gap-4">
-            <div className="border-border bg-muted/10 flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border">
+            <div className="border-border bg-muted/10 flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border">
               {item.thumbnail ? (
                 <img
                   src={getFileUrl(item.thumbnail.path)}
@@ -93,7 +93,7 @@ const Videos = () => {
         );
         return (
           <a
-            className="text-accent !underline"
+            className="text-accent underline!"
             href={item.link}
             target="_blank"
           >
@@ -156,7 +156,7 @@ const Videos = () => {
             return (
               <div className="px-3 py-4">
                 <div className="flex items-start gap-3">
-                  <div className="border-border bg-muted/10 mb-0 flex h-16 w-20 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg">
+                  <div className="border-border bg-muted/10 mb-0 flex h-16 w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg">
                     <Skeleton className="h-full w-full" />
                   </div>
 
@@ -206,7 +206,7 @@ const Videos = () => {
           return (
             <div className="px-3 py-4">
               <div className="flex items-start gap-3">
-                <div className="border-border bg-muted/10 flex h-16 w-20 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg">
+                <div className="border-border bg-muted/10 flex h-16 w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg">
                   {item.thumbnail ? (
                     <img
                       src={getFileUrl(item.thumbnail.path)}
@@ -270,7 +270,7 @@ const Videos = () => {
                   <p className="mt-1 truncate text-sm">
                     {item.link ? (
                       <a
-                        className="text-accent break-words !underline"
+                        className="text-accent wrap-break-word underline!"
                         href={item.link}
                         target="_blank"
                         rel="noreferrer"

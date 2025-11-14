@@ -95,7 +95,7 @@ export const SidebarMobileDrawer: React.FC<SidebarMobileDrawerProps> = ({
                     setMobileDrawer({ open: false, item: null });
                   }}
                 >
-                  <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center">
+                  <div className="flex h-5 w-5 shrink-0 items-center justify-center">
                     {child.icon}
                   </div>
                   <span className="font-medium">{child.label}</span>

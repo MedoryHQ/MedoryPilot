@@ -78,7 +78,7 @@ export const MobileNavigationMenu: React.FC<MobileNavigationMenuProps> = ({
             onClick={() => handleMenuItemClick(item)}
           >
             <div className="flex items-center gap-3">
-              <div className="flex-shrink-0">{item.icon}</div>
+              <div className="shrink-0">{item.icon}</div>
               <span className="font-medium">{item.label}</span>
             </div>
             {item.children && (
@@ -124,7 +124,7 @@ export const MobileNavigationMenu: React.FC<MobileNavigationMenuProps> = ({
                       }}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="flex-shrink-0">{child.icon}</div>
+                        <div className="shrink-0">{child.icon}</div>
                         <span className="text-sm">{child.label}</span>
                       </div>
                     </Button>

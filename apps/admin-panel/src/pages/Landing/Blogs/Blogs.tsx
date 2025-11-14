@@ -125,7 +125,7 @@ const Blogs = () => {
         key: "background",
         label: toUpperCase(t("blogs.background")),
         render: (item) => (
-          <div className="border-border bg-muted/10 flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border">
+          <div className="border-border bg-muted/10 flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border">
             {item.background ? (
               <img
                 src={getFileUrl(item.background.path)}
@@ -292,7 +292,7 @@ const Blogs = () => {
                     </div>
                   </div>
                   <div className="flex flex-col items-end">
-                    <h4 className="text-muted-foreground mb-[10px] text-sm">
+                    <h4 className="text-muted-foreground mb-2.5 text-sm">
                       {toUpperCase(t("blogs.stars"))}
                     </h4>
                     <div className="flex items-center gap-1">
@@ -356,7 +356,7 @@ const Blogs = () => {
                   </div>
                 </div>
                 <div className="flex flex-col items-end">
-                  <h4 className="text-muted-foreground mb-[10px] text-sm">
+                  <h4 className="text-muted-foreground mb-2.5 text-sm">
                     {toUpperCase(t("blogs.stars"))}
                   </h4>
                   <div className="flex items-center gap-1">
@@ -377,7 +377,7 @@ const Blogs = () => {
               <div className="min-w-0 flex-1">
                 {item?.categories?.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {item?.categories.slice(0, 3).map((cat, i) => {
+                    {item?.categories.map((cat, i) => {
                       const cTr = getTranslatedObject(
                         cat.translations,
                         i18n.language

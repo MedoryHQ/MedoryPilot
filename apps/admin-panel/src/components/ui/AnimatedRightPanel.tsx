@@ -10,10 +10,10 @@ export const AnimatedRightPanel: React.FC<{
 }> = () => {
   const { t, i18n } = useTranslation();
   return (
-    <div className="from-auth-visual-bg via-auth-visual-secondary to-auth-visual-bg relative flex-1 overflow-hidden bg-gradient-to-br">
+    <div className="from-auth-visual-bg via-auth-visual-secondary to-auth-visual-bg relative flex-1 overflow-hidden bg-linear-to-br">
       <div className="absolute inset-0">
         <motion.div
-          className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-indigo-600/30 to-blue-800/20"
+          className="absolute inset-0 bg-linear-to-br from-blue-600/20 via-indigo-600/30 to-blue-800/20"
           animate={{
             background: [
               "linear-gradient(45deg, rgba(37, 99, 235, 0.2), rgba(79, 70, 229, 0.3), rgba(30, 64, 175, 0.2))",
@@ -163,7 +163,7 @@ export const AnimatedRightPanel: React.FC<{
           className="mb-12"
         >
           <div className="mb-4 flex items-center gap-3 xl:mb-6">
-            <img src={Logo} alt="Medory" className="h-12 w-12 rounded-[4px]" />
+            <img src={Logo} alt="Medory" className="h-12 w-12 rounded-lg" />
 
             <div>
               <h1 className="text-[18px] font-bold lg:text-[22px] xl:text-[24px]">
@@ -217,11 +217,11 @@ export const AnimatedRightPanel: React.FC<{
               transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
               className="flex items-start gap-3 xl:gap-4"
             >
-              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm xl:h-12 xl:w-12 xl:rounded-xl">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm xl:h-12 xl:w-12 xl:rounded-xl">
                 <feature.icon className="h-4 w-4 xl:h-5 xl:w-5" />
               </div>
               <div>
-                <h3 className="mb-1 text-[14px] leading-[14px] font-semibold xl:text-[16px] xl:leading-[20px]">
+                <h3 className="mb-1 text-[14px] leading-3.5 font-semibold xl:text-[16px] xl:leading-5">
                   {toUpperCase(t(feature.title))}
                 </h3>
                 <p className="text-[12px] text-white/70 xl:text-sm xl:text-[13px]">

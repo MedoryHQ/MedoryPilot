@@ -137,7 +137,7 @@ export function DatePicker({
           aria-expanded={open}
           aria-haspopup="dialog"
           className={cn(
-            "bg-input min-h-[44px] w-full justify-start px-4 py-3 text-left font-normal",
+            "bg-input min-h-11 w-full justify-start px-4 py-3 text-left font-normal",
             "flex items-center",
             !value && "text-muted-foreground",
             error && "border-destructive focus-visible:ring-destructive/20",

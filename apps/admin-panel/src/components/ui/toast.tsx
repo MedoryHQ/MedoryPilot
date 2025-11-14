@@ -15,7 +15,7 @@ const ToastViewport = React.forwardRef<
   <ToastPrimitive.Viewport
     ref={ref}
     className={cn(
-      "fixed top-0 right-0 z-[2147483647] flex max-h-screen w-full flex-col p-4 sm:p-6 md:max-w-[420px]",
+      "fixed top-0 right-0 z-100 flex max-h-screen w-full flex-col p-4 sm:p-6 md:max-w-[420px]",
       "pointer-events-none",
       className
     )}
@@ -72,7 +72,7 @@ const Toast = React.forwardRef<
         "group pointer-events-auto relative flex w-full items-start justify-between gap-3 overflow-hidden rounded-xl p-4 shadow-lg",
         "shadow-xl backdrop-blur-sm",
         "transition-all duration-200 ease-out",
-        "data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)]",
+        "data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-(--radix-toast-swipe-end-x) data-[swipe=move]:translate-x-(--radix-toast-swipe-move-x)",
         "data-[swipe=move]:transition-none",
         variantStyles.container,
         className
@@ -167,7 +167,7 @@ const ToastContent: React.FC<ToastContentProps> = ({
   const variantStyles = toastVariants[variant];
 
   const getIcon = () => {
-    const iconClass = cn("h-5 w-5 flex-shrink-0", variantStyles.icon);
+    const iconClass = cn("h-5 w-5 shrink-0", variantStyles.icon);
 
     switch (variant) {
       case "success":
@@ -193,13 +193,13 @@ const ToastContent: React.FC<ToastContentProps> = ({
       />
 
       <div className="flex flex-1 items-start gap-3 pl-2">
-        <div className="mt-0.5 flex-shrink-0">{getIcon()}</div>
+        <div className="mt-0.5 shrink-0">{getIcon()}</div>
         <div className="min-w-0 flex-1 space-y-1">
           <ToastTitle>{title}</ToastTitle>
           {description && <ToastDescription>{description}</ToastDescription>}
         </div>
       </div>
-      {action && <div className="flex-shrink-0">{action}</div>}
+      {action && <div className="shrink-0">{action}</div>}
       <ToastClose />
     </>
   );

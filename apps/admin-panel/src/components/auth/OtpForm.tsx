@@ -139,7 +139,7 @@ export const OtpForm = ({
             <span className="text-auth-text-primary font-medium">{email}</span>
           </p>
 
-          <div className={cn("!mb-4")}>
+          <div className={cn("mb-4!")}>
             <Controller
               control={control}
               name="code"
@@ -198,7 +198,7 @@ export const OtpForm = ({
               onClick={() => resendOtp()}
               disabled={resendDisabled || resending}
               className={cn(
-                "mt-2 w-full cursor-pointer !text-[12px] sm:!text-[16px]",
+                "mt-2 w-full cursor-pointer text-[12px]! sm:text-[16px]!",
                 resendDisabled || resending
                   ? "cursor-not-allowed opacity-50"
                   : "text-primary hover:text-primary/90"
