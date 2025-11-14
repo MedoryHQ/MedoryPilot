@@ -12,3 +12,4 @@ export * from "./label";
 export * from "./form";
 export * from "./input-otp";
 export * from "./switch";
+export * from "./textarea";
