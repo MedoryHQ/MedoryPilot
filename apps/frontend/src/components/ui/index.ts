@@ -9,3 +9,4 @@ export * from "./animations";
 export * from "./date-picker";
 export * from "./checkbox";
 export * from "./label";
+export * from "./form";
