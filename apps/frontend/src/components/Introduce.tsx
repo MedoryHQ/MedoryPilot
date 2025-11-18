@@ -5,12 +5,24 @@ import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { getTranslatedObject, toUpperCase } from "@/utils";
 import { MarkdownRenderer } from "./MarkdownRenderer";
+import { Skeleton } from "./ui";
 
 const Introduce = () => {
   const language = useLocale();
   const { data, isFetching } = useGetIntroduce();
-  if (isFetching) return null;
 
+  if (isFetching) {
+    return (
+      <section className="py-24 lg:py-40 flex flex-col w-full items-center">
+        <Skeleton className="h-[70px] w-full mb-8 max-w-2xl" />
+        <div className="flex flex-col gap-1 max-w-4xl w-full">
+          <Skeleton className="h-[18px]" />
+          <Skeleton className="h-[18px]" />
+          <Skeleton className="h-[18px]" />
+        </div>
+      </section>
+    );
+  }
   const introduce = data?.data;
   const translation = getTranslatedObject(introduce?.translations, language);
 
