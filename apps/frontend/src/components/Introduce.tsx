@@ -27,13 +27,10 @@ const Introduce = () => {
   const translation = getTranslatedObject(introduce?.translations, language);
 
   return (
-    <section
-      id="about"
-      className="py-20 md:py-24 lg:py-40 relative overflow-hidden"
-    >
+    <section id="about" className="py-20 md:py-24 lg:py-40 relative">
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-1/2 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent-foreground/5 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent-foreground/15 rounded-full blur-3xl" />
       </div>
 
       <div className="z-1">
