@@ -27,13 +27,16 @@ const Introduce = () => {
   const translation = getTranslatedObject(introduce?.translations, language);
 
   return (
-    <section id="about" className="py-24 lg:py-40 relative overflow-hidden">
+    <section
+      id="about"
+      className="py-20 md:py-24 lg:py-40 relative overflow-hidden"
+    >
       <div className="absolute inset-0 z-0">
         <div className="absolute top-1/2 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent-foreground/5 rounded-full blur-3xl" />
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 z-1">
+      <div className="z-1">
         <motion.div
           className="max-w-4xl mx-auto text-center"
           initial={{ opacity: 0, y: 50 }}
@@ -42,7 +45,7 @@ const Introduce = () => {
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
           <motion.h2
-            className="text-4xl lg:text-5xl xl:text-6xl font-bold text-primary mb-8 leading-[1.15] tracking-tight"
+            className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-primary mb-8 leading-[1.15] tracking-tight"
             initial={{ opacity: 0, y: 30 }}
             viewport={{ once: true, amount: 0.2 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -51,7 +54,7 @@ const Introduce = () => {
             {toUpperCase(translation?.headline)}
           </motion.h2>
           <motion.div
-            className="text-xl lg:text-2xl text-primary/80 leading-relaxed"
+            className="md:text-xl lg:text-2xl text-primary/80 leading-relaxed"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
