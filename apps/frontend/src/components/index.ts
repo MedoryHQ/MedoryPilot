@@ -5,3 +5,4 @@ export * from "./Header";
 export * from "./LocaleSwitcher";
 export * from "./Hero";
 export * from "./Services";
+export * from "./Introduce";
