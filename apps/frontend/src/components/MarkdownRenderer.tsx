@@ -42,7 +42,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
               {...props}
               href={props.href?.toLowerCase()}
               className={cn(
-                "text-primary underline transition-all duration-300 cursor-pointer !bg-transparent",
+                "text-primary underline transition-all duration-300 cursor-pointer bg-transparent!",
                 classNames?.a
               )}
               target="_blank"
@@ -56,7 +56,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
               return (
                 <span
                   {...props}
-                  className={cn("!text-white-primary", classNames?.span)}
+                  className={cn("text-white-primary!", classNames?.span)}
                 >
                   {toUpperCase(props.children)}
                 </span>
@@ -65,7 +65,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
             return (
               <span
                 {...props}
-                className={cn("!text-white-primary", classNames?.span)}
+                className={cn("text-white-primary!", classNames?.span)}
               >
                 {props.children}
               </span>
@@ -127,7 +127,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
                 <strong
                   {...props}
                   className={cn(
-                    "!text-white-primary font-bold",
+                    "text-white-primary! font-bold",
                     classNames?.strong
                   )}
                 >
@@ -139,7 +139,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
               <strong
                 {...props}
                 className={cn(
-                  "!text-white-primary font-bold",
+                  "text-white-primary! font-bold",
                   classNames?.strong
                 )}
               >
@@ -188,7 +188,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
             return (
               <div
                 className={cn(
-                  "relative aspect-[16/9] w-full my-4 ",
+                  "relative aspect-video w-full my-4 ",
                   classNames?.iframe
                 )}
               >
@@ -196,7 +196,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
                   {...props}
                   className={cn(
                     "absolute top-0 left-0 w-full h-full rounded-lg",
-                    isYouTube && "aspect-[16/9]",
+                    isYouTube && "aspect-video",
                     classNames?.iframe
                   )}
                   allowFullScreen
@@ -208,7 +208,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
           ul: ({ ...props }) => (
             <ul
               {...props}
-              className={cn("!list-disc list-outside", classNames?.ul)}
+              className={cn("list-disc! list-outside", classNames?.ul)}
             >
               {props.children}
             </ul>
@@ -250,9 +250,9 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
             <h1
               {...props}
               className={cn(
-                "text-primary mb-4 font-bold md:leading-[48px]",
+                "text-primary mb-4 font-bold md:leading-12",
                 locale === "en"
-                  ? "text-[30px] leading-[44px] md:text-[32px]"
+                  ? "text-[30px] leading-11 md:text-[32px]"
                   : "text-[28px] leading-[42px] md:text-[31px]",
                 classNames?.h1
               )}
