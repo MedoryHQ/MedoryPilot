@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
   --color-card: hsl(var(--card));
   --color-card-foreground: hsl(var(--card-foreground));
   --color-popover: hsl(var(--popover));
@@ -43,7 +43,7 @@
 
   --theme-shadow-soft: var(--shadow-soft);
   --theme-shadow-medium: var(--shadow-medium);
-  --theme-shadow-premium: var(--shadow-premium);
+  --shadow-premium: var(--shadow-premium);
   --theme-shadow-glass: var(--shadow-glass);
   --theme-shadow-glow: var(--shadow-glow);
   --theme-shadow-glow-lg: var(--shadow-glow-lg);
@@ -93,7 +93,7 @@
   --radius: 1.5rem;
   --shadow-soft: 0 1px 3px 0 rgb(0 0 0 / 0.05);
   --shadow-medium: 0 4px 15px -3px rgb(0 0 0 / 0.1);
-  --shadow-premium: 0 20px 60px -15px rgb(0 0 0 / 0.15);
+  --shadow-premium: 0 20px 60px -15px rgba(0, 0, 0, 0.15);
   --shadow-glass: 0 8px 32px 0 rgb(0 0 0 / 0.1);
   --shadow-glow: 0 0 40px hsla(187, 71%, 55%, 0.3);
   --shadow-glow-lg: 0 0 80px hsla(187, 71%, 55%, 0.4);

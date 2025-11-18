@@ -32,7 +32,7 @@ const Services = () => {
   if (isFetching) {
     return (
       <section className="py-24 lg:py-40">
-        <div className="mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="mx-auto text-center">
           <div className="inline-block px-4 py-2 rounded-lg bg-card/70">
             Loading services…
           </div>
@@ -44,10 +44,13 @@ const Services = () => {
   const services = data?.data ?? [];
 
   return (
-    <section id="services" className="py-24 lg:py-40 relative overflow-hidden">
-      <div className="mx-auto px-4 sm:px-6 lg:px-8">
+    <section
+      id="services"
+      className="py-20 md:py-24 lg:py-40 relative overflow-hidden"
+    >
+      <div className="mx-auto">
         <motion.div
-          className="text-center max-w-3xl mx-auto mb-20"
+          className="text-center max-w-3xl mx-auto mb-12  lg:mb-16"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
@@ -56,7 +59,7 @@ const Services = () => {
           <h2 className="text-4xl lg:text-5xl font-bold mb-6 tracking-tight text-primary">
             {toUpperCase(t("title") ?? "")}
           </h2>
-          <p className="text-xl leading-relaxed text-primary/80">
+          <p className=" md:text-xl leading-relaxed text-primary/80">
             {toUpperCase(t("subTitle") ?? "")}
           </p>
         </motion.div>
@@ -67,7 +70,7 @@ const Services = () => {
           </div>
         ) : (
           <motion.div
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 xl:gap-8"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
@@ -84,8 +87,8 @@ const Services = () => {
 
               return (
                 <motion.div key={service?.id ?? index} variants={itemVariants}>
-                  <Card className="group h-full hover:shadow-premium hover:border-primary/30 transition-all duration-500 border-border/50 bg-card/50 backdrop-blur-sm relative overflow-hidden rounded-3xl">
-                    <CardContent className="p-8 space-y-4">
+                  <Card className="group h-full hover:shadow-premium hover:border-primary/30 transition-all duration-500 border-border/50 bg-card/50 backdrop-blur-sm relative overflow-hidden rounded-[18px] md:rounded-3xl">
+                    <CardContent className="p-6 md:p-8 space-y-4">
                       <div className="flex items-start justify-between mb-4">
                         <motion.div
                           className="w-12 h-12 rounded-xl bg-primary/5 dark:bg-primary/10 flex items-center justify-center group-hover:bg-primary/10 dark:group-hover:bg-primary/20 transition-colors duration-300"
@@ -111,11 +114,11 @@ const Services = () => {
                         </span>
                       </div>
 
-                      <h3 className="text-xl font-bold text-primary">
+                      <h3 className="text-[18px] md:text-xl font-bold text-primary">
                         {toUpperCase(translation.title ?? "")}
                       </h3>
 
-                      <p className="leading-relaxed text-sm text-primary/80">
+                      <p className="leading-relaxed text-[13px] md:text-sm text-primary/80">
                         {toUpperCase(translation.description ?? "")}
                       </p>
                     </CardContent>
