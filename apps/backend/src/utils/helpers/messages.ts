@@ -376,6 +376,10 @@ export const errorMessages = {
     en: "Invalid Icon",
     ka: "არასწორი Icon",
   },
+  invalidVideo: {
+    en: "Invalid Video",
+    ka: "არასწორი ვიდეო",
+  },
   invalidLogo: {
     en: "Invalid Logo",
     ka: "არასწორი ლოგო",
