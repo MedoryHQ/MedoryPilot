@@ -10,6 +10,9 @@ jest.mock("@/config", () => ({
     hero: {
       findFirst: jest.fn(),
     },
+    tariff: {
+      findFirst: jest.fn(),
+    },
     $disconnect: jest.fn(),
   },
   getEnvVariable: jest.fn(() => {
@@ -87,6 +90,17 @@ const mockHero = {
   ],
 };
 
+const mockTariff = {
+  id: "11111111-1111-1111-1111-111111111111",
+  price: 100,
+  isCurrent: true,
+  fromDate: new Date().toISOString(),
+  endDate: null,
+  parentId: null,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+};
+
 afterAll(async () => {
   try {
     await (require("@/config").prisma?.$disconnect?.() ?? Promise.resolve());
@@ -101,16 +115,19 @@ describe("Customer hero routes — /hero", () => {
   describe("GET /hero", () => {
     it("returns the hero when found", async () => {
       (prisma.hero.findFirst as jest.Mock).mockResolvedValueOnce(mockHero);
+      (prisma.tariff.findFirst as jest.Mock).mockResolvedValueOnce(mockTariff);
 
       const res = await request(app).get("/hero");
 
       expect(res).toHaveStatus(200);
       expect(res.body.data).toBeDefined();
+      expect(res.body.tariff).toBeDefined();
       expect(prisma.hero.findFirst).toHaveBeenCalled();
     });
 
     it("returns 404 when hero not found", async () => {
       (prisma.hero.findFirst as jest.Mock).mockResolvedValueOnce(null);
+      (prisma.tariff.findFirst as jest.Mock).mockResolvedValueOnce(mockTariff);
 
       const res = await request(app).get("/hero");
 
