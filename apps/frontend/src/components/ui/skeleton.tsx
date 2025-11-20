@@ -8,7 +8,7 @@ function Skeleton({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <HeroUISkeleton
-      className={cn("rounded-md bg-gray-100", className)}
+      className={cn("rounded-md bg-white", className)}
       {...props}
     />
   );
@@ -30,4 +30,20 @@ const HeroSkeletion = () => {
   );
 };
 
-export { Skeleton, HeroSkeletion };
+const IntroduceSkeletion = () => {
+  return (
+    <section
+      id="introduce"
+      className="py-24 lg:py-40 flex flex-col w-full items-center max-w-[1440px] wrapper h-full px-4 md:px-6"
+    >
+      <Skeleton className="h-11 md:h-[55px] xl:h-[70px] w-full mb-8 max-w-2xl" />
+      <div className="flex flex-col gap-1.5 md:gap-2 max-w-4xl w-full">
+        <Skeleton className="h-[18px] md:h-[22px]" />
+        <Skeleton className="h-[18px] md:h-[22px]" />
+      </div>
+      <Skeleton className="mt-10 md:mt-14 lg:mt-20 max-w-6xl w-full h-full aspect-video" />
+    </section>
+  );
+};
+
+export { Skeleton, HeroSkeletion, IntroduceSkeletion };

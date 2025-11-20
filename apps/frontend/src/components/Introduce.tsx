@@ -5,7 +5,7 @@ import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { getFullFilePath, getTranslatedObject, toUpperCase } from "@/utils";
 import { MarkdownRenderer } from "./MarkdownRenderer";
-import { Skeleton } from "./ui";
+import { IntroduceSkeletion } from "./ui";
 import { useState } from "react";
 import { Play } from "lucide-react";
 import Image from "next/image";
@@ -15,18 +15,8 @@ const Introduce = () => {
   const { data, isFetching } = useGetIntroduce();
   const [showVideo, setShowVideo] = useState(false);
 
-  if (isFetching) {
-    return (
-      <section className="py-24 lg:py-40 flex flex-col w-full items-center max-w-[1440px] wrapper h-full px-4 md:px-6">
-        <Skeleton className="h-[70px] w-full mb-8 max-w-2xl" />
-        <div className="flex flex-col gap-1 max-w-4xl w-full">
-          <Skeleton className="h-[18px]" />
-          <Skeleton className="h-[18px]" />
-          <Skeleton className="h-[18px]" />
-        </div>
-      </section>
-    );
-  }
+  if (isFetching) return <IntroduceSkeletion />;
+
   const introduce = data?.data;
   const video = introduce?.video;
   const thumbnail = introduce?.thumbnail;
