@@ -28,6 +28,8 @@ export const fetchIntroduce = async (
             },
           },
         },
+        thumbnail: true,
+        video: true,
       },
     });
 
@@ -111,7 +113,7 @@ export const createIntroduce = async (
   next: NextFunction
 ) => {
   try {
-    const { translations } = req.body as CreateIntroduceDTO;
+    const { translations, thumbnail, video } = req.body as CreateIntroduceDTO;
 
     logInfo("Introduce create attempt", {
       ip: (req as any).hashedIp,
@@ -136,9 +138,29 @@ export const createIntroduce = async (
       Prisma.IntroduceTranslationCreateWithoutIntroduceInput[]
     >()(createTranslations(translations) as any);
 
+    const thumbnailToCreate = thumbnail
+      ? {
+          path: thumbnail.path,
+          name: thumbnail.name,
+          size: thumbnail.size,
+        }
+      : undefined;
+
+    const videoToCreate = video
+      ? {
+          path: video.path,
+          name: video.name,
+          size: video.size,
+        }
+      : undefined;
+
     const introduce = await prisma.introduce.create({
       data: {
         translations: { create: translationsToCreate },
+        ...(thumbnailToCreate
+          ? { thumbnail: { create: thumbnailToCreate } }
+          : {}),
+        ...(videoToCreate ? { video: { create: videoToCreate } } : {}),
       },
     });
 
@@ -170,7 +192,7 @@ export const updateIntroduce = async (
   try {
     const { id } = req.params;
 
-    const { translations } = req.body as UpdateIntroduceDTO;
+    const { translations, thumbnail, video } = req.body as UpdateIntroduceDTO;
 
     logInfo("Introduce update attempt", {
       ip: (req as any).hashedIp,
@@ -183,9 +205,29 @@ export const updateIntroduce = async (
       Prisma.IntroduceTranslationCreateWithoutIntroduceInput[]
     >()(createTranslations(translations) as any);
 
+    const thumbnailToCreate = thumbnail
+      ? {
+          path: thumbnail.path,
+          name: thumbnail.name,
+          size: thumbnail.size,
+        }
+      : undefined;
+
+    const videoToCreate = video
+      ? {
+          path: video.path,
+          name: video.name,
+          size: video.size,
+        }
+      : undefined;
+
     const findIntroduce = await prisma.introduce.findUnique({
       where: {
         id,
+      },
+      include: {
+        thumbnail: true,
+        video: true,
       },
     });
 
@@ -200,6 +242,40 @@ export const updateIntroduce = async (
       return sendError(req, res, 404, "introduceNotFound");
     }
 
+    const hasThumbnailProp = Object.prototype.hasOwnProperty.call(
+      req.body,
+      "thumbnail"
+    );
+
+    const hasVideoProp = Object.prototype.hasOwnProperty.call(
+      req.body,
+      "video"
+    );
+
+    const thumbnailNested =
+      hasThumbnailProp && thumbnailToCreate
+        ? {
+            upsert: {
+              update: thumbnailToCreate,
+              create: thumbnailToCreate,
+            },
+          }
+        : hasThumbnailProp && thumbnail === null
+        ? { delete: true }
+        : undefined;
+
+    const videoNested =
+      hasVideoProp && videoToCreate
+        ? {
+            upsert: {
+              update: videoToCreate,
+              create: videoToCreate,
+            },
+          }
+        : hasVideoProp && video === null
+        ? { delete: true }
+        : undefined;
+
     const introduce = await prisma.introduce.update({
       where: {
         id,
@@ -209,6 +285,8 @@ export const updateIntroduce = async (
           deleteMany: {},
           create: translationsToCreate,
         },
+        ...(thumbnailNested ? { thumbnail: thumbnailNested } : {}),
+        ...(videoNested ? { video: videoNested } : {}),
       },
     });
 

@@ -39,6 +39,8 @@ export type UpdateFaqDTO = CreateFaqDTO;
 
 export interface CreateIntroduceDTO {
   translations: Translations;
+  video?: File | null;
+  thumbnail?: File | null;
 }
 
 export type UpdateIntroduceDTO = CreateIntroduceDTO;
