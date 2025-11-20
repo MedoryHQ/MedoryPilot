@@ -5,13 +5,15 @@ import { buildMapper, toUpperCase } from "@/utils";
 import { GenericEntityForm } from "..";
 import type { IntroduceFormValues } from "@/validations/website/introduce.validation.ts";
 import { introduceSchema } from "@/validations/website/introduce.validation.ts";
-import { FormProps } from "@/types";
+import { FieldConfig, FormProps } from "@/types";
 
 const defaultValues: IntroduceFormValues = {
   translations: {
     en: { headline: "", description: "" },
     ka: { headline: "", description: "" }
-  }
+  },
+  thumbnail: null,
+  video: null
 };
 
 export const IntroduceForm: React.FC<FormProps> = ({
@@ -25,7 +27,8 @@ export const IntroduceForm: React.FC<FormProps> = ({
   const mapFetchedToForm = buildMapper<IntroduceFormValues>({
     translations: {
       fields: ["headline", "description"]
-    }
+    },
+    fileFields: ["video", "thumbnail"]
   });
 
   const fetchEntity = async () => {
@@ -47,6 +50,44 @@ export const IntroduceForm: React.FC<FormProps> = ({
   const deleteEntity = async (entityId: string) => {
     await axios.delete(`/introduce/${entityId}`);
   };
+
+  const rightSections = [
+    {
+      key: "video",
+      title: toUpperCase(t("introduce.form.video")),
+      fields: [
+        {
+          kind: "simple",
+          name: "video",
+          label: toUpperCase(t("introduce.form.videoLabel")),
+          type: "media",
+          props: {
+            maxSizeMB: 100,
+            acceptedFormats: ["MP4", "WEBM", "OGG", "MKV"],
+            previewWidth: "w-full",
+            previewHeight: "h-[248px]"
+          }
+        }
+      ] as FieldConfig<IntroduceFormValues>[]
+    },
+    {
+      key: "thumbnail",
+      title: toUpperCase(t("introduce.form.thumbnail")),
+      fields: [
+        {
+          kind: "simple",
+          name: "thumbnail",
+          label: toUpperCase(t("introduce.form.thumbnailLabel")),
+          type: "media",
+          props: {
+            maxSizeMB: 5,
+            acceptedFormats: ["PNG", "JPG", "SVG", "WEBP"],
+            previewHeight: "h-[248px]"
+          }
+        }
+      ] as FieldConfig<IntroduceFormValues>[]
+    }
+  ];
 
   return (
     <GenericEntityForm<IntroduceFormValues>
@@ -80,7 +121,7 @@ export const IntroduceForm: React.FC<FormProps> = ({
           }
         ] as const
       }
-      sections={{ left: [], right: [] }}
+      sections={{ left: [], right: rightSections }}
       mapFetchedToForm={mapFetchedToForm}
       renderFooter={() => null}
       entityData={entityData}

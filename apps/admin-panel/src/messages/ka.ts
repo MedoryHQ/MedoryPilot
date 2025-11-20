@@ -390,6 +390,7 @@ export const ka = {
     },
     mediaUploader: {
       uploadImage: "სურათის ატვირთვა",
+      uploadVideo: "ვიდეოს ატვირთვა",
       uploadImageFile: "სურათის ატვირთვა",
       dropOrBrowse: "ჩააგდეთ სურათი ან დააჭირეთ ბრაუზისთვის",
       uploading: "იტვირთება...",
@@ -412,6 +413,12 @@ export const ka = {
         createTitle: "შესავალის შექმნა",
         editTitle: "შესავალის რედაქტირება",
         readonlyTitle: "შესავალი",
+        video: "ვიდეო",
+        backgroundLabel: "ჩააგდეთ ვიდეო აქ",
+        backgroundDescription: "ან დააჭირეთ არჩევისთვის",
+        thumbnail: "გარეკანის ფოტო",
+        thumbnailLabel: "ჩააგდეთ გარეკანის ფოტო აქ",
+        thumbnailDescription: "ან დააჭირეთ არჩევისთვის",
         edit: "შესავალის რედაქტირება",
         read: "შესავალის ნახვა",
         subtitle: "ვებსაიტის შესავალის კონფიგურაცია",
@@ -430,7 +437,9 @@ export const ka = {
       },
       errors: {
         headlineRequired: "სათაური სავალდებულოა",
-        descriptionRequired: "აღწერა სავალდებულოა"
+        descriptionRequired: "აღწერა სავალდებულოა",
+        thumbnailRequired: "გარეკანის ფოტო სავალდებულოა",
+        videoRequired: "ვიდეო სავალდებულოა"
       }
     },
     service: {

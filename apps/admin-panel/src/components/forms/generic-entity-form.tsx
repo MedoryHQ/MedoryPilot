@@ -745,7 +745,7 @@ export function GenericEntityForm<
                 <FormSection
                   key={sec.key ?? sec.title}
                   title={sec.title}
-                  className="!gap-0"
+                  className="gap-0!"
                   description={sec.description}
                 >
                   {sec.fields?.map((f, idx) => (
@@ -769,7 +769,7 @@ export function GenericEntityForm<
                 <FormSection
                   key={sec.key ?? sec.title}
                   title={sec.title}
-                  className="!gap-0"
+                  className="gap-0!"
                   description={sec.description}
                 >
                   {index === 0 && !!id ? (
