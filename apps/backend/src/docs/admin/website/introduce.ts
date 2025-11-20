@@ -2,12 +2,12 @@
  * @swagger
  * tags:
  *   - name: Admin Introduce
- *     description: Manage website "Introduce" section (headline and description with translations).
+ *     description: Manage website "Introduce" section (video, thumbnail, headline and description with translations).
  *
  * /admin/introduce:
  *   get:
  *     summary: Fetch introduce
- *     description: Get the first introduce entry with translations.
+ *     description: Get the first introduce entry with translations, thumbnail, and video.
  *     tags:
  *       - Admin Introduce
  *     security:
@@ -26,7 +26,7 @@
  *
  *   post:
  *     summary: Create introduce
- *     description: Create a new introduce entry with translations.
+ *     description: Create a new introduce entry with translations, thumbnail, and video.
  *     tags:
  *       - Admin Introduce
  *     security:
@@ -74,7 +74,7 @@
  *
  *   put:
  *     summary: Update introduce
- *     description: Update an introduce entry and replace translations.
+ *     description: Update an introduce entry and replace translations, thumbnail, and video.
  *     tags:
  *       - Admin Introduce
  *     security:
@@ -106,6 +106,22 @@
  *
  * components:
  *   schemas:
+ *     File:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           example: "file-uuid"
+ *         name:
+ *           type: string
+ *           example: "thumbnail.png"
+ *         path:
+ *           type: string
+ *           example: "/uploads/thumbnail.png"
+ *         size:
+ *           type: integer
+ *           example: 12345
+ *
  *     IntroduceTranslation:
  *       type: object
  *       properties:
@@ -135,6 +151,10 @@
  *             ka:
  *               headline: "სათაური"
  *               description: "აღწერა."
+ *         thumbnail:
+ *           $ref: '#/components/schemas/File'
+ *         video:
+ *           $ref: '#/components/schemas/File'
  *
  *     UpdateIntroduceInput:
  *       allOf:
@@ -153,4 +173,8 @@
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/IntroduceTranslation'
+ *             thumbnail:
+ *               $ref: '#/components/schemas/File'
+ *             video:
+ *               $ref: '#/components/schemas/File'
  */

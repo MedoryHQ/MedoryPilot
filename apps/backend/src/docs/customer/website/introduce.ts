@@ -2,12 +2,12 @@
  * @swagger
  * tags:
  *   - name: Customer Introduce
- *     description: Public endpoint to fetch introduce section
+ *     description: Public endpoint to fetch introduce section with translations, thumbnail, and video.
  *
  * /introduce:
  *   get:
  *     summary: Get introduce section
- *     description: Returns the introduce section with translations including headline and description.
+ *     description: Returns the introduce section with translations (headline, description), thumbnail, and video.
  *     tags:
  *       - Customer Introduce
  *     responses:
@@ -24,6 +24,22 @@
  *
  * components:
  *   schemas:
+ *     File:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           example: "file-uuid"
+ *         name:
+ *           type: string
+ *           example: "thumbnail.png"
+ *         path:
+ *           type: string
+ *           example: "/uploads/thumbnail.png"
+ *         size:
+ *           type: integer
+ *           example: 12345
+ *
  *     CustomerIntroduceTranslation:
  *       type: object
  *       properties:
@@ -50,4 +66,8 @@
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/CustomerIntroduceTranslation'
+ *             thumbnail:
+ *               $ref: '#/components/schemas/File'
+ *             video:
+ *               $ref: '#/components/schemas/File'
  */
