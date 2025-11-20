@@ -6,13 +6,13 @@ const shellBase = "w-full";
 const shellVariants = cva(shellBase, {
   variants: {
     variant: {
-      page: "mx-auto max-w-[1440px] ",
+      page: "mx-auto flex flex-col items-center",
       centered: "mx-auto max-w-2xl h-dvh flex flex-col justify-center px-4",
       markdown: "mx-auto max-w-3xl py-8 md:py-10 px-6",
       panel:
         "min-h-dvh w-full max-w-[1440px] mx-auto grid grid-cols-[280px_1fr] gap-6 px-6",
       panelWide:
-        "min-h-dvh w-full max-w-[1440px] mx-auto grid grid-cols-[320px_1fr] gap-8 px-8",
+        "min-h-dvh wmax-w-[1440px] -full max-w-[1440px] mx-auto grid grid-cols-[320px_1fr] gap-8 px-8",
       authSplit:
         "min-h-dvh w-full mx-auto max-w-[1440px] grid grid-cols-1 md:grid-cols-2 gap-6 px-4 md:px-8",
       fullBleed: "w-full",

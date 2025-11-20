@@ -50,7 +50,7 @@ const Hero = () => {
   return (
     <section
       id="home"
-      className="relative pt-4 md:pt-8 overflow-hidden mb-6 md:mb-8 xl:mb-10"
+      className="relative pt-4 md:pt-8 overflow-hidden mb-6 md:mb-8 xl:mb-10 max-w-[1440px] wrapper h-full px-4 md:px-6 2xl:px-0"
     >
       <div className="mx-auto">
         <motion.div

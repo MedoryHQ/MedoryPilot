@@ -17,7 +17,7 @@ const Introduce = () => {
 
   if (isFetching) {
     return (
-      <section className="py-24 lg:py-40 flex flex-col w-full items-center">
+      <section className="py-24 lg:py-40 flex flex-col w-full items-center max-w-[1440px] wrapper h-full px-4 md:px-6">
         <Skeleton className="h-[70px] w-full mb-8 max-w-2xl" />
         <div className="flex flex-col gap-1 max-w-4xl w-full">
           <Skeleton className="h-[18px]" />
@@ -33,7 +33,10 @@ const Introduce = () => {
   const translation = getTranslatedObject(introduce?.translations, language);
 
   return (
-    <section id="about" className="py-10 md:py-16 lg:py-30 relative">
+    <section
+      id="about"
+      className="py-10 md:py-16 lg:py-30 w-full relative max-w-[1440px] wrapper h-full px-4 md:px-6"
+    >
       <div className="absolute inset-0 z-0">
         <div className="absolute top-1/6 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
