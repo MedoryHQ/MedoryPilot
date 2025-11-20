@@ -46,4 +46,29 @@ const IntroduceSkeletion = () => {
   );
 };
 
-export { Skeleton, HeroSkeletion, IntroduceSkeletion };
+const ServiceSkeletion = () => {
+  return (
+    <section
+      id="introduce"
+      className="mx-auto z-1 max-w-[1440px] h-full px-4 md:px-6"
+    >
+      <div className="text-center mx-auto mb-12 lg:mb-16 z-2 relative flex flex-col items-center justify-center w-full">
+        <Skeleton className="h-11 md:h-[55px] xl:h-[70px] w-full mb-8 max-w-2xl bg-transparent" />
+        <div className="flex flex-col gap-1.5 md:gap-2 max-w-4xl w-full">
+          <Skeleton className="h-[18px] md:h-[22px] bg-transparent" />
+          <Skeleton className="h-[18px] md:h-[22px] bg-transparent" />
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 xl:gap-8 w-full mt-10">
+          {Array.from({ length: 9 }).map((_, idx) => (
+            <Skeleton
+              key={idx}
+              className="aspect-video bg-transparent w-full rounded-xl"
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export { Skeleton, HeroSkeletion, IntroduceSkeletion, ServiceSkeletion };
