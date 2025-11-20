@@ -387,6 +387,7 @@ export const en = {
     },
     mediaUploader: {
       uploadImage: "Upload Image",
+      uploadVideo: "Upload Video",
       uploadImageFile: "Upload image file",
       dropOrBrowse: "Drop your image here or click to browse",
       uploading: "Uploading...",
@@ -421,6 +422,12 @@ export const en = {
         description: "Description",
         descriptionPlaceholder:
           "Enter a brief description for this introduce...",
+        video: "Video",
+        videoLabel: "Drop your video here",
+        videoDescription: "or click to browse",
+        thumbnail: "Thumbnail",
+        thumbnailLabel: "Drop your thumbnail here",
+        thumbnailDescription: "or click to browse",
         settings: "Settings",
         introduce: "Introduce",
         createdSuccessfully: "Introduce created successfully",
@@ -429,7 +436,9 @@ export const en = {
       },
       errors: {
         headlineRequired: "Headline is required",
-        descriptionRequired: "Description is required"
+        descriptionRequired: "Description is required",
+        thumbnailRequired: "Thumbnail is required",
+        videoRequired: "Video is required"
       }
     },
     service: {

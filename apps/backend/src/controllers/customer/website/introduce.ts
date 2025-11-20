@@ -25,6 +25,8 @@ export const fetchIntroduce = async (
             },
           },
         },
+        thumbnail: true,
+        video: true,
       },
     });
 

@@ -1,4 +1,4 @@
-import { Language } from ".";
+import { File, Language } from ".";
 
 export interface IntroduceResponse {
   data: Introduce;
@@ -7,6 +7,8 @@ export interface IntroduceResponse {
 export interface Introduce {
   id: string;
   translations: IntroduceTranslation[];
+  video?: File;
+  thumbnail?: File;
   createdAt: string;
   updatedAt: string;
 }

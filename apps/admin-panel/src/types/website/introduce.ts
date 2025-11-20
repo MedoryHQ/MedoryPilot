@@ -1,4 +1,4 @@
-import { Language } from "../global";
+import { File, Language } from "../global";
 
 export interface IntroducesResponse {
   data: Introduce[];
@@ -11,6 +11,8 @@ export interface IntroduceResponse {
 
 export interface Introduce {
   id: string;
+  thumbnail?: File;
+  video?: File;
   translations: IntroduceTranslation[];
   createdAt: string;
   updatedAt: string;

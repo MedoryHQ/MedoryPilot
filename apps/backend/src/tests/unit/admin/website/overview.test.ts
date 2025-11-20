@@ -62,7 +62,7 @@ describe("Admin Overview routes — /admin/overview", () => {
       (prisma.fAQ.count as jest.Mock).mockResolvedValueOnce(3);
       (prisma.blog.count as jest.Mock).mockResolvedValueOnce(4);
       (prisma.category.count as jest.Mock).mockResolvedValueOnce(2);
-      (prisma.contact.count as jest.Mock).mockResolvedValueOnce(8);
+      (prisma.contact.count as jest.Mock).mockResolvedValueOnce(1);
       (prisma.footer.count as jest.Mock).mockResolvedValueOnce(1);
       (prisma.social.count as jest.Mock).mockResolvedValueOnce(6);
       (prisma.pageComponent.count as jest.Mock).mockResolvedValueOnce(9);

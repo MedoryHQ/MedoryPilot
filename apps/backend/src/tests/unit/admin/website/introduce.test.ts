@@ -85,6 +85,8 @@ app.use("/admin/introduce", adminIntroduceRouter);
 
 const mockIntroduce = {
   id: "11111111-1111-1111-1111-111111111111",
+  thumbnail: null,
+  video: null,
   translations: [
     {
       id: "t-en",

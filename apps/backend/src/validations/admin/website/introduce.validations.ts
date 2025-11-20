@@ -14,6 +14,14 @@ export const createIntroduceValidation = [
         { name: "description", required: true },
       ])
     ),
+  body("video")
+    .isObject()
+    .optional({ nullable: true })
+    .withMessage("invalidVideo"),
+  body("thumbnail")
+    .isObject()
+    .optional({ nullable: true })
+    .withMessage("invalidThumbnail"),
 ];
 
 export const updateIntroduceValidation = [

@@ -39,7 +39,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
   label,
   description,
   maxSizeMB = 5,
-  acceptedFormats = ["PNG", "JPG", "SVG", "WEBP"],
+  acceptedFormats = ["PNG", "JPG", "SVG", "WEBP", "MP4", "WEBM", "OGG", "MKV"],
   previewHeight = "h-64",
   disabled = false,
   className = "",
@@ -64,6 +64,26 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
   const [previewImage, setPreviewImage] = useState<string>("");
 
   const clearTimerRef = useRef<number | null>(null);
+
+  const isVideo = (file: File | UploadedImage | null) => {
+    if (!file) return false;
+    const path = (file as UploadedImage).path || "";
+    return /\.(mp4|webm|ogg|mkv)$/i.test(path);
+  };
+
+  const acceptString = acceptedFormats
+    .map((fmt) =>
+      fmt.startsWith(".")
+        ? fmt
+        : fmt.match(/^mkv$/i)
+          ? "video/x-matroska"
+          : fmt.match(/^(mp4|webm|ogg)$/i)
+            ? `video/${fmt.toLowerCase()}`
+            : fmt.match(/^(png|jpg|jpeg|svg|webp)$/i)
+              ? `image/${fmt.toLowerCase()}`
+              : fmt
+    )
+    .join(",");
 
   useEffect(() => {
     if (images && images.length && !fileList.length) {
@@ -158,7 +178,10 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
   const handleFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!file.type.startsWith("image/")) {
+    const isImg = file.type.startsWith("image/");
+    const isVid = file.type.startsWith("video/");
+    const isMkv = file.name.toLowerCase().endsWith(".mkv");
+    if (!isImg && !isVid && !isMkv) {
       const msg = toUpperCase(t("mediaUploader.invalidType"));
       setError(msg);
       setUploadState("error");
@@ -293,7 +316,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*"
+            accept={acceptString}
             onChange={handleFileInput}
             disabled={disabled}
             className="hidden"
@@ -315,11 +338,19 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
                       previewHeight
                     )}
                   >
-                    <img
-                      src={getFileUrl(value.path)}
-                      alt={value.name}
-                      className="h-full w-full object-contain"
-                    />
+                    {isVideo(value) ? (
+                      <video
+                        src={getFileUrl(value.path)}
+                        controls
+                        className="h-full w-full object-contain"
+                      />
+                    ) : (
+                      <img
+                        src={getFileUrl(value.path)}
+                        alt={value.name}
+                        className="h-full w-full object-contain"
+                      />
+                    )}
                   </div>
                   <div className="absolute top-3 right-3 flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
                     <Button

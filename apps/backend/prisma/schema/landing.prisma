@@ -19,6 +19,12 @@ model Introduce {
 
   translations IntroduceTranslation[]
 
+  thumbnail   File?   @relation("IntroduceThumbnail", fields: [thumbnailId], references: [id], onDelete: SetNull)
+  thumbnailId String? @db.Uuid
+
+  video   File?   @relation("IntroduceVideo", fields: [videoId], references: [id], onDelete: SetNull)
+  videoId String? @db.Uuid
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
