@@ -64,6 +64,8 @@ model File {
   pageComponentId String?        @unique @db.Uuid
   service         Service?       @relation(fields: [serviceId], references: [id])
   serviceId       String?        @unique @db.Uuid
+  introduce       Introduce?     @relation(fields: [introduceId], references: [id])
+  introduceId     String?        @unique @db.Uuid
 
   newsBackground News[] @relation("NewsBackground")
   newsMetaImage  News[] @relation("NewsMetaImage")
