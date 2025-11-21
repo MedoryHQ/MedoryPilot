@@ -48,14 +48,14 @@ const Services = () => {
           className="absolute bottom-[10%] left-[35%] w-[600px] h-[600px] bg-accent/25 rounded-full blur-[140px] animate-pulse"
           style={{ animationDuration: "6s" }}
         />
-        <div className="absolute top-[50%] left-[0%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px]" />
-        <div className="absolute top-[15%] right-[25%] w-[450px] h-[450px] bg-primary-glow/25 rounded-full blur-[130px]" />
-        <div className="absolute bottom-[25%] right-[15%] w-[550px] h-[550px] bg-primary/22 rounded-full blur-[140px]" />
-        <div className="absolute top-[70%] left-[20%] w-[400px] h-[400px] bg-accent/20 rounded-full blur-[110px]" />
-        <div className="absolute top-[40%] left-[50%] w-[350px] h-[350px] bg-primary-glow/18 rounded-full blur-[100px]" />
-        <div className="absolute bottom-[40%] right-[40%] w-[380px] h-[380px] bg-primary/18 rounded-full blur-[115px]" />
-        <div className="absolute top-[20%] left-[5%] w-[300px] h-[300px] bg-primary/30 rounded-full blur-[90px]" />
-        <div className="absolute bottom-[15%] right-[10%] w-[320px] h-80 bg-primary-glow/28 rounded-full blur-[95px]" />
+        <div className="absolute top-[50%] left-[0%] w-[500px] h-[500px] bg-accent rounded-full blur-[150px]" />
+        <div className="absolute top-[15%] right-[25%] w-[450px] h-[450px] bg-accent rounded-full blur-[160px]" />
+        <div className="absolute bottom-[25%] right-[15%] w-[550px] h-[550px] bg-accent rounded-full blur-[170px]" />
+        <div className="absolute top-[70%] left-[20%] w-[400px] h-[400px] bg-accent rounded-full blur-[140px]" />
+        <div className="absolute top-[40%] left-[50%] w-[350px] h-[350px] bg-accent rounded-full blur-[130px]" />
+        <div className="absolute bottom-[40%] right-[40%] w-[380px] h-[380px] bg-accent rounded-full blur-[145px]" />
+        <div className="absolute top-[20%] left-[5%] w-[300px] h-[300px] bg-accent rounded-full blur-[120px]" />
+        <div className="absolute bottom-[15%] right-[10%] w-[320px] h-80 bg-accent rounded-full blur-[125px]" />
       </div>
       {isFetching ? (
         <ServiceSkeletion />
