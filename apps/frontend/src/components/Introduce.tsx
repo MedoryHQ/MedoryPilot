@@ -81,7 +81,7 @@ const Introduce = () => {
                           alt={thumbnail?.name}
                           width={1440}
                           height={810}
-                          className="w-full h-full object-cover opacity-80"
+                          className="w-full h-full object-cover "
                         />
                       </div>
 
