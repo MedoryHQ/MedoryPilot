@@ -59,7 +59,7 @@ const ServiceSkeletion = () => {
           <Skeleton className="h-[18px] md:h-[22px] bg-transparent" />
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 xl:gap-8 w-full mt-10">
-          {Array.from({ length: 9 }).map((_, idx) => (
+          {Array.from({ length: 6 }).map((_, idx) => (
             <Skeleton
               key={idx}
               className="aspect-video bg-transparent w-full rounded-xl"
