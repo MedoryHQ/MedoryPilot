@@ -15,3 +15,4 @@ export * from "./switch";
 export * from "./textarea";
 export * from "./alert-dialog";
 export * from "./alert";
+export * from "./breadcrumb";
