@@ -18,3 +18,4 @@ export * from "./alert";
 export * from "./breadcrumb";
 export * from "./carousel";
 export * from "./dropdown-menu";
+export * from "./pagination";
