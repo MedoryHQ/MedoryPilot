@@ -259,12 +259,6 @@ const Educations = () => {
                       {toUpperCase(translation?.name || "")}
                     </h3>
                   </div>
-
-                  {translation?.description ? (
-                    <p className="text-muted-foreground mt-2 line-clamp-3 text-sm">
-                      {toUpperCase(translation.description)}
-                    </p>
-                  ) : null}
                 </div>
               </div>
 
@@ -277,7 +271,7 @@ const Educations = () => {
                     {toUpperCase(translation?.name)}
                   </p>
                 </div>
-                <div className="text-right">
+                <div>
                   <span className="text-muted-foreground block text-xs">
                     {toUpperCase(t("educations.degree"))}
                   </span>
