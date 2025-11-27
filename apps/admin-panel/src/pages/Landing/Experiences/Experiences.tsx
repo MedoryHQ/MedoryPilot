@@ -85,13 +85,8 @@ const Experiences = () => {
                 <ImageIcon className="text-muted-foreground h-6 w-6" />
               )}
             </div>
-            <div className="min-w-0">
-              <div className="text-foreground truncate font-medium">
-                {toUpperCase(translation.name)}
-              </div>
-              <div className="text-muted-foreground mt-1 line-clamp-3 hidden max-w-[350px] text-sm md:block">
-                {toUpperCase(translation.description)}
-              </div>
+            <div className="text-foreground truncate font-medium">
+              {toUpperCase(translation.name)}
             </div>
           </div>
         );
@@ -307,25 +302,20 @@ const Experiences = () => {
                     <h3 className="text-foreground truncate font-medium">
                       {toUpperCase(translation?.name || "")}
                     </h3>
-
-                    <div className="text-right">
-                      <span className="text-muted-foreground block text-xs">
-                        {toUpperCase(t("experiences.position"))}
-                      </span>
-                      <div className="mt-1 text-sm font-medium">
-                        {toUpperCase(translation?.position || "-")}
-                      </div>
-                    </div>
                   </div>
-
-                  {translation?.description ? (
-                    <p className="text-muted-foreground mt-2 line-clamp-3 text-sm">
-                      {toUpperCase(translation.description)}
-                    </p>
-                  ) : null}
                 </div>
               </div>
 
+              <div className="pt-3">
+                <span className="text-muted-foreground text-xs">
+                  {toUpperCase(
+                    `${t("experiences.from")} - ${t("experiences.to")}`
+                  )}
+                </span>
+                <p className="mt-1 text-sm">
+                  {from} {from && "—"} {to}
+                </p>
+              </div>
               <div className="border-border mt-3 grid grid-cols-2 gap-3 border-t pt-3 text-sm">
                 <div>
                   <span className="text-muted-foreground text-xs">
@@ -333,18 +323,6 @@ const Experiences = () => {
                   </span>
                   <p className="mt-1 truncate font-medium">
                     {toUpperCase(translation?.location || "-")}
-                  </p>
-                </div>
-
-                <div>
-                  <span className="text-muted-foreground text-xs">
-                    {toUpperCase(
-                      t("experiences.duration") ||
-                        `${t("experiences.from")} - ${t("experiences.to")}`
-                    )}
-                  </span>
-                  <p className="mt-1 text-sm">
-                    {from} {from && "—"} {to}
                   </p>
                 </div>
 
@@ -358,7 +336,14 @@ const Experiences = () => {
                     </Badge>
                   </div>
                 </div>
-
+                <div>
+                  <span className="text-muted-foreground block text-xs">
+                    {toUpperCase(t("experiences.position"))}
+                  </span>
+                  <div className="mt-1 text-sm font-medium">
+                    {toUpperCase(translation?.position || "-")}
+                  </div>
+                </div>
                 <div>
                   <span className="text-muted-foreground text-xs">
                     {toUpperCase(t("experiences.created"))}

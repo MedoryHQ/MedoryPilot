@@ -70,13 +70,8 @@ const Educations = () => {
                 <ImageIcon className="text-muted-foreground h-6 w-6" />
               )}
             </div>
-            <div className="min-w-0">
-              <div className="text-foreground truncate font-medium">
-                {toUpperCase(translation.name)}
-              </div>
-              <div className="text-muted-foreground mt-1 line-clamp-3 hidden max-w-[350px] text-sm md:block">
-                {toUpperCase(translation.description)}
-              </div>
+            <div className="text-foreground truncate font-medium">
+              {toUpperCase(translation.name)}
             </div>
           </div>
         );
@@ -264,12 +259,6 @@ const Educations = () => {
                       {toUpperCase(translation?.name || "")}
                     </h3>
                   </div>
-
-                  {translation?.description ? (
-                    <p className="text-muted-foreground mt-2 line-clamp-3 text-sm">
-                      {toUpperCase(translation.description)}
-                    </p>
-                  ) : null}
                 </div>
               </div>
 
@@ -282,7 +271,7 @@ const Educations = () => {
                     {toUpperCase(translation?.name)}
                   </p>
                 </div>
-                <div className="text-right">
+                <div>
                   <span className="text-muted-foreground block text-xs">
                     {toUpperCase(t("educations.degree"))}
                   </span>

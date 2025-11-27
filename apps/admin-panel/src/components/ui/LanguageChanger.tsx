@@ -16,19 +16,11 @@ import { useTranslation } from "react-i18next";
 import { AlertCircle, Languages } from "lucide-react";
 import { motion } from "framer-motion";
 import { toUpperCase } from "@/utils";
+import ukFlag from "@/assets/uk.png";
+import geFlag from "@/assets/ge.png";
 
 interface LanguageChangerProps {
   className?: string;
-}
-
-interface LanguageTabSwitcherProps {
-  selectedLanguage: "en" | "ka";
-  onLanguageChange: (language: "en" | "ka") => void;
-  errors?: {
-    en?: number;
-    ka?: number;
-  };
-  disabled?: boolean;
 }
 
 export interface LocaleConfig {
@@ -72,12 +64,13 @@ export const LanguageChanger: React.FC<LanguageChangerProps> = ({
         >
           <div className="flex items-center gap-2">
             <div className="relative">
-              <div className="border-border/30 h-6 w-6 overflow-hidden rounded-full border shadow-sm">
-                <span className="text-sm">
-                  {language === "en" ? "🇺🇸" : "🇬🇪"}
-                </span>
+              <div className="border-border/30 flex h-6 w-6 items-center justify-center overflow-hidden rounded-full border shadow-sm">
+                <img
+                  src={language === "en" ? ukFlag : geFlag}
+                  alt={language === "en" ? "UK" : "GE"}
+                  className="h-5 w-5 object-cover"
+                />
               </div>
-              <div className="from-primary/20 to-accent/20 absolute -inset-0.5 rounded-full bg-linear-to-br opacity-0 blur-sm transition-all duration-200 group-hover:opacity-100 group-hover:blur-md"></div>
             </div>
             <span className="text-foreground/80 group-hover:text-foreground text-xs font-medium transition-colors duration-200">
               {language.toUpperCase()}
@@ -91,11 +84,11 @@ export const LanguageChanger: React.FC<LanguageChangerProps> = ({
           >
             <div className="flex items-center gap-2">
               <div className="border-border/5 flex h-5 w-5 items-center justify-center overflow-hidden rounded-full border shadow-sm">
-                <span className="text-xs">🇺🇸</span>
+                <img src={ukFlag} alt="UK" className="h-5 w-5 object-cover" />
               </div>
               <div className="flex flex-col">
                 <span className="text-xs font-medium">English</span>
-                <span className="text-[10px] opacity-80">United States</span>
+                <span className="text-[10px] opacity-80">United Kingdom</span>
               </div>
             </div>
           </SelectItem>
@@ -106,7 +99,7 @@ export const LanguageChanger: React.FC<LanguageChangerProps> = ({
           >
             <div className="flex items-center gap-2">
               <div className="border-border/5 flex h-5 w-5 items-center justify-center overflow-hidden rounded-full border shadow-sm">
-                <span className="text-xs">🇬🇪</span>
+                <img src={geFlag} alt="GE" className="h-5 w-5 object-cover" />
               </div>
               <div className="flex flex-col">
                 <span className="text-xs font-medium">ქართული</span>
@@ -148,90 +141,6 @@ export const MobileLanguageChanger: React.FC<LanguageChangerProps> = ({
           <SelectItem value="ka">ქარ</SelectItem>
         </SelectContent>
       </Select>
-    </div>
-  );
-};
-
-export const LanguageTabSwitcher: React.FC<LanguageTabSwitcherProps> = ({
-  selectedLanguage,
-  onLanguageChange,
-  errors,
-  disabled = false
-}) => {
-  const { t, i18n } = useTranslation();
-  const languages = [
-    { code: "en" as const, label: "English", flag: "🇬🇧" },
-    { code: "ka" as const, label: "ქართული", flag: "🇬🇪" }
-  ];
-
-  return (
-    <div className="bg-muted flex gap-2 rounded-lg p-1">
-      {languages.map((lang) => {
-        const hasErrors = errors && errors[lang.code] && errors[lang.code]! > 0;
-        const errorCount = errors?.[lang.code] || 0;
-        const isActive = selectedLanguage === lang.code;
-
-        const button = (
-          <button
-            key={lang.code}
-            type="button"
-            onClick={() => !disabled && onLanguageChange(lang.code)}
-            disabled={disabled}
-            className={cn(
-              "relative flex items-center gap-2 rounded-md px-6 py-2.5 font-medium transition-all",
-              isActive
-                ? "bg-background text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground",
-              disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
-              hasErrors && isActive
-                ? "ring-destructive ring-offset-muted ring-2 ring-offset-2"
-                : ""
-            )}
-          >
-            <span className="text-lg">{lang.flag}</span>
-            <span>{lang.label}</span>
-
-            {hasErrors && !isActive && (
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="absolute -top-1 -right-1"
-              >
-                <Badge
-                  variant="destructive"
-                  className="flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-xs"
-                >
-                  {errorCount}
-                </Badge>
-              </motion.div>
-            )}
-          </button>
-        );
-
-        if (hasErrors && !isActive) {
-          return (
-            <TooltipProvider key={lang.code}>
-              <Tooltip>
-                <TooltipTrigger asChild>{button}</TooltipTrigger>
-                <TooltipContent side="bottom">
-                  <p className="text-sm">
-                    {toUpperCase(
-                      t("ui.languageErrorTooltip", {
-                        count: errorCount,
-                        error: t(errorCount === 1 ? "ui.error" : "ui.errors"),
-                        language: lang.label,
-                        context: i18n.language === "en" ? "in" : "-ში"
-                      })
-                    )}
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          );
-        }
-
-        return button;
-      })}
     </div>
   );
 };

@@ -58,7 +58,7 @@ export const FormShell: React.FC<FormShellProps> = ({
         </div>
       </div>
       {children}
-      <div className="bg-background/95 border-border sticky bottom-[-78px] z-10 -mx-4 border-t px-4 py-4 backdrop-blur-sm lg:hidden">
+      <div className="bg-background/95 border-border bottom-[-78px] z-10 -mx-4 border-t px-4 py-4 backdrop-blur-sm lg:hidden">
         {actionBar}
       </div>
     </motion.div>

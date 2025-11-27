@@ -11,6 +11,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import axios from "@/api/axios";
+import { toUpperCase } from "@/utils";
 
 interface DeleteDialogProps {
   open: boolean;
@@ -33,10 +34,10 @@ export function DeleteDialog({
   itemId,
   onSuccess,
   onError,
-  titleKey = "heros.areYouSure",
-  descriptionKey = "heros.deleteDescription",
-  cancelKey = "heros.cancel",
-  deleteKey = "heros.delete",
+  titleKey = "confirmDialog.areYouSure",
+  descriptionKey = "confirmDialog.deleteDescription",
+  cancelKey = "confirmDialog.cancel",
+  deleteKey = "confirmDialog.delete",
   className
 }: DeleteDialogProps) {
   const { t } = useTranslation();
@@ -59,11 +60,13 @@ export function DeleteDialog({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{t(titleKey)}</AlertDialogTitle>
-          <AlertDialogDescription>{t(descriptionKey)}</AlertDialogDescription>
+          <AlertDialogTitle>{toUpperCase(t(titleKey))}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {toUpperCase(t(descriptionKey))}
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>{t(cancelKey)}</AlertDialogCancel>
+          <AlertDialogCancel>{toUpperCase(t(cancelKey))}</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => itemId && mutateAsync()}
             className={
@@ -72,7 +75,7 @@ export function DeleteDialog({
             }
             disabled={isLoading}
           >
-            {t(deleteKey)}
+            {toUpperCase(t(deleteKey))}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

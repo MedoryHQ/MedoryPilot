@@ -662,7 +662,7 @@ export function GenericEntityForm<
         type="button"
       >
         <Edit3 className="h-5 w-5" />
-        {toUpperCase(t(`${resourceName}.form.edit`) || "Edit")}
+        {toUpperCase(t(`${resourceName}.form.editTitle`) || "Edit")}
       </Button>
     ) : allowModeToggleForReadonly && internalMode === "edit" ? (
       <Button
@@ -672,7 +672,7 @@ export function GenericEntityForm<
         type="button"
       >
         <Eye className="h-5 w-5" />
-        {toUpperCase(t(`${resourceName}.form.read`) || "Read")}
+        {toUpperCase(t(`${resourceName}.form.readonlyTitle`) || "Read")}
       </Button>
     ) : null;
 
