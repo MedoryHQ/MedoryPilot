@@ -16,8 +16,8 @@ import { useTranslation } from "react-i18next";
 import { AlertCircle, Languages } from "lucide-react";
 import { motion } from "framer-motion";
 import { toUpperCase } from "@/utils";
-import ukFlag from "@/../public/uk.png";
-import geFlag from "@/../public/ge.png";
+import ukFlag from "@/assets/uk.png";
+import geFlag from "@/assets/ge.png";
 
 interface LanguageChangerProps {
   className?: string;

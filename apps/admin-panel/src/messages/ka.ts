@@ -532,7 +532,7 @@ export const ka = {
         createTitle: "Footer-ის შექმნა",
         editTitle: "Footer-ის რედაქტირება",
         subtitle: "კონფიგურაცია ვებსაიტის Footer-ისა და ნავიგაციისთვის",
-        readonlyTitle: "Foote-ის ნახვა",
+        readonlyTitle: "Footer-ის ნახვა",
         edit: "Footer-ის რედაქტირება",
         read: "Footer-ის ნახვა",
         phone: "ტელ. ნომერი",
@@ -793,7 +793,7 @@ export const ka = {
           "შეავსეთ ხშირად დასმული კითხვის დეტალები თითოეული ენისთვის",
         question: "კითხვა",
         questionPlaceholder: "მაგ., კითხვა",
-        answer: "კითქვის პასუხი",
+        answer: "კითხვის პასუხი",
         answerPlaceholder:
           "შეიყვანეთ მოკლე აღწერა ხშირად დასმული კითხვისთვის...",
         settings: "პარამეტრები",
