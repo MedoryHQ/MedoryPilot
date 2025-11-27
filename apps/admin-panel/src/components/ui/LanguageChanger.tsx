@@ -71,7 +71,6 @@ export const LanguageChanger: React.FC<LanguageChangerProps> = ({
                   className="h-5 w-5 object-cover"
                 />
               </div>
-              <div className="from-primary/20 to-accent/20 absolute -inset-0.5 rounded-full bg-linear-to-br opacity-0 blur-sm transition-all duration-200 group-hover:opacity-100 group-hover:blur-md"></div>
             </div>
             <span className="text-foreground/80 group-hover:text-foreground text-xs font-medium transition-colors duration-200">
               {language.toUpperCase()}
