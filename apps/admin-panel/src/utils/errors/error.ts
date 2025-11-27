@@ -21,7 +21,12 @@ export const throwErrMessage = (
   lang: "ka" | "en"
 ) => {
   if (err?.response?.data?.error) {
-    toast.error(t("toast.error"), err.response.data.error[lang]);
+    const errorObj = err.response.data.error;
+    const errorMsg =
+      typeof errorObj === "string"
+        ? errorObj
+        : errorObj[lang] || errorObj.en || defaultError[lang];
+    toast.error(t("toast.error"), errorMsg);
   } else {
     toast.error(t("toast.error"), defaultError[lang]);
   }
@@ -34,8 +39,11 @@ export const setHookFormErrors = (
   lang: "ka" | "en",
   setError?: (name: any, error: { message: string }) => void
 ) => {
-  if (err?.response?.data?.errors) {
+  let hasFieldError = false;
+
+  if (err?.response?.data?.errors && Array.isArray(err.response.data.errors)) {
     err.response.data.errors.forEach((error) => {
+      hasFieldError = true;
       const errorMessage =
         typeof error.message === "string"
           ? isJson(error.message)
@@ -45,11 +53,12 @@ export const setHookFormErrors = (
 
       if (setError) {
         setError(error.path, { message: errorMessage });
-      } else {
-        toast.error(t("toast.validationError"), errorMessage);
       }
+      toast.error(t("toast.validationError"), errorMessage);
     });
-  } else {
+  }
+
+  if (!hasFieldError || err?.response?.data?.error) {
     throwErrMessage(err, toast, t, lang);
   }
 };
