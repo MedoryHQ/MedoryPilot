@@ -130,8 +130,8 @@ export const ka = {
       socials: "სოც. ქსელები",
       tariffs: "ტარიფები",
       pages: "გვერდის კომპონენტები",
-      contact: "საკონტაქტო ინფორმაცია",
-      faqs: "ხშირად დასმული კითხვები"
+      contact: "საკ. ინფორმაცია",
+      faqs: "კითხვები"
     },
     sidebar: {
       doctor: "DR",
@@ -213,25 +213,25 @@ export const ka = {
       newsDescription: "სიახლეების შექმნა და მართვა",
       services: "სერვისები",
       servicesDescription: "სერვისების დამატება და მართვა",
-      faqs: "ხშირად დასმული კითხვები",
+      faqs: "კითხვები",
       faqsDescription: "ხშირად დასმული კითხვების განახლება და მართვა",
       blogs: "ბლოგები",
       blogsDescription: "ბლოგების წერა და მართვა",
       categories: "კატეგორიები",
       categoriesDescription: "ბლოგებისა და კონტენტის კატეგორიების მართვა",
-      contact: "საკონტაქტო ინფორმაცია",
-      contactDescription: "საკონტაქტო ინფორმაციების განახლება",
+      contact: "საკ. ინფორმაცია",
+      contactDescription: "საკ. ინფორმაციების განახლება",
       footer: "Footer",
       footerDescription: "ვებსაიტის footer-ის კონფიგურაცია და ბმულები",
-      socials: "სოციალური ქსელები",
-      socialsDescription: "სოციალური ქსელების ბმულებისა და იკონების მართვა",
+      socials: "სოც. ქსელები",
+      socialsDescription: "სოც. ქსელების ბმულებისა და იკონების მართვა",
       pages: "გვერდები",
       pagesDescription: "სტატიკური გვერდების კომპონენტების მართვა",
       tariffs: "ტარიფები",
       tariffsDescription: "ფასების და ტარიფების ისტორიის მართვა",
       about: "ჩემს შესახებ",
       aboutDescription:
-        "ექიმის პროფილი: ბიოგრაფია, სპეციალობები და საკონტაქტო ინფორმაცია",
+        "ექიმის პროფილი: ბიოგრაფია, სპეციალობები და საკ. ინფორმაცია",
       educations: "განათლებები",
       educationsDescription:
         "აკადემიური წარსული: ხარისხები, სასწავლო დაწესებულებები და სერტიფიკატები",
@@ -554,7 +554,7 @@ export const ka = {
         phoneInvalid: "ტელ. ნომერი არასწორია",
         emailRequired: "ელ.ფოსტა სავალდებულოა",
         emailInvalid: "ელ.ფოსტა არასწორია",
-        socialsRequired: "მინიმუმ ერთი სოციალური ბმული სავალდებულოა",
+        socialsRequired: "მინიმუმ ერთი სოც. ქსელი სავალდებულოა",
         pagesRequired: "მინიმუმ ერთი გვერდი სავალდებულოა"
       }
     },
