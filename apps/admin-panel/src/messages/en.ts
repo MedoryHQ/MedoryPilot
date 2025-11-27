@@ -270,6 +270,7 @@ export const en = {
         "This action cannot be undone. This will permanently delete the hero and all its translations.",
       cancel: "Cancel",
       form: {
+        heros: "Hero",
         createTitle: "Create Hero",
         editTitle: "Edit Hero",
         subtitle: "Configure your website hero and navigation",
@@ -488,6 +489,7 @@ export const en = {
       edit: "Edit",
       delete: "Delete",
       form: {
+        pageComponents: "Page Component",
         createTitle: "Create Page Component",
         editTitle: "Edit Page Component",
         subtitle: "Configure your website page component and navigation",
@@ -604,6 +606,7 @@ export const en = {
       yes: "Yes",
       no: "No",
       form: {
+        newses: "News",
         createTitle: "Create News",
         editTitle: "Edit News",
         subtitle: "Configure your website news and navigation",
@@ -705,6 +708,7 @@ export const en = {
       visits: "Visits",
       created: "Created",
       form: {
+        services: "Service",
         createTitle: "Create Service",
         editTitle: "Edit Service",
         subtitle: "Configure your website service and navigation",
@@ -745,6 +749,7 @@ export const en = {
         noIcon: "Without Icon"
       },
       form: {
+        socials: "Social",
         createTitle: "Create Social",
         editTitle: "Edit Social",
         subtitle: "Configure your website social and navigation",
@@ -780,6 +785,7 @@ export const en = {
       translations: "Translations",
       order: "Order",
       form: {
+        faqs: "Faq",
         createTitle: "Create Faq",
         editTitle: "Edit Faq",
         subtitle: "Configure your website faq and navigation",
@@ -812,6 +818,7 @@ export const en = {
       from: "From Date",
       to: "End Date",
       form: {
+        tariffs: "Tariff",
         createTitle: "Create Tariff",
         editTitle: "Edit Tariff",
         subtitle: "Configure your website tariff and navigation",
@@ -846,6 +853,7 @@ export const en = {
       blogs: "Blogs",
       created: "Created",
       form: {
+        categories: "Category",
         createTitle: "Create Category",
         editTitle: "Edit Category",
         subtitle: "Configure your website category and navigation",
@@ -914,6 +922,7 @@ export const en = {
       yes: "Yes",
       no: "No",
       form: {
+        blogs: "Blog",
         createTitle: "Create Blog",
         editTitle: "Edit Blog",
         subtitle: "Configure your website blog and navigation",
@@ -991,6 +1000,7 @@ export const en = {
       to: "End Date",
       present: "Present",
       form: {
+        educations: "Education",
         createTitle: "Create Education",
         editTitle: "Edit Education",
         subtitle: "Configure your website education and navigation",
@@ -1046,6 +1056,7 @@ export const en = {
       created: "Created",
       date: "Date",
       form: {
+        videos: "Video",
         createTitle: "Create Video",
         editTitle: "Edit Video",
         subtitle: "Configure your website video and navigation",

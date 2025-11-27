@@ -273,6 +273,7 @@ export const ka = {
         "ეს მოქმედება ვერ გაუქმდება. ეს სამუდამოდ წაშლის Hero-ებს და მათ ყველა თარგმანს.",
       cancel: "გაუქმება",
       form: {
+        heros: "Hero",
         createTitle: "Hero-ის შექმნა",
         editTitle: "Hero-ის რედაქტირება",
         subtitle: "კონფიგურაცია ვებსაიტის Hero-ისა და ნავიგაციისთვის",
@@ -488,6 +489,7 @@ export const ka = {
       edit: "რედაქტირება",
       delete: "წაშლა",
       form: {
+        pageComponents: "გვერდი",
         createTitle: "გვერდის შექმნა",
         editTitle: "გვერდის რედაქტირება",
         subtitle: "კონფიგურაცია ვებსაიტის გვერდის და ნავიგაციისთვის",
@@ -603,6 +605,7 @@ export const ka = {
       yes: "დიახ",
       no: "არა",
       form: {
+        newses: "Სიახლე",
         createTitle: "Სიახლის შექმნა",
         editTitle: "Სიახლის რედაქტირება",
         subtitle: "კონფიგურაცია ვებსაიტის Სიახლის და ნავიგაციისთვის",
@@ -703,6 +706,7 @@ export const ka = {
       visits: "ვიზიტები",
       created: "შეიქმნა",
       form: {
+        services: "Სერვისი",
         createTitle: "Სერვისის შექმნა",
         editTitle: "Სერვისის რედაქტირება",
         subtitle: "ვებსაიტის Სერვისის კონფიგურაცია",
@@ -743,6 +747,7 @@ export const ka = {
         noIcon: "სურათის გარეშე"
       },
       form: {
+        socials: "სოც. ქსელი",
         createTitle: "სოც. ქსელის შექმნა",
         editTitle: "სოც. ქსელის რედაქტირება",
         subtitle: "ვებსაიტის სოც. ქსელის კონფიგურაცია",
@@ -779,6 +784,7 @@ export const ka = {
       translations: "თარგმენბი",
       order: "რიგი",
       form: {
+        faqs: "ხშირად დასმული კითხვა",
         createTitle: "Ხშირად დასმული კითხვის შექმნა",
         editTitle: "Ხშირად დასმული კითხვის რედაქტირება",
         subtitle: "ვებსაიტის Ხშირად დასმული კითხვის კონფიგურაცია",
@@ -814,6 +820,7 @@ export const ka = {
       from: "დაწყების თარიღი",
       to: "დამთავრების თარიღი",
       form: {
+        tariffs: "ტარიფი",
         createTitle: "ტარიფის შექმნა",
         editTitle: "ტარიფის რედაქტირება",
         subtitle: "ვებსაიტის ტარიფის კონფიგურაცია",
@@ -848,6 +855,7 @@ export const ka = {
       blogs: "ბლოგები",
       created: "შეიქმნა",
       form: {
+        categories: "კატეგორია",
         createTitle: "კატეგორიის შექმნა",
         editTitle: "კატეგორიის რედაქტირება",
         subtitle: "ვებსაიტის კატეგორიის კონფიგურაცია",
@@ -916,6 +924,7 @@ export const ka = {
       yes: "დიახ",
       no: "არა",
       form: {
+        blogs: "ბლოგი",
         createTitle: "ბლოგის შექმნა",
         editTitle: "ბლოგის რედაქტირება",
         subtitle: "კონფიგურაცია ვებსაიტის ბლოგის და ნავიგაციისთვის",
@@ -990,6 +999,7 @@ export const ka = {
       translations: "თარგმანები",
       created: "შეიქმნა",
       form: {
+        educations: "განათლება",
         createTitle: "განათლების შექმნა",
         editTitle: "განათლების რედაქტირება",
         subtitle: "ვებსაიტის განათლების კონფიგურაცია",
@@ -1042,6 +1052,7 @@ export const ka = {
       created: "შეიქმნა",
       date: "თარიღი",
       form: {
+        videos: "ვიდეო",
         createTitle: "ვიდეოს შექმნა",
         editTitle: "ვიდეოს რედაქტირება",
         subtitle: "ვებსაიტის ვიდეოს კონფიგურაცია",
@@ -1091,6 +1102,7 @@ export const ka = {
       translations: "თარგმანები",
       created: "შეიქმნა",
       form: {
+        experiences: "გამოცდილება",
         createTitle: "გამოცდილების შექმნა",
         editTitle: "გამოცდილების რედაქტირება",
         subtitle: "ვებსაიტის გამოცდილების კონფიგურაცია",
