@@ -85,13 +85,8 @@ const Experiences = () => {
                 <ImageIcon className="text-muted-foreground h-6 w-6" />
               )}
             </div>
-            <div className="min-w-0">
-              <div className="text-foreground truncate font-medium">
-                {toUpperCase(translation.name)}
-              </div>
-              <div className="text-muted-foreground mt-1 line-clamp-3 hidden max-w-[350px] text-sm md:block">
-                {toUpperCase(translation.description)}
-              </div>
+            <div className="text-foreground truncate font-medium">
+              {toUpperCase(translation.name)}
             </div>
           </div>
         );
