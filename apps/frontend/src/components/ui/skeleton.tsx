@@ -50,7 +50,7 @@ const ServiceSkeletion = () => {
   return (
     <section
       id="introduce"
-      className="mx-auto z-1 max-w-[1440px] h-full px-4 md:px-6"
+      className="mx-auto z-1 max-w-[1440px] h-full px-4 md:px-6 2xl:px-0"
     >
       <div className="text-center mx-auto mb-12 lg:mb-16 z-2 relative flex flex-col items-center justify-center w-full">
         <Skeleton className="h-11 md:h-[55px] xl:h-[70px] w-full mb-8 max-w-2xl bg-transparent" />
