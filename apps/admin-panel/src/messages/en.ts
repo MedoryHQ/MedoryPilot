@@ -1078,8 +1078,8 @@ export const en = {
         deletedSuccessfully: "Video deleted successfully"
       },
       filters: {
-        hasThumbnail: "გარეკანის ფოტოთი",
-        noThumbnail: "გარეკანის ფოტოს გარეშე",
+        hasThumbnail: "With Thumbnail",
+        noThumbnail: "Without Thumbnail",
         dateRange: "Date Range"
       },
       errors: {

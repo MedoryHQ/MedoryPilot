@@ -37,15 +37,15 @@ const Services = () => {
     >
       <div className="absolute inset-0 z-0 bg-background/95">
         <div
-          className="absolute top-[5%] left-[10%] w-[700px] h-[700px] bg-primary/25 rounded-full blur-[150px] animate-pulse"
+          className="absolute top-[5%] left-[10%] w-[700px] h-[700px] bg-primary/35 rounded-full blur-[150px] animate-pulse"
           style={{ animationDuration: "4s" }}
         />
         <div
-          className="absolute top-[30%] right-[5%] w-[800px] h-[800px] bg-primary-glow/30 rounded-full blur-[180px] animate-pulse"
+          className="absolute top-[30%] right-[5%] w-[800px] h-[800px] bg-primary-glow/40 rounded-full blur-[180px] animate-pulse"
           style={{ animationDuration: "5s" }}
         />
         <div
-          className="absolute bottom-[10%] left-[35%] w-[600px] h-[600px] bg-accent/25 rounded-full blur-[140px] animate-pulse"
+          className="absolute bottom-[10%] left-[35%] w-[600px] h-[600px] bg-accent/35 rounded-full blur-[140px] animate-pulse"
           style={{ animationDuration: "6s" }}
         />
         <div className="absolute top-[50%] left-[0%] w-[500px] h-[500px] bg-accent rounded-full blur-[150px]" />
@@ -60,7 +60,7 @@ const Services = () => {
       {isFetching ? (
         <ServiceSkeletion />
       ) : (
-        <div className="mx-auto z-1 max-w-[1440px] h-full px-4 md:px-6">
+        <div className="mx-auto z-1 max-w-[1440px] h-full px-4 md:px-6 2xl:px-0">
           <motion.div
             className="text-center max-w-3xl mx-auto mb-12 lg:mb-16 z-2 relative"
             initial={{ opacity: 0, y: 30 }}
