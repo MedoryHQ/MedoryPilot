@@ -22,3 +22,4 @@ export * from "./pagination";
 export * from "./toast";
 export * from "./tooltip";
 export * from "./separator";
+export * from "./collapsible";
