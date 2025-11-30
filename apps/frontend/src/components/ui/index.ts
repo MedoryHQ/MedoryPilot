@@ -25,3 +25,4 @@ export * from "./separator";
 export * from "./collapsible";
 export * from "./dialog";
 export * from "./command";
+export * from "./popover";
