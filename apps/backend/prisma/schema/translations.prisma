@@ -206,8 +206,9 @@ model RecipeUnitTranslation {
 model PageComponentTranslation {
   id String @id @default(uuid(7)) @db.Uuid
 
-  name    String
-  content String
+  name        String
+  description String?
+  content     String
 
   pageComponent   PageComponent @relation(fields: [pageComponentId], references: [id], onDelete: Cascade)
   pageComponentId String        @db.Uuid
