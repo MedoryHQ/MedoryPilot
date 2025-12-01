@@ -103,8 +103,18 @@ const mockNews = {
   showInLanding: true,
   background: { id: "bg1", path: "/b.png", name: "b.png", size: 10 },
   translations: [
-    { content: "Hello", language: { code: "en" } },
-    { content: "გამარჯობა", language: { code: "ka" } },
+    {
+      name: "Hello",
+      description: "News description",
+      content: "Hello, I am Tamar Chaduneli",
+      language: { code: "en" },
+    },
+    {
+      name: "გამარჯობა",
+      description: "სიახლის აღწერა",
+      content: "გამარჯობა, მე ვარ თამარ ჩადუნელი",
+      language: { code: "ka" },
+    },
   ],
 };
 
@@ -215,8 +225,16 @@ describe("Admin News (integration-style) — /admin/news", () => {
       showInLanding: true,
       order: 2,
       translations: {
-        en: { content: "English content" },
-        ka: { content: "ქართული ტექსტი" },
+        en: {
+          name: "Hello",
+          description: "News description",
+          content: "Hello, I am Tamar Chaduneli",
+        },
+        ka: {
+          name: "გამარჯობა",
+          description: "სიახლის აღწერა",
+          content: "გამარჯობა, მე ვარ თამარ ჩადუნელი",
+        },
       },
     };
 
@@ -281,8 +299,16 @@ describe("Admin News (integration-style) — /admin/news", () => {
       showInLanding: false,
       slug: "updated-news",
       translations: {
-        en: { content: "Updated content" },
-        ka: { content: "განახლებული" },
+        en: {
+          name: "Hello",
+          description: "News description (updated)",
+          content: "Hello, I am Tamar Chaduneli from Georgia",
+        },
+        ka: {
+          name: "გამარჯობა",
+          description: "სიახლის აღწერა (განახლებული)",
+          content: "გამარჯობა, მე ვარ თამარ ჩადუნელი საქართველოდან",
+        },
       },
     };
 

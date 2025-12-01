@@ -41,7 +41,9 @@ model IntroduceTranslation {
 model NewsTranslation {
   id String @id @default(uuid(7)) @db.Uuid
 
-  content String
+  name        String
+  description String?
+  content     String
 
   news   News   @relation(fields: [newsId], references: [id], onDelete: Cascade)
   newsId String @db.Uuid
@@ -206,8 +208,9 @@ model RecipeUnitTranslation {
 model PageComponentTranslation {
   id String @id @default(uuid(7)) @db.Uuid
 
-  name    String
-  content String
+  name        String
+  description String?
+  content     String
 
   pageComponent   PageComponent @relation(fields: [pageComponentId], references: [id], onDelete: Cascade)
   pageComponentId String        @db.Uuid

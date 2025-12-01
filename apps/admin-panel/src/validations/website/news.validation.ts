@@ -24,11 +24,19 @@ export const newsSchema = (
     ...metaSchema,
     translations: z.object({
       en: z.object({
+        name: z
+          .string()
+          .min(1, { message: t("newses.errors.nameRequired", "en") }),
+        description: z.string().optional(),
         content: z
           .string()
           .min(1, { message: t("newses.errors.contentRequired", "en") })
       }),
       ka: z.object({
+        name: z
+          .string()
+          .min(1, { message: t("newses.errors.nameRequired", "ka") }),
+        description: z.string().optional(),
         content: z
           .string()
           .min(1, { message: t("newses.errors.contentRequired", "ka") })

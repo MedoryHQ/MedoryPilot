@@ -102,9 +102,15 @@ const mockPageComponent = {
     {
       name: "Homepage block",
       content: "Some content",
+      description: "Description text",
       language: { code: "en" },
     },
-    { name: "მთავარი ბლოკი", content: "ტექსტი", language: { code: "ka" } },
+    {
+      name: "მთავარი ბლოკი",
+      content: "ტექსტი",
+      description: "აღწერა",
+      language: { code: "ka" },
+    },
   ],
 };
 
@@ -199,8 +205,8 @@ describe("Admin PageComponent (integration-style) — /admin/page-component", ()
       footerId: "cccccccc-cccc-cccc-cccc-cccccccccccc",
       footerOrder: 1,
       translations: {
-        en: { name: "Block", content: "Content" },
-        ka: { name: "ბლოკი", content: "ვერძი" },
+        en: { name: "Block", content: "Content", description: "Description" },
+        ka: { name: "ბლოკი", content: "ვერძი", description: "აღწერა" },
       },
     };
 
@@ -272,8 +278,16 @@ describe("Admin PageComponent (integration-style) — /admin/page-component", ()
     const updatePayload = {
       slug: "updated-component",
       translations: {
-        en: { name: "Updated", content: "Updated content" },
-        ka: { name: "განახლებული", content: "განახლებული ტექსტი" },
+        en: {
+          name: "Updated",
+          content: "Updated content",
+          description: "Updated description",
+        },
+        ka: {
+          name: "განახლებული",
+          content: "განახლებული ტექსტი",
+          description: "განახლებული აღწერა",
+        },
       },
     };
 

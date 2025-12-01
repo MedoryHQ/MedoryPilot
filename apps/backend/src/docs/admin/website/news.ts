@@ -165,6 +165,12 @@
  *         content:
  *           type: string
  *           example: "content"
+ *         description:
+ *           type: string
+ *           example: "description"
+ *        name:
+ *           type: string
+ *           example: "name"
  *         language:
  *           type: object
  *           properties:
@@ -214,8 +220,12 @@
  *           example:
  *             en:
  *               content: "description"
+ *               name: "name"
+ *               description: "description"
  *             ka:
  *               content: "აღწერა"
+ *               name: "სახელი"
+ *               description: "აღწერა"
  *         metaTitle:
  *           type: string
  *           example: "metaTitle"

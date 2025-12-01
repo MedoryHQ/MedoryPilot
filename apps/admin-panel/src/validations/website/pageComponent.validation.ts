@@ -22,6 +22,7 @@ export const pageComponentSchema = (
         name: z
           .string()
           .min(1, { message: t("pageComponents.errors.nameRequired", "en") }),
+        description: z.string().optional(),
         content: z
           .string()
           .min(1, { message: t("pageComponents.errors.contentRequired", "en") })
@@ -30,6 +31,7 @@ export const pageComponentSchema = (
         name: z
           .string()
           .min(1, { message: t("pageComponents.errors.nameRequired", "ka") }),
+        description: z.string().optional(),
         content: z
           .string()
           .min(1, { message: t("pageComponents.errors.contentRequired", "ka") })

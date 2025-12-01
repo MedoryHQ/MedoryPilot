@@ -17,8 +17,8 @@ const defaultValues: NewsFormValues = {
   metaImage: null,
   slug: "",
   translations: {
-    en: { content: "" },
-    ka: { content: "" }
+    en: { name: "", content: "", description: "" },
+    ka: { name: "", content: "", description: "" }
   }
 };
 
@@ -40,7 +40,7 @@ export const NewsForm: React.FC<FormProps> = ({
       "order"
     ],
     translations: {
-      fields: ["content"]
+      fields: ["content", "name", "description"]
     }
   });
 
@@ -182,6 +182,23 @@ export const NewsForm: React.FC<FormProps> = ({
       translationLocales={["en", "ka"]}
       translationFields={
         [
+          {
+            name: "name",
+            label: toUpperCase(t("newses.form.name")),
+            placeholder: toUpperCase(t("newses.form.name")),
+            required: true,
+            fullWidth: true,
+            type: "text"
+          },
+          {
+            name: "description",
+            label: toUpperCase(t("newses.form.description")),
+            placeholder: toUpperCase(t("newses.form.description")),
+            required: false,
+            rows: 5,
+            maxLength: 500,
+            type: "textarea"
+          },
           {
             name: "content",
             label: toUpperCase(t("newses.form.content")),

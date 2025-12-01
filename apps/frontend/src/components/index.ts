@@ -6,3 +6,4 @@ export * from "./LocaleSwitcher";
 export * from "./Hero";
 export * from "./Services";
 export * from "./Introduce";
+export * from "./Newses";

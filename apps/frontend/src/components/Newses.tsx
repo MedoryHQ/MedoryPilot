@@ -1,0 +1,293 @@
+"use client";
+
+import { useGetNewses } from "@/lib/queries";
+import { useLocale, useTranslations } from "next-intl";
+import { motion, useInView } from "framer-motion";
+import { getFullFilePath, getTranslatedObject, toUpperCase } from "@/utils";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselApi,
+  // NewsesSkeleton,
+} from "./ui";
+import { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import Autoplay from "embla-carousel-autoplay";
+import Image from "next/image";
+import { formatDate } from "@/utils/date";
+import React from "react";
+
+type ThumbnailProps = {
+  src: string;
+  alt?: string;
+  index: number;
+  active: boolean;
+  onClick: (i: number) => void;
+};
+
+const ThumbnailButton = React.memo(function ThumbnailButton({
+  src,
+  alt,
+  index,
+  active,
+  onClick,
+}: ThumbnailProps) {
+  return (
+    <button
+      aria-label={`Go to news ${index + 1}`}
+      title={`Go to news ${index + 1}`}
+      onClick={() => onClick(index)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick(index);
+        } else if (e.key === "ArrowLeft") {
+          e.preventDefault();
+        }
+      }}
+      className={`relative w-16 h-16 rounded-full overflow-hidden border-4 transition-all duration-300 focus:outline-none ${
+        active
+          ? "border-primary scale-110 shadow-medium"
+          : "border-border/50 opacity-70 hover:opacity-100 hover:scale-105"
+      }`}
+      type="button"
+    >
+      <Image
+        src={src || "/images/placeholder-64.png"}
+        alt={alt ?? `thumbnail-${index + 1}`}
+        width={64}
+        height={64}
+        className="w-full h-full object-cover"
+        loading="lazy"
+      />
+      {active && (
+        <span className="pointer-events-none absolute inset-0 rounded-full ring-2 ring-primary/40" />
+      )}
+    </button>
+  );
+});
+
+const Newses = () => {
+  const language = useLocale();
+  const { data, isFetching } = useGetNewses();
+  const [api, setApi] = useState<CarouselApi | undefined>();
+  const t = useTranslations("Newses");
+  const [current, setCurrent] = useState(0);
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const isInView = useInView(sectionRef, { once: true, amount: 0.3 });
+
+  const newses = data?.data ?? [];
+
+  const thumbnails = useMemo(
+    () =>
+      newses.map((n) =>
+        getFullFilePath(n.background?.path || n.metaImage?.path || "")
+      ),
+    [newses]
+  );
+
+  const getApiSelectedIndex = useCallback(() => {
+    if (!api) return 0;
+    const anyApi = api as any;
+    try {
+      if (typeof anyApi.selectedScrollSnap === "function") {
+        return anyApi.selectedScrollSnap();
+      }
+      if (typeof anyApi.selected === "function") {
+        return anyApi.selected();
+      }
+      if (typeof anyApi.selectedIndex === "number") {
+        return anyApi.selectedIndex;
+      }
+      if (typeof anyApi.index === "function") {
+        return anyApi.index();
+      }
+      if (typeof anyApi.getSelectedIndex === "function") {
+        return anyApi.getSelectedIndex();
+      }
+    } catch {
+      // ignore
+    }
+    return 0;
+  }, [api]);
+
+  useEffect(() => {
+    if (!api) return;
+
+    const anyApi = api as any;
+    let cleanup: (() => void) | undefined;
+
+    const updateSelected = () => {
+      const idx = getApiSelectedIndex();
+      setCurrent(idx);
+    };
+
+    if (typeof anyApi.on === "function") {
+      anyApi.on("select", updateSelected);
+      anyApi.on("reInit", updateSelected);
+      anyApi.on?.("scroll", updateSelected);
+      cleanup = () => {
+        anyApi.off?.("select", updateSelected);
+        anyApi.off?.("reInit", updateSelected);
+        anyApi.off?.("scroll", updateSelected);
+      };
+    } else {
+      const id = window.setInterval(updateSelected, 250);
+      cleanup = () => clearInterval(id);
+    }
+
+    updateSelected();
+
+    return () => {
+      cleanup && cleanup();
+    };
+  }, [api, getApiSelectedIndex]);
+
+  const goTo = useCallback(
+    (index: number) => {
+      if (!api) {
+        setCurrent(index);
+        return;
+      }
+      try {
+        const anyApi = api as any;
+        if (typeof anyApi.scrollTo === "function") {
+          anyApi.scrollTo(index);
+        } else if (typeof anyApi.scrollToIndex === "function") {
+          anyApi.scrollToIndex(index);
+        } else if (typeof anyApi.scrollToSlide === "function") {
+          anyApi.scrollToSlide(index);
+        } else if (typeof anyApi.moveTo === "function") {
+          anyApi.moveTo(index);
+        } else {
+          setCurrent(index);
+        }
+      } catch {
+        setCurrent(index);
+      }
+    },
+    [api]
+  );
+
+  if (isFetching) return "";
+  // <NewsesSkeleton />;
+
+  return (
+    <section
+      ref={sectionRef}
+      className="py-24 lg:py-40 bg-linear-to-b from-background to-muted/30 relative overflow-hidden"
+    >
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl" />
+      </div>
+
+      <motion.div
+        className="mx-auto text-center"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <motion.h2
+          className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-primary mb-8 leading-[1.15] tracking-tight"
+          initial={{ opacity: 0, y: 30 }}
+          viewport={{ once: true, amount: 0.2 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          {toUpperCase(t("title"))}
+        </motion.h2>
+        <motion.p
+          className="md:text-xl lg:text-2xl text-primary/80 leading-relaxed max-w-4xl mx-auto"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+        >
+          {toUpperCase(t("description"))}
+        </motion.p>
+
+        <Carousel
+          setApi={setApi}
+          opts={{
+            align: "center",
+            loop: true,
+          }}
+          plugins={[
+            Autoplay({
+              delay: 5000,
+            }),
+          ]}
+          className="w-full"
+        >
+          <CarouselContent>
+            {newses.map((news, index) => {
+              const background = news?.background;
+              const translation = getTranslatedObject(
+                news?.translations,
+                language
+              );
+
+              return (
+                <CarouselItem key={news.id ?? index} className="pl-4">
+                  <motion.div
+                    className="relative w-full h-[450px] lg:h-[550px] rounded-3xl overflow-hidden group cursor-pointer"
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    <Image
+                      src={getFullFilePath(background?.path || "")}
+                      alt={background?.name || "news background"}
+                      width={1440}
+                      height={810}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-background/95 via-background/60 to-transparent" />
+                    <motion.div
+                      className="absolute bottom-0 left-0 right-0 p-10 lg:p-14"
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6 }}
+                    >
+                      <p className="text-primary font-semibold mb-3 text-sm tracking-wider uppercase">
+                        {formatDate(news.createdAt, language)}
+                      </p>
+                      <h3 className="text-3xl lg:text-4xl font-bold text-foreground mb-5 leading-tight">
+                        {translation?.name}
+                      </h3>
+                      <p className="text-lg text-muted-foreground line-clamp-2 max-w-2xl leading-relaxed">
+                        {translation?.description}
+                      </p>
+                    </motion.div>
+                  </motion.div>
+                </CarouselItem>
+              );
+            })}
+          </CarouselContent>
+        </Carousel>
+
+        <motion.div
+          className="flex justify-center gap-4 mt-10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+        >
+          {thumbnails.map((src, index) => (
+            <ThumbnailButton
+              key={newses[index]?.id ?? index}
+              src={src}
+              alt={
+                newses[index]?.translations?.[0]?.name ?? `news-${index + 1}`
+              }
+              index={index}
+              active={current === index}
+              onClick={goTo}
+            />
+          ))}
+        </motion.div>
+      </motion.div>
+    </section>
+  );
+};
+
+export { Newses };

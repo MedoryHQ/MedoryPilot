@@ -29,6 +29,7 @@ export interface PageComponentTranslation {
   id: string;
   name: string;
   content: string;
+  description?: string;
   pageComponent: PageComponent;
   pageComponentId: string;
   language: Language;
@@ -47,10 +48,12 @@ export type PageComponentFormValues = {
   translations: {
     en: {
       content: string;
+      description?: string;
       name: string;
     };
     ka: {
       content: string;
+      description?: string;
       name: string;
     };
   };

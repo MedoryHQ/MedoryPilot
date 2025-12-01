@@ -92,6 +92,12 @@
  *         content:
  *           type: string
  *           example: "content"
+ *        description:
+ *          type: string
+ *          example: "description"
+ *        name:
+ *          type: string
+ *          example: "name"
  *         language:
  *           type: object
  *           properties:

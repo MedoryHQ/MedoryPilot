@@ -37,6 +37,7 @@ export const fetchPageComponents = async (
       {
         "translations.some.name": "insensitive",
         "translations.some.content": "insensitive",
+        "translations.some.description": "insensitive",
         slug: "insensitive",
       },
       {
@@ -80,7 +81,6 @@ export const fetchPageComponents = async (
         where,
         include: {
           metaImage: true,
-
           translations: {
             include: {
               language: {
@@ -117,6 +117,7 @@ export const fetchPageComponentsList = async (
     const where = generateWhereInput<Prisma.PageComponentWhereInput>(search, {
       "translations.some.name": "insensitive",
       "translations.some.content": "insensitive",
+      "translations.some.description": "insensitive",
       slug: "insensitive",
     });
 

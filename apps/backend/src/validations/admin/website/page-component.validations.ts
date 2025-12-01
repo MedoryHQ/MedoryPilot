@@ -20,6 +20,7 @@ export const createPageComponentValidation = [
       validateTranslations(translations, [
         { name: "name", required: true },
         { name: "content", required: true },
+        { name: "description", required: false },
       ])
     ),
   ...generateMetaValidations(),

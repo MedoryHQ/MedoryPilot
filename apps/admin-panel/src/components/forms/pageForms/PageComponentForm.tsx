@@ -15,8 +15,8 @@ const defaultValues: PageComponentFormValues = {
   footerOrder: 0,
   slug: "",
   translations: {
-    en: { name: "", content: "" },
-    ka: { name: "", content: "" }
+    en: { name: "", content: "", description: "" },
+    ka: { name: "", content: "", description: "" }
   }
 };
 
@@ -37,7 +37,7 @@ export const PageComponentForm: React.FC<FormProps> = ({
       "footerOrder"
     ],
     translations: {
-      fields: ["content", "name"]
+      fields: ["content", "name", "description"]
     }
   });
 
@@ -163,6 +163,15 @@ export const PageComponentForm: React.FC<FormProps> = ({
             required: true,
             fullWidth: true,
             type: "text"
+          },
+          {
+            name: "description",
+            label: toUpperCase(t("pageComponents.form.description")),
+            placeholder: toUpperCase(t("pageComponents.form.description")),
+            required: false,
+            rows: 5,
+            maxLength: 500,
+            type: "textarea"
           },
           {
             name: "content",

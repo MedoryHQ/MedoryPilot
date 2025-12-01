@@ -20,6 +20,7 @@ export const fetchPageComponents = async (
     const where = generateWhereInput<Prisma.PageComponentWhereInput>(search, {
       "translations.some.name": "insensitive",
       "translations.some.content": "insensitive",
+      "translations.some.description": "insensitive",
       slug: "insensitive",
     });
 
@@ -40,6 +41,7 @@ export const fetchPageComponents = async (
             select: {
               content: true,
               name: true,
+              description: true,
               language: {
                 select: {
                   code: true,
@@ -86,6 +88,7 @@ export const fetchPageComponent = async (
           select: {
             content: true,
             name: true,
+            description: true,
             language: {
               select: {
                 code: true,

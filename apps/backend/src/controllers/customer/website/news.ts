@@ -24,7 +24,9 @@ export const fetchNewses = async (
     const where = generateWhereInput<Prisma.NewsWhereInput>(
       search,
       {
+        "translations.some.name": "insensitive",
         "translations.some.content": "insensitive",
+        "translations.some.description": "insensitive",
         slug: "insensitive",
       },
       {
@@ -55,6 +57,8 @@ export const fetchNewses = async (
           slug: true,
           translations: {
             select: {
+              name: true,
+              description: true,
               content: true,
               language: {
                 select: {
@@ -103,6 +107,8 @@ export const fetchNews = async (
         translations: {
           select: {
             content: true,
+            name: true,
+            description: true,
             language: {
               select: {
                 code: true,

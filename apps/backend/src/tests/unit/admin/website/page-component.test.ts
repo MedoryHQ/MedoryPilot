@@ -71,11 +71,13 @@ jest.mock("@/utils", () => {
       {
         name: "Test",
         content: "Content",
+        description: "Description",
         language: { connect: { code: "en" } },
       },
       {
         name: "ტესტი",
         content: "კონტენტი",
+        description: "აღწერა",
         language: { connect: { code: "ka" } },
       },
     ]),
@@ -93,8 +95,18 @@ const mockPageComponent = {
   slug: "test-component",
   footerOrder: 1,
   translations: [
-    { name: "Test", content: "Content", language: { code: "en" } },
-    { name: "ტესტი", content: "კონტენტი", language: { code: "ka" } },
+    {
+      name: "Test",
+      content: "Content",
+      description: "Description",
+      language: { code: "en" },
+    },
+    {
+      name: "ტესტი",
+      content: "კონტენტი",
+      description: "აღწერა",
+      language: { code: "ka" },
+    },
   ],
 };
 
@@ -163,8 +175,12 @@ describe("Admin PageComponent routes — /admin/page-component", () => {
         .send({
           slug: "test-component",
           translations: {
-            en: { name: "Test", content: "Content" },
-            ka: { name: "ტესტი", content: "კონტენტი" },
+            en: {
+              name: "Test",
+              content: "Content",
+              description: "Description",
+            },
+            ka: { name: "ტესტი", content: "კონტენტი", description: "აღწერა" },
           },
         });
       expect(res).toHaveStatus(201);
@@ -192,8 +208,16 @@ describe("Admin PageComponent routes — /admin/page-component", () => {
         .send({
           slug: "test-component",
           translations: {
-            en: { name: "Updated", content: "Content" },
-            ka: { name: "განახლებული", content: "კონტენტი" },
+            en: {
+              name: "Updated",
+              content: "Content",
+              description: "Description",
+            },
+            ka: {
+              name: "განახლებული",
+              content: "კონტენტი",
+              description: "აღწერა",
+            },
           },
         });
       expect(res).toHaveStatus(200);
@@ -209,8 +233,16 @@ describe("Admin PageComponent routes — /admin/page-component", () => {
         .send({
           slug: "missing",
           translations: {
-            en: { name: "Updated", content: "Content" },
-            ka: { name: "განახლებული", content: "კონტენტი" },
+            en: {
+              name: "Updated",
+              content: "Content",
+              description: "Description",
+            },
+            ka: {
+              name: "განახლებული",
+              content: "კონტენტი",
+              description: "აღწერა",
+            },
           },
         });
       expect(res).toHaveStatus(404);
