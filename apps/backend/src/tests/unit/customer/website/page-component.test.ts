@@ -67,8 +67,18 @@ const mockPageComponent = {
   slug: "test-component",
   footerOrder: 1,
   translations: [
-    { name: "Test", content: "Content", language: { code: "en" } },
-    { name: "ტესტი", content: "კონტენტი", language: { code: "ka" } },
+    {
+      name: "Test",
+      content: "Content",
+      description: "Description",
+      language: { code: "en" },
+    },
+    {
+      name: "ტესტი",
+      content: "კონტენტი",
+      description: "აღწერა",
+      language: { code: "ka" },
+    },
   ],
 };
 
