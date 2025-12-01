@@ -122,6 +122,7 @@ const PageComponents = () => {
         filters={filters}
         total={data?.count}
         editUrl="/landing/page-components/edit"
+        editKey="slug"
         emptyMessage={toUpperCase(t("pageComponents.noPageComponentsFound"))}
         mobileCardRender={(item) => {
           if (isFetching || !item) {
