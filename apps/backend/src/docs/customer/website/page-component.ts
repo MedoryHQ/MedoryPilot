@@ -76,6 +76,9 @@
  *         content:
  *           type: string
  *           example: "content"
+ *         description:
+ *           type: string
+ *           example: "description"
  *         language:
  *           type: object
  *           properties:
