@@ -21,7 +21,11 @@ export const createNewsValidation = [
   body("translations")
     .isObject()
     .custom((translations) =>
-      validateTranslations(translations, [{ name: "content", required: true }])
+      validateTranslations(translations, [
+        { name: "name", required: true },
+        { name: "content", required: true },
+        { name: "description", required: false },
+      ])
     ),
   ...generateMetaValidations(),
 ];
