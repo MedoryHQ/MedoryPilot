@@ -498,6 +498,8 @@ export const ka = {
           "შეავსეთ გვერდის დეტალები თითოეული ენისთვის",
         name: "სახელი",
         namePlaceholder: "e.g., სახელი",
+        description: "აღწერა",
+        descriptionPlaceholder: "e.g., აღწერა",
         content: "კონტენტი",
         contentPlaceholder: "შეიყვანეთ კონტენტი ამ სიახლისთვის...",
         settings: "პარამეტრები",

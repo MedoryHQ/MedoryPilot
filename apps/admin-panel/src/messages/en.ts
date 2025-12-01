@@ -498,6 +498,8 @@ export const en = {
           "Fill in page Component details for each language",
         name: "Name",
         namePlaceholder: "e.g., name",
+        description: "Description",
+        descriptionPlaceholder: "e.g., description",
         content: "Content",
         contentPlaceholder: "Enter a brief content for this page Component...",
         settings: "Settings",
