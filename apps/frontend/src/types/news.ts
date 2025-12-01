@@ -28,6 +28,8 @@ export interface News {
 export interface NewsTranslation {
   id: string;
   content: string;
+  name: string;
+  description?: string;
   news: News;
   newsId: string;
   language: Language;

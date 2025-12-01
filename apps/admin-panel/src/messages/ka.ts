@@ -596,7 +596,7 @@ export const ka = {
       managementDescription:
         "მართეთ ლანდინგ გვერდის სიახლეები, და მეტა მონაცემები",
       addNews: "სიახლის შექმნა",
-      noNewssFound: "სიახლეები ვერ მოიძებნა",
+      noNewsesFound: "სიახლეები ვერ მოიძებნა",
       created: "შეიქმნა",
       background: "ფონი",
       slug: "სლაგი",
@@ -614,6 +614,10 @@ export const ka = {
         contentTranslations: "კონტენტი და თარგმანები",
         contentTranslationsDescription:
           "შეავსეთ Სიახლის დეტალები თითოეული ენისთვის",
+        name: "სახელი",
+        namePlaceholder: "e.g., სახელი",
+        description: "აღწერა",
+        descriptionPlaceholder: "e.g., აღწერა",
         content: "კონტენტი",
         contentPlaceholder: "შეიყვანეთ კონტენტი ამ სიახლისთვის...",
         settings: "პარამეტრები",
@@ -655,6 +659,7 @@ export const ka = {
         backgroundRequired: "ფონი სავალდებულოა",
         slugRequired: "სლაგი სავალდებულოა",
         orderRequired: "რიგი სავალდებულოა",
+        nameRequired: "სახელი სავალდებულოა",
         contentRequired: "კონტენტი სავალდებულოა"
       }
     },

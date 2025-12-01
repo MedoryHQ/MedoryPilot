@@ -615,6 +615,10 @@ export const en = {
         contentTranslations: "Content & Translations",
         contentTranslationsDescription:
           "Fill in news details for each language",
+        name: "Name",
+        namePlaceholder: "e.g., name",
+        description: "Description",
+        descriptionPlaceholder: "e.g., description",
         content: "Content",
         contentPlaceholder: "Enter a brief content for this news...",
         settings: "Settings",
@@ -658,6 +662,7 @@ export const en = {
         backgroundRequired: "Background is required",
         slugRequired: "Slug is required",
         orderRequired: "Order is required",
+        nameRequired: "Name is required",
         contentRequired: "Content is required"
       }
     },
