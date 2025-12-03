@@ -370,7 +370,7 @@ export const updateNews = async (
           }
         : hasMetaImageProp && metaImage === null
         ? { delete: true }
-        : undefined;
+        : {};
 
     const news = await prisma.news.update({
       where: { slug },
