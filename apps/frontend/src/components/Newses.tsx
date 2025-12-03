@@ -2,7 +2,7 @@
 
 import { useGetNewses } from "@/lib/queries";
 import { useLocale, useTranslations } from "next-intl";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import { getFullFilePath, getTranslatedObject, toUpperCase } from "@/utils";
 import {
   Carousel,
@@ -11,7 +11,7 @@ import {
   CarouselApi,
   // NewsesSkeleton,
 } from "./ui";
-import { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import Image from "next/image";
 import { formatDate } from "@/utils/date";
@@ -45,7 +45,7 @@ const ThumbnailButton = React.memo(function ThumbnailButton({
           e.preventDefault();
         }
       }}
-      className={`relative w-16 h-16 rounded-full overflow-hidden border-4 transition-all duration-300 focus:outline-none ${
+      className={`relative w-16 h-16 rounded-full overflow-hidden border-2 md:border-3 transition-all duration-300 focus:outline-none ${
         active
           ? "border-primary scale-110 shadow-medium"
           : "border-border/50 opacity-70 hover:opacity-100 hover:scale-105"
@@ -69,15 +69,19 @@ const ThumbnailButton = React.memo(function ThumbnailButton({
 
 const Newses = () => {
   const language = useLocale();
-  const { data, isFetching } = useGetNewses();
+  const { data, isFetching } = useGetNewses("showInLanding=true");
   const [api, setApi] = useState<CarouselApi | undefined>();
   const t = useTranslations("Newses");
   const [current, setCurrent] = useState(0);
-  const sectionRef = useRef<HTMLDivElement | null>(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.3 });
 
-  const newses = data?.data ?? [];
-
+  const newses = useMemo(() => data?.data ?? [], [data]);
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 },
+    },
+  };
   const thumbnails = useMemo(
     () =>
       newses.map((n) =>
@@ -86,6 +90,7 @@ const Newses = () => {
     [newses]
   );
 
+  console.log(thumbnails);
   const getApiSelectedIndex = useCallback(() => {
     if (!api) return 0;
     const anyApi = api as any;
@@ -173,16 +178,13 @@ const Newses = () => {
   // <NewsesSkeleton />;
 
   return (
-    <section
-      ref={sectionRef}
-      className="py-24 lg:py-40 bg-linear-to-b from-background to-muted/30 relative overflow-hidden"
-    >
+    <section className="py-24 lg:py-40 bg-linear-to-b from-background to-muted/30 relative overflow-hidden">
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl" />
       </div>
 
       <motion.div
-        className="mx-auto text-center"
+        className="mx-auto text-center px-4 md:px-6"
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
@@ -198,13 +200,13 @@ const Newses = () => {
           {toUpperCase(t("title"))}
         </motion.h2>
         <motion.p
-          className="md:text-xl lg:text-2xl text-primary/80 leading-relaxed max-w-4xl mx-auto"
+          className="md:text-xl lg:text-2xl text-primary/80 leading-relaxed max-w-4xl mx-auto mb-12 lg:mb-16"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          {toUpperCase(t("description"))}
+          {toUpperCase(t("subTitle"))}
         </motion.p>
 
         <Carousel
@@ -218,7 +220,7 @@ const Newses = () => {
               delay: 5000,
             }),
           ]}
-          className="w-full"
+          className="w-full max-w-[1440px] mx-auto rounded-3xl overflow-hidden"
         >
           <CarouselContent>
             {newses.map((news, index) => {
@@ -240,18 +242,18 @@ const Newses = () => {
                       alt={background?.name || "news background"}
                       width={1440}
                       height={810}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      className="w-full min-w-full h-auto min-h-full  object-cover transition-transform duration-700 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-linear-to-t from-background/95 via-background/60 to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 h-[70%] bg-linear-to-t group-hover:opacity-100 opacity-70 from-background to-background/0 transition-all duration-500" />
                     <motion.div
-                      className="absolute bottom-0 left-0 right-0 p-10 lg:p-14"
+                      className="absolute bottom-0 left-0 right-0 p-10 lg:p-14 text-start"
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6 }}
                     >
-                      <p className="text-primary font-semibold mb-3 text-sm tracking-wider uppercase">
+                      <h6 className="text-primary font-semibold mb-3 text-sm tracking-wider uppercase">
                         {formatDate(news.createdAt, language)}
-                      </p>
+                      </h6>
                       <h3 className="text-3xl lg:text-4xl font-bold text-foreground mb-5 leading-tight">
                         {translation?.name}
                       </h3>
@@ -268,9 +270,10 @@ const Newses = () => {
 
         <motion.div
           className="flex justify-center gap-4 mt-10"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
         >
           {thumbnails.map((src, index) => (
             <ThumbnailButton

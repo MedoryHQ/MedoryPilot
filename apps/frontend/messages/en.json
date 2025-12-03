@@ -33,5 +33,9 @@
   "Services": {
     "title": "My Services",
     "subTitle": "Comprehensive endocrine care tailored to your needs"
+  },
+  "Newses": {
+    "title": "Latest Newses",
+    "subTitle": "Stay updated with the latest in endocrinology"
   }
 }
