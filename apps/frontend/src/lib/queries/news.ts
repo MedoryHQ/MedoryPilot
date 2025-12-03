@@ -2,7 +2,7 @@ import { NewsesResponse, NewsResponse } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import instance from "../../../api/axios";
 
-export const useGetNewses = (search?: URLSearchParams) => {
+export const useGetNewses = (search?: URLSearchParams | string) => {
   return useQuery<NewsesResponse, Error>({
     queryKey: ["newses", search?.toString() ?? ""],
     queryFn: async (): Promise<NewsesResponse> => {
