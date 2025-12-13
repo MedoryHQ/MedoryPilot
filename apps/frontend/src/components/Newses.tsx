@@ -190,7 +190,7 @@ const Newses = () => {
   );
 
   return (
-    <section className="py-20 md:py-24 lg:py-40 w-full bg-linear-to-b from-background to-muted/30 relative overflow-hidden">
+    <section className="py-12 md:py-16 lg:py-20 w-full bg-linear-to-b from-background to-muted/30 relative overflow-hidden">
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl" />
       </div>

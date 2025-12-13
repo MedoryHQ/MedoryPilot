@@ -33,7 +33,7 @@ const Services = () => {
   return (
     <section
       id="services"
-      className="py-20 md:py-24 lg:py-36 relative overflow-hidden bg-transparent w-full mt-10 md:mt-14 "
+      className="py-18 md:py-22 lg:py-30 relative overflow-hidden bg-transparent w-full mt-10 md:mt-14 "
     >
       <div className="absolute inset-0 z-0 bg-background/95">
         <div
