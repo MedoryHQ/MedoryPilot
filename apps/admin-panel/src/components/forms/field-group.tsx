@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/libs";
-import { MarkdownEditor } from "../MarkdownRenderer";
+import { MarkdownEditor } from "../MarkdownEditor";
 
 interface FieldGroupProps {
   label: string;

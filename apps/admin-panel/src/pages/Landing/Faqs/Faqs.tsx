@@ -12,6 +12,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { Column } from "@/types/ui";
 import { Faq } from "@/types/website";
+import { MarkdownRenderer } from "@/components";
 
 const Faqs = () => {
   const { t, i18n } = useTranslation();
@@ -49,9 +50,12 @@ const Faqs = () => {
       render: (item: Faq) => {
         const tr = getTranslatedObject(item.translations, i18n.language);
         return (
-          <span className="text-foreground line-clamp-3 max-w-[400px] text-sm">
-            {toUpperCase(tr.answer)}
-          </span>
+          <MarkdownRenderer
+            classNames={{
+              p: "text-foreground line-clamp-3 max-w-[400px] text-sm"
+            }}
+            content={toUpperCase(tr.answer)}
+          />
         );
       }
     },
