@@ -1,371 +1,254 @@
-import React, { useMemo, useRef, useEffect } from "react";
-import ReactQuill from "react-quill";
-import Quill from "quill";
-import ReactDOMServer from "react-dom/server";
-import "react-quill/dist/quill.snow.css";
-import { Box, Minus } from "lucide-react";
-import { ADMIN_API_PATH, VITE_API_URL } from "@/utils";
+import { cn } from "@/libs";
+import { toUpperCase } from "@/utils";
+import React, { isValidElement } from "react";
+import { useTranslation } from "react-i18next";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
 
-try {
-  const icons = (ReactQuill as any).Quill.import("ui/icons");
-  icons["hr"] = ReactDOMServer.renderToString(<Minus />);
-  icons["customDiv"] = ReactDOMServer.renderToString(<Box />);
-} catch {
-  //
-}
-
-const Block = Quill.import("blots/block");
-
-class DividerBlot extends Block {
-  static create() {
-    const node = super.create();
-    node.setAttribute("class", "custom-divider");
-    return node;
-  }
-}
-DividerBlot.blotName = "divider";
-DividerBlot.tagName = "hr";
-
-try {
-  Quill.register(DividerBlot);
-} catch {
-  //
-}
-
-class CustomDivBlot extends Block {
-  static create(value: any) {
-    const node = super.create();
-    node.setAttribute("class", "custom-class");
-    if (value) node.setAttribute("data-id", String(value));
-    return node;
-  }
-  static formats(node: any) {
-    return node.getAttribute("data-id");
-  }
-}
-CustomDivBlot.blotName = "customDiv";
-CustomDivBlot.tagName = "div";
-
-try {
-  Quill.register(CustomDivBlot);
-} catch {
-  //
-}
-
-type MaybeForm =
-  | {
-      setValue?: (...args: any[]) => any;
-      getValues?: (...args: any[]) => any;
-      watch?: (...args: any[]) => any;
-      getFieldValue?: (...args: any[]) => any;
-      setFieldsValue?: (...args: any[]) => any;
-    }
-  | undefined;
-
-export function MarkdownEditor({
-  name,
-  form,
-  disabled,
-  value,
-  placeholder,
-  label,
-  className,
-  onChange,
-  onUpload
-}: {
-  name?: any | any[];
-  label?: React.ReactNode;
-  className?: string;
-  form?: MaybeForm;
-  placeholder?: string;
-  value?: string;
-  disabled?: boolean;
-  onChange?: (html: string) => void;
-  onUpload?: (file: File) => Promise<string>;
-}) {
-  const quillRef = useRef<ReactQuill | null>(null);
-  const currentContent = useMemo(() => {
-    if (typeof value === "string") return value ?? "";
-    if (!form || name === undefined) return "";
-    if (typeof form.getValues === "function") {
-      try {
-        const all = form.getValues();
-        if (typeof name === "string") return all?.[name] ?? "";
-        try {
-          return (form as any).getValues(name as any) ?? "";
-        } catch {
-          return "";
-        }
-      } catch {
-        try {
-          return (form as any).getValues(name as any) ?? "";
-        } catch {
-          return "";
-        }
-      }
-    }
-    if (typeof (form as any).getFieldValue === "function") {
-      try {
-        return (form as any).getFieldValue(name as any) ?? "";
-      } catch {
-        return "";
-      }
-    }
-    return "";
-  }, [value, form, name]);
-
-  const modules = useMemo(
-    () => ({
-      toolbar: {
-        container: [
-          [{ header: [1, 2, false] }],
-          ["bold", "italic", "underline", "strike", "blockquote"],
-          [
-            { list: "ordered" },
-            { list: "bullet" },
-            { indent: "-1" },
-            { indent: "+1" }
-          ],
-          ["link", "image"],
-          ["clean"],
-          ["hr"],
-          ["customDiv"]
-        ],
-        handlers: {
-          image: () => {
-            const input = document.createElement("input");
-            input.type = "file";
-            input.accept = "image/*";
-            input.style.position = "fixed";
-            input.style.left = "-9999px";
-            document.body.appendChild(input);
-            input.click();
-            input.onchange = async () => {
-              try {
-                const file = input.files?.[0];
-                if (!file) {
-                  document.body.removeChild(input);
-                  return;
-                }
-                let url: string | undefined;
-                if (onUpload) {
-                  url = await onUpload(file);
-                } else {
-                  const fd = new FormData();
-                  fd.append("file", file);
-                  const resp = await fetch(`${ADMIN_API_PATH}/upload/single`, {
-                    method: "POST",
-                    body: fd
-                  });
-                  const json = await resp.json();
-                  url = `${VITE_API_URL as string}/${json?.file?.path}`;
-                }
-                const quill = quillRef.current?.getEditor();
-                if (quill && url) {
-                  const range = quill.getSelection();
-                  quill.insertEmbed(
-                    range?.index ?? quill.getLength(),
-                    "image",
-                    url
-                  );
-                }
-              } catch (err) {
-                console.error("image upload failed", err);
-              } finally {
-                try {
-                  document.body.removeChild(input);
-                } catch {
-                  //
-                }
-              }
-            };
-          },
-          hr: () => {
-            const quill = quillRef.current?.getEditor();
-            if (!quill) return;
-            const range = quill.getSelection();
-            const idx = range?.index ?? quill.getLength();
-            quill.insertText(idx, "\n", "user");
-            quill.insertEmbed(idx + 1, "divider", true);
-            quill.insertText(idx + 2, "\n", "user");
-          },
-          customDiv: () => {
-            const quill = quillRef.current?.getEditor();
-            const range = quill?.getSelection();
-            if (range && quill) {
-              const id = Date.now().toString();
-              const idx = range.index;
-              quill.insertText(idx, "\n", "user");
-              quill.insertEmbed(idx + 1, "customDiv", id);
-              quill.setSelection(idx + 2, 0);
-            }
-          }
-        }
-      },
-      keyboard: {
-        bindings: {
-          customDivEnter: {
-            key: 13,
-            format: ["customDiv"],
-            handler: function (range: any) {
-              const quill = quillRef.current?.getEditor();
-              if (!quill) return true;
-              const [leaf] = quill.getLeaf(range.index) as any;
-              const customDiv = leaf?.parent;
-              if (customDiv && customDiv.statics?.blotName === "customDiv") {
-                const content = customDiv.domNode.innerHTML;
-                const newlineCount = (content.match(/\n/g) || []).length;
-                quill.insertEmbed(
-                  range.index,
-                  "text",
-                  newlineCount === 0 ? "\n\n" : "\n",
-                  "user"
-                );
-                quill.setSelection(range.index + 1, 0);
-                return false;
-              }
-              return true;
-            }
-          }
-        }
-      }
-    }),
-    [onUpload]
-  );
-
-  const updateExternal = (html: string) => {
-    if (typeof onChange === "function" && value !== undefined) {
-      onChange(html);
-      return;
-    }
-
-    if (!form || name === undefined) return;
-
-    if (typeof (form as any).setValue === "function") {
-      if (typeof name === "string") {
-        (form as any).setValue(name as any, html, {
-          shouldDirty: true,
-          shouldTouch: true
-        });
-        return;
-      }
-      if (Array.isArray(name) && name.length === 3) {
-        const [listName, lang, fieldName] = name;
-        const all = (form as any).getValues();
-        const currentLangValue = all?.[listName]?.[lang] ?? {};
-        const newCurrentLangValue = { ...currentLangValue, [fieldName]: html };
-        (form as any).setValue(
-          listName,
-          { ...(all?.[listName] ?? {}), [lang]: newCurrentLangValue },
-          { shouldDirty: true, shouldTouch: true }
-        );
-        return;
-      }
-      if (Array.isArray(name) && name.length === 5) {
-        const [listName, lang, nestedListName, index, fieldName] = name;
-        const all = (form as any).getValues();
-        const currentLang = all?.[listName]?.[lang] ?? {};
-        const nested = currentLang?.[nestedListName] ?? [];
-        const newNested = nested.map((it: any, i: number) =>
-          i === Number(index) ? { ...it, [fieldName]: html } : it
-        );
-        (form as any).setValue(
-          listName,
-          {
-            ...(all?.[listName] ?? {}),
-            [lang]: { ...currentLang, [nestedListName]: newNested }
-          },
-          { shouldDirty: true, shouldTouch: true }
-        );
-        return;
-      }
-      try {
-        (form as any).setValue(name as any, html, {
-          shouldDirty: true,
-          shouldTouch: true
-        });
-      } catch {
-        //
-      }
-      return;
-    }
-
-    if (typeof (form as any).setFieldsValue === "function") {
-      if (typeof name === "string") {
-        (form as any).setFieldsValue({ [name]: html });
-        return;
-      }
-      if (Array.isArray(name) && name.length === 3) {
-        const [listName, lang, fieldName] = name;
-        const cur = (form as any).getFieldValue([listName, lang]) ?? {};
-        const newCur = { ...cur, [fieldName]: html };
-        const whole = (form as any).getFieldValue(listName) ?? {};
-        (form as any).setFieldsValue({
-          [listName]: { ...whole, [lang]: newCur }
-        });
-        return;
-      }
-      if (Array.isArray(name) && name.length === 5) {
-        const [listName, lang, nestedListName, index, fieldName] = name;
-        const cur = (form as any).getFieldValue([listName, lang]) ?? {};
-        const nested = cur[nestedListName] ?? [];
-        const newNested = nested.map((it: any, i: number) =>
-          i === Number(index) ? { ...it, [fieldName]: html } : it
-        );
-        const whole = (form as any).getFieldValue(listName) ?? {};
-        (form as any).setFieldsValue({
-          [listName]: {
-            ...whole,
-            [lang]: { ...cur, [nestedListName]: newNested }
-          }
-        });
-        return;
-      }
-      try {
-        (form as any).setFieldsValue({ [name]: html });
-      } catch {
-        //
-      }
-    }
+interface MarkdownRendererProps extends React.HTMLAttributes<HTMLDivElement> {
+  content: string | undefined;
+  classNames?: {
+    a?: string;
+    span?: string;
+    strong?: string;
+    p?: string;
+    img?: string;
+    iframe?: string;
+    ul?: string;
+    li?: string;
+    ol?: string;
+    h2?: string;
+    h1?: string;
   };
+}
 
-  const handleChange = (content: string) => {
-    updateExternal(content);
-  };
-
-  useEffect(() => {
-    const quill = quillRef.current?.getEditor();
-    if (!quill) return;
-    const editorHtml = quill.root.innerHTML ?? "";
-    if (currentContent != null && typeof currentContent === "string") {
-      if (currentContent !== editorHtml) {
-        try {
-          quill.root.innerHTML = currentContent;
-        } catch {
-          //
-        }
-      }
-    }
-  }, [currentContent]);
-
+export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
+  content,
+  classNames,
+  ...props
+}) => {
+  const { i18n } = useTranslation();
   return (
-    <div className={className ?? ""}>
-      {label && (
-        <div className="text-foreground mb-2 text-sm font-medium">{label}</div>
-      )}
+    <div className={cn(props.className, "markdown")}>
+      <ReactMarkdown
+        rehypePlugins={[rehypeRaw]}
+        remarkPlugins={[remarkGfm]}
+        components={{
+          a: ({ ...props }) => (
+            <a
+              {...props}
+              href={props.href?.toLowerCase()}
+              className={cn(
+                "text-primary cursor-pointer bg-transparent! underline transition-all duration-300",
+                classNames?.a
+              )}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {props.children}
+            </a>
+          ),
+          span: ({ ...props }) => {
+            if (typeof props.children === "string") {
+              return (
+                <span
+                  {...props}
+                  className={cn("text-white-primary!", classNames?.span)}
+                >
+                  {toUpperCase(props.children)}
+                </span>
+              );
+            }
+            return (
+              <span
+                {...props}
+                className={cn("text-white-primary!", classNames?.span)}
+              >
+                {props.children}
+              </span>
+            );
+          },
+          pre: ({ children }) => {
+            let codeElement: React.ReactElement | null = null;
 
-      <ReactQuill
-        theme="snow"
-        modules={modules}
-        ref={quillRef}
-        readOnly={disabled}
-        onChange={handleChange}
-        placeholder={placeholder || ""}
-        value={currentContent}
-        style={{ width: "100%" }}
-      />
+            if (Array.isArray(children)) {
+              codeElement = children.find(
+                (child) => isValidElement(child) && child.type === "code"
+              ) as React.ReactElement | null;
+            } else if (isValidElement(children) && children.type === "code") {
+              codeElement = children as React.ReactElement;
+            }
+
+            let codeString = "";
+            if (codeElement) {
+              const { children: codeChildren } = codeElement.props as {
+                className?: string;
+                children?: React.ReactNode;
+              };
+              codeString = String(codeChildren ?? "");
+            } else if (Array.isArray(children)) {
+              codeString = children
+                .filter((c) => typeof c === "string")
+                .join("");
+            } else if (typeof children === "string") {
+              codeString = children;
+            }
+
+            return (
+              <div
+                style={{
+                  borderRadius: "8px",
+                  padding: "1em",
+                  fontSize: "1em",
+                  margin: "1em 0"
+                }}
+              >
+                {codeString.replace(/\n$/, "")}
+              </div>
+            );
+          },
+          strong: ({ ...props }) => {
+            if (typeof props.children === "string") {
+              return (
+                <strong
+                  {...props}
+                  className={cn(
+                    "text-white-primary! font-bold",
+                    classNames?.strong
+                  )}
+                >
+                  {toUpperCase(props.children)}
+                </strong>
+              );
+            }
+            return (
+              <strong
+                {...props}
+                className={cn(
+                  "text-white-primary! font-bold",
+                  classNames?.strong
+                )}
+              >
+                {props.children}
+              </strong>
+            );
+          },
+          p: ({ children, ...props }) => {
+            const processChildren = (
+              children: React.ReactNode
+            ): React.ReactNode => {
+              return React.Children.map(children, (child) => {
+                if (typeof child === "string") {
+                  return toUpperCase(child);
+                }
+
+                return child;
+              });
+            };
+
+            return (
+              <p className={cn(classNames?.p)} {...props}>
+                {processChildren(children)}
+              </p>
+            );
+          },
+          img: ({ ...props }) =>
+            props.src ? (
+              <img
+                {...props}
+                src={props.src as string}
+                alt={props.alt || "Markdown Image"}
+                className={cn("h-auto max-w-full", classNames?.img)}
+              />
+            ) : (
+              ""
+            ),
+
+          iframe: ({ ...props }) => {
+            const isYouTube =
+              props.src?.includes("youtube.com") ||
+              props.src?.includes("youtu.be");
+
+            return (
+              <div
+                className={cn(
+                  "relative my-4 aspect-video w-full",
+                  classNames?.iframe
+                )}
+              >
+                <iframe
+                  {...props}
+                  className={cn(
+                    "absolute top-0 left-0 h-full w-full rounded-lg",
+                    isYouTube && "aspect-video",
+                    classNames?.iframe
+                  )}
+                  allowFullScreen
+                  loading="lazy"
+                />
+              </div>
+            );
+          },
+          ul: ({ ...props }) => (
+            <ul
+              {...props}
+              className={cn("list-outside list-disc!", classNames?.ul)}
+            >
+              {props.children}
+            </ul>
+          ),
+          li: ({ ...props }) => (
+            <li
+              {...props}
+              className={cn(
+                "text-white-primary ml-5 text-[14px] md:mb-1 md:pl-1 md:text-[18px]",
+                classNames?.li
+              )}
+            >
+              {props.children}
+            </li>
+          ),
+          ol: ({ ...props }) => (
+            <ol
+              {...props}
+              className={cn(
+                "text-decimal text-white-primary ml-5 text-[14px] md:mb-1 md:pl-1 md:text-[18px]",
+                classNames?.ol
+              )}
+            >
+              {props.children}
+            </ol>
+          ),
+          h2: ({ ...props }) => (
+            <h2
+              {...props}
+              className={cn(
+                "text-primary mb-2 text-[23px] md:text-[26px]",
+                classNames?.h2
+              )}
+            >
+              {props.children}
+            </h2>
+          ),
+          h1: ({ ...props }) => (
+            <h1
+              {...props}
+              className={cn(
+                "text-primary mb-4 font-bold md:leading-12",
+                i18n.language === "en"
+                  ? "text-[30px] leading-11 md:text-[32px]"
+                  : "text-[28px] leading-[42px] md:text-[31px]",
+                classNames?.h1
+              )}
+            >
+              {props.children}
+            </h1>
+          )
+        }}
+      >
+        {content || ""}
+      </ReactMarkdown>
     </div>
   );
-}
-
-export default MarkdownEditor;
+};
