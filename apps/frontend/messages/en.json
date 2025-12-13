@@ -37,5 +37,9 @@
   "Newses": {
     "title": "Latest Newses",
     "subTitle": "Stay updated with the latest in endocrinology"
+  },
+  "FAQs": {
+    "title": "Frequently Asked Questions",
+    "subTitle": "Find answers to common questions"
   }
 }
