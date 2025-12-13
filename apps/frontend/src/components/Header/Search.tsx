@@ -144,7 +144,7 @@ export function Search() {
             onChange={(e) => setValue(e.target.value)}
             onBlur={handleBlur}
             placeholder={toUpperCase(t("searchPlaceholder"))}
-            className="bg-transparent border-none outline-none text-sm w-full h-min p-0"
+            className="bg-transparent border-none outline-none ring-0! focus:ring-0! text-sm w-full h-min p-0"
             autoFocus
             aria-label="Search input"
             onKeyDown={(e) => {
@@ -183,7 +183,7 @@ export function SearchFull({ onSubmit }: { onSubmit?: () => void }) {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder={toUpperCase(t("searchPlaceholder"))}
-        className="bg-transparent border-none outline-none text-sm w-full h-min p-0"
+        className="bg-transparent border-none outline-none ring-0! text-sm w-full h-min p-0"
         aria-label="Search input"
       />
     </form>

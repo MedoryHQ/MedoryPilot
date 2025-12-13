@@ -160,6 +160,10 @@
   }
 }
 
+.focus-visible\:ring-ring:focus-visible {
+  --tw-ring-offset-width: 0px !important;
+}
+
 @keyframes scale-in {
   0% {
     transform: scale(0.95);

@@ -71,4 +71,26 @@ const ServiceSkeletion = () => {
   );
 };
 
-export { Skeleton, HeroSkeletion, IntroduceSkeletion, ServiceSkeletion };
+const NewsesSkeletion = () => {
+  return (
+    <section id="newses">
+      <Skeleton className="w-full max-w-[1440px] mx-auto relative h-[210px] md:h-[450px] lg:h-[550px] rounded-md md:rounded-2xl lg:rounded-3xl overflow-hidden group cursor-pointer" />
+      <div className="flex justify-center gap-3 md:gap-4 mt-6 md:mt-10">
+        {Array.from({ length: 3 }).map((_, idx) => (
+          <Skeleton
+            key={idx}
+            className="relative w-10 h-10 md:w-16 md:h-16 border-border/50 opacity-70 hover:opacity-100 hover:scale-105 rounded-full overflow-hidden border-2 md:border-3 transition-all duration-300 focus:outline-none"
+          />
+        ))}
+      </div>
+    </section>
+  );
+};
+
+export {
+  Skeleton,
+  HeroSkeletion,
+  IntroduceSkeletion,
+  ServiceSkeletion,
+  NewsesSkeletion,
+};
