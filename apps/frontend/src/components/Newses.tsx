@@ -9,13 +9,15 @@ import {
   CarouselContent,
   CarouselItem,
   CarouselApi,
-  // NewsesSkeleton,
+  NewsesSkeletion,
 } from "./ui";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import Image from "next/image";
 import { formatDate } from "@/utils/date";
 import React from "react";
+import { routing } from "@/i18n/routing";
+import { useRouter } from "next/navigation";
 
 type ThumbnailProps = {
   src: string;
@@ -69,6 +71,7 @@ const ThumbnailButton = React.memo(function ThumbnailButton({
 
 const Newses = () => {
   const language = useLocale();
+  const router = useRouter();
   const { data, isFetching } = useGetNewses("showInLanding=true");
   const [api, setApi] = useState<CarouselApi | undefined>();
   const t = useTranslations("Newses");
@@ -89,6 +92,19 @@ const Newses = () => {
       ),
     [newses]
   );
+
+  const pointerRef = React.useRef<{ x: number; y: number; moved: boolean }>({
+    x: 0,
+    y: 0,
+    moved: false,
+  });
+  const MOVE_THRESHOLD = 8; // px
+
+  const buildNewsUrl = (slugOrId?: string | null) => {
+    const base = routing.pathnames["/newses"] || "/newses";
+    const slug = slugOrId ? encodeURIComponent(slugOrId) : "";
+    return `/${language}${base}${slug ? `/${slug}` : ""}`;
+  };
 
   const getApiSelectedIndex = useCallback(() => {
     if (!api) return 0;
@@ -173,11 +189,8 @@ const Newses = () => {
     [api]
   );
 
-  if (isFetching) return "";
-  // <NewsesSkeleton />;
-
   return (
-    <section className="py-20 md:py-24 lg:py-40 bg-linear-to-b from-background to-muted/30 relative overflow-hidden">
+    <section className="py-20 md:py-24 lg:py-40 w-full bg-linear-to-b from-background to-muted/30 relative overflow-hidden">
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl" />
       </div>
@@ -208,85 +221,133 @@ const Newses = () => {
           {toUpperCase(t("subTitle"))}
         </motion.p>
 
-        <Carousel
-          setApi={setApi}
-          opts={{
-            align: "center",
-            loop: true,
-          }}
-          plugins={[
-            Autoplay({
-              delay: 5000,
-            }),
-          ]}
-          className="w-full max-w-[1440px] mx-auto rounded-3xl overflow-hidden"
-        >
-          <CarouselContent>
-            {newses.map((news, index) => {
-              const background = news?.background;
-              const translation = getTranslatedObject(
-                news?.translations,
-                language
-              );
+        {isFetching ? (
+          <NewsesSkeletion />
+        ) : (
+          <div>
+            <Carousel
+              setApi={setApi}
+              opts={{
+                align: "center",
+                loop: true,
+              }}
+              plugins={[
+                Autoplay({
+                  delay: 5000,
+                }),
+              ]}
+              className="w-full max-w-[1440px] mx-auto rounded-3xl overflow-hidden"
+            >
+              <CarouselContent>
+                {newses.map((news, index) => {
+                  const background = news?.background;
+                  const translation = getTranslatedObject(
+                    news?.translations,
+                    language
+                  );
 
-              return (
-                <CarouselItem key={news.id ?? index} className="pl-4">
-                  <motion.div
-                    className="relative w-full h-[210px] md:h-[450px] lg:h-[550px] rounded-md md:rounded-2xl lg:rounded-3xl overflow-hidden group cursor-pointer"
-                    whileHover={{ scale: 1.02 }}
-                    transition={{ duration: 0.4 }}
-                  >
-                    <Image
-                      src={getFullFilePath(background?.path || "")}
-                      alt={background?.name || "news background"}
-                      width={1440}
-                      height={810}
-                      className="w-full min-w-full h-auto min-h-full  object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className="absolute bottom-0 left-0 right-0 h-[70%] bg-linear-to-t group-hover:opacity-95 opacity-70 from-background via-background to-background/0 transition-all duration-500" />
-                    <motion.div
-                      className="absolute bottom-0 left-0 right-0 p-4 md:p-10 lg:p-14 text-start"
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6 }}
-                    >
-                      <h6 className="text-primary font-semibold mb-2 md:mb-3 text-[12px] md:text-sm tracking-wider uppercase">
-                        {toUpperCase(formatDate(news.createdAt, language))}
-                      </h6>
-                      <h3 className="md:text-2xl lg:text-4xl font-bold text-foreground mb-3 md:mb-5 leading-tight">
-                        {toUpperCase(translation?.name)}
-                      </h3>
-                      <p className="text-[12px] md:text-lg text-muted-foreground line-clamp-2 max-w-2xl leading-relaxed">
-                        {toUpperCase(translation?.description ?? "")}
-                      </p>
-                    </motion.div>
-                  </motion.div>
-                </CarouselItem>
-              );
-            })}
-          </CarouselContent>
-        </Carousel>
+                  const onPointerDown = (e: React.PointerEvent) => {
+                    pointerRef.current.x = e.clientX;
+                    pointerRef.current.y = e.clientY;
+                    pointerRef.current.moved = false;
+                  };
 
-        <motion.div
-          className="flex justify-center gap-3 md:gap-4 mt-6 md:mt-10"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-        >
-          {thumbnails.map((src, index) => (
-            <ThumbnailButton
-              key={newses[index]?.id ?? index}
-              src={src}
-              alt={
-                newses[index]?.translations?.[0]?.name ?? `news-${index + 1}`
-              }
-              index={index}
-              active={current === index}
-              onClick={goTo}
-            />
-          ))}
-        </motion.div>
+                  const onPointerMove = (e: React.PointerEvent) => {
+                    const dx = Math.abs(e.clientX - pointerRef.current.x);
+                    const dy = Math.abs(e.clientY - pointerRef.current.y);
+                    if (dx > MOVE_THRESHOLD || dy > MOVE_THRESHOLD) {
+                      pointerRef.current.moved = true;
+                    }
+                  };
+
+                  const onPointerUp = () => {
+                    if (!pointerRef.current.moved) {
+                      const target = news?.slug ?? news?.id;
+                      const url = buildNewsUrl(target);
+                      router.push(url);
+                    }
+                  };
+
+                  const handleKeyDownNavigate = (e: React.KeyboardEvent) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      const target = news?.slug ?? news?.id;
+                      const url = buildNewsUrl(target);
+                      router.push(url);
+                    }
+                  };
+
+                  return (
+                    <CarouselItem key={news.id ?? index} className="pl-4">
+                      <motion.div
+                        className="relative w-full h-[210px] md:h-[450px] lg:h-[550px] rounded-md md:rounded-2xl lg:rounded-3xl overflow-hidden group cursor-pointer"
+                        whileHover={{ scale: 1.02 }}
+                        transition={{ duration: 0.4 }}
+                        viewport={{ once: true, amount: 0.2 }}
+                        role="link"
+                        tabIndex={0}
+                        onClick={() => console.log("sf")}
+                        onPointerDown={onPointerDown}
+                        onPointerMove={onPointerMove}
+                        onPointerUp={onPointerUp}
+                        onKeyDown={handleKeyDownNavigate}
+                        aria-label={translation?.name ?? `news-${index + 1}`}
+                      >
+                        <Image
+                          src={getFullFilePath(background?.path || "")}
+                          alt={background?.name || "news background"}
+                          width={1440}
+                          height={810}
+                          className="w-full min-w-full h-auto min-h-full  object-cover transition-transform duration-700 group-hover:scale-105"
+                        />
+                        <div className="absolute bottom-0 left-0 right-0 h-[70%] bg-linear-to-t group-hover:opacity-95 opacity-70 from-background via-background to-background/0 transition-all duration-500" />
+                        <motion.div
+                          className="absolute bottom-0 left-0 right-0 p-4 md:p-10 lg:p-14 text-start"
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true, amount: 0.2 }}
+                          transition={{ duration: 0.6 }}
+                        >
+                          <h6 className="text-primary font-semibold mb-2 md:mb-3 text-[12px] md:text-sm tracking-wider uppercase">
+                            {toUpperCase(formatDate(news.createdAt, language))}
+                          </h6>
+                          <h3 className="md:text-2xl lg:text-4xl font-bold text-foreground mb-3 md:mb-5 leading-tight">
+                            {toUpperCase(translation?.name)}
+                          </h3>
+                          <p className="text-[12px] md:text-lg text-muted-foreground line-clamp-2 max-w-2xl leading-relaxed">
+                            {toUpperCase(translation?.description ?? "")}
+                          </p>
+                        </motion.div>
+                      </motion.div>
+                    </CarouselItem>
+                  );
+                })}
+              </CarouselContent>
+            </Carousel>
+
+            <motion.div
+              className="flex justify-center gap-3 md:gap-4 mt-6 md:mt-10"
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+            >
+              {thumbnails.map((src, index) => (
+                <ThumbnailButton
+                  key={newses[index]?.id ?? index}
+                  src={src}
+                  alt={
+                    newses[index]?.translations?.[0]?.name ??
+                    `news-${index + 1}`
+                  }
+                  index={index}
+                  active={current === index}
+                  onClick={goTo}
+                />
+              ))}
+            </motion.div>
+          </div>
+        )}
       </motion.div>
     </section>
   );
