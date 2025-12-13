@@ -50,29 +50,36 @@ const MenuNavigations = ({ onClick }: { onClick?: () => void }) => {
   const pathname = usePathname();
   const locale = useLocale();
 
+  const isActive = (href: string) => {
+    if (href === "/") {
+      return pathname === "/en" || pathname === "/ka";
+    }
+    return pathname.includes(href);
+  };
+
   return (
     <nav className="flex flex-col gap-4 mb-8">
-      {nav_links
-        .filter((link) => link.href !== "/")
-        .map((item, index) => {
-          const resolvedHref = routing.pathnames[item.href];
-          return (
-            <Link
-              key={index}
-              href={resolvedHref}
-              onClick={() => {
-                onClick?.();
-              }}
-              className={`text-left text-xl font-medium py-3 px-4 rounded-xl transition-colors ${
-                pathname.includes(resolvedHref)
-                  ? "bg-primary/10 text-primary"
-                  : "text-primary/70 hover:text-primary/80 hover:bg-primary/5"
-              }`}
-            >
-              {toUpperCase(item.label[locale as "en" | "ka"])}
-            </Link>
-          );
-        })}
+      {nav_links.map((item, index) => {
+        const resolvedHref = routing.pathnames[item.href];
+        const active = isActive(resolvedHref);
+
+        return (
+          <Link
+            key={index}
+            href={resolvedHref}
+            onClick={() => {
+              onClick?.();
+            }}
+            className={`text-left text-xl font-medium py-3 px-4 rounded-xl transition-colors ${
+              active
+                ? "bg-primary/10 text-primary"
+                : "text-primary/70 hover:text-primary/80 hover:bg-primary/5"
+            }`}
+          >
+            {toUpperCase(item.label[locale as "en" | "ka"])}
+          </Link>
+        );
+      })}
     </nav>
   );
 };
