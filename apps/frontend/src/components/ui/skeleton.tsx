@@ -87,10 +87,43 @@ const NewsesSkeletion = () => {
   );
 };
 
+const FAQsSkeleton: React.FC = () => {
+  return (
+    <section className="py-12 md:py-16 lg:py-20 w-full bg-linear-to-b from-background to-muted/30 relative overflow-hidden">
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+      </div>
+
+      <div className="max-w-[1440px] mx-auto px-4 md:px-6">
+        <div className="grid lg:grid-cols-2 gap-16 lg:gap-12 xl:gap-24 items-center">
+          <div className="relative hidden lg:block">
+            <Skeleton className="rounded-3xl p-6 h-[600px] w-full" />
+            <div className="absolute -bottom-10 -right-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl -z-10" />
+          </div>
+
+          <div>
+            <div className="mb-12 flex flex-col items-center lg:items-start">
+              <Skeleton className="h-10 md:h-[55px] xl:h-[70px] w-full mb-4 max-w-2xl" />
+              <Skeleton className="h-[18px] md:h-[22px] w-full max-w-3xl" />
+            </div>
+
+            <div className="space-y-4">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <Skeleton key={index} className="h-[76px]"></Skeleton>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 export {
   Skeleton,
   HeroSkeletion,
   IntroduceSkeletion,
   ServiceSkeletion,
   NewsesSkeletion,
+  FAQsSkeleton,
 };
