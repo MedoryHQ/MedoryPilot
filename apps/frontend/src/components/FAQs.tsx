@@ -14,6 +14,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
+  FAQsSkeleton,
 } from "./ui";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 
@@ -24,6 +25,8 @@ const FAQs = () => {
 
   const Faqs = useMemo(() => data?.data ?? [], [data]);
 
+  if (isFetching) return <FAQsSkeleton />;
+
   return (
     <section className="py-12 md:py-16 lg:py-20 w-full bg-linear-to-b from-background to-muted/30 relative overflow-hidden">
       <div className="absolute inset-0 -z-10">
@@ -31,7 +34,7 @@ const FAQs = () => {
       </div>
 
       <div className="max-w-[1440px] mx-auto px-4 md:px-6">
-        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+        <div className="grid lg:grid-cols-2 gap-16 lg:gap-12 xl:gap-24 items-center">
           <motion.div
             className="relative hidden lg:block"
             initial={{ opacity: 0, x: -50 }}
@@ -40,14 +43,16 @@ const FAQs = () => {
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
             <div className="relative rounded-3xl overflow-hidden shadow-premium">
-              <Image
-                src="/images/faq_background.jpeg"
-                width={1000}
-                height={1000}
-                alt="Faqs background"
-                className="h-[600px] w-auto"
-                priority
-              />
+              <div className="w-full bg-cover h-[600px]">
+                <Image
+                  src="/images/faq_background.jpeg"
+                  width={1000}
+                  height={1000}
+                  alt="Faqs background"
+                  className="object-cover h-full w-auto"
+                  priority
+                />
+              </div>
               <div className="absolute inset-0 bg-linear-to-t from-primary/20 to-transparent" />
             </div>
             <div className="absolute -bottom-10 -right-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl -z-10" />
@@ -62,10 +67,10 @@ const FAQs = () => {
             <div className="mb-12">
               <motion.h2
                 className={cn(
-                  "font-bold text-primary mb-6 tracking-tight",
+                  "font-bold text-primary text-center lg:text-start mb-4 xl:mb-6 tracking-tight",
                   language === "en"
-                    ? "text-4xl lg:text-5xl"
-                    : "text-3xl lg:text-4xl"
+                    ? "text-4xl lg:text-3xl xl:text-5xl"
+                    : "text-3xl lg:text-3xl xl:text-4xl"
                 )}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -76,7 +81,7 @@ const FAQs = () => {
               </motion.h2>
               <motion.p
                 className={cn(
-                  "text-muted-foreground",
+                  "text-muted-foreground text-center lg:text-start",
                   language === "en"
                     ? "text-[18px] lg:text-xl"
                     : "text-[16px] lg:text-[18px]"
