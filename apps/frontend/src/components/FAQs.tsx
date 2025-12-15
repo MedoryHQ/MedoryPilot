@@ -14,6 +14,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
+  FAQsSkeleton,
 } from "./ui";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 
@@ -23,6 +24,8 @@ const FAQs = () => {
   const t = useTranslations("FAQs");
 
   const Faqs = useMemo(() => data?.data ?? [], [data]);
+
+  if (isFetching) return <FAQsSkeleton />;
 
   return (
     <section className="py-12 md:py-16 lg:py-20 w-full bg-linear-to-b from-background to-muted/30 relative overflow-hidden">
